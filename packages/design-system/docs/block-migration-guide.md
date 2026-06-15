@@ -9,6 +9,22 @@ This guide freezes the Phase 1-9 block platform as a documented stable API. App 
 - Existing exported component names, metadata schemas, diagnostics contracts, fixtures, and quality-gate helpers must not be removed without a migration note.
 - New block props, schema fields, diagnostics, and exports should be additive.
 - Breaking changes require a migration note, compatibility tests, and updated Storybook examples.
+- Public barrels must stay explicit; wildcard exports are not allowed for release-freeze surfaces.
+- The Afenda Pattern Library is additive guidance; removing or renaming a pattern id requires a migration note and updated Storybook coverage.
+
+## Public API Checklist
+
+Before changing a public design-system surface, verify:
+
+- App-facing blocks are imported from `@repo/design-system/components/blocks`.
+- App-facing primitives are imported from `@repo/design-system/components/afenda-ui`.
+- Stable governance contracts are imported from `@repo/design-system/contracts/*`
+  package exports, not deep implementation paths.
+- `components/blocks/index.ts` keeps explicit exports and does not add wildcard barrels.
+- Compatibility tests cover existing fixture metadata, metadata schema v1, and documented stable exports.
+- Internal modules such as `metadata-renderer-core.ts`, `metadata-diagnostics.ts`,
+  `metadata-binding.ts`, and `state-orchestration.ts` are not documented as app-team deep imports.
+- Any removal, rename, or behavior break has a migration note, before/after path, Storybook coverage, and test coverage.
 
 ## Phase 1-9 Current Contract
 
@@ -20,6 +36,7 @@ Stable block families:
 - Workflow: approval control, tenant operations, audit evidence, policy locks, batch posting
 - Metadata: schema v1, renderer, bindings, layout composition, governed actions, diagnostics
 - Quality: typecheck, interaction, accessibility, visual, and overflow gate representation
+- Patterns: approval review, batch posting, primary-detail, audit log viewer, exception handling, bulk selection, data reconciliation, policy lock/unlock, and long-running job state
 
 ## Metadata v1 Migration Notes
 

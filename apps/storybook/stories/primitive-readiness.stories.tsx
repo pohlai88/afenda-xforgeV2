@@ -2,10 +2,10 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@repo/design-system/components/ui/alert";
-import { Badge } from "@repo/design-system/components/ui/badge";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Checkbox } from "@repo/design-system/components/ui/checkbox";
+} from "@repo/design-system/components/afenda-ui/alert";
+import { Badge } from "@repo/design-system/components/afenda-ui/badge";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Checkbox } from "@repo/design-system/components/afenda-ui/checkbox";
 import {
   Command,
   CommandEmpty,
@@ -14,7 +14,7 @@ import {
   CommandItem,
   CommandList,
   CommandShortcut,
-} from "@repo/design-system/components/ui/command";
+} from "@repo/design-system/components/afenda-ui/command";
 import {
   Dialog,
   DialogClose,
@@ -24,7 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@repo/design-system/components/ui/dialog";
+} from "@repo/design-system/components/afenda-ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +32,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/ui/dropdown-menu";
+} from "@repo/design-system/components/afenda-ui/dropdown-menu";
 import {
   Field,
   FieldContent,
@@ -41,20 +41,20 @@ import {
   FieldGroup,
   FieldLabel,
   FieldTitle,
-} from "@repo/design-system/components/ui/field";
-import { Input } from "@repo/design-system/components/ui/input";
+} from "@repo/design-system/components/afenda-ui/field";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
 import {
   RadioGroup,
   RadioGroupItem,
-} from "@repo/design-system/components/ui/radio-group";
+} from "@repo/design-system/components/afenda-ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/design-system/components/ui/select";
-import { Switch } from "@repo/design-system/components/ui/switch";
+} from "@repo/design-system/components/afenda-ui/select";
+import { Switch } from "@repo/design-system/components/afenda-ui/switch";
 import {
   Table,
   TableBody,
@@ -62,21 +62,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/ui/table";
+} from "@repo/design-system/components/afenda-ui/table";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@repo/design-system/components/ui/tabs";
-import { Textarea } from "@repo/design-system/components/ui/textarea";
+} from "@repo/design-system/components/afenda-ui/tabs";
+import { Textarea } from "@repo/design-system/components/afenda-ui/textarea";
 import type { Meta, StoryObj } from "@storybook/react";
+import { CheckCircle2Icon, ShieldCheckIcon } from "lucide-react";
 
 import {
   layoutStoryParameters,
   matrixStoryParameters,
 } from "../.storybook/essentials";
-import { CheckCircle2Icon, ShieldCheckIcon } from "lucide-react";
 
 const readinessRows = [
   ["Stories", "Every primitive has a matching Storybook story", "Ready"],
@@ -216,7 +216,7 @@ function PrimitiveReadiness() {
         <div className="flex flex-wrap gap-3">
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="outline">Open decision dialog</Button>
+              <Button variant="secondary">Open decision dialog</Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -227,7 +227,7 @@ function PrimitiveReadiness() {
               </DialogHeader>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="secondary">Cancel</Button>
                 </DialogClose>
                 <Button>Confirm approval</Button>
               </DialogFooter>
@@ -236,7 +236,7 @@ function PrimitiveReadiness() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline">Open action menu</Button>
+              <Button variant="secondary">Open action menu</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuLabel>Record actions</DropdownMenuLabel>

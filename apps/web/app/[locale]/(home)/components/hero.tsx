@@ -1,5 +1,5 @@
 import { blog } from "@repo/cms";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import type { Dictionary } from "@repo/internationalization";
 import { MoveRight, PhoneCall } from "lucide-react";
 import Link from "next/link";
@@ -36,7 +36,7 @@ export const Hero = async ({ dictionary, locale }: HeroProps) => {
             </p>
           </div>
           <div className="flex flex-row gap-3">
-            <Button asChild className="gap-4" size="lg" variant="outline">
+            <Button asChild className="gap-4" size="lg" variant="secondary">
               <Link href="/contact">
                 Get in touch <PhoneCall className="h-4 w-4" />
               </Link>

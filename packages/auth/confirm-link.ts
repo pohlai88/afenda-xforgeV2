@@ -1,5 +1,9 @@
 import "server-only";
 
+import {
+  APP_AUTH_ERROR_CODES,
+  getAuthErrorKey,
+} from "./auth-form-messages";
 import { createClient } from "./server";
 import type {
   AuthOtpType,
@@ -23,7 +27,10 @@ export const confirmAuthLink = async (
 
   if (params.tokenHash && params.type) {
     if (!isAuthOtpType(params.type)) {
-      return { ok: false, error: "invalid_auth_link" };
+      return {
+        ok: false,
+        error: APP_AUTH_ERROR_CODES.invalidAuthLink,
+      };
     }
 
     const { error } = await supabase.auth.verifyOtp({
@@ -32,7 +39,7 @@ export const confirmAuthLink = async (
     });
 
     if (error) {
-      return { ok: false, error: error.message };
+      return { ok: false, error: getAuthErrorKey(error) };
     }
 
     return { ok: true, redirectTo: `${params.origin}${safeNext}` };
@@ -42,13 +49,13 @@ export const confirmAuthLink = async (
     const { error } = await supabase.auth.exchangeCodeForSession(params.code);
 
     if (error) {
-      return { ok: false, error: error.message };
+      return { ok: false, error: getAuthErrorKey(error) };
     }
 
     return { ok: true, redirectTo: `${params.origin}${safeNext}` };
   }
 
-  return { ok: false, error: "invalid_auth_link" };
+  return { ok: false, error: APP_AUTH_ERROR_CODES.invalidAuthLink };
 };
 
 export type {

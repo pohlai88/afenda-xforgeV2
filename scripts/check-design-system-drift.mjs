@@ -31,8 +31,97 @@ const blockGovernancePath = join(
   "docs",
   "block-governance.md"
 );
+const designSystemDocsReadmePath = join(
+  root,
+  "packages",
+  "design-system",
+  "docs",
+  "README.md"
+);
+const designSystemDocsAuditPath = join(
+  root,
+  "packages",
+  "design-system",
+  "docs",
+  "design-system-docs-audit.md"
+);
+const designSystemDocsCheckPath = join(
+  root,
+  "scripts",
+  "check-design-system-docs.mjs"
+);
+const patternLibraryContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "pattern-library.contract.ts"
+);
+const patternLibraryDocPath = join(
+  root,
+  "packages",
+  "design-system",
+  "docs",
+  "pattern-library.md"
+);
+const componentScorecardsContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "component-scorecards.contract.ts"
+);
+const componentScorecardsDocPath = join(
+  root,
+  "packages",
+  "design-system",
+  "docs",
+  "component-scorecards.md"
+);
+const contributionLifecycleContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "contribution-lifecycle.contract.ts"
+);
+const contributionLifecycleDocPath = join(
+  root,
+  "packages",
+  "design-system",
+  "docs",
+  "contribution-lifecycle.md"
+);
+const enterpriseScreenPatternsContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "enterprise-screen-patterns.contract.ts"
+);
+const enterpriseScreenPatternsDocPath = join(
+  root,
+  "packages",
+  "design-system",
+  "docs",
+  "enterprise-screen-patterns.md"
+);
 const storiesDir = join(root, "apps", "storybook", "stories");
 const blockStoriesDir = join(storiesDir, "blocks");
+const releaseBlockStoryGroups = [
+  "Blocks/Foundation",
+  "Blocks/Operator",
+  "Blocks/Advanced",
+  "Blocks/Workflow",
+  "Blocks/Metadata Renderer",
+  "Blocks/Metadata Schema",
+  "Blocks/ERP Metadata Pages",
+  "Blocks/Quality Gates",
+];
+const governanceBlockStoryGroups = [
+  "Blocks/Block Readiness",
+  "Blocks/Storybook Coverage",
+];
 const globalsPath = join(
   root,
   "packages",
@@ -96,15 +185,27 @@ const tokensPath = join(
   "tokens",
   "tokens.json"
 );
+const tokenSchemaPath = join(
+  root,
+  "packages",
+  "design-system",
+  "tokens",
+  "tokens.schema.json"
+);
 const componentExtension = /\.tsx$/;
 const storyExtension = /\.stories\.tsx$/;
 const rawColorFileExtension = /\.(ts|tsx|css|json)$/;
 const hexPattern = /#[0-9a-fA-F]{3,8}\b/g;
 const strictHexPattern = /^#[0-9a-fA-F]{6}$/;
 const tokenReferencePattern = /^\{(.+)\}$/;
-const afendaRecipeImportPattern = /import\s+\{[^}]*\brecipe\b[^}]*\}\s+from\s+["']\.\/recipes["']/;
+const afendaRecipeImportPattern =
+  /import\s+\{[^}]*\brecipe\b[^}]*\}\s+from\s+["']\.\/recipes["']/;
 const afendaRecipeUsagePattern = /\brecipe\(/;
 const afendaNestedRecipeUsagePattern = /afendaRecipe\./;
+const storyMetaTitlePattern = /title:\s*["']([^"']+)["']/;
+const storyMetaTagsPattern = /tags:\s*\[([^\]]*)\]/;
+const storyMetaTagPattern = /["']([^"']+)["']/g;
+const exportAliasSplitPattern = /\s+as\s+/;
 const overlayPortalStandardization = [
   {
     component: "dialog",
@@ -204,11 +305,13 @@ const afendaComponentDriftPatterns = [
   },
   {
     pattern: /(?:hover|focus|active):bg-surface-muted\//,
-    message: "Interactive surfaces must use surface-hover or surface-active tokens.",
+    message:
+      "Interactive surfaces must use surface-hover or surface-active tokens.",
   },
   {
     pattern: /data-\[[^\]]+\]:bg-surface-muted\//,
-    message: "Stateful surfaces must use surface-hover or surface-active tokens.",
+    message:
+      "Stateful surfaces must use surface-hover or surface-active tokens.",
   },
   {
     pattern: /border-border-focus/,
@@ -227,29 +330,23 @@ for (const path of [
   primitiveReadinessStoryPath,
   tokenLayerContractPath,
   tokenUsagePolicyPath,
+  tokenSchemaPath,
   blockGovernancePath,
+  designSystemDocsReadmePath,
+  designSystemDocsAuditPath,
+  designSystemDocsCheckPath,
+  patternLibraryContractPath,
+  patternLibraryDocPath,
+  componentScorecardsContractPath,
+  componentScorecardsDocPath,
+  contributionLifecycleContractPath,
+  contributionLifecycleDocPath,
+  enterpriseScreenPatternsContractPath,
+  enterpriseScreenPatternsDocPath,
 ]) {
   if (!existsSync(path)) {
     errors.push(
       `Missing design-system governance artifact: ${relative(root, path)}`
-    );
-  }
-}
-
-const uiComponents = readdirSync(uiDir)
-  .filter((file) => file.endsWith(".tsx"))
-  .map((file) => file.replace(componentExtension, ""));
-
-const stories = new Set(
-  readdirSync(storiesDir)
-    .filter((file) => file.endsWith(".stories.tsx"))
-    .map((file) => file.replace(storyExtension, ""))
-);
-
-for (const component of uiComponents) {
-  if (!stories.has(component)) {
-    errors.push(
-      `Missing Storybook coverage for components/ui/${component}.tsx`
     );
   }
 }
@@ -279,17 +376,19 @@ if (existsSync(afendaUiDir)) {
     }
   }
 
-  if (!existsSync(afendaRecipePath)) {
-    errors.push("Missing Afenda UI recipe: components/afenda-ui/recipes.ts");
-  } else {
+  if (existsSync(afendaRecipePath)) {
     const recipeSource = readFileSync(afendaRecipePath, "utf8");
 
     if (zodImportPattern.test(recipeSource)) {
-      errors.push("components/afenda-ui/recipes.ts must stay client-safe and not import Zod.");
+      errors.push(
+        "components/afenda-ui/recipes.ts must stay client-safe and not import Zod."
+      );
     }
 
     if (!recipeContractPattern.test(recipeSource)) {
-      errors.push("components/afenda-ui/recipes.ts must satisfy AfendaRecipeContract.");
+      errors.push(
+        "components/afenda-ui/recipes.ts must satisfy AfendaRecipeContract."
+      );
     }
 
     for (const token of [
@@ -305,22 +404,30 @@ if (existsSync(afendaUiDir)) {
         errors.push(`components/afenda-ui/recipes.ts must reference ${token}.`);
       }
     }
+  } else {
+    errors.push("Missing Afenda UI recipe: components/afenda-ui/recipes.ts");
   }
 
-  if (!existsSync(afendaRecipeContractPath)) {
-    errors.push(
-      "Missing Afenda UI recipe contract: components/afenda-ui/recipes.contract.ts"
-    );
-  } else {
+  if (existsSync(afendaRecipeContractPath)) {
     const contractSource = readFileSync(afendaRecipeContractPath, "utf8");
 
     if (!zodImportPattern.test(contractSource)) {
-      errors.push("components/afenda-ui/recipes.contract.ts must validate metadata with Zod.");
+      errors.push(
+        "components/afenda-ui/recipes.contract.ts must validate metadata with Zod."
+      );
     }
 
-    if (!contractSource.includes("afendaRecipeContractSchema.parse(afendaRecipe)")) {
-      errors.push("components/afenda-ui/recipes.contract.ts must parse afendaRecipe.");
+    if (
+      !contractSource.includes("afendaRecipeContractSchema.parse(afendaRecipe)")
+    ) {
+      errors.push(
+        "components/afenda-ui/recipes.contract.ts must parse afendaRecipe."
+      );
     }
+  } else {
+    errors.push(
+      "Missing Afenda UI recipe contract: components/afenda-ui/recipes.contract.ts"
+    );
   }
 
   for (const file of readdirSync(afendaUiDir).filter((entry) =>
@@ -338,12 +445,19 @@ if (existsSync(afendaUiDir)) {
       `from\\s+["']\\./${escapeRegExp(componentName)}["']`
     );
 
-    if (!afendaRecipeImportPattern.test(source) || !afendaRecipeUsagePattern.test(source)) {
+    if (
+      !(
+        afendaRecipeImportPattern.test(source) &&
+        afendaRecipeUsagePattern.test(source)
+      )
+    ) {
       errors.push(`${relativePath} must compose from recipe(...).`);
     }
 
     if (!barrelExportPattern.test(afendaIndexSource)) {
-      errors.push(`${relativePath} must be exported from components/afenda-ui/index.ts.`);
+      errors.push(
+        `${relativePath} must be exported from components/afenda-ui/index.ts.`
+      );
     }
 
     for (const exportName of exportedValueNames(source)) {
@@ -371,7 +485,9 @@ if (existsSync(afendaUiDir)) {
     }
 
     if (afendaNestedRecipeUsagePattern.test(source)) {
-      errors.push(`${relativePath} must not use nested afendaRecipe.* class access.`);
+      errors.push(
+        `${relativePath} must not use nested afendaRecipe.* class access.`
+      );
     }
 
     for (const { pattern, message } of afendaComponentDriftPatterns) {
@@ -381,11 +497,18 @@ if (existsSync(afendaUiDir)) {
     }
   }
 
-  for (const { component, portal, content, prop } of overlayPortalStandardization) {
+  for (const {
+    component,
+    portal,
+    content,
+    prop,
+  } of overlayPortalStandardization) {
     const path = join(afendaUiDir, `${component}.tsx`);
 
     if (!existsSync(path)) {
-      errors.push(`Missing standardized overlay component: components/afenda-ui/${component}.tsx`);
+      errors.push(
+        `Missing standardized overlay component: components/afenda-ui/${component}.tsx`
+      );
       continue;
     }
 
@@ -393,7 +516,9 @@ if (existsSync(afendaUiDir)) {
     const relativePath = relative(root, path);
 
     if (!source.includes(`function ${portal}(`)) {
-      errors.push(`${relativePath} must export a first-class ${portal} wrapper.`);
+      errors.push(
+        `${relativePath} must export a first-class ${portal} wrapper.`
+      );
     }
 
     if (!source.includes(`function ${content}(`)) {
@@ -401,7 +526,9 @@ if (existsSync(afendaUiDir)) {
     }
 
     if (!source.includes(prop)) {
-      errors.push(`${relativePath} must expose standardized portalProps passthrough on ${content}.`);
+      errors.push(
+        `${relativePath} must expose standardized portalProps passthrough on ${content}.`
+      );
     }
 
     if (!source.includes(`<${portal} {...portalProps}>`)) {
@@ -423,22 +550,40 @@ if (existsSync(blocksDir)) {
   }
 
   if (!existsSync(blockStoriesDir)) {
-    errors.push("Missing block Storybook directory: apps/storybook/stories/blocks");
+    errors.push(
+      "Missing block Storybook directory: apps/storybook/stories/blocks"
+    );
   }
 
   if (!existsSync(join(blockStoriesDir, "block-readiness.stories.tsx"))) {
-    errors.push("Missing block readiness story: apps/storybook/stories/blocks/block-readiness.stories.tsx");
+    errors.push(
+      "Missing block readiness story: apps/storybook/stories/blocks/block-readiness.stories.tsx"
+    );
+  }
+
+  const blockIndexSource = existsSync(blockIndexPath)
+    ? readFileSync(blockIndexPath, "utf8")
+    : "";
+
+  if (/export\s+\*\s+from\s+["']/.test(blockIndexSource)) {
+    errors.push(
+      "components/blocks/index.ts must keep explicit exports and avoid wildcard barrels."
+    );
   }
 
   if (existsSync(blockRecipePath)) {
     const blockRecipeSource = readFileSync(blockRecipePath, "utf8");
 
     if (zodImportPattern.test(blockRecipeSource)) {
-      errors.push("components/blocks/block-recipes.ts must stay client-safe and not import Zod.");
+      errors.push(
+        "components/blocks/block-recipes.ts must stay client-safe and not import Zod."
+      );
     }
 
     if (!blockRecipeContractPattern.test(blockRecipeSource)) {
-      errors.push("components/blocks/block-recipes.ts must satisfy AfendaBlockRecipeContract.");
+      errors.push(
+        "components/blocks/block-recipes.ts must satisfy AfendaBlockRecipeContract."
+      );
     }
 
     for (const token of new Set(
@@ -447,7 +592,9 @@ if (existsSync(blocksDir)) {
       )
     )) {
       if (!globals.includes(token)) {
-        errors.push(`components/blocks/block-recipes.ts references missing globals.css token ${token}.`);
+        errors.push(
+          `components/blocks/block-recipes.ts references missing globals.css token ${token}.`
+        );
       }
     }
   }
@@ -456,11 +603,19 @@ if (existsSync(blocksDir)) {
     const blockContractSource = readFileSync(blockRecipeContractPath, "utf8");
 
     if (!zodImportPattern.test(blockContractSource)) {
-      errors.push("components/blocks/block-recipes.contract.ts must validate metadata with Zod.");
+      errors.push(
+        "components/blocks/block-recipes.contract.ts must validate metadata with Zod."
+      );
     }
 
-    if (!blockContractSource.includes("afendaBlockRecipeContractSchema.parse(afendaBlockRecipe)")) {
-      errors.push("components/blocks/block-recipes.contract.ts must parse afendaBlockRecipe.");
+    if (
+      !blockContractSource.includes(
+        "afendaBlockRecipeContractSchema.parse(afendaBlockRecipe)"
+      )
+    ) {
+      errors.push(
+        "components/blocks/block-recipes.contract.ts must parse afendaBlockRecipe."
+      );
     }
   }
 
@@ -481,7 +636,9 @@ if (existsSync(blocksDir)) {
       "form-section",
     ]) {
       if (!blockLayoutContractSource.includes(`"${family}"`)) {
-        errors.push(`components/blocks/layout-contracts.ts must define ${family}.`);
+        errors.push(
+          `components/blocks/layout-contracts.ts must define ${family}.`
+        );
       }
     }
   }
@@ -493,6 +650,46 @@ if (existsSync(blocksDir)) {
           .map((file) => file.replace(storyExtension, ""))
       )
     : new Set();
+
+  for (const storyFile of readdirSync(blockStoriesDir).filter((file) =>
+    file.endsWith(".stories.tsx")
+  )) {
+    const path = join(blockStoriesDir, storyFile);
+    const source = readFileSync(path, "utf8");
+    const relativePath = relative(root, path);
+    const title = readStoryMetaTitle(source);
+    const tags = readStoryMetaTags(source);
+
+    if (!title) {
+      errors.push(`${relativePath} must declare a Storybook title.`);
+      continue;
+    }
+
+    if (!isAllowedBlockStoryTitle(title)) {
+      errors.push(
+        `${relativePath} uses "${title}", which is outside the release-freeze block taxonomy.`
+      );
+    }
+
+    if (!isGovernanceBlockStoryTitle(title)) {
+      for (const requiredTag of ["autodocs", "block"]) {
+        if (!tags.includes(requiredTag)) {
+          errors.push(
+            `${relativePath} must include "${requiredTag}" in production block story tags.`
+          );
+        }
+      }
+    }
+
+    if (
+      storyFile === "quality-gates.stories.tsx" &&
+      !tags.includes("snapshot")
+    ) {
+      errors.push(
+        `${relativePath} must keep the "snapshot" tag for visual regression baselines.`
+      );
+    }
+  }
 
   const blockComponents = readdirSync(blocksDir)
     .filter((file) => file.endsWith(".tsx"))
@@ -509,17 +706,70 @@ if (existsSync(blocksDir)) {
     const source = readFileSync(path, "utf8");
     const relativePath = relative(root, path);
 
-    if (!blockRecipeImportPattern.test(source) || !blockRecipeUsagePattern.test(source)) {
+    if (
+      !(
+        blockRecipeImportPattern.test(source) &&
+        blockRecipeUsagePattern.test(source)
+      )
+    ) {
       errors.push(`${relativePath} must compose from blockRecipe(...).`);
     }
 
     if (blockNestedRecipeUsagePattern.test(source)) {
-      errors.push(`${relativePath} must not use nested afendaBlockRecipe.* class access.`);
+      errors.push(
+        `${relativePath} must not use nested afendaBlockRecipe.* class access.`
+      );
     }
   }
 }
 
 const tokens = JSON.parse(readFileSync(tokensPath, "utf8"));
+const requiredTokenCategories = [
+  "color",
+  "spacing",
+  "typography",
+  "radius",
+  "shadow",
+  "motion",
+  "zIndex",
+  "layout",
+];
+
+if (tokens.metadata) {
+  for (const category of requiredTokenCategories) {
+    const categoryMetadata = tokens.metadata.categories?.[category];
+
+    if (!categoryMetadata) {
+      errors.push(`tokens.json metadata must describe ${category}.`);
+      continue;
+    }
+
+    for (const field of [
+      "description",
+      "cssPrefix",
+      "figmaCollection",
+      "usage",
+    ]) {
+      if (!categoryMetadata[field]) {
+        errors.push(`tokens.json metadata.${category} must include ${field}.`);
+      }
+    }
+  }
+
+  if (!tokens.metadata.usageConstraints?.primitive?.rule) {
+    errors.push("tokens.json must define primitive token usage constraints.");
+  }
+
+  if (!tokens.metadata.deprecation?.policy) {
+    errors.push("tokens.json must define token deprecation policy metadata.");
+  }
+
+  if (!tokens.metadata.figma?.variableNameTemplate) {
+    errors.push("tokens.json must define Figma variable mapping metadata.");
+  }
+} else {
+  errors.push("tokens.json must include metadata design data.");
+}
 
 for (const token of [
   "--surface-hover",
@@ -590,15 +840,9 @@ for (const typographyName of Object.keys(tokens.typography)) {
   }
 }
 
-for (const category of [
-  "color",
-  "spacing",
-  "typography",
-  "radius",
-  "shadow",
-  "motion",
-  "zIndex",
-]) {
+for (const category of requiredTokenCategories.filter(
+  (category) => category !== "layout"
+)) {
   if (!hasTokenCategory(tokens, "primitive", category)) {
     errors.push(`Missing primitive token category: ${category}`);
   }
@@ -796,6 +1040,34 @@ function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+function readStoryMetaTitle(source) {
+  return source.match(storyMetaTitlePattern)?.[1];
+}
+
+function readStoryMetaTags(source) {
+  const match = source.match(storyMetaTagsPattern);
+
+  if (!match) {
+    return [];
+  }
+
+  return [...match[1].matchAll(storyMetaTagPattern)].map(
+    (tagMatch) => tagMatch[1]
+  );
+}
+
+function isAllowedBlockStoryTitle(title) {
+  return [...releaseBlockStoryGroups, ...governanceBlockStoryGroups].some(
+    (group) => title === group || title.startsWith(`${group}/`)
+  );
+}
+
+function isGovernanceBlockStoryTitle(title) {
+  return governanceBlockStoryGroups.some(
+    (group) => title === group || title.startsWith(`${group}/`)
+  );
+}
+
 function exportedTypeNames(source) {
   return [...source.matchAll(/^export type \{([^}]+)\}/gm)]
     .flatMap((match) => match[1].split(","))
@@ -808,7 +1080,7 @@ function exportedValueNames(source) {
     .flatMap((match) => match[1].split(","))
     .map((entry) => entry.trim())
     .filter((entry) => entry && !entry.startsWith("type "))
-    .map((entry) => entry.split(/\s+as\s+/)[0].trim())
+    .map((entry) => entry.split(exportAliasSplitPattern)[0].trim())
     .filter(Boolean);
 }
 

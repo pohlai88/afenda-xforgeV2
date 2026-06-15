@@ -18,6 +18,10 @@ export const getActiveOrganizationId = (
   metadata: Record<string, unknown> | undefined
 ): string | null => parseUserMetadata(metadata).activeOrganizationId ?? null;
 
+/**
+ * UX preference stored in user_metadata — editable by the user.
+ * Always validate with `resolveActiveOrganizationId()` before authorization.
+ */
 export const getUserDisplayName = (
   metadata: Record<string, unknown> | undefined
 ): string | null => parseUserMetadata(metadata).name ?? null;

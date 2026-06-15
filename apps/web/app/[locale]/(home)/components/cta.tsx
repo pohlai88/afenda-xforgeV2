@@ -1,4 +1,4 @@
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import type { Dictionary } from "@repo/internationalization";
 import { MoveRight, PhoneCall } from "lucide-react";
 import Link from "next/link";
@@ -21,7 +21,7 @@ export const CTA = ({ dictionary }: CTAProps) => (
           </p>
         </div>
         <div className="flex flex-row gap-4">
-          <Button asChild className="gap-4" variant="outline">
+          <Button asChild className="gap-4" variant="secondary">
             <Link href="/contact">
               {dictionary.web.global.primaryCta}{" "}
               <PhoneCall className="h-4 w-4" />

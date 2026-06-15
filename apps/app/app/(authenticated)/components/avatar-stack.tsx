@@ -5,12 +5,12 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@repo/design-system/components/ui/avatar";
+} from "@repo/design-system/components/afenda-ui/avatar";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@repo/design-system/components/ui/tooltip";
+} from "@repo/design-system/components/afenda-ui/tooltip";
 
 interface PresenceAvatarProps {
   info?: Liveblocks["UserMeta"]["info"];

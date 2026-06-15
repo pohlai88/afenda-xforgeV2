@@ -7,21 +7,21 @@ type AfendaRecipeOwner =
   | "state"
   | "motion"
   | "icon"
-  | "spacing"
+  | "spacing";
 
-type AfendaRecipeKind = "composition" | "interaction" | "layout" | "motion"
+type AfendaRecipeKind = "composition" | "interaction" | "layout" | "motion";
 
-type AfendaRecipeScope = "global" | "component-family"
+type AfendaRecipeScope = "global" | "component-family";
 
-type AfendaRecipeEntry = {
-  readonly owner: AfendaRecipeOwner
-  readonly kind: AfendaRecipeKind
-  readonly scope: AfendaRecipeScope
-  readonly description: string
-  readonly className: string
+interface AfendaRecipeEntry {
+  readonly className: string;
+  readonly description: string;
+  readonly kind: AfendaRecipeKind;
+  readonly owner: AfendaRecipeOwner;
+  readonly scope: AfendaRecipeScope;
 }
 
-type AfendaRecipeContract = Record<string, AfendaRecipeEntry>
+type AfendaRecipeContract = Record<string, AfendaRecipeEntry>;
 
 const afendaRecipe = {
   bodyText: {
@@ -83,7 +83,8 @@ const afendaRecipe = {
     owner: "typography",
     kind: "composition",
     scope: "global",
-    description: "Small uppercase metadata labels for grouped menus and panels.",
+    description:
+      "Small uppercase metadata labels for grouped menus and panels.",
     className:
       "text-[length:var(--xforge-font-label-size)] font-medium uppercase tracking-[0.08em] text-text-secondary",
   },
@@ -163,7 +164,8 @@ const afendaRecipe = {
     kind: "motion",
     scope: "global",
     description: "Transition for color and surface-only state changes.",
-    className: "transition-[background-color,border-color,color,box-shadow,opacity]",
+    className:
+      "transition-[background-color,border-color,color,box-shadow,opacity]",
   },
   interactiveTransition: {
     owner: "motion",
@@ -217,7 +219,8 @@ const afendaRecipe = {
     owner: "primitive",
     kind: "layout",
     scope: "global",
-    description: "Default Afenda control size from globals.css component tokens.",
+    description:
+      "Default Afenda control size from globals.css component tokens.",
     className: "h-[var(--button-height)] px-[var(--button-padding-x)]",
   },
   controlCompactSize: {
@@ -349,7 +352,8 @@ const afendaRecipe = {
     owner: "overlay",
     kind: "composition",
     scope: "component-family",
-    description: "Shared modal and drawer backdrop positioning and entry motion.",
+    description:
+      "Shared modal and drawer backdrop positioning and entry motion.",
     className:
       "fixed inset-0 z-[var(--xforge-z-modal-backdrop)] data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 motion-reduce:animate-none",
   },
@@ -357,7 +361,8 @@ const afendaRecipe = {
     owner: "spacing",
     kind: "layout",
     scope: "component-family",
-    description: "Shared stacked header layout for dialogs, sheets, and alerts.",
+    description:
+      "Shared stacked header layout for dialogs, sheets, and alerts.",
     className: "flex flex-col gap-1.5 text-left",
   },
   modalFooter: {
@@ -393,15 +398,18 @@ const afendaRecipe = {
     owner: "spacing",
     kind: "composition",
     scope: "component-family",
-    description: "Shared edge-to-edge menu separator for contextual menus and menubar.",
+    description:
+      "Shared edge-to-edge menu separator for contextual menus and menubar.",
     className: "-mx-1 my-1 h-px bg-border-default",
   },
   itemIndicator: {
     owner: "icon",
     kind: "layout",
     scope: "component-family",
-    description: "Shared absolute leading indicator slot for menu checkbox and radio items.",
-    className: "pointer-events-none absolute left-2 flex size-3.5 items-center justify-center",
+    description:
+      "Shared absolute leading indicator slot for menu checkbox and radio items.",
+    className:
+      "pointer-events-none absolute left-2 flex size-3.5 items-center justify-center",
   },
   itemIndicatorMuted: {
     owner: "icon",
@@ -415,7 +423,8 @@ const afendaRecipe = {
     kind: "composition",
     scope: "component-family",
     description: "Shared scroll affordance for select overlay edge buttons.",
-    className: "flex cursor-default items-center justify-center py-1 text-text-secondary",
+    className:
+      "flex cursor-default items-center justify-center py-1 text-text-secondary",
   },
   overlayPadding: {
     owner: "spacing",
@@ -459,13 +468,13 @@ const afendaRecipe = {
     description: "Default panel, modal, and card internal section gap.",
     className: "gap-4",
   },
-} as const satisfies AfendaRecipeContract
+} as const satisfies AfendaRecipeContract;
 
-type AfendaRecipeKey = keyof typeof afendaRecipe
+type AfendaRecipeKey = keyof typeof afendaRecipe;
 
 function recipe(...keys: AfendaRecipeKey[]) {
-  return keys.map((key) => afendaRecipe[key].className).join(" ")
+  return keys.map((key) => afendaRecipe[key].className).join(" ");
 }
 
-export { afendaRecipe, recipe }
-export type { AfendaRecipeContract, AfendaRecipeEntry, AfendaRecipeKey }
+export { afendaRecipe, recipe };
+export type { AfendaRecipeContract, AfendaRecipeEntry, AfendaRecipeKey };

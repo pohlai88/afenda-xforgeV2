@@ -1,16 +1,15 @@
-import { cva, type VariantProps } from "class-variance-authority"
-import { Slot as SlotPrimitive } from "radix-ui"
-
-import { cn } from "@repo/design-system/lib/utils"
-import { Separator } from "./separator"
-import { recipe } from "./recipes"
+import { cn } from "@repo/design-system/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
+import { Slot as SlotPrimitive } from "radix-ui";
+import { recipe } from "./recipes";
+import { Separator } from "./separator";
 
 const buttonGroupVariants = cva(
   [
-    "flex w-fit items-stretch",
+    "m-0 flex w-fit min-w-0 items-stretch border-0 p-0",
     "[&>*]:relative [&>*]:focus-visible:z-10",
     "[&>[data-slot=select-trigger]:not([class*='w-'])]:w-fit",
-    "[&>input]:flex-1 has-[>[data-slot=button-group]]:gap-2",
+    "has-[>[data-slot=button-group]]:gap-2 [&>input]:flex-1",
     recipe("motionReduce"),
   ],
   {
@@ -26,22 +25,22 @@ const buttonGroupVariants = cva(
       orientation: "horizontal",
     },
   }
-)
+);
 
 function ButtonGroup({
   className,
   orientation = "horizontal",
   ...props
-}: React.ComponentProps<"div"> & VariantProps<typeof buttonGroupVariants>) {
+}: React.ComponentProps<"fieldset"> &
+  VariantProps<typeof buttonGroupVariants>) {
   return (
-    <div
-      role="group"
-      data-slot="button-group"
-      data-orientation={orientation}
+    <fieldset
       className={cn(buttonGroupVariants({ orientation }), className)}
+      data-orientation={orientation}
+      data-slot="button-group"
       {...props}
     />
-  )
+  );
 }
 
 function ButtonGroupText({
@@ -49,21 +48,21 @@ function ButtonGroupText({
   asChild = false,
   ...props
 }: React.ComponentProps<"div"> & {
-  asChild?: boolean
+  asChild?: boolean;
 }) {
-  const Comp = asChild ? SlotPrimitive.Slot : "div"
+  const Comp = asChild ? SlotPrimitive.Slot : "div";
 
   return (
     <Comp
-      data-slot="button-group-text"
       className={cn(
         "flex items-center gap-2 rounded-[var(--button-radius)] border border-border-default bg-surface-muted px-[var(--button-padding-x)] text-text-secondary",
         recipe("buttonText", "mutedControlIcon"),
         className
       )}
+      data-slot="button-group-text"
       {...props}
     />
-  )
+  );
 }
 
 function ButtonGroupSeparator({
@@ -73,16 +72,16 @@ function ButtonGroupSeparator({
 }: React.ComponentProps<typeof Separator>) {
   return (
     <Separator
-      data-slot="button-group-separator"
-      orientation={orientation}
       className={cn(
-        "relative !m-0 self-stretch bg-border-default data-[orientation=vertical]:h-auto",
+        "!m-0 relative self-stretch bg-border-default data-[orientation=vertical]:h-auto",
         recipe("motionReduce"),
         className
       )}
+      data-slot="button-group-separator"
+      orientation={orientation}
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -90,4 +89,4 @@ export {
   ButtonGroupSeparator,
   ButtonGroupText,
   buttonGroupVariants,
-}
+};

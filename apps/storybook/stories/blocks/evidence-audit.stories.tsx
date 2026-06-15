@@ -17,7 +17,7 @@ import {
 import { layoutStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
-  title: "Blocks/Evidence Audit",
+  title: "Blocks/Operator/Evidence Audit",
   tags: ["autodocs", "block"],
   parameters: {
     ...layoutStoryParameters,

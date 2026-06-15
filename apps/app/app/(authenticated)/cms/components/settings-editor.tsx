@@ -1,10 +1,10 @@
 "use client";
 
 import type { SiteSettings } from "@repo/cms/settings";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
-import { Textarea } from "@repo/design-system/components/ui/textarea";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
+import { Label } from "@repo/design-system/components/afenda-ui/label";
+import { Textarea } from "@repo/design-system/components/afenda-ui/textarea";
 import { updateSettings } from "@/app/actions/cms/settings";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";

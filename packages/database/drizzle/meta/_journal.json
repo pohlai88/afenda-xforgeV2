@@ -78,6 +78,83 @@
       "when": 1719316800000,
       "tag": "0010_webhook_endpoint_health",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1719403200000,
+      "tag": "0011_backfill_active_organization_metadata",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1719489600000,
+      "tag": "0012_mfa_verification_hook",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1719576000000,
+      "tag": "0013_public_profiles",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1719662400000,
+      "tag": "0014_password_verification_hook",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1719748800000,
+      "tag": "0015_custom_access_token_hook",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1719835200000,
+      "tag": "0016_custom_access_token_hook_v2",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1719921600000,
+      "tag": "0017_rls_hardening",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1720008000000,
+      "tag": "0018_revoke_rls_auto_enable_rpc",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1720094400000,
+      "tag": "0019_column_privileges",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1720180800000,
+      "tag": "0020_rls_default_grant_model",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1720267200000,
+      "tag": "0021_pages_server_only",
+      "breakpoints": true
     }
   ]
 }

@@ -1,7 +1,7 @@
-import { Badge } from "@repo/design-system/components/ui/badge";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Card, CardContent } from "@repo/design-system/components/ui/card";
-import { Input } from "@repo/design-system/components/ui/input";
+import { Badge } from "@repo/design-system/components/afenda-ui/badge";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Card, CardContent } from "@repo/design-system/components/afenda-ui/card";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
 import { cn } from "@repo/design-system/lib/utils";
 import {
   FileTextIcon,
@@ -261,7 +261,7 @@ function WorkQueueCard({
           <p className="text-muted-foreground text-xs">{subtitle}</p>
         </div>
         {action ? (
-          <Button size="sm" variant="outline">
+          <Button size="sm" variant="secondary">
             {action}
           </Button>
         ) : null}
@@ -341,7 +341,7 @@ export function AuditEvidenceRail() {
         ))}
       </div>
       <SequenceList />
-      <Button className="w-fit" variant="outline">
+      <Button className="w-fit" variant="secondary">
         Export evidence
       </Button>
       <Card className="rounded-lg">

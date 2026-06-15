@@ -1,24 +1,26 @@
-import * as React from "react"
+import { cn } from "@repo/design-system/lib/utils";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   MoreHorizontalIcon,
-} from "lucide-react"
-
-import { cn } from "@repo/design-system/lib/utils"
-import { buttonVariants } from "./button"
-import { recipe } from "./recipes"
+} from "lucide-react";
+import type * as React from "react";
+import { buttonVariants } from "./button";
+import { recipe } from "./recipes";
 
 function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
   return (
     <nav
-      role="navigation"
       aria-label="Pagination"
+      className={cn(
+        "mx-auto flex w-full justify-center",
+        recipe("motionReduce"),
+        className
+      )}
       data-slot="pagination"
-      className={cn("mx-auto flex w-full justify-center", recipe("motionReduce"), className)}
       {...props}
     />
-  )
+  );
 }
 
 function PaginationContent({
@@ -27,27 +29,31 @@ function PaginationContent({
 }: React.ComponentProps<"ul">) {
   return (
     <ul
+      className={cn(
+        "flex flex-row items-center gap-1",
+        recipe("motionReduce"),
+        className
+      )}
       data-slot="pagination-content"
-      className={cn("flex flex-row items-center gap-1", recipe("motionReduce"), className)}
       {...props}
     />
-  )
+  );
 }
 
 function PaginationItem({ className, ...props }: React.ComponentProps<"li">) {
   return (
     <li
-      data-slot="pagination-item"
       className={cn("shrink-0", className)}
+      data-slot="pagination-item"
       {...props}
     />
-  )
+  );
 }
 
 type PaginationLinkProps = {
-  isActive?: boolean
+  isActive?: boolean;
 } & Pick<React.ComponentProps<"button">, "type"> &
-  React.ComponentProps<"a">
+  React.ComponentProps<"a">;
 
 function PaginationLink({
   className,
@@ -57,8 +63,6 @@ function PaginationLink({
   return (
     <a
       aria-current={isActive ? "page" : undefined}
-      data-slot="pagination-link"
-      data-active={isActive ? "" : undefined}
       className={cn(
         buttonVariants({
           variant: isActive ? "secondary" : "quiet",
@@ -70,9 +74,11 @@ function PaginationLink({
         recipe("motionReduce"),
         className
       )}
+      data-active={isActive ? "" : undefined}
+      data-slot="pagination-link"
       {...props}
     />
-  )
+  );
 }
 
 function PaginationPrevious({
@@ -88,7 +94,7 @@ function PaginationPrevious({
       <ChevronLeftIcon className="size-4" />
       <span className="hidden sm:block">Previous</span>
     </PaginationLink>
-  )
+  );
 }
 
 function PaginationNext({
@@ -104,7 +110,7 @@ function PaginationNext({
       <span className="hidden sm:block">Next</span>
       <ChevronRightIcon className="size-4" />
     </PaginationLink>
-  )
+  );
 }
 
 function PaginationEllipsis({
@@ -113,18 +119,18 @@ function PaginationEllipsis({
 }: React.ComponentProps<"span">) {
   return (
     <span
-      data-slot="pagination-ellipsis"
       className={cn(
         "flex size-8 items-center justify-center text-text-tertiary",
         recipe("captionText", "motionReduce"),
         className
       )}
+      data-slot="pagination-ellipsis"
       {...props}
     >
       <MoreHorizontalIcon aria-hidden="true" className="size-4" />
       <span className="sr-only">More pages</span>
     </span>
-  )
+  );
 }
 
 export {
@@ -135,4 +141,4 @@ export {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-}
+};

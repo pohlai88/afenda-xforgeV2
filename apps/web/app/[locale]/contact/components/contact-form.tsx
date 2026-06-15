@@ -1,14 +1,14 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/ui/button";
-import { Calendar } from "@repo/design-system/components/ui/calendar";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Calendar } from "@repo/design-system/components/afenda-ui/calendar";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
+import { Label } from "@repo/design-system/components/afenda-ui/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@repo/design-system/components/ui/popover";
+} from "@repo/design-system/components/afenda-ui/popover";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Dictionary } from "@repo/internationalization";
 import { format } from "date-fns";
@@ -67,7 +67,7 @@ export const ContactForm = ({ dictionary }: ContactFormProps) => {
                         "w-full max-w-sm justify-start text-left font-normal",
                         !date && "text-muted-foreground"
                       )}
-                      variant="outline"
+                      variant="secondary"
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {date ? (

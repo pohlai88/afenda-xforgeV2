@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { CmsDocumentListItem } from "@repo/cms/document-list";
 import type { CmsLocale } from "@repo/cms/locale";
 import type { CmsCollectionName } from "@repo/cms/writer";
-import { Badge } from "@repo/design-system/components/ui/badge";
+import { Badge } from "@repo/design-system/components/afenda-ui/badge";
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/ui/table";
+} from "@repo/design-system/components/afenda-ui/table";
 
 type DocumentListProperties = {
   collection: CmsCollectionName;
@@ -54,9 +54,8 @@ export const DocumentList = ({
             </TableCell>
             <TableCell>
               <Badge
-                variant={
-                  document.status === "published" ? "default" : "secondary"
-                }
+                tone={document.status === "published" ? "positive" : "neutral"}
+                variant="soft"
               >
                 {document.status}
               </Badge>

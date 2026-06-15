@@ -14,7 +14,7 @@ import {
 import { layoutStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
-  title: "Blocks/Permission",
+  title: "Blocks/Operator/Permission",
   tags: ["autodocs", "block"],
   parameters: {
     ...layoutStoryParameters,

@@ -7,13 +7,15 @@ import {
   getOrganizations,
   switchOrganization,
 } from "@repo/auth/organizations";
-import { SidebarProvider } from "@repo/design-system/components/ui/sidebar";
+import { SidebarProvider } from "@repo/design-system/components/afenda-ui/sidebar";
 import { showBetaFeature } from "@repo/feature-flags";
 import { secure } from "@repo/security";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { env } from "@/env";
 import { GlobalSidebar } from "./components/sidebar";
+
+export const dynamic = "force-dynamic";
 
 interface AppLayoutProperties {
   readonly children: ReactNode;

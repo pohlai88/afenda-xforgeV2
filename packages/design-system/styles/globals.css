@@ -202,9 +202,9 @@
   --xforge-color-ink: #f2f0e8;
   --xforge-color-muted: #bdb8ac;
   --xforge-color-line: #3b3f37;
-  --xforge-color-brand-primary: #a8baad;
-  --xforge-color-brand-dark: #dce0d7;
-  --xforge-color-brand-soft: #8fa095;
+  --xforge-color-brand-primary: #55655b;
+  --xforge-color-brand-dark: #324038;
+  --xforge-color-brand-soft: #a8baad;
   --xforge-color-bark: #c9a19b;
   --xforge-color-doe: #eac5aa;
   --xforge-color-pink: #eed8cb;
@@ -259,7 +259,7 @@
   --popover: var(--xforge-color-raised);
   --popover-foreground: var(--xforge-color-ink);
   --primary: var(--xforge-color-brand-primary);
-  --primary-foreground: var(--xforge-color-canvas);
+  --primary-foreground: var(--xforge-color-ink);
   --secondary: var(--xforge-color-surface);
   --secondary-foreground: var(--xforge-color-ink);
   --muted: var(--xforge-color-surface);

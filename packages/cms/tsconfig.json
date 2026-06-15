@@ -1,8 +1,18 @@
 {
-  "extends": "@repo/typescript-config/nextjs.json",
+  "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
-    "baseUrl": "."
+    "baseUrl": ".",
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
   "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules", "scripts", "test", "test-support"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "test-support",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.integration.test.ts",
+    "scripts"
+  ]
 }

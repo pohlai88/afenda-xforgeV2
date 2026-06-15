@@ -9,6 +9,11 @@ import { createId } from "@paralleldrive/cuid2";
 import { eq } from "drizzle-orm";
 import { createClient } from "./server";
 import { withActiveOrganizationId } from "./metadata";
+import { isOrganizationMember } from "./organization-context";
+import {
+  UnauthenticatedError,
+  UnauthorizedOrganizationError,
+} from "./types";
 
 export const createOrganization = async (name: string, userId: string) => {
   const now = new Date();
@@ -72,8 +77,16 @@ export const switchOrganization = async (organizationId: string) => {
     data: { user },
   } = await supabase.auth.getUser();
 
+  if (!user) {
+    throw new UnauthenticatedError();
+  }
+
+  if (!(await isOrganizationMember(user.id, organizationId))) {
+    throw new UnauthorizedOrganizationError();
+  }
+
   await supabase.auth.updateUser({
-    data: withActiveOrganizationId(user?.user_metadata, organizationId),
+    data: withActiveOrganizationId(user.user_metadata, organizationId),
   });
 };
 

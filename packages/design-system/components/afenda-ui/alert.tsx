@@ -1,8 +1,7 @@
-import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-
-import { cn } from "@repo/design-system/lib/utils"
-import { recipe } from "./recipes"
+import { cn } from "@repo/design-system/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
+import type * as React from "react";
+import { recipe } from "./recipes";
 
 const alertVariants = cva(
   [
@@ -25,14 +24,14 @@ const alertVariants = cva(
       tone: "neutral",
     },
   }
-)
+);
 
-type AlertTone = NonNullable<VariantProps<typeof alertVariants>["tone"]>
+type AlertTone = NonNullable<VariantProps<typeof alertVariants>["tone"]>;
 
 type AlertProps = React.ComponentProps<"div"> &
   VariantProps<typeof alertVariants> & {
-    urgency?: "assertive" | "polite"
-  }
+    urgency?: "assertive" | "polite";
+  };
 
 function Alert({
   className,
@@ -42,23 +41,27 @@ function Alert({
 }: AlertProps) {
   return (
     <div
+      className={cn(alertVariants({ tone }), className)}
       data-slot="alert"
       data-tone={tone}
       role={urgency === "assertive" ? "alert" : "status"}
-      className={cn(alertVariants({ tone }), className)}
       {...props}
     />
-  )
+  );
 }
 
 function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
+      className={cn(
+        "col-start-2 line-clamp-1 min-h-4",
+        recipe("bodyMediumText"),
+        className
+      )}
       data-slot="alert-title"
-      className={cn("col-start-2 line-clamp-1 min-h-4", recipe("bodyMediumText"), className)}
       {...props}
     />
-  )
+  );
 }
 
 function AlertDescription({
@@ -67,16 +70,16 @@ function AlertDescription({
 }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="alert-description"
       className={cn(
         "col-start-2 grid justify-items-start gap-1 text-current/80",
         recipe("captionText"),
         className
       )}
+      data-slot="alert-description"
       {...props}
     />
-  )
+  );
 }
 
-export { Alert, AlertDescription, AlertTitle, alertVariants }
-export type { AlertProps, AlertTone }
+export { Alert, AlertDescription, AlertTitle, alertVariants };
+export type { AlertProps, AlertTone };

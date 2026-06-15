@@ -1,5 +1,5 @@
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
 
 export const Search = () => (
@@ -17,7 +17,7 @@ export const Search = () => (
       <Button
         className="absolute top-px right-px bottom-px h-8 w-8"
         size="icon"
-        variant="ghost"
+        variant="quiet"
       >
         <ArrowRightIcon className="text-muted-foreground" size={16} />
       </Button>

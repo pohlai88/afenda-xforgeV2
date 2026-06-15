@@ -9,19 +9,19 @@ import {
   UserButton,
 } from "@repo/auth/components/user-menu";
 import { ModeToggle } from "@repo/design-system/components/mode-toggle";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@repo/design-system/components/ui/collapsible";
+} from "@repo/design-system/components/afenda-ui/collapsible";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/ui/dropdown-menu";
+} from "@repo/design-system/components/afenda-ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -39,7 +39,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   useSidebar,
-} from "@repo/design-system/components/ui/sidebar";
+} from "@repo/design-system/components/afenda-ui/sidebar";
 import { cn } from "@repo/design-system/lib/utils";
 import {
   AnchorIcon,
@@ -157,8 +157,8 @@ const data = {
           url: "#",
         },
         {
-          title: "Limits",
-          url: "#",
+          title: "Security",
+          url: "/account/security",
         },
       ],
     },

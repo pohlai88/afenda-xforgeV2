@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/ui/dropdown-menu";
+} from "@repo/design-system/components/afenda-ui/dropdown-menu";
 import { Languages } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 
@@ -49,7 +49,7 @@ export const LanguageSwitcher = () => {
         <Button
           className="shrink-0 text-foreground"
           size="icon"
-          variant="ghost"
+          variant="quiet"
         >
           <Languages className="h-[1.2rem] w-[1.2rem]" />
           <span className="sr-only">Switch language</span>

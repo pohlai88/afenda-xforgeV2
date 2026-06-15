@@ -220,6 +220,29 @@ Add shadcn components: `npx shadcn@latest add [component] -c packages/design-sys
 
 Database migrations after schema changes: `pnpm migrate`
 
+### TypeScript presets (`@repo/typescript-config`)
+
+Shared presets in [`packages/typescript-config/`](packages/typescript-config/):
+
+| Preset | Use for |
+|--------|---------|
+| `nextjs.json` | Next.js apps (`apps/app`, `apps/web`, `apps/api`, `apps/docs`, `apps/email`) — Next TS plugin + `.next/types` |
+| `react-library.json` | TSX workspace packages (`design-system`, `auth`, `cms`, …) — no Next plugin |
+| `library.json` | Server-only packages (`database`, `webhooks`, `payments`, …) — no Next plugin |
+| `base.json` | Root IDE tsconfig + preset spine (`incremental: true`, `strict`) |
+
+**Per-package tsconfig rules:**
+
+- Set `"tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"` in each package `compilerOptions` (paths in extended presets resolve relative to the preset file, not the consumer).
+- Library/app `exclude` must be package-local: `test/`, `test-support/`, `**/*.test.ts(x)`, `**/*.integration.test.ts` — inherited preset `exclude` paths do not apply across packages.
+- Workspace path alias: `@repo/*` → `../../packages/*` is defined in `library.json` / `react-library.json` / `nextjs.json`.
+
+**Incremental typecheck:** `base.json` sets `incremental: true`; each package writes `node_modules/.cache/tsbuildinfo.json` (gitignored via `*.tsbuildinfo`). Delete that file locally if `tsc` behaves oddly.
+
+**Vercel conformance (staged):** `noUncheckedIndexedAccess: true` is a governance target — not enabled repo-wide in `base.json` yet. Rollout: opt in on new/touched packages first → per-package audit (`database`, `webhooks`, `design-system`) → enable in `base.json` in a follow-up PR after error count is known.
+
+**Deferred:** TS project references + `composite: true` until libraries emit `dist/`.
+
 ---
 
 ## Change discipline

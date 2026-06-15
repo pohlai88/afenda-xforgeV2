@@ -1,6 +1,19 @@
 import type { AuthError } from "@supabase/supabase-js";
 import type { z } from "zod";
 import type { AuthActionResult } from "./types";
+import { humanizeAuthError, humanizeUnknownAuthError } from "./auth-form-messages";
+
+export type AuthFieldErrors = Partial<Record<string, string>>;
+
+export type AuthFormFailure = {
+  ok: false;
+  formError?: string;
+  fieldErrors: AuthFieldErrors;
+};
+
+export type AuthFormResult<TInput> =
+  | { ok: true; data: TInput }
+  | AuthFormFailure;
 
 export const authSuccess = <TData>(data: TData): AuthActionResult<TData> => ({
   ok: true,
@@ -13,6 +26,36 @@ export const authFailure = (
   ok: false,
   error,
 });
+
+export const parseAuthFormFields = <TInput>(
+  schema: z.ZodType<TInput>,
+  input: unknown
+): AuthFormResult<TInput> => {
+  const parsed = schema.safeParse(input);
+
+  if (parsed.success) {
+    return { ok: true, data: parsed.data };
+  }
+
+  const fieldErrors: AuthFieldErrors = {};
+
+  for (const issue of parsed.error.issues) {
+    const key = issue.path[0];
+
+    if (typeof key === "string" && !fieldErrors[key]) {
+      fieldErrors[key] = issue.message;
+    }
+  }
+
+  const firstMessage = parsed.error.issues[0]?.message;
+
+  return {
+    ok: false,
+    fieldErrors,
+    formError:
+      Object.keys(fieldErrors).length === 0 ? firstMessage : undefined,
+  };
+};
 
 export const parseAuthForm = <TInput>(
   schema: z.ZodType<TInput>,
@@ -27,22 +70,20 @@ export const parseAuthForm = <TInput>(
   return authSuccess(parsed.data);
 };
 
+type AuthFailureSource = AuthError | { message: string } | null;
+
 export const fromSupabaseError = (
-  error: AuthError | null
+  error: AuthFailureSource
 ): Extract<AuthActionResult<never>, { ok: false }> | null => {
   if (!error) {
     return null;
   }
 
-  return authFailure(error.message);
+  return authFailure(humanizeAuthError(error));
 };
 
 export const mapAuthError = (error: unknown): AuthActionResult<never> => {
-  if (error instanceof Error) {
-    return authFailure(error.message);
-  }
-
-  return authFailure("Unknown error");
+  return authFailure(humanizeUnknownAuthError(error));
 };
 
 export const isAuthSuccess = <TData>(

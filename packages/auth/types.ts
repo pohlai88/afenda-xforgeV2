@@ -52,6 +52,13 @@ export class MissingOrganizationError extends Error {
   }
 }
 
+export class UnauthorizedOrganizationError extends Error {
+  constructor(message = "Organization access denied") {
+    super(message);
+    this.name = "UnauthorizedOrganizationError";
+  }
+}
+
 export class InsufficientRoleError extends Error {
   constructor(message = "Insufficient permissions") {
     super(message);

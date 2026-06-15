@@ -13,9 +13,12 @@ Shared shadcn/ui component library. Apps import primitives — do not fork one-o
 | Export | Use for |
 |--------|---------|
 | `@repo/design-system` | `DesignSystemProvider`, theme provider |
-| `@repo/design-system/components/ui/*` | Button, Input, Sidebar, etc. |
+| `@repo/design-system/components/afenda-ui` | Button, Input, Sidebar, etc. (public primitives) |
+| `@repo/design-system/components/blocks` | Governed ERP/admin block compositions |
 | `@repo/design-system/lib/utils` | `cn()` helper |
 | `@repo/design-system/styles/globals.css` | Design tokens and Tailwind theme |
+
+**Do not import** `@repo/design-system/components/ui/*` outside `packages/design-system` (internal shadcn source). Only `apps/storybook/stories/primitive-readiness.stories.tsx` may import `ui` for the primitive-readiness workshop.
 
 ## Implementation rules
 
@@ -27,13 +30,13 @@ Shared shadcn/ui component library. Apps import primitives — do not fork one-o
 ## App wiring pattern
 
 ```tsx
-import { Button } from '@repo/design-system/components/ui/button'
+import { Button } from '@repo/design-system/components/afenda-ui/button'
 import { cn } from '@repo/design-system/lib/utils'
 
 export function ActionBar({ className }: { className?: string }) {
   return (
     <div className={cn('flex gap-2', className)}>
-      <Button>Save</Button>
+      <Button variant="primary">Save</Button>
     </div>
   )
 }

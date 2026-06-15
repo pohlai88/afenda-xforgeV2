@@ -1,21 +1,104 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import {
+  Alert,
+  AlertDescription,
+  Button,
+  Field,
+  FieldHint,
+  FieldLabel,
+  Input,
+  cn,
+  recipe,
+} from "@repo/design-system/design-system";
+import { useMemo, useState } from "react";
+import { isAuthApiError } from "@supabase/supabase-js";
+import {
+  changePassword,
+  requestPasswordChangeReauthentication,
+  type ChangePasswordVariant,
+} from "../change-password";
 import { fromSupabaseError, isAuthFailure, parseAuthForm } from "../auth-result";
+import { completeAuthNavigation } from "../client-navigation";
 import { createClient } from "../client";
-import { updatePasswordSchema } from "../schemas";
+import { useAuthUiConfig } from "../context/auth-ui-config";
+import { createUpdatePasswordSchema } from "../schemas";
+import { PasswordField } from "./password-field";
+import { PasswordSecurityTips } from "./password-security-tips";
 
-export const UpdatePasswordForm = () => {
+const currentPasswordFieldId = "update-password-current";
+const nonceFieldId = "update-password-nonce";
+const passwordFieldId = "update-password-new";
+const confirmFieldId = "update-password-confirm";
+const formErrorId = "update-password-error";
+
+type UpdatePasswordFormProperties = {
+  /** Recovery (email link) skips current-password and reauth requirements. */
+  variant?: ChangePasswordVariant;
+  onSuccess?: () => void;
+  redirectTo?: string;
+};
+
+export const UpdatePasswordForm = ({
+  variant = "recovery",
+  onSuccess,
+  redirectTo = "/",
+}: UpdatePasswordFormProperties) => {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [nonce, setNonce] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [reauthLoading, setReauthLoading] = useState(false);
+  const [reauthSent, setReauthSent] = useState(false);
+  const [needsReauth, setNeedsReauth] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   const supabase = createClient();
+  const { settings, passwordPolicy } = useAuthUiConfig();
+
+  const isAccountChange = variant === "account";
+  const requireCurrentPassword =
+    isAccountChange && settings.security.requireCurrentPasswordOnChange;
+  const requireReauthentication =
+    isAccountChange && settings.security.requireReauthenticationOnChange;
+  const showReauthField = requireReauthentication && (needsReauth || reauthSent);
+
+  const updatePasswordSchema = useMemo(
+    () =>
+      createUpdatePasswordSchema(passwordPolicy, {
+        requireCurrentPassword,
+        requireReauthenticationNonce:
+          requireReauthentication && (needsReauth || reauthSent),
+      }),
+    [
+      passwordPolicy,
+      requireCurrentPassword,
+      requireReauthentication,
+      needsReauth,
+      reauthSent,
+    ]
+  );
+
+  const handleRequestReauth = async () => {
+    setReauthLoading(true);
+    setError(null);
+
+    const { error: reauthError } =
+      await requestPasswordChangeReauthentication(supabase);
+
+    const failure = fromSupabaseError(reauthError);
+
+    if (failure) {
+      setError(failure.error);
+      setReauthLoading(false);
+      return;
+    }
+
+    setReauthSent(true);
+    setNeedsReauth(true);
+    setReauthLoading(false);
+    document.getElementById(nonceFieldId)?.focus();
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -23,6 +106,8 @@ export const UpdatePasswordForm = () => {
     setError(null);
 
     const validated = parseAuthForm(updatePasswordSchema, {
+      currentPassword,
+      nonce,
       password,
       confirmPassword,
     });
@@ -33,53 +118,136 @@ export const UpdatePasswordForm = () => {
       return;
     }
 
-    const { error: updateError } = await supabase.auth.updateUser({
-      password: validated.data.password,
-    });
+    const { error: updateError } = await changePassword(
+      supabase,
+      {
+        password: validated.data.password,
+        currentPassword: validated.data.currentPassword,
+        nonce: validated.data.nonce,
+      },
+      {
+        requireCurrentPassword,
+        requireReauthentication,
+      },
+      variant
+    );
 
     const failure = fromSupabaseError(updateError);
 
     if (failure) {
+      if (
+        requireReauthentication &&
+        updateError &&
+        isAuthApiError(updateError) &&
+        updateError.code === "reauthentication_needed"
+      ) {
+        setNeedsReauth(true);
+      }
+
       setError(failure.error);
       setLoading(false);
       return;
     }
 
-    router.push("/");
-    router.refresh();
+    if (onSuccess) {
+      onSuccess();
+      setLoading(false);
+      return;
+    }
+
+    completeAuthNavigation(redirectTo);
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
+    <form
+      className={cn("flex flex-col", recipe("sectionGap"))}
+      noValidate
+      onSubmit={handleSubmit}
+    >
       {error ? (
-        <div className="rounded-md bg-destructive/10 p-3 text-destructive text-sm">
-          {error}
-        </div>
+        <Alert id={formErrorId} tone="critical">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       ) : null}
-      <div className="space-y-2">
-        <Label htmlFor="password">New password</Label>
-        <Input
-          id="password"
-          minLength={6}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-          type="password"
+      {requireCurrentPassword ? (
+        <Field>
+          <PasswordField
+            autoComplete="current-password"
+            describedBy={error ? formErrorId : undefined}
+            id={currentPasswordFieldId}
+            invalid={Boolean(error)}
+            label="Current password"
+            name="currentPassword"
+            onChange={setCurrentPassword}
+            value={currentPassword}
+          />
+        </Field>
+      ) : null}
+      {showReauthField ? (
+        <Field>
+          <FieldLabel htmlFor={nonceFieldId}>Confirmation code</FieldLabel>
+          <Input
+            autoComplete="one-time-code"
+            id={nonceFieldId}
+            inputMode="numeric"
+            name="nonce"
+            onChange={(event) => setNonce(event.target.value)}
+            placeholder="Code from your email"
+            value={nonce}
+          />
+          <FieldHint>
+            {reauthSent
+              ? "Enter the code we sent to your email to confirm this change."
+              : "Confirm your identity before changing your password."}
+          </FieldHint>
+        </Field>
+      ) : null}
+      {requireReauthentication && needsReauth && !reauthSent ? (
+        <Button
+          className="w-full"
+          disabled={reauthLoading}
+          onClick={() => void handleRequestReauth()}
+          type="button"
+          variant="secondary"
+        >
+          {reauthLoading ? "Sending…" : "Send confirmation code"}
+        </Button>
+      ) : null}
+      <Field>
+        <PasswordField
+          autoComplete="new-password"
+          describedBy={error ? formErrorId : undefined}
+          id={passwordFieldId}
+          invalid={Boolean(error)}
+          label="New password"
+          name="password"
+          onChange={setPassword}
+          policy={passwordPolicy}
+          showRequirements
           value={password}
         />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="confirm-password">Confirm password</Label>
-        <Input
-          id="confirm-password"
-          minLength={6}
-          onChange={(event) => setConfirmPassword(event.target.value)}
-          required
-          type="password"
+      </Field>
+      <Field>
+        <PasswordField
+          autoComplete="new-password"
+          describedBy={error ? formErrorId : undefined}
+          id={confirmFieldId}
+          invalid={Boolean(error)}
+          label="Confirm password"
+          name="confirmPassword"
+          onChange={setConfirmPassword}
+          policy={passwordPolicy}
           value={confirmPassword}
         />
-      </div>
-      <Button className="w-full" disabled={loading} type="submit">
-        {loading ? "Updating..." : "Update password"}
+      </Field>
+      <PasswordSecurityTips />
+      <Button
+        className="w-full"
+        disabled={loading}
+        type="submit"
+        variant="primary"
+      >
+        {loading ? "Updating…" : "Update password"}
       </Button>
     </form>
   );

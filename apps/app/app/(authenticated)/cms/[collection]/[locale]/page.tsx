@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { fetchDocumentListItems } from "@repo/cms/document-list";
 import { parseCmsRouteLocale } from "@repo/cms/locale";
 import { isCmsCollection } from "@repo/cms/writer";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import { DocumentList } from "../../components/document-list";
 import { DocumentSearch } from "../../components/document-search";
 import { LocaleNav } from "../../components/locale-nav";

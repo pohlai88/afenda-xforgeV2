@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS "next_forge"."pages" (
 );
 
 GRANT USAGE ON SCHEMA next_forge TO authenticated, anon, service_role;
+-- Table grants: explicit per migration (0020 revokes this blanket default).
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA next_forge TO authenticated, service_role;
 GRANT SELECT ON ALL TABLES IN SCHEMA next_forge TO anon;
 

@@ -1,6 +1,8 @@
 import { resolveSafeRedirect } from "@repo/api";
+import { authRedirect } from "@repo/auth/auth-cache";
 import { createClient } from "@repo/auth/server";
-import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 
 export const GET = async (request: Request) => {
   const { searchParams, origin } = new URL(request.url);
@@ -12,9 +14,9 @@ export const GET = async (request: Request) => {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+      return authRedirect(`${origin}${next}`);
     }
   }
 
-  return NextResponse.redirect(`${origin}/sign-in`);
+  return authRedirect(`${origin}/sign-in`);
 };

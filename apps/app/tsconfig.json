@@ -2,6 +2,7 @@
   "extends": "@repo/typescript-config/nextjs.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "paths": {
       "@/*": ["./*"],
       "@repo/*": ["../../packages/*"]
@@ -13,5 +14,13 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "test",
+    "test-support",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.integration.test.ts"
   ]
 }

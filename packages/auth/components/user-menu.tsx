@@ -1,5 +1,15 @@
 "use client";
 
+import {
+  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  cn,
+  recipe,
+} from "@repo/design-system/design-system";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { createClient } from "../client";
@@ -22,17 +32,17 @@ export const OrganizationSwitcher = ({
   onSwitch,
 }: OrganizationSwitcherProperties) => {
   const [isPending, startTransition] = useTransition();
-  const activeOrganization = organizations.find(
-    (organization) => organization.id === activeOrganizationId
-  );
+
+  if (organizations.length === 0) {
+    return (
+      <p className={recipe("captionText")}>No organizations</p>
+    );
+  }
 
   return (
-    <select
-      className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm disabled:opacity-50"
+    <Select
       disabled={isPending}
-      onChange={(event) => {
-        const organizationId = event.target.value;
-
+      onValueChange={(organizationId) => {
         if (!organizationId || organizationId === activeOrganizationId) {
           return;
         }
@@ -41,22 +51,19 @@ export const OrganizationSwitcher = ({
           await onSwitch(organizationId);
         });
       }}
-      value={activeOrganizationId ?? ""}
+      value={activeOrganizationId ?? undefined}
     >
-      {organizations.length === 0 ? (
-        <option value="">No organizations</option>
-      ) : null}
-      {organizations.map((organization) => (
-        <option key={organization.id} value={organization.id}>
-          {organization.name}
-        </option>
-      ))}
-      {activeOrganization ? null : organizations.length > 0 ? (
-        <option disabled value="">
-          Select organization
-        </option>
-      ) : null}
-    </select>
+      <SelectTrigger className="w-full">
+        <SelectValue placeholder="Select organization" />
+      </SelectTrigger>
+      <SelectContent>
+        {organizations.map((organization) => (
+          <SelectItem key={organization.id} value={organization.id}>
+            {organization.name}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 };
 
@@ -77,22 +84,25 @@ export const UserButton = ({ email, name }: UserButtonProperties) => {
     router.refresh();
   };
 
+  const displayName = name ?? email ?? "User";
+
   return (
-    <div className="flex min-w-0 flex-1 flex-col gap-1">
-      <span className="truncate font-medium text-sm">
-        {name ?? email ?? "User"}
+    <div className={cn("flex min-w-0 flex-1 flex-col", recipe("fieldGap"))}>
+      <span className={cn("truncate", recipe("bodyMediumText"))}>
+        {displayName}
       </span>
       {name && email ? (
-        <span className="truncate text-muted-foreground text-xs">{email}</span>
+        <span className={cn("truncate", recipe("captionText"))}>{email}</span>
       ) : null}
-      <button
-        className="text-left text-muted-foreground text-xs hover:text-foreground disabled:opacity-50"
+      <Button
+        className="h-auto w-fit justify-start p-0"
         disabled={loading}
         onClick={handleSignOut}
         type="button"
+        variant="link"
       >
-        {loading ? "Signing out..." : "Sign out"}
-      </button>
+        {loading ? "Signing out…" : "Sign out"}
+      </Button>
     </div>
   );
 };
@@ -110,10 +120,11 @@ export const useAuthUser = () => {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      const user = session?.user;
-      setEmail(user?.email ?? null);
-      setName(getUserDisplayName(user?.user_metadata ?? undefined));
+    } = supabase.auth.onAuthStateChange(() => {
+      void supabase.auth.getUser().then(({ data: { user } }) => {
+        setEmail(user?.email ?? null);
+        setName(getUserDisplayName(user?.user_metadata ?? undefined));
+      });
     });
 
     return () => subscription.unsubscribe();

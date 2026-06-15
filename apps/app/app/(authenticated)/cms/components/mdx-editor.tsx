@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Skeleton } from "@repo/design-system/components/ui/skeleton";
+import { Skeleton } from "@repo/design-system/components/afenda-ui/skeleton";
 
 type MdxEditorProperties = {
   value: string;

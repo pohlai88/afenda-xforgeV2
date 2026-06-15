@@ -53,7 +53,7 @@ const composedMiddleware = createNEMO(
   }
 );
 
-// Clerk middleware wraps other middleware in its callback
+// Supabase auth middleware wraps other middleware in its callback
 export default authMiddleware(async (request, event) => {
   // Run security headers first
   const headersResponse = securityHeaders();

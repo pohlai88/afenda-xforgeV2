@@ -1,9 +1,8 @@
-"use client"
+"use client";
 
-import { AspectRatio as AspectRatioPrimitive } from "radix-ui"
-
-import { cn } from "@repo/design-system/lib/utils"
-import { recipe } from "./recipes"
+import { cn } from "@repo/design-system/lib/utils";
+import { AspectRatio as AspectRatioPrimitive } from "radix-ui";
+import { recipe } from "./recipes";
 
 function AspectRatio({
   className,
@@ -11,11 +10,15 @@ function AspectRatio({
 }: React.ComponentProps<typeof AspectRatioPrimitive.Root>) {
   return (
     <AspectRatioPrimitive.Root
+      className={cn(
+        "overflow-hidden rounded-[inherit]",
+        recipe("motionReduce"),
+        className
+      )}
       data-slot="aspect-ratio"
-      className={cn("overflow-hidden rounded-[inherit]", recipe("motionReduce"), className)}
       {...props}
     />
-  )
+  );
 }
 
-export { AspectRatio }
+export { AspectRatio };

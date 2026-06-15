@@ -42,13 +42,18 @@ const contractRows = [
   ["Northwind Trading", "Jordan Lee", "Pending", "4h"],
   ["Contoso Retail", "Maya Chen", "Approved", "1d"],
   ["Fabrikam Health", "Omar Ali", "Review", "2h"],
-] as const;
+] as const satisfies readonly (readonly [
+  tenant: string,
+  owner: string,
+  status: "Approved" | "Pending" | "Review",
+  sla: string,
+])[];
 
 const statsMetrics = [
   ["Open approvals", "18"],
   ["SLA risk", "4"],
   ["Audit events", "236"],
-] as const;
+] as const satisfies readonly (readonly [label: string, value: string])[];
 
 export const DataTableShellContract: Story = {
   render: () => (

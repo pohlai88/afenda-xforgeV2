@@ -6,8 +6,8 @@ import {
   type WebhookDeliveryStatus,
   type WebhookEndpointPublic,
 } from "@repo/webhooks";
-import { Badge } from "@repo/design-system/components/ui/badge";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Badge } from "@repo/design-system/components/afenda-ui/badge";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
   Table,
   TableBody,
@@ -15,7 +15,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/ui/table";
+} from "@repo/design-system/components/afenda-ui/table";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { replayDelivery } from "@/app/actions/webhooks/endpoints";
@@ -36,16 +36,19 @@ type DeliveriesTableProperties = {
 
 const statusVariant = (
   status: WebhookDeliveryStatus
-): "default" | "secondary" | "destructive" | "outline" => {
+): {
+  tone: "neutral" | "positive" | "warning" | "critical";
+  variant: "soft" | "outline";
+} => {
   switch (status) {
     case "delivered":
-      return "default";
+      return { tone: "positive", variant: "soft" };
     case "failed":
-      return "destructive";
+      return { tone: "critical", variant: "soft" };
     case "retrying":
-      return "outline";
+      return { tone: "warning", variant: "outline" };
     default:
-      return "secondary";
+      return { tone: "neutral", variant: "soft" };
   }
 };
 
@@ -176,7 +179,7 @@ export const DeliveriesTable = ({
                   {delivery.endpointUrl}
                 </TableCell>
                 <TableCell>
-                  <Badge variant={statusVariant(delivery.status)}>
+                  <Badge {...statusVariant(delivery.status)}>
                     {delivery.status}
                   </Badge>
                   {delivery.lastError ? (
@@ -202,7 +205,7 @@ export const DeliveriesTable = ({
                         onClick={() => handleReplay(delivery.id)}
                         size="sm"
                         type="button"
-                        variant="outline"
+                        variant="secondary"
                       >
                         Replay
                       </Button>
@@ -220,7 +223,7 @@ export const DeliveriesTable = ({
             disabled={isLoadingMore || isPending}
             onClick={onLoadMore}
             type="button"
-            variant="outline"
+            variant="secondary"
           >
             {isLoadingMore ? "Loading…" : "Load more"}
           </Button>

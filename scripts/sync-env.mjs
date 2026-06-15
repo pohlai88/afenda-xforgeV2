@@ -373,6 +373,19 @@ if (command === "sync") {
   console.log(`secret keys: ${secret.entries.size}`);
   console.log(`merged keys: ${merged.size}`);
   console.log(`env examples: ${collectEnvExamplePaths(root).length}`);
+  const hasAccessToken = Boolean(secret.entries.get("SUPABASE_ACCESS_TOKEN"));
+  const hasProjectRef = Boolean(merged.get("SUPABASE_PROJECT_ID"));
+  console.log(`supabase project ref: ${hasProjectRef ? "ok" : "missing"}`);
+  console.log(
+    `supabase access token: ${hasAccessToken ? "ok (.env.secret)" : "missing — add SUPABASE_ACCESS_TOKEN for full auth config (pnpm supabase:auth-config)"}`
+  );
+  console.log(
+    `supabase smtp password: ${
+      secret.entries.get("SUPABASE_SMTP_PASSWORD")
+        ? "ok (.env.secret)"
+        : "missing — add SUPABASE_SMTP_PASSWORD for pnpm supabase:apply-smtp-config"
+    }`
+  );
 } else {
   fail("Usage: pnpm env:sync | pnpm env:consolidate | pnpm env:doctor");
 }

@@ -1,14 +1,14 @@
 "use client";
 
 import { createBrowserClient } from "@supabase/ssr";
-
-const getSupabaseUrl = () => process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-
-const getSupabaseAnonKey = () =>
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
-  process.env.SUPABASE_ANON_PUBLIC ??
-  "";
+import { getSupabasePublishableKey, getSupabaseUrl } from "./keys";
 
 export const createClient = () =>
-  createBrowserClient(getSupabaseUrl(), getSupabaseAnonKey());
+  createBrowserClient(getSupabaseUrl(), getSupabasePublishableKey(), {
+    auth: {
+      flowType: "pkce",
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      experimental: { passkey: true },
+    },
+  });

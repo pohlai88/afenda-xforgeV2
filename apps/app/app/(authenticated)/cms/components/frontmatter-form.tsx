@@ -3,17 +3,17 @@
 import { getCollectionFrontmatterFields } from "@repo/cms/collections";
 import type { ContentStatus } from "@repo/cms/schemas";
 import type { CmsCollectionName } from "@repo/cms/writer";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
+import { Label } from "@repo/design-system/components/afenda-ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/design-system/components/ui/select";
-import { Textarea } from "@repo/design-system/components/ui/textarea";
+} from "@repo/design-system/components/afenda-ui/select";
+import { Textarea } from "@repo/design-system/components/afenda-ui/textarea";
 import { uploadCmsAsset } from "@/app/actions/cms/media";
 import { useRef, useTransition } from "react";
 
@@ -155,7 +155,7 @@ export const FrontmatterForm = ({
                 onClick={() => fileInputRef.current?.click()}
                 size="sm"
                 type="button"
-                variant="outline"
+                variant="secondary"
               >
                 {isUploading ? "Uploading…" : "Upload image"}
               </Button>

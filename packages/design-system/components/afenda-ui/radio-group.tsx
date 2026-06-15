@@ -1,11 +1,10 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { CircleIcon } from "lucide-react"
-import { RadioGroup as RadioGroupPrimitive } from "radix-ui"
-
-import { cn } from "@repo/design-system/lib/utils"
-import { recipe } from "./recipes"
+import { cn } from "@repo/design-system/lib/utils";
+import { CircleIcon } from "lucide-react";
+import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
+import type * as React from "react";
+import { recipe } from "./recipes";
 
 function RadioGroup({
   className,
@@ -13,11 +12,11 @@ function RadioGroup({
 }: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
   return (
     <RadioGroupPrimitive.Root
-      data-slot="radio-group"
       className={cn("grid gap-2", className)}
+      data-slot="radio-group"
       {...props}
     />
-  )
+  );
 }
 
 function RadioGroupItem({
@@ -26,22 +25,22 @@ function RadioGroupItem({
 }: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
   return (
     <RadioGroupPrimitive.Item
-      data-slot="radio-group-item"
       className={cn(
-        "aspect-square size-4 shrink-0 rounded-full border border-border-default bg-surface-raised text-brand-primary outline-none data-[state=checked]:border-brand-primary disabled:cursor-not-allowed disabled:opacity-50",
+        "aspect-square size-4 shrink-0 rounded-full border border-border-default bg-surface-raised text-brand-primary outline-none disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:border-brand-primary",
         recipe("colorTransition", "focusRing", "invalidState", "motionReduce"),
         className
       )}
+      data-slot="radio-group-item"
       {...props}
     >
       <RadioGroupPrimitive.Indicator
-        data-slot="radio-group-indicator"
         className="relative flex size-full items-center justify-center"
+        data-slot="radio-group-indicator"
       >
         <CircleIcon className="size-2 fill-current text-current" />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
-  )
+  );
 }
 
 function RadioGroupOption({
@@ -49,16 +48,17 @@ function RadioGroupOption({
   ...props
 }: React.ComponentProps<"label">) {
   return (
+    // biome-ignore lint/a11y/noLabelWithoutControl: consumers compose RadioGroupItem inside this label option wrapper.
     <label
-      data-slot="radio-group-option"
       className={cn(
-        "group flex cursor-pointer items-start gap-2.5 rounded-[var(--button-radius)] border border-border-default bg-surface-raised px-3 py-2.5 hover:bg-surface-hover has-[[data-slot=radio-group-item][data-state=checked]]:border-brand-primary/60 has-[[data-slot=radio-group-item][data-state=checked]]:bg-brand-primary/5 has-[[data-slot=radio-group-item]:disabled]:cursor-not-allowed has-[[data-slot=radio-group-item]:disabled]:opacity-50",
+        "group flex cursor-pointer items-start gap-2.5 rounded-[var(--button-radius)] border border-border-default bg-surface-raised px-3 py-2.5 hover:bg-surface-hover has-[[data-slot=radio-group-item]:disabled]:cursor-not-allowed has-[[data-slot=radio-group-item][data-state=checked]]:border-brand-primary/60 has-[[data-slot=radio-group-item][data-state=checked]]:bg-brand-primary/5 has-[[data-slot=radio-group-item]:disabled]:opacity-50",
         recipe("colorTransition", "motionReduce"),
         className
       )}
+      data-slot="radio-group-option"
       {...props}
     />
-  )
+  );
 }
 
 function RadioGroupLabel({
@@ -67,11 +67,11 @@ function RadioGroupLabel({
 }: React.ComponentProps<"span">) {
   return (
     <span
-      data-slot="radio-group-label"
       className={cn("block", recipe("bodyMediumText"), className)}
+      data-slot="radio-group-label"
       {...props}
     />
-  )
+  );
 }
 
 function RadioGroupDescription({
@@ -80,11 +80,11 @@ function RadioGroupDescription({
 }: React.ComponentProps<"span">) {
   return (
     <span
-      data-slot="radio-group-description"
       className={cn("mt-0.5 block", recipe("captionText"), className)}
+      data-slot="radio-group-description"
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -93,4 +93,4 @@ export {
   RadioGroupItem,
   RadioGroupLabel,
   RadioGroupOption,
-}
+};

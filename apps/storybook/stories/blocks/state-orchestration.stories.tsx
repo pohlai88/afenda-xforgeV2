@@ -9,7 +9,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { layoutStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
-  title: "Blocks/State Orchestration",
+  title: "Blocks/Quality Gates/State Orchestration",
   tags: ["autodocs", "block"],
   parameters: {
     ...layoutStoryParameters,

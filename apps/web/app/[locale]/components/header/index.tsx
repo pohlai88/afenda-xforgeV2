@@ -1,7 +1,7 @@
 "use client";
 
 import { ModeToggle } from "@repo/design-system/components/mode-toggle";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -9,7 +9,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@repo/design-system/components/ui/navigation-menu";
+} from "@repo/design-system/components/afenda-ui/navigation-menu";
 import type { Dictionary } from "@repo/internationalization";
 import { Menu, MoveRight, X } from "lucide-react";
 import Link from "next/link";
@@ -64,7 +64,7 @@ export const Header = ({ dictionary }: HeaderProps) => {
                 <NavigationMenuItem key={item.title}>
                   {item.href ? (
                     <NavigationMenuLink asChild>
-                      <Button asChild variant="ghost">
+                      <Button asChild variant="quiet">
                         <Link href={item.href}>{item.title}</Link>
                       </Button>
                     </NavigationMenuLink>
@@ -126,7 +126,7 @@ export const Header = ({ dictionary }: HeaderProps) => {
           <p className="whitespace-nowrap font-semibold">next-forge</p>
         </div>
         <div className="flex w-full justify-end gap-4">
-          <Button asChild className="hidden md:inline" variant="ghost">
+          <Button asChild className="hidden md:inline" variant="quiet">
             <Link href="/contact">{dictionary.web.header.contact}</Link>
           </Button>
           <div className="hidden border-r md:inline" />
@@ -136,7 +136,7 @@ export const Header = ({ dictionary }: HeaderProps) => {
           <div className="hidden md:inline">
             <ModeToggle />
           </div>
-          <Button asChild className="hidden md:inline" variant="outline">
+          <Button asChild className="hidden md:inline" variant="secondary">
             <Link href={`${env.NEXT_PUBLIC_APP_URL}/sign-in`}>
               {dictionary.web.header.signIn}
             </Link>
@@ -148,7 +148,7 @@ export const Header = ({ dictionary }: HeaderProps) => {
           </Button>
         </div>
         <div className="flex w-12 shrink items-end justify-end lg:hidden">
-          <Button onClick={() => setOpen(!isOpen)} variant="ghost">
+          <Button onClick={() => setOpen(!isOpen)} variant="quiet">
             {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
           {isOpen && (

@@ -7,8 +7,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/design-system/components/ui/card";
-import { Badge } from "@repo/design-system/components/ui/badge";
+} from "@repo/design-system/components/afenda-ui/card";
+import { Badge } from "@repo/design-system/components/afenda-ui/badge";
 
 const CmsDashboardPage = async () => {
   const result = await getCollectionSummaries();
@@ -41,7 +41,7 @@ const CmsDashboardPage = async () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="flex items-center gap-3">
-              <Badge variant="secondary">{collection.total} documents</Badge>
+              <Badge variant="soft">{collection.total} documents</Badge>
               {collection.drafts > 0 ? (
                 <Badge variant="outline">{collection.drafts} drafts</Badge>
               ) : null}

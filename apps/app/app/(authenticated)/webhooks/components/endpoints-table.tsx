@@ -1,8 +1,8 @@
 "use client";
 
 import type { WebhookEndpointPublic } from "@repo/webhooks";
-import { Badge } from "@repo/design-system/components/ui/badge";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Badge } from "@repo/design-system/components/afenda-ui/badge";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
   Table,
   TableBody,
@@ -10,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/ui/table";
+} from "@repo/design-system/components/afenda-ui/table";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import {
@@ -28,16 +28,19 @@ type EndpointsTableProperties = {
 
 const healthVariant = (
   status: WebhookEndpointPublic["lastDeliveryStatus"]
-): "default" | "secondary" | "destructive" | "outline" => {
+): {
+  tone: "neutral" | "positive" | "warning" | "critical";
+  variant: "soft" | "outline";
+} => {
   switch (status) {
     case "delivered":
-      return "default";
+      return { tone: "positive", variant: "soft" };
     case "failed":
-      return "destructive";
+      return { tone: "critical", variant: "soft" };
     case "retrying":
-      return "outline";
+      return { tone: "warning", variant: "outline" };
     default:
-      return "secondary";
+      return { tone: "neutral", variant: "soft" };
   }
 };
 
@@ -176,9 +179,14 @@ export const EndpointsTable = ({
               <TableCell>
                 <div className="flex flex-col gap-1">
                   {endpoint.isAutoDisabled ? (
-                    <Badge variant="destructive">Auto-disabled</Badge>
+                    <Badge tone="critical" variant="soft">
+                      Auto-disabled
+                    </Badge>
                   ) : null}
-                  <Badge variant={endpoint.enabled ? "default" : "secondary"}>
+                  <Badge
+                    tone={endpoint.enabled ? "positive" : "neutral"}
+                    variant="soft"
+                  >
                     {endpoint.enabled ? "Enabled" : "Disabled"}
                   </Badge>
                 </div>
@@ -186,7 +194,7 @@ export const EndpointsTable = ({
               <TableCell>
                 {endpoint.lastDeliveryStatus ? (
                   <div className="flex flex-col gap-1">
-                    <Badge variant={healthVariant(endpoint.lastDeliveryStatus)}>
+                    <Badge {...healthVariant(endpoint.lastDeliveryStatus)}>
                       {endpoint.lastDeliveryStatus}
                     </Badge>
                     {endpoint.lastDeliveryError ? (
@@ -206,7 +214,7 @@ export const EndpointsTable = ({
                     onClick={() => handleTest(endpoint.id)}
                     size="sm"
                     type="button"
-                    variant="outline"
+                    variant="secondary"
                   >
                     Test
                   </Button>
@@ -215,7 +223,7 @@ export const EndpointsTable = ({
                     onClick={() => handleRotate(endpoint.id)}
                     size="sm"
                     type="button"
-                    variant="outline"
+                    variant="secondary"
                   >
                     Rotate secret
                   </Button>
@@ -224,7 +232,7 @@ export const EndpointsTable = ({
                     onClick={() => handleToggle(endpoint)}
                     size="sm"
                     type="button"
-                    variant="outline"
+                    variant="secondary"
                   >
                     {endpoint.enabled ? "Disable" : "Enable"}
                   </Button>
@@ -236,7 +244,7 @@ export const EndpointsTable = ({
                       }
                       size="sm"
                       type="button"
-                      variant="outline"
+                      variant="secondary"
                     >
                       Re-enable
                     </Button>

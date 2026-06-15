@@ -3,8 +3,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@repo/design-system/components/ui/accordion";
-import { Button } from "@repo/design-system/components/ui/button";
+} from "@repo/design-system/components/afenda-ui/accordion";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import type { Dictionary } from "@repo/internationalization";
 import { PhoneCall } from "lucide-react";
 import Link from "next/link";
@@ -28,7 +28,7 @@ export const FAQ = ({ dictionary }: FAQProps) => (
               </p>
             </div>
             <div className="">
-              <Button asChild className="gap-4" variant="outline">
+              <Button asChild className="gap-4" variant="secondary">
                 <Link href="/contact">
                   {dictionary.web.home.faq.cta}{" "}
                   <PhoneCall className="h-4 w-4" />

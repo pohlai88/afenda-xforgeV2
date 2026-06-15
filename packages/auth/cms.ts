@@ -7,9 +7,7 @@ import { requireOrg } from "./server";
 import type { AuthenticatedContext } from "./types";
 import { InsufficientRoleError } from "./types";
 
-export const ORGANIZATION_ROLES = ["owner", "editor", "member"] as const;
-
-export type OrganizationRole = (typeof ORGANIZATION_ROLES)[number];
+import { ORGANIZATION_ROLES, type OrganizationRole } from "./organization-roles";
 
 export const CMS_EDITOR_ROLES = ["owner", "editor"] as const;
 

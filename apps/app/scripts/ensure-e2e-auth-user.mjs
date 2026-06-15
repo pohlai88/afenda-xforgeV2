@@ -1,21 +1,21 @@
-import fs from "node:fs";
-import path from "node:path";
 import { fileURLToPath } from "node:url";
+import path from "node:path";
+import { loadE2eEnv } from "../e2e/helpers/load-env.mjs";
 
 const appDir = path.dirname(fileURLToPath(import.meta.url));
-const envText = fs.readFileSync(path.join(appDir, "../.env.local"), "utf8");
-const env = Object.fromEntries(
-  envText
-    .split(/\r?\n/)
-    .map((line) => line.match(/^\s*([A-Z0-9_]+)=(.*)$/))
-    .filter(Boolean)
-    .map(([, key, raw]) => [key, raw.trim().replace(/^["']|["']$/g, "")])
-);
 
-const url = env.NEXT_PUBLIC_SUPABASE_URL;
-const key = env.SUPABASE_SERVICE_ROLE_KEY;
+loadE2eEnv();
+
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const key =
+  process.env.SUPABASE_SECRET_KEY ??
+  process.env.SUPABASE_SERVICE_ROLE_KEY ??
+  "";
 const email = "e2e-playwright@xforge.local";
-const password = env.E2E_ORG_ADMIN_PASSWORD ?? "123qweasdzxc!@#";
+const password =
+  process.env.E2E_AUTH_PASSWORD ??
+  process.env.E2E_ORG_ADMIN_PASSWORD ??
+  "123qweasdzxc!@#";
 
 if (!url || !key) {
   console.error("Missing Supabase env");

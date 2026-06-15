@@ -3,6 +3,7 @@
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "declaration": false,
     "declarationMap": false,
     "module": "ESNext",
@@ -18,5 +19,15 @@
     ".storybook/**/*.ts",
     ".storybook/**/*.tsx"
   ],
-  "exclude": ["node_modules", "storybook-static", "coverage"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test",
+    "test-support",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.integration.test.ts",
+    "storybook-static",
+    "coverage"
+  ]
 }

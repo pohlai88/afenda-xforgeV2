@@ -1,9 +1,9 @@
 "use client";
 
 import { CMS_WEBHOOK_EVENTS, type CmsWebhookEventType } from "@repo/webhooks";
-import { Button } from "@repo/design-system/components/ui/button";
-import { Input } from "@repo/design-system/components/ui/input";
-import { Label } from "@repo/design-system/components/ui/label";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
+import { Label } from "@repo/design-system/components/afenda-ui/label";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { createEndpoint } from "@/app/actions/webhooks/endpoints";

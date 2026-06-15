@@ -9,6 +9,7 @@ import {
   AuditTrailPanel,
   BatchPostingReview,
   BulkActionBar,
+  blockRegistryEntries,
   CommandSearchBlock,
   createMetadataDiagnosticsCollector,
   createMetadataDiagnosticsDispatcher,
@@ -22,6 +23,7 @@ import {
   PermissionActionToolbar,
   PolicyLockManager,
   metadataBlockSchema as publicMetadataBlockSchema,
+  metadataBlockSchemas as publicMetadataBlockSchemas,
   metadataPageSchema as publicMetadataPageSchema,
   resolveMetadataBinding as publicResolveMetadataBinding,
   QualityGatesBlock,
@@ -34,8 +36,11 @@ import {
   TenantOperationsWorkspace,
 } from "../components/blocks";
 import {
+  approvalControlCenterDataSources,
   approvalControlCenterMetadata,
+  auditEvidenceReviewDataSources,
   auditEvidenceReviewMetadata,
+  tenantConfigurationDataSources,
   tenantConfigurationMetadata,
 } from "../components/blocks/fixtures";
 import {
@@ -46,9 +51,10 @@ import {
 } from "../components/blocks/metadata-renderer-core";
 import {
   type MetadataBlock,
+  type MetadataPage,
   metadataBlockSchema,
   metadataPageSchema,
-} from "../components/blocks/schema";
+} from "../components/blocks/metadata-schema";
 
 describe("metadata renderer contract", () => {
   it("resolves raw object sources as ready data", () => {
@@ -427,6 +433,46 @@ describe("metadata renderer contract", () => {
   it("keeps documented stable block API exports available", () => {
     for (const [exportName, exportValue] of documentedStableValueExports) {
       expect(exportValue, exportName).toBeDefined();
+    }
+  });
+
+  it("keeps supported metadata block types aligned across schema and registry", () => {
+    expect(blockRegistryEntries.map((entry) => entry.type)).toEqual([
+      ...supportedBlockTypes,
+    ]);
+    expect(Object.keys(publicMetadataBlockSchemas).sort()).toEqual(
+      [...supportedBlockTypes].sort()
+    );
+
+    for (const entry of blockRegistryEntries) {
+      expect(entry.importName, entry.type).toBeTruthy();
+      expect(entry.dataSlot, entry.type).toMatch(blockDataSlotPattern);
+      expect(entry.description, entry.type).toBeTruthy();
+    }
+  });
+
+  it("keeps stable metadata fixtures renderable with diagnostics and data sources", () => {
+    for (const fixture of stableMetadataFixtureCases) {
+      const diagnostics = createMetadataDiagnosticsCollector();
+      const markup = renderToStaticMarkup(
+        <MetadataPageRenderer
+          dataSources={fixture.dataSources}
+          diagnostics={diagnostics}
+          page={fixture.page}
+        />
+      );
+
+      expect(markup).toContain('data-slot="metadata-page-renderer-block"');
+      expect(markup).toContain(`data-page-id="${fixture.page.pageId}"`);
+      expect(markup).not.toContain("Invalid page metadata");
+      expect(diagnostics.report.diagnostics).not.toContainEqual(
+        expect.objectContaining({ code: "page.invalid" })
+      );
+      expect(diagnostics.report.telemetry).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ name: "metadata.block.rendered" }),
+        ])
+      );
     }
   });
 
@@ -1344,6 +1390,23 @@ const stableMetadataFixtures = [
   approvalControlCenterMetadata,
   auditEvidenceReviewMetadata,
   tenantConfigurationMetadata,
+] as const satisfies readonly MetadataPage[];
+
+const blockDataSlotPattern = /-block$/;
+
+const stableMetadataFixtureCases = [
+  {
+    dataSources: approvalControlCenterDataSources,
+    page: approvalControlCenterMetadata,
+  },
+  {
+    dataSources: auditEvidenceReviewDataSources,
+    page: auditEvidenceReviewMetadata,
+  },
+  {
+    dataSources: tenantConfigurationDataSources,
+    page: tenantConfigurationMetadata,
+  },
 ] as const;
 
 const documentedStableValueExports = [
@@ -1354,6 +1417,7 @@ const documentedStableValueExports = [
   ["AuditSafeDestructiveAction", AuditSafeDestructiveAction],
   ["AuditTrailPanel", AuditTrailPanel],
   ["BatchPostingReview", BatchPostingReview],
+  ["blockRegistryEntries", blockRegistryEntries],
   ["BulkActionBar", BulkActionBar],
   ["CommandSearchBlock", CommandSearchBlock],
   ["DataTableShell", DataTableShell],
@@ -1375,10 +1439,11 @@ const documentedStableValueExports = [
   ["createMetadataDiagnosticsCollector", createMetadataDiagnosticsCollector],
   ["createMetadataDiagnosticsDispatcher", createMetadataDiagnosticsDispatcher],
   ["metadataBlockSchema", publicMetadataBlockSchema],
+  ["metadataBlockSchemas", publicMetadataBlockSchemas],
   ["metadataPageSchema", publicMetadataPageSchema],
   ["resolveMetadataBinding", publicResolveMetadataBinding],
   ["supportedBlockTypes", supportedBlockTypes],
-] as const;
+] as const satisfies readonly (readonly [string, unknown])[];
 
 function parseBlock(block: unknown): MetadataBlock {
   const result = metadataBlockSchema.safeParse(block);

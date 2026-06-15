@@ -1,25 +1,21 @@
-import * as React from "react"
-
-import { cn } from "@repo/design-system/lib/utils"
-import { recipe } from "./recipes"
+import { cn } from "@repo/design-system/lib/utils";
+import { type ComponentProps, forwardRef } from "react";
+import { recipe } from "./recipes";
 
 const textareaDensityVariants = {
   compact: "px-2.5 py-1.5",
   comfortable: "px-3 py-2",
   spacious: "px-4 py-3",
-} as const
+} as const;
 
-const Textarea = React.forwardRef<
+const Textarea = forwardRef<
   HTMLTextAreaElement,
-  React.ComponentProps<"textarea"> & {
-    density?: keyof typeof textareaDensityVariants
+  ComponentProps<"textarea"> & {
+    density?: keyof typeof textareaDensityVariants;
   }
 >(({ className, density = "comfortable", ...props }, ref) => {
   return (
     <textarea
-      ref={ref}
-      data-slot="textarea"
-      data-density={density}
       className={cn(
         "flex w-full min-w-0 resize-y placeholder:text-text-tertiary",
         recipe(
@@ -34,11 +30,14 @@ const Textarea = React.forwardRef<
         recipe("focusRing", "invalidState"),
         className
       )}
+      data-density={density}
+      data-slot="textarea"
+      ref={ref}
       {...props}
     />
-  )
-})
+  );
+});
 
-Textarea.displayName = "Textarea"
+Textarea.displayName = "Textarea";
 
-export { Textarea }
+export { Textarea };

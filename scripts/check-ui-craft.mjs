@@ -5,6 +5,55 @@ import { join, relative } from "node:path";
 const root = process.cwd();
 const command =
   "pnpm dlx ui-craft-detect packages/design-system apps/storybook/stories";
+// biome-ignore lint/suspicious/noControlCharactersInRegex: strips ANSI escape sequences from detector output.
+const ANSI_PATTERN = /\u001b\[[0-9;]*m/g;
+const FINDING_MESSAGE_PATTERN = /^\s*●\s+(.+?)\s+—\s+/;
+const FINDING_PATH_PATTERN = /^(packages[\\/].+?\.(?:tsx|ts|css)):(\d+)$/;
+const LINE_SPLIT_PATTERN = /\r?\n/;
+const knownFocusRecipeFalsePositivePaths = new Set([
+  "packages/design-system/components/afenda-ui/accordion.tsx",
+  "packages/design-system/components/afenda-ui/alert-dialog.tsx",
+  "packages/design-system/components/afenda-ui/button.tsx",
+  "packages/design-system/components/afenda-ui/checkbox.tsx",
+  "packages/design-system/components/afenda-ui/collapsible.tsx",
+  "packages/design-system/components/afenda-ui/dialog.tsx",
+  "packages/design-system/components/afenda-ui/drawer.tsx",
+  "packages/design-system/components/afenda-ui/focusable.tsx",
+  "packages/design-system/components/afenda-ui/item.tsx",
+  "packages/design-system/components/afenda-ui/menubar.tsx",
+  "packages/design-system/components/afenda-ui/navigation-menu.tsx",
+  "packages/design-system/components/afenda-ui/radio-group.tsx",
+  "packages/design-system/components/afenda-ui/recipes.ts",
+  "packages/design-system/components/afenda-ui/resizable.tsx",
+  "packages/design-system/components/afenda-ui/scroll-area.tsx",
+  "packages/design-system/components/afenda-ui/select.tsx",
+  "packages/design-system/components/afenda-ui/sheet.tsx",
+  "packages/design-system/components/afenda-ui/sidebar.tsx",
+  "packages/design-system/components/afenda-ui/slider.tsx",
+  "packages/design-system/components/afenda-ui/switch.tsx",
+  "packages/design-system/components/afenda-ui/tabs.tsx",
+  "packages/design-system/components/afenda-ui/toggle.tsx",
+]);
+const knownHoverFocusFalsePositivePaths = new Set([
+  "packages/design-system/components/afenda-ui/accordion.tsx",
+  "packages/design-system/components/afenda-ui/breadcrumb.tsx",
+  "packages/design-system/components/afenda-ui/button.tsx",
+  "packages/design-system/components/afenda-ui/item.tsx",
+  "packages/design-system/components/afenda-ui/menubar.tsx",
+  "packages/design-system/components/afenda-ui/navigation-menu.tsx",
+  "packages/design-system/components/afenda-ui/radio-group.tsx",
+  "packages/design-system/components/afenda-ui/resizable.tsx",
+  "packages/design-system/components/afenda-ui/sidebar.tsx",
+  "packages/design-system/components/afenda-ui/slider.tsx",
+  "packages/design-system/components/afenda-ui/tabs.tsx",
+  "packages/design-system/components/afenda-ui/toggle.tsx",
+]);
+const knownNonFocusableHoverFalsePositivePaths = new Set([
+  "packages/design-system/components/afenda-ui/field.tsx",
+  "packages/design-system/components/afenda-ui/scroll-area.tsx",
+  "packages/design-system/components/afenda-ui/sonner.tsx",
+  "packages/design-system/components/afenda-ui/table.tsx",
+]);
 
 const result = spawnSync(command, {
   cwd: root,
@@ -12,7 +61,9 @@ const result = spawnSync(command, {
   shell: true,
 });
 
-const output = stripAnsi([result.stdout, result.stderr].filter(Boolean).join("\n"));
+const output = stripAnsi(
+  [result.stdout, result.stderr].filter(Boolean).join("\n")
+);
 
 if (result.status === 0) {
   if (output.trim()) {
@@ -47,7 +98,9 @@ for (const finding of findings) {
 
 if (ignored.length) {
   const summary = summarizeIgnoredFindings(ignored);
-  console.warn(`ui-craft ignored ${ignored.length} known detector false positives: ${summary}`);
+  console.warn(
+    `ui-craft ignored ${ignored.length} known detector false positives: ${summary}`
+  );
 
   if (process.env.UI_CRAFT_VERBOSE === "1") {
     console.warn(
@@ -76,15 +129,17 @@ if (actionable.length) {
   process.exit(result.status ?? 1);
 }
 
-console.log("ui-craft checks passed; only known detector false positives remain.");
+console.log(
+  "ui-craft checks passed; only known detector false positives remain."
+);
 
 function parseFindings(rawOutput) {
-  const lines = rawOutput.split(/\r?\n/);
+  const lines = rawOutput.split(LINE_SPLIT_PATTERN);
   const findings = [];
   let current;
 
   for (const line of lines) {
-    const pathMatch = line.match(/^(packages[\\/].+?\.(?:tsx|ts|css)):(\d+)$/);
+    const pathMatch = line.match(FINDING_PATH_PATTERN);
 
     if (pathMatch) {
       current = {
@@ -95,7 +150,7 @@ function parseFindings(rawOutput) {
       continue;
     }
 
-    const messageMatch = line.match(/^\s*●\s+(.+?)\s+—\s+/);
+    const messageMatch = line.match(FINDING_MESSAGE_PATTERN);
     if (messageMatch && current) {
       current.message = messageMatch[1].trim();
       findings.push(current);
@@ -109,24 +164,40 @@ function parseFindings(rawOutput) {
 function isKnownFalsePositive(finding) {
   const relativePath = toPosixPath(relative(root, finding.file));
 
-  if (!relativePath.startsWith("packages/design-system/components/afenda-ui/")) {
+  if (
+    !relativePath.startsWith("packages/design-system/components/afenda-ui/")
+  ) {
     return false;
   }
 
   if (finding.message === "custom modal without native <dialog> or [popover]") {
-    return relativePath === "packages/design-system/components/afenda-ui/navigation-menu.tsx";
+    return (
+      relativePath ===
+      "packages/design-system/components/afenda-ui/navigation-menu.tsx"
+    );
   }
 
   if (finding.message === "table without overflow handling or sticky header") {
-    return hasTableOverflowAndStickyHeader(finding.file);
+    return (
+      relativePath ===
+        "packages/design-system/components/afenda-ui/table.tsx" &&
+      hasTableOverflowAndStickyHeader(finding.file)
+    );
   }
 
   if (finding.message === "outline removed without focus-visible replacement") {
-    return sourceHasFocusRecipe(finding.file);
+    return (
+      knownFocusRecipeFalsePositivePaths.has(relativePath) &&
+      sourceHasFocusRecipe(finding.file)
+    );
   }
 
   if (finding.message === "hover state without focus-visible") {
-    return sourceHasFocusRecipe(finding.file) || isNonFocusableHoverSurface(finding.file);
+    return (
+      (knownHoverFocusFalsePositivePaths.has(relativePath) &&
+        sourceHasFocusRecipe(finding.file)) ||
+      knownNonFocusableHoverFalsePositivePaths.has(relativePath)
+    );
   }
 
   return false;
@@ -147,17 +218,6 @@ function hasTableOverflowAndStickyHeader(file) {
   const source = readSource(file);
 
   return source.includes("overflow-x-auto") && source.includes("sticky top-0");
-}
-
-function isNonFocusableHoverSurface(file) {
-  const relativePath = toPosixPath(relative(root, file));
-
-  return new Set([
-    "packages/design-system/components/afenda-ui/field.tsx",
-    "packages/design-system/components/afenda-ui/scroll-area.tsx",
-    "packages/design-system/components/afenda-ui/sonner.tsx",
-    "packages/design-system/components/afenda-ui/table.tsx",
-  ]).has(relativePath);
 }
 
 function toPosixPath(value) {
@@ -185,5 +245,5 @@ function summarizeIgnoredFindings(findings) {
 }
 
 function stripAnsi(value) {
-  return value.replace(/\u001b\[[0-9;]*m/g, "");
+  return value.replace(ANSI_PATTERN, "");
 }

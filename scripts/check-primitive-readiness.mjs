@@ -63,11 +63,6 @@ for (const path of [
 
 const componentSets = [
   {
-    dir: uiDir,
-    label: "components/ui",
-    storyDir: storiesDir,
-  },
-  {
     dir: afendaUiDir,
     label: "components/afenda-ui",
     storyDir: afendaUiStoriesDir,

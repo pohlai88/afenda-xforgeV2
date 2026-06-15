@@ -1,5 +1,5 @@
 import type { MetadataDataSources } from "../metadata-renderer";
-import type { MetadataPage } from "../schema";
+import type { MetadataPage } from "../metadata-schema";
 
 const tenantConfigurationMetadata = {
   blocks: [

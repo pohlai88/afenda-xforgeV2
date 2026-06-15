@@ -3,6 +3,8 @@ import { getUserAvatarUrl, getUserDisplayName } from "@repo/auth/metadata";
 import { getAuthSession } from "@repo/auth/server";
 import { authenticate } from "@repo/collaboration/auth";
 
+export const dynamic = "force-dynamic";
+
 const COLORS = [
   "var(--color-red-500)",
   "var(--color-orange-500)",

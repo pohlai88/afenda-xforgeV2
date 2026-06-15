@@ -3,8 +3,17 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
-import { getActiveOrganizationId } from "./metadata";
-import { getSupabaseAnonKey, getSupabaseUrl, keys } from "./keys";
+import { resolveActiveOrganizationId } from "./organization-context";
+import {
+  getOrganizationIdFromAccessTokenClaims,
+  type SupabaseAccessTokenClaims,
+} from "./access-token-claims";
+import { readAccessTokenClaims } from "./read-access-token-claims";
+import {
+  getSupabasePublishableKey,
+  getSupabaseSecretKey,
+  getSupabaseUrl,
+} from "./keys";
 import type {
   AuthContext,
   AuthSession,
@@ -16,20 +25,25 @@ import {
 } from "./types";
 
 export const createClient = async () => {
+  // Per-request client — never store in module scope (Vercel Fluid compute).
   const cookieStore = await cookies();
 
-  return createServerClient(getSupabaseUrl(), getSupabaseAnonKey(), {
+  return createServerClient(getSupabaseUrl(), getSupabasePublishableKey(), {
+    auth: {
+      flowType: "pkce",
+      autoRefreshToken: true,
+    },
     cookies: {
       getAll() {
         return cookieStore.getAll();
       },
-      setAll(cookiesToSet) {
+      setAll(cookiesToSet, _headers) {
         try {
           for (const { name, value, options } of cookiesToSet) {
             cookieStore.set(name, value, options);
           }
         } catch {
-          // Called from a Server Component; middleware refreshes sessions.
+          // Server Component — proxy refreshes sessions and applies cache headers.
         }
       },
     },
@@ -37,22 +51,31 @@ export const createClient = async () => {
 };
 
 export const createAdminClient = () => {
-  const serviceRoleKey = keys().SUPABASE_SERVICE_ROLE_KEY;
+  const secretKey = getSupabaseSecretKey();
 
-  if (!serviceRoleKey) {
-    throw new Error("SUPABASE_SERVICE_ROLE_KEY is not set");
+  if (!secretKey) {
+    throw new Error(
+      "SUPABASE_SECRET_KEY (or legacy SUPABASE_SERVICE_ROLE_KEY) is not set"
+    );
   }
 
-  return createSupabaseClient(getSupabaseUrl(), serviceRoleKey, {
+  return createSupabaseClient(getSupabaseUrl(), secretKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
+      experimental: { passkey: true },
     },
   });
 };
 
 export const currentUser = async () => {
   const supabase = await createClient();
+  const claims = await readAccessTokenClaims(supabase);
+
+  if (!claims) {
+    return null;
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -61,7 +84,22 @@ export const currentUser = async () => {
 };
 
 export const auth = async (): Promise<AuthContext> => {
-  const user = await currentUser();
+  const supabase = await createClient();
+  const claims = await readAccessTokenClaims(supabase);
+
+  if (!claims?.sub) {
+    return { userId: null, orgId: null };
+  }
+
+  const orgFromToken = getOrganizationIdFromAccessTokenClaims(claims);
+
+  if (orgFromToken) {
+    return { userId: claims.sub, orgId: orgFromToken };
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return { userId: null, orgId: null };
@@ -69,7 +107,7 @@ export const auth = async (): Promise<AuthContext> => {
 
   return {
     userId: user.id,
-    orgId: getActiveOrganizationId(user.user_metadata),
+    orgId: await resolveActiveOrganizationId(user.id, user.user_metadata),
   };
 };
 
@@ -96,15 +134,28 @@ export const requireOrg = async (): Promise<
 };
 
 export const getAuthSession = async (): Promise<AuthSession | null> => {
-  const user = await currentUser();
+  const supabase = await createClient();
+  const claims = await readAccessTokenClaims(supabase);
+
+  if (!claims?.sub) {
+    return null;
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return null;
   }
 
+  const orgFromToken = getOrganizationIdFromAccessTokenClaims(claims);
+
   return {
     user,
-    orgId: getActiveOrganizationId(user.user_metadata),
+    orgId:
+      orgFromToken ??
+      (await resolveActiveOrganizationId(user.id, user.user_metadata)),
   };
 };
 
@@ -118,7 +169,16 @@ export type {
   ConfirmAuthLinkResult,
 } from "./types";
 export {
+  getSupabaseAuthIssuer,
+  getSupabaseJwksUrl,
+  type SupabaseAccessTokenClaims,
+  type SupabaseApiKeyJwtClaims,
+  validateAccessTokenClaims,
+} from "./access-token-claims";
+export { readAccessTokenClaims } from "./read-access-token-claims";
+export {
   AUTH_OTP_TYPES,
   MissingOrganizationError,
+  UnauthorizedOrganizationError,
   UnauthenticatedError,
 } from "./types";

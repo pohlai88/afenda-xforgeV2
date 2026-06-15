@@ -14,7 +14,7 @@ import {
 import { layoutStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
-  title: "Blocks/ERP State Patterns",
+  title: "Blocks/Advanced/ERP State Patterns",
   tags: ["autodocs", "block"],
   parameters: {
     ...layoutStoryParameters,

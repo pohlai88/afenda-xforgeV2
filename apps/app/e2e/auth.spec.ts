@@ -1,7 +1,13 @@
 import { expect, test } from "@playwright/test";
 
-const e2eEmail = process.env.E2E_AUTH_EMAIL ?? "e2e-playwright@xforge.local";
-const e2ePassword = process.env.E2E_ORG_ADMIN_PASSWORD ?? "123qweasdzxc!@#";
+const e2eEmail =
+  process.env.E2E_AUTH_EMAIL ??
+  process.env.E2E_ORG_ADMIN_EMAIL ??
+  "e2e-playwright@xforge.local";
+const e2ePassword =
+  process.env.E2E_AUTH_PASSWORD ??
+  process.env.E2E_ORG_ADMIN_PASSWORD ??
+  "123qweasdzxc!@#";
 
 test.describe("Supabase auth flows", () => {
   test("redirects unauthenticated users from / to sign-in", async ({ page }) => {
@@ -16,7 +22,7 @@ test.describe("Supabase auth flows", () => {
     await page.getByLabel("Password").fill("wrong-password-123");
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    await expect(page.getByText("Invalid login credentials")).toBeVisible();
+    await expect(page.getByText("Email or password is incorrect.")).toBeVisible();
     await expect(page).toHaveURL(/\/sign-in/);
   });
 
@@ -80,17 +86,15 @@ test.describe("Supabase auth flows", () => {
     await expect(page.getByRole("link", { name: "Back to sign in" })).toBeVisible();
   });
 
-  test("surfaces sign-up errors for blocked or rate-limited requests", async ({ page }) => {
+  test("validates password policy on sign-up", async ({ page }) => {
     await page.goto("/sign-up");
     await page.getByLabel("Name").fill("Test User");
     await page.getByLabel("Email").fill("user@example.com");
-    await page.getByLabel("Password").fill("validpass123");
-    await page.getByRole("button", { name: "Sign up" }).click();
+    await page.locator("#sign-up-password").fill("validpass123");
+    await page.getByRole("button", { name: "Create account" }).click();
 
     await expect(page).toHaveURL(/\/sign-up/);
-    await expect(
-      page.getByText(/email rate limit exceeded|invalid|not allowed|valid email/i)
-    ).toBeVisible();
+    await expect(page.getByText(/At least \d+ characters|uppercase|symbol/i)).toBeVisible();
   });
 
   test("loads authenticated search results from the database", async ({ page }) => {

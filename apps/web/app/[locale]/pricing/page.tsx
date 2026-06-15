@@ -1,4 +1,4 @@
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import { Check, Minus, MoveRight, PhoneCall } from "lucide-react";
 import Link from "next/link";
 import { env } from "@/env";
@@ -27,7 +27,7 @@ const Pricing = () => (
               <span className="text-4xl">$40</span>
               <span className="text-muted-foreground text-sm"> / month</span>
             </p>
-            <Button asChild className="mt-8 gap-4" variant="outline">
+            <Button asChild className="mt-8 gap-4" variant="secondary">
               <Link href={env.NEXT_PUBLIC_APP_URL}>
                 Try it <MoveRight className="h-4 w-4" />
               </Link>
@@ -59,7 +59,7 @@ const Pricing = () => (
               <span className="text-4xl">$40</span>
               <span className="text-muted-foreground text-sm"> / month</span>
             </p>
-            <Button asChild className="mt-8 gap-4" variant="outline">
+            <Button asChild className="mt-8 gap-4" variant="secondary">
               <Link href="/contact">
                 Contact us <PhoneCall className="h-4 w-4" />
               </Link>

@@ -1,30 +1,32 @@
-import { cva, type VariantProps } from "class-variance-authority"
-
-import { cn } from "@repo/design-system/lib/utils"
-import { recipe } from "./recipes"
+import { cn } from "@repo/design-system/lib/utils";
+import { cva, type VariantProps } from "class-variance-authority";
+import { recipe } from "./recipes";
 
 function Empty({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="empty"
       className={cn(
-        "flex min-w-0 flex-1 flex-col items-center justify-center rounded-[var(--card-radius)] border border-dashed border-border-default bg-surface-raised/60 p-6 text-center text-balance md:p-10",
+        "flex min-w-0 flex-1 flex-col items-center justify-center text-balance rounded-[var(--card-radius)] border border-border-default border-dashed bg-surface-raised/60 p-6 text-center md:p-10",
         recipe("sectionGap", "bodyText"),
         className
       )}
+      data-slot="empty"
       {...props}
     />
-  )
+  );
 }
 
 function EmptyHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
+      className={cn(
+        "flex max-w-sm flex-col items-center gap-2 text-center",
+        className
+      )}
       data-slot="empty-header"
-      className={cn("flex max-w-sm flex-col items-center gap-2 text-center", className)}
       {...props}
     />
-  )
+  );
 }
 
 const emptyMediaVariants = cva(
@@ -43,7 +45,7 @@ const emptyMediaVariants = cva(
       variant: "default",
     },
   }
-)
+);
 
 function EmptyMedia({
   className,
@@ -52,50 +54,57 @@ function EmptyMedia({
 }: React.ComponentProps<"div"> & VariantProps<typeof emptyMediaVariants>) {
   return (
     <div
+      className={cn(
+        emptyMediaVariants({ variant }),
+        recipe("motionReduce"),
+        className
+      )}
       data-slot="empty-media"
       data-variant={variant}
-      className={cn(emptyMediaVariants({ variant }), recipe("motionReduce"), className)}
       {...props}
     />
-  )
+  );
 }
 
 function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="empty-title"
       className={cn(recipe("titleText"), className)}
+      data-slot="empty-title"
       {...props}
     />
-  )
+  );
 }
 
-function EmptyDescription({ className, ...props }: React.ComponentProps<"div">) {
+function EmptyDescription({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="empty-description"
       className={cn(
         "max-w-sm text-balance [&>a]:rounded-[var(--xforge-radius-sm)] [&>a]:text-text-link [&>a]:underline [&>a]:underline-offset-4",
         recipe("captionText", "focusRingOnly"),
         className
       )}
+      data-slot="empty-description"
       {...props}
     />
-  )
+  );
 }
 
 function EmptyContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
-      data-slot="empty-content"
       className={cn(
-        "flex w-full max-w-sm min-w-0 flex-col items-center gap-3 text-balance",
+        "flex w-full min-w-0 max-w-sm flex-col items-center gap-3 text-balance",
         recipe("captionText"),
         className
       )}
+      data-slot="empty-content"
       {...props}
     />
-  )
+  );
 }
 
 export {
@@ -105,4 +114,4 @@ export {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-}
+};

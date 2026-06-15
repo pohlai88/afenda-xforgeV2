@@ -2,8 +2,8 @@
 
 import type { CmsLocale } from "@repo/cms/locale";
 import type { CmsCollectionName } from "@repo/cms/writer";
-import { Badge } from "@repo/design-system/components/ui/badge";
-import { Input } from "@repo/design-system/components/ui/input";
+import { Badge } from "@repo/design-system/components/afenda-ui/badge";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { searchDocuments } from "@/app/actions/cms/documents";
@@ -122,9 +122,8 @@ export const DocumentSearch = ({
                   ) : null}
                 </div>
                 <Badge
-                  variant={
-                    result.status === "published" ? "default" : "secondary"
-                  }
+                  tone={result.status === "published" ? "positive" : "neutral"}
+                  variant="soft"
                 >
                   {result.status}
                 </Badge>

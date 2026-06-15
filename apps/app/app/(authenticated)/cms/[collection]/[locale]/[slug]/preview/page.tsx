@@ -4,7 +4,7 @@ import { parseCmsRouteLocale } from "@repo/cms/locale";
 import { cmsReaders, isCmsCollection } from "@repo/cms/writer";
 import { Body } from "@repo/cms/components/body";
 import { TableOfContents } from "@repo/cms/components/toc";
-import { Button } from "@repo/design-system/components/ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 
 interface PreviewDocumentPageProperties {
   readonly params: Promise<{
@@ -42,7 +42,7 @@ const PreviewDocumentPage = async ({
           </p>
           <h2 className="font-semibold text-xl">{document._title}</h2>
         </div>
-        <Button asChild variant="outline">
+        <Button asChild variant="secondary">
           <Link href={`/cms/${collection}/${locale}/${slug}`}>
             Back to editor
           </Link>

@@ -1,5 +1,7 @@
+import { authRedirect } from "@repo/auth/auth-cache";
 import { confirmAuthLink } from "@repo/auth/confirm-link";
-import { NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
 
 export const GET = async (request: Request) => {
   const { searchParams, origin } = new URL(request.url);
@@ -13,10 +15,10 @@ export const GET = async (request: Request) => {
   });
 
   if (result.ok) {
-    return NextResponse.redirect(result.redirectTo);
+    return authRedirect(result.redirectTo);
   }
 
-  return NextResponse.redirect(
+  return authRedirect(
     `${origin}/sign-in?error=${encodeURIComponent(result.error)}`
   );
 };

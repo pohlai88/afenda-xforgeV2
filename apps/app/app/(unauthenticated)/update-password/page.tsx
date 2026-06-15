@@ -1,6 +1,7 @@
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+import { AuthPageHeader } from "../components/auth-page-header";
 
 const title = "Update password";
 const description = "Choose a new password for your account.";
@@ -14,10 +15,7 @@ export const metadata: Metadata = createMetadata({ title, description });
 
 const UpdatePasswordPage = () => (
   <>
-    <div className="flex flex-col space-y-2 text-center">
-      <h1 className="font-semibold text-2xl tracking-tight">{title}</h1>
-      <p className="text-muted-foreground text-sm">{description}</p>
-    </div>
+    <AuthPageHeader description={description} title={title} />
     <UpdatePasswordForm />
   </>
 );

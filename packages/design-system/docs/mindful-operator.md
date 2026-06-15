@@ -60,3 +60,29 @@ Brand primary is not the default action color everywhere. Repeated operator acti
 Brand green and success green must never be aliased. Afenda identity and healthy/completed/passed states are separate meanings.
 
 `packages/design-system/tokens/tokens.json` is the source of truth for design tokens.
+
+## Source Of Truth
+
+- Token values and metadata: `tokens/tokens.json`
+- Token schema: `tokens/tokens.schema.json`
+- Color contract: `contracts/color.contract.ts`
+- Token layer contract: `contracts/token-layer.contract.ts`
+- Global CSS variables: `styles/globals.css`
+- Token design-data tests: `test/token-design-data.test.ts`
+
+## Validation
+
+Run these checks before changing palette roles, token metadata, or semantic
+status mappings:
+
+```bash
+pnpm design-system:token-diff
+pnpm ui-craft:detect
+pnpm --filter @repo/design-system test -- token-design-data.test.ts
+```
+
+`pnpm design-system:stabilize` also verifies token metadata, CSS variable
+coverage, primitive readiness, and UI craft drift.
+
+Any new token category must include category metadata, usage constraints,
+deprecation handling, and Figma variable mapping before release.

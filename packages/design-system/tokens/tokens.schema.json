@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
+    "metadata",
     "color",
     "radius",
     "spacing",
@@ -16,6 +17,135 @@
     "contrast"
   ],
   "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "version",
+        "source",
+        "description",
+        "categories",
+        "usageConstraints",
+        "deprecation",
+        "figma"
+      ],
+      "properties": {
+        "version": { "type": "number" },
+        "source": { "type": "string" },
+        "description": { "type": "string" },
+        "categories": {
+          "type": "object",
+          "required": [
+            "color",
+            "radius",
+            "spacing",
+            "layout",
+            "typography",
+            "shadow",
+            "motion",
+            "zIndex"
+          ],
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "description",
+              "type",
+              "sourceOfTruth",
+              "cssPrefix",
+              "figmaCollection",
+              "usage"
+            ],
+            "properties": {
+              "description": { "type": "string" },
+              "type": { "type": "string" },
+              "sourceOfTruth": { "type": "string" },
+              "cssPrefix": { "type": "string" },
+              "figmaCollection": { "type": "string" },
+              "usage": { "type": "string" }
+            }
+          }
+        },
+        "usageConstraints": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["allowedScopes", "forbiddenScopes", "rule"],
+            "properties": {
+              "allowedScopes": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "forbiddenScopes": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "rule": { "type": "string" }
+            }
+          }
+        },
+        "deprecation": {
+          "type": "object",
+          "required": [
+            "policy",
+            "deprecatedTokens",
+            "reservedReplacementFields"
+          ],
+          "properties": {
+            "policy": { "type": "string" },
+            "deprecatedTokens": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["path", "replacement", "removeAfter", "reason"],
+                "properties": {
+                  "path": { "type": "string" },
+                  "replacement": { "type": "string" },
+                  "removeAfter": { "type": "string" },
+                  "reason": { "type": "string" }
+                }
+              }
+            },
+            "reservedReplacementFields": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "figma": {
+          "type": "object",
+          "required": [
+            "library",
+            "modeMap",
+            "collections",
+            "variableNameTemplate",
+            "tokenPathSeparator",
+            "exportRule"
+          ],
+          "properties": {
+            "library": { "type": "string" },
+            "modeMap": {
+              "type": "object",
+              "required": ["light", "dark"],
+              "properties": {
+                "light": { "type": "string" },
+                "dark": { "type": "string" }
+              }
+            },
+            "collections": {
+              "type": "object",
+              "required": ["primitive", "semantic", "component"],
+              "properties": {
+                "primitive": { "type": "string" },
+                "semantic": { "type": "string" },
+                "component": { "type": "string" }
+              }
+            },
+            "variableNameTemplate": { "type": "string" },
+            "tokenPathSeparator": { "type": "string" },
+            "exportRule": { "type": "string" }
+          }
+        }
+      }
+    },
     "color": {
       "type": "object",
       "additionalProperties": {

@@ -41,3 +41,28 @@ Warmth tokens are forbidden in primitives unless a primitive is explicitly demon
 Afenda is a low-motion operator workspace. Primitives must not use `transition-all` or transitions on layout properties such as width, height, top, left, margin, or padding.
 
 Reduced motion must preserve state clarity without decorative movement.
+
+## Source Of Truth
+
+- State and risk-group expectations: `contracts/primitive-hardening.contract.ts`
+- Primitive implementation surface: `components/afenda-ui`
+- Primitive public barrel: `components/afenda-ui/index.ts`
+- Release readiness evidence: `apps/storybook/stories/primitive-readiness.stories.tsx`
+- Component-level readiness records: `contracts/component-scorecards.contract.ts`
+
+## Validation
+
+Run these checks before changing primitive status or declaring a primitive ready:
+
+```bash
+pnpm design-system:primitive-readiness
+pnpm ui-craft:detect
+pnpm --filter @repo/design-system typecheck
+pnpm --filter storybook typecheck
+```
+
+`pnpm design-system:stabilize` runs the primitive readiness, UI craft,
+typecheck, and Storybook typecheck gates together.
+
+Primitive changes that add, rename, or remove an `afenda-ui` component must also
+update the scorecard contract and matching Storybook story in the same change.

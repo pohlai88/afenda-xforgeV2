@@ -83,3 +83,7 @@ console.log(
     : "  auth: OAuth (complete login in Cursor on first connect)"
 );
 console.log(`  features: ${features}`);
+console.log("");
+console.log(
+  "MCP auth gap: no get_auth_config tool. Use `pnpm supabase:auth-config` or Supabase CLI + supabase/config.toml."
+);

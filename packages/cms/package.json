@@ -6,6 +6,9 @@
   "types": "./index.ts",
   "exports": {
     ".": "./index.ts",
+    "./collections": "./collections/index.ts",
+    "./schemas": "./schemas/index.ts",
+    "./settings": "./settings.ts",
     "./components/body": "./components/body.tsx",
     "./components/image": "./components/image.tsx",
     "./components/toc": "./components/toc.tsx",
@@ -13,7 +16,6 @@
     "./keys": "./keys.ts",
     "./preview-token": "./preview-token.ts",
     "./revalidate": "./revalidate.ts",
-    "./revalidate-web": "./revalidate-web.ts",
     "./locale": "./locale.ts",
     "./events": "./events.ts",
     "./reader-options": "./reader-options.ts",
@@ -25,13 +27,15 @@
     "dev": "node -e \"console.log('@repo/cms uses git-backed MDX; no dev server required.')\"",
     "build": "node -e \"console.log('@repo/cms build skipped (file-based content)')\"",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "typecheck": "tsc --noEmit",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
     "validate": "tsx scripts/validate-content.ts",
     "sync": "tsx --tsconfig tsconfig.scripts.json scripts/sync-content.ts"
   },
   "dependencies": {
     "@paralleldrive/cuid2": "^3.3.0",
     "@repo/database": "workspace:*",
+    "@repo/internationalization": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.10",
     "drizzle-orm": "^0.45.1",
     "github-slugger": "^2.0.0",
@@ -51,6 +55,7 @@
     "dotenv": "^17.2.3",
     "next": "16.1.6",
     "tsx": "^4.20.3",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }

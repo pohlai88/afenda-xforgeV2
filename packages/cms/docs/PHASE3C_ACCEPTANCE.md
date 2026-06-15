@@ -12,6 +12,7 @@
 | `pnpm --filter app typecheck` | Pass |
 | `pnpm --filter api typecheck` | Pass |
 | `pnpm cms:validate` | Pass |
+| `pnpm --filter @repo/cms test:integration` | Pass (when `DATABASE_URL` set) |
 
 ## Requirements
 
@@ -41,6 +42,7 @@ Git MDX (source of truth)
 1. `pnpm migrate` then `pnpm cms:sync` — mirror rows for published MDX
 2. Publish from `/cms` — row upserts with `status: published`
 3. `GET http://localhost:3002/search/cms?q=welcome` — JSON hits
-4. Studio `searchDocuments` action returns ranked results for editors
+4. Studio search box on `/cms/{collection}/{locale}` — ranked Postgres mirror hits
+5. `pnpm --filter @repo/cms test:integration` — upsert, FTS, delete revision smoke
 
 **Phase 3C verdict: Accepted (Postgres mirror + FTS; git primary)**

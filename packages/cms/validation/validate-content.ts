@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ZodError } from "zod";
 import { collections } from "../collections";
@@ -8,6 +9,7 @@ import {
   readMdxFileFromPath,
 } from "../loader/local-source";
 import { DEFAULT_LOCALE, normalizeLocale } from "../locale";
+import { siteSettingsSchema } from "../schemas/settings.schema";
 
 export type ValidationError = {
   file: string;
@@ -32,6 +34,27 @@ const localeFromFilePath = (collection: string, file: string): string => {
 export const validateAllContent = async (): Promise<ValidationResult> => {
   const errors: ValidationError[] = [];
   let fileCount = 0;
+
+  try {
+    const settingsRaw = await readFile(
+      path.join(contentRoot, "settings.json"),
+      "utf8"
+    );
+    siteSettingsSchema.parse(JSON.parse(settingsRaw));
+    fileCount += 1;
+  } catch (error) {
+    const message =
+      error instanceof ZodError
+        ? formatZodError(error)
+        : error instanceof Error
+          ? error.message
+          : "Unknown validation error";
+
+    errors.push({
+      file: path.join(contentRoot, "settings.json"),
+      message,
+    });
+  }
 
   for (const config of Object.values(collections)) {
     const locales = await listLocaleDirectories(config.name);

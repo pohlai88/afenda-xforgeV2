@@ -6,6 +6,7 @@ import { keys as core } from "@repo/next-config/keys";
 import { keys as observability } from "@repo/observability/keys";
 import { keys as rateLimit } from "@repo/rate-limit/keys";
 import { keys as security } from "@repo/security/keys";
+import { keys as webhooks } from "@repo/webhooks/keys";
 import { createEnv } from "@t3-oss/env-nextjs";
 
 export const env = createEnv({
@@ -19,6 +20,7 @@ export const env = createEnv({
     flags(),
     security(),
     rateLimit(),
+    webhooks(),
   ],
   server: {},
   client: {},

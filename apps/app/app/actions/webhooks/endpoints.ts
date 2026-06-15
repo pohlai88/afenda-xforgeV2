@@ -5,10 +5,11 @@ import type { AuthActionResult } from "@repo/auth/types";
 import {
   cmsWebhookEventTypeSchema,
   type CmsWebhookEventType,
-  type WebhookDeliveryRecord,
-  type WebhookDeliveryStatus,
+  type ListWebhookDeliveriesResult,
+  type ReplayWebhookDeliveryResult,
   type WebhookEndpointPublic,
   type WebhookEndpointWithSecret,
+  webhookDeliveryStatusSchema,
 } from "@repo/webhooks";
 import {
   createWebhookEndpoint,
@@ -18,6 +19,7 @@ import {
   listWebhookEndpoints,
   processWebhookDeliveries,
   replayWebhookDelivery,
+  resetWebhookEndpointHealth,
   rotateWebhookEndpointSecret,
   updateWebhookEndpoint,
   validateWebhookUrl,
@@ -55,9 +57,7 @@ const updateEndpointSchema = z.object({
 
 const deliveryFiltersSchema = z.object({
   endpointId: z.string().min(1).optional(),
-  status: z
-    .enum(["pending", "delivered", "retrying", "failed"])
-    .optional(),
+  status: webhookDeliveryStatusSchema.optional(),
   limit: z.number().int().positive().max(100).optional(),
   cursor: z.string().min(1).optional(),
 });
@@ -69,7 +69,7 @@ export const getWebhookEndpoints = async (): Promise<
 
 export const getWebhookDeliveries = async (
   filters?: z.infer<typeof deliveryFiltersSchema>
-): Promise<AuthActionResult<WebhookDeliveryRecord[]>> =>
+): Promise<AuthActionResult<ListWebhookDeliveriesResult>> =>
   withOrg(async ({ orgId }) => {
     const parsed = deliveryFiltersSchema.parse(filters ?? {});
 
@@ -118,7 +118,7 @@ export const rotateEndpointSecret = async (
 
 export const replayDelivery = async (
   deliveryId: string
-): Promise<AuthActionResult<{ queued: boolean }>> =>
+): Promise<AuthActionResult<ReplayWebhookDeliveryResult>> =>
   withOwner(async ({ orgId }) => {
     const replayed = await replayWebhookDelivery(orgId, deliveryId);
 
@@ -146,6 +146,9 @@ export const testEndpoint = async (
     return result.delivered > 0;
   });
 
-export type WebhookDeliveryFilterStatus = WebhookDeliveryStatus;
+export const resetEndpointHealth = async (
+  endpointId: string
+): Promise<AuthActionResult<boolean>> =>
+  withOwner(async ({ orgId }) => resetWebhookEndpointHealth(orgId, endpointId));
 
 export type { CmsWebhookEventType };

@@ -11,7 +11,6 @@ export const keys = () =>
       CMS_GITHUB_REPO: z.string().optional(),
       CMS_GITHUB_BRANCH: z.string().default("main"),
       CMS_PREVIEW_SECRET: z.string().optional(),
-      CMS_REVALIDATE_SECRET: z.string().optional(),
     },
     runtimeEnv: {
       CMS_WRITE_MODE: process.env.CMS_WRITE_MODE,
@@ -20,6 +19,5 @@ export const keys = () =>
       CMS_GITHUB_REPO: process.env.CMS_GITHUB_REPO,
       CMS_GITHUB_BRANCH: process.env.CMS_GITHUB_BRANCH,
       CMS_PREVIEW_SECRET: process.env.CMS_PREVIEW_SECRET,
-      CMS_REVALIDATE_SECRET: process.env.CMS_REVALIDATE_SECRET,
     },
   });

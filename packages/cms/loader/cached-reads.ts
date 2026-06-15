@@ -5,6 +5,8 @@ import type { ContentBody } from "../types";
 
 export const CMS_CACHE_TAG_ALL = "cms";
 
+export const CMS_SETTINGS_TAG = "cms:settings";
+
 export const cmsCollectionTag = (collection: string, locale: string): string =>
   `cms:${collection}:${locale}`;
 

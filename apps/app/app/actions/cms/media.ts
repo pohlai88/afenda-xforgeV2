@@ -3,12 +3,13 @@
 import { randomUUID } from "node:crypto";
 import { withEditor } from "@repo/auth/guards";
 import type { AuthActionResult } from "@repo/auth/types";
+import { cmsCollectionSchema } from "@repo/cms";
 import { isCmsCollection } from "@repo/cms/writer";
 import { put } from "@repo/storage";
 import { z } from "zod";
 
 const uploadSchema = z.object({
-  collection: z.enum(["blog", "legal"]),
+  collection: cmsCollectionSchema,
   filename: z.string().min(1),
   contentType: z.string().min(1),
   size: z.number().max(5 * 1024 * 1024),

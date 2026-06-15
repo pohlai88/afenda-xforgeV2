@@ -1,10 +1,8 @@
 import { notFound } from "next/navigation";
+import { getDefaultFrontmatter } from "@repo/cms/collections";
 import { parseCmsRouteLocale } from "@repo/cms/locale";
 import { isCmsCollection } from "@repo/cms/writer";
-import {
-  createDefaultFrontmatter,
-  DocumentEditor,
-} from "../../../components/document-editor";
+import { DocumentEditor } from "../../../components/document-editor";
 
 interface NewDocumentPageProperties {
   readonly params: Promise<{ collection: string; locale: string }>;
@@ -22,7 +20,7 @@ const NewDocumentPage = async ({ params }: NewDocumentPageProperties) => {
     <DocumentEditor
       collection={collection}
       initialBody={"## New document\n\nStart writing MDX content here.\n"}
-      initialFrontmatter={createDefaultFrontmatter(collection)}
+      initialFrontmatter={getDefaultFrontmatter(collection)}
       locale={locale}
     />
   );

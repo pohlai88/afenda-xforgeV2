@@ -3,11 +3,23 @@ import {
   type LegalFrontmatter,
 } from "../schemas/legal.schema";
 import type { LegalPost, LegalPostMeta } from "../types";
-import type { CollectionConfig } from "./types";
+import type { CollectionConfig, FrontmatterField } from "./types";
+
+const legalFrontmatterFields = [
+  { key: "title", label: "Title", type: "text" },
+  { key: "status", label: "Status", type: "status" },
+  { key: "description", label: "Description", type: "textarea" },
+] as const satisfies readonly FrontmatterField[];
 
 export const legalCollection = {
   name: "legal",
   schema: legalFrontmatterSchema,
+  frontmatterFields: legalFrontmatterFields,
+  createDefaultFrontmatter: (): LegalFrontmatter => ({
+    title: "",
+    description: "",
+    status: "draft",
+  }),
   isPublished: (frontmatter) => frontmatter.status === "published",
   toMeta: (slug, frontmatter) => ({
     _slug: slug,

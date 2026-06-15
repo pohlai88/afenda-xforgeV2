@@ -58,6 +58,8 @@ interface BlockAction {
   readonly confirmationLabel?: string;
   readonly destructive?: boolean;
   readonly disabled?: boolean;
+  readonly governanceCode?: string;
+  readonly governanceStatus?: "allowed" | "denied" | "hidden";
   readonly href?: string;
   readonly icon?: ReactNode;
   readonly key: string;
@@ -578,6 +580,7 @@ function isBlockActionArray(
 }
 
 function BlockActionButton({ action }: { readonly action: BlockAction }) {
+  const reasonId = action.reason ? getActionReasonId(action) : undefined;
   const content = (
     <>
       {action.icon}
@@ -592,43 +595,80 @@ function BlockActionButton({ action }: { readonly action: BlockAction }) {
 
   if (action.href && !action.disabled) {
     return (
-      <Button
-        aria-label={action["aria-label"]}
-        asChild
-        data-audit-event={action.auditEvent}
-        data-audit-scope={action.auditScope}
-        data-capability={action.capability}
-        data-confirmation-label={action.confirmationLabel}
-        data-permission={action.permission}
-        data-reason={action.reason}
-        data-required-roles={action.roles?.join(" ")}
-        size="sm"
-        title={action.reason}
-        variant={resolvedVariant}
-      >
-        <a href={action.href}>{content}</a>
-      </Button>
+      <>
+        <Button
+          aria-describedby={reasonId}
+          aria-label={action["aria-label"]}
+          asChild
+          data-audit-event={action.auditEvent}
+          data-audit-scope={action.auditScope}
+          data-capability={action.capability}
+          data-confirmation-label={action.confirmationLabel}
+          data-governance-code={action.governanceCode}
+          data-governance-status={action.governanceStatus}
+          data-permission={action.permission}
+          data-reason={action.reason}
+          data-required-roles={action.roles?.join(" ")}
+          size="sm"
+          title={action.reason}
+          variant={resolvedVariant}
+        >
+          <a href={action.href}>{content}</a>
+        </Button>
+        <BlockActionReason reason={action.reason} reasonId={reasonId} />
+      </>
     );
   }
 
   return (
-    <Button
-      aria-label={action["aria-label"]}
-      data-audit-event={action.auditEvent}
-      data-audit-scope={action.auditScope}
-      data-capability={action.capability}
-      data-confirmation-label={action.confirmationLabel}
-      data-permission={action.permission}
-      data-reason={action.reason}
-      data-required-roles={action.roles?.join(" ")}
-      disabled={action.disabled}
-      onClick={action.onClick}
-      size="sm"
-      title={action.reason}
-      variant={resolvedVariant}
-    >
-      {content}
-    </Button>
+    <>
+      <Button
+        aria-describedby={reasonId}
+        aria-label={action["aria-label"]}
+        data-audit-event={action.auditEvent}
+        data-audit-scope={action.auditScope}
+        data-capability={action.capability}
+        data-confirmation-label={action.confirmationLabel}
+        data-governance-code={action.governanceCode}
+        data-governance-status={action.governanceStatus}
+        data-permission={action.permission}
+        data-reason={action.reason}
+        data-required-roles={action.roles?.join(" ")}
+        disabled={action.disabled}
+        onClick={action.onClick}
+        size="sm"
+        title={action.reason}
+        variant={resolvedVariant}
+      >
+        {content}
+      </Button>
+      <BlockActionReason reason={action.reason} reasonId={reasonId} />
+    </>
+  );
+}
+
+function BlockActionReason({
+  reason,
+  reasonId,
+}: {
+  readonly reason?: string;
+  readonly reasonId?: string;
+}) {
+  if (!(reason && reasonId)) {
+    return null;
+  }
+
+  return (
+    <span className="sr-only" id={reasonId}>
+      {reason}
+    </span>
+  );
+}
+
+function getActionReasonId(action: BlockAction) {
+  return `${action.auditScope ?? "block"}-${action.key}-action-reason`.replace(
+    /[^A-Za-z0-9_-]/g,
+    "-"
   );
 }
 

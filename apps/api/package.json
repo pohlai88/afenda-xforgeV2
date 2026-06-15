@@ -7,16 +7,17 @@
     "build": "next build",
     "start": "next start",
     "analyze": "ANALYZE=true npm run build",
-    "test": "cross-env NODE_ENV=test vitest run",
+    "test": "vitest run",
     "stripe": "stripe listen --forward-to localhost:3002/webhooks/payments",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@repo/analytics": "workspace:*",
     "@repo/api": "workspace:*",
     "@repo/auth": "workspace:*",
     "@repo/cms": "workspace:*",
+    "@repo/email": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/design-system": "workspace:*",
     "@repo/next-config": "workspace:*",
@@ -40,6 +41,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
     "concurrently": "^9.2.1",
+    "happy-dom": "^20.0.10",
     "typescript": "^5.9.3",
     "vitest": "^4.0.18"
   }

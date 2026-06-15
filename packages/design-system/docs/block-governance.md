@@ -2,6 +2,8 @@
 
 Afenda blocks are governed compositions of `afenda-ui` primitives. They are not new primitives, visual experiments, or domain workflows.
 
+Production authoring guidance lives in [`block-authoring.md`](./block-authoring.md). The Phase 1-9 compatibility and migration policy lives in [`block-migration-guide.md`](./block-migration-guide.md).
+
 ## Layer Rule
 
 - Primitive owns control anatomy, state, focus, invalid, disabled, and aria wiring.

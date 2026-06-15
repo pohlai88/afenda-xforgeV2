@@ -5,7 +5,7 @@ import type {
   CollectionReader,
   ReaderOptions,
 } from "../collections/types";
-import { compileMdxCached } from "../compiler/cache";
+import { compileMdxCached } from "../compiler/mdx";
 import { DEFAULT_LOCALE, normalizeLocale } from "../locale";
 import type { ContentStatus } from "../schemas";
 import type { ContentBody } from "../types";
@@ -162,12 +162,3 @@ export const createCollectionReader = <
     },
   };
 };
-
-export const validateCollectionFrontmatter = <
-  TFrontmatter extends { status: ContentStatus },
-  TMeta extends { _slug: string },
-  TDoc extends TMeta & { body: ContentBody },
->(
-  config: CollectionConfig<TFrontmatter, TMeta, TDoc>,
-  data: unknown
-): TFrontmatter => config.schema.parse(data);

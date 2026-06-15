@@ -23,6 +23,14 @@ const CmsDashboardPage = async () => {
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
+      <Link href="/cms/settings">
+        <Card className="transition-colors hover:bg-muted/40">
+          <CardHeader>
+            <CardTitle>Site settings</CardTitle>
+            <CardDescription>Global site name and tagline</CardDescription>
+          </CardHeader>
+        </Card>
+      </Link>
       {result.data.map((collection) => (
         <Link href={`/cms/${collection.name}`} key={collection.name}>
           <Card className="transition-colors hover:bg-muted/40">

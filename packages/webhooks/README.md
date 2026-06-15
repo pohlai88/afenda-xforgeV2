@@ -1,16 +1,26 @@
-# `@repo/webhooks` — outbound CMS webhooks
+# `@repo/webhooks` — canonical webhook control plane
 
-Org-scoped outbound webhooks for CMS publish/delete events. Deliveries use a Postgres outbox, Vercel cron workers, and [Standard Webhooks v1](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md) signing.
+Org-scoped **outbound** webhooks (CMS publish/delete, test events) and shared **inbound** verification/dispatch (Stripe on `apps/api`). Deliveries use a Postgres outbox, Vercel cron workers, and [Standard Webhooks v1](https://github.com/standard-webhooks/standard-webhooks/blob/main/spec/standard-webhooks.md) signing.
+
+First-party `apps/web` cache refresh is delivered through the same outbound pipeline to `POST /api/webhooks/cms-cache` (not a separate Bearer revalidate hook).
 
 ## Event catalog
 
-| Event | Trigger |
-| ----- | ------- |
-| `cms.document.published` | CMS document saved with `status: published` |
-| `cms.document.unpublished` | Published document deleted |
-| `webhook.test` | Owner clicks **Test** on `/webhooks` |
+Canonical strings live in `lib/registry/events.ts` and are re-exported from `@repo/webhooks`.
 
-Payload schemas for CMS events live in `@repo/cms/events`.
+| Event | Direction | Trigger |
+| ----- | --------- | ------- |
+| `cms.document.published` | Outbound | CMS document saved with `status: published` |
+| `cms.document.unpublished` | Outbound | Published document deleted |
+| `webhook.test` | Outbound | Owner clicks **Test** on `/webhooks` |
+| `stripe.checkout.session.completed` | Inbound | Stripe webhook on `apps/api` |
+| `stripe.subscription_schedule.canceled` | Inbound | Stripe webhook on `apps/api` |
+
+Payload schemas for CMS events live in `@repo/cms/events` (constants re-exported from this package).
+
+## Producing outbound events
+
+Apps should call `emitOrgEvent` in `apps/app/lib/emit-org-event.ts` — the sole producer — which delegates to `enqueueWebhookEvent`. Do not call `fetch` to subscriber URLs from app code.
 
 ## Payload shape
 
@@ -80,8 +90,9 @@ const payload = JSON.parse(rawBody);
 | `processPendingDeliveries(limit)` | Cron worker (global queue) |
 | `createWebhookEndpoint` / `updateWebhookEndpoint` / `deleteWebhookEndpoint` | Endpoint CRUD |
 | `rotateWebhookEndpointSecret(orgId, endpointId)` | Zero-downtime secret rotation |
-| `replayWebhookDelivery(orgId, deliveryId)` | Reset failed delivery to pending |
-| `listWebhookEndpoints` / `listWebhookDeliveries` | Audit + UI |
+| `replayWebhookDelivery(orgId, deliveryId)` | Reset failed delivery to pending for cron pickup |
+| `resetWebhookEndpointHealth(orgId, endpointId)` | Clear auto-disable strikes / cooldown |
+| `listWebhookEndpoints` / `listWebhookDeliveries` | Audit + UI — returns `{ deliveries, nextCursor }` with `endpointId`, `status`, `cursor` filters |
 | `pruneOldWebhookDeliveries()` | Retention cleanup (cron) |
 
 ## Operations
@@ -97,10 +108,22 @@ const payload = JSON.parse(rawBody);
 | `WEBHOOK_DELIVERY_TIMEOUT_MS` | `10000` | Outbound HTTP timeout |
 | `WEBHOOK_SIGNATURE_TOLERANCE_SEC` | `300` | Verify helper skew window |
 | `WEBHOOK_DELIVERY_RETENTION_DAYS` | `90` | Retention cron cutoff |
+| `STRIPE_WEBHOOK_SECRET` | — | Inbound Stripe verify (`whsec_…`) on `apps/api` |
+| `WEBHOOK_FIRST_PARTY_WEB_URL` | — | First-party subscriber URL (`apps/app` outbox) |
+| `WEBHOOK_FIRST_PARTY_WEB_SECRET` | — | Signing secret for `apps/web` cms-cache receiver |
+
+## Inbound (`@repo/webhooks/inbound`)
+
+| Export | Purpose |
+| ------ | ------- |
+| `registerInboundHandler(provider, eventType, handler)` | Register Stripe (or other) handlers in `apps/api/lib/webhook-handlers.ts` |
+| `handleInboundWebhook(provider, request, options?)` | Verify + dispatch; Stripe verify injected via `options.stripe` |
 
 ## Tests
 
 ```bash
-pnpm --filter @repo/webhooks test
-pnpm --filter @repo/webhooks test:integration  # requires DATABASE_URL
+pnpm --filter @repo/webhooks test              # unit (crypto, validation)
+pnpm --filter @repo/webhooks test:integration  # DB smoke (requires DATABASE_URL)
 ```
+
+Unit and integration are separate Vitest projects in [`vitest.config.mts`](vitest.config.mts). Integration runs serially (`maxWorkers: 1`) to avoid DB races.

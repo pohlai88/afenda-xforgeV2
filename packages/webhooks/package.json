@@ -5,13 +5,15 @@
   "exports": {
     ".": "./index.ts",
     "./server": "./server.ts",
-    "./keys": "./keys.ts"
+    "./inbound": "./inbound.ts",
+    "./keys": "./keys.ts",
+    "./registry/events": "./lib/registry/events.ts"
   },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "test": "vitest run --config vitest.config.mts",
-    "test:integration": "vitest run --config vitest.integration.config.mts",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "test": "vitest run --config vitest.config.mts --project unit",
+    "test:integration": "vitest run --config vitest.config.mts --project integration",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@paralleldrive/cuid2": "^3.3.0",

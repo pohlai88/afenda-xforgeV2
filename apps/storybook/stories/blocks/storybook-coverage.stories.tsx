@@ -355,7 +355,7 @@ export const InteractionSelectionFilteringBulkActions: Story = {
     await expect(canvas.getByText("1 results")).toBeVisible();
     await expect(canvas.getByText("Mercury Parts")).toBeVisible();
 
-    await userEvent.click(canvas.getByRole("button", { name: "Select all" }));
+    await userEvent.click(canvas.getByRole("checkbox", { name: "Select all" }));
     await expect(canvas.getByText("1 selected")).toBeVisible();
 
     await userEvent.click(

@@ -112,9 +112,23 @@ export async function applyStorybookViteConfig(
         "server-only": join(storybookAppDir, "vite-shims/server-only.ts"),
       },
     },
+    esbuild: {
+      jsx: "automatic",
+      jsxDev: configType !== "PRODUCTION",
+    },
     optimizeDeps: {
-      include: ["react", "react-dom", "lucide-react"],
+      include: [
+        "react",
+        "react-dom",
+        "react/jsx-runtime",
+        "react/jsx-dev-runtime",
+        "lucide-react",
+        "@storybook/react-dom-shim",
+        "@storybook/addon-docs",
+        "@storybook/blocks",
+      ],
       esbuildOptions: {
+        jsx: "automatic",
         plugins: [stripUseClientEsbuildPlugin()],
       },
     },

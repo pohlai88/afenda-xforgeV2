@@ -2,7 +2,7 @@
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
     "paths": {
-      "server-only": ["./scripts/server-only-stub.ts"]
+      "server-only": ["./test-support/server-only-stub.ts"]
     }
   },
   "include": ["scripts/**/*.ts", "sync/**/*.ts"]

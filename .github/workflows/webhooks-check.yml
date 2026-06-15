@@ -5,16 +5,38 @@ on:
     paths:
       - "packages/webhooks/**"
       - "packages/database/**"
+      - "apps/app/app/(authenticated)/webhooks/**"
+      - "apps/app/app/actions/webhooks/**"
+      - "apps/api/app/webhooks/**"
+      - "apps/api/lib/webhook-handlers.ts"
+      - "apps/web/app/api/webhooks/**"
+      - "apps/app/lib/emit-org-event.ts"
+      - "packages/webhooks/test/integration/**"
+      - "apps/web/test/**"
+      - "apps/web/vitest.config.mts"
+      - "packages/cms/events.ts"
       - "apps/api/app/cron/webhooks-*/**"
-      - "pnpm-lock.yaml"
+      - "apps/api/test/payments.test.ts"
+      - "packages/payments/stripe-webhooks.ts"
   push:
     branches:
       - main
     paths:
       - "packages/webhooks/**"
       - "packages/database/**"
+      - "apps/app/app/(authenticated)/webhooks/**"
+      - "apps/app/app/actions/webhooks/**"
+      - "apps/api/app/webhooks/**"
+      - "apps/api/lib/webhook-handlers.ts"
+      - "apps/web/app/api/webhooks/**"
+      - "apps/app/lib/emit-org-event.ts"
+      - "packages/webhooks/test/integration/**"
+      - "apps/web/test/**"
+      - "apps/web/vitest.config.mts"
+      - "packages/cms/events.ts"
       - "apps/api/app/cron/webhooks-*/**"
-      - "pnpm-lock.yaml"
+      - "apps/api/test/payments.test.ts"
+      - "packages/payments/stripe-webhooks.ts"
 
 concurrency:
   group: webhooks-check-${{ github.workflow }}-${{ github.ref }}
@@ -49,6 +71,24 @@ jobs:
 
       - name: Unit tests
         run: pnpm --filter @repo/webhooks test
+
+      - name: Drift check (no legacy webhook paths)
+        run: |
+          set -euo pipefail
+          if rg -n 'notifyWebContentChanged|CMS_REVALIDATE_SECRET|/api/revalidate' \
+            apps packages \
+            --glob '!**/*.md' \
+            --glob '!**/agent-transcripts/**'; then
+            echo "Found legacy webhook/revalidate drift"
+            exit 1
+          fi
+          echo "No drift patterns found"
+
+      - name: API webhook route tests
+        run: pnpm --filter api test -- test/payments.test.ts
+
+      - name: Web cms-cache route tests
+        run: pnpm --filter web test
 
   integration:
     name: Integration tests

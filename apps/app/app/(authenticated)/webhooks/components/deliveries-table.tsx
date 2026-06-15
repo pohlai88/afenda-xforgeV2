@@ -1,9 +1,10 @@
 "use client";
 
-import type {
-  WebhookDeliveryRecord,
-  WebhookDeliveryStatus,
-  WebhookEndpointPublic,
+import {
+  WEBHOOK_DELIVERY_STATUSES,
+  type WebhookDeliveryRecord,
+  type WebhookDeliveryStatus,
+  type WebhookEndpointPublic,
 } from "@repo/webhooks";
 import { Badge } from "@repo/design-system/components/ui/badge";
 import { Button } from "@repo/design-system/components/ui/button";
@@ -25,8 +26,12 @@ type DeliveriesTableProperties = {
   isOwner: boolean;
   statusFilter: WebhookDeliveryStatus | "all";
   endpointFilter: string;
+  nextCursor: string | null;
+  isLoadingMore: boolean;
+  loadMoreError: string | null;
   onStatusFilterChange: (status: WebhookDeliveryStatus | "all") => void;
   onEndpointFilterChange: (endpointId: string) => void;
+  onLoadMore: () => void;
 };
 
 const statusVariant = (
@@ -53,8 +58,12 @@ export const DeliveriesTable = ({
   isOwner,
   statusFilter,
   endpointFilter,
+  nextCursor,
+  isLoadingMore,
+  loadMoreError,
   onStatusFilterChange,
   onEndpointFilterChange,
+  onLoadMore,
 }: DeliveriesTableProperties) => {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -94,11 +103,12 @@ export const DeliveriesTable = ({
             }
             value={statusFilter}
           >
-            <option value="all">All</option>
-            <option value="pending">Pending</option>
-            <option value="delivered">Delivered</option>
-            <option value="retrying">Retrying</option>
-            <option value="failed">Failed</option>
+          <option value="all">All</option>
+          {WEBHOOK_DELIVERY_STATUSES.map((status) => (
+            <option key={status} value={status}>
+              {status}
+            </option>
+          ))}
           </select>
         </div>
         <div className="flex items-center gap-2">
@@ -128,6 +138,11 @@ export const DeliveriesTable = ({
       {notice ? (
         <p className="text-muted-foreground text-sm" role="status">
           {notice}
+        </p>
+      ) : null}
+      {loadMoreError ? (
+        <p className="text-destructive text-sm" role="alert">
+          {loadMoreError}
         </p>
       ) : null}
       {deliveries.length === 0 ? (
@@ -199,6 +214,18 @@ export const DeliveriesTable = ({
           </TableBody>
         </Table>
       )}
+      {nextCursor ? (
+        <div className="flex justify-center">
+          <Button
+            disabled={isLoadingMore || isPending}
+            onClick={onLoadMore}
+            type="button"
+            variant="outline"
+          >
+            {isLoadingMore ? "Loading…" : "Load more"}
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 };

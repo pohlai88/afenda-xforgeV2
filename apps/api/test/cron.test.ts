@@ -1,16 +1,15 @@
-import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { beforeAll, afterEach, beforeEach, expect, test, vi } from "vitest";
 
-const returning = vi.fn(async () => [{ id: 1 }]);
-const values = vi.fn(() => ({ returning }));
-const insert = vi.fn(() => ({ values }));
-const where = vi.fn(async () => undefined);
-const deleteMock = vi.fn(() => ({ where }));
+const db = vi.hoisted(() => {
+  const { createRequire } = require("node:module") as typeof import("node:module");
+  const req = createRequire(import.meta.url);
+  const { createInsertDeleteDatabaseMock } =
+    req("../../../test-support/mock-database.ts") as typeof import("../../../test-support/mock-database.ts");
+  return createInsertDeleteDatabaseMock(vi.fn);
+});
 
 vi.mock("@repo/database", () => ({
-  database: {
-    delete: deleteMock,
-    insert,
-  },
+  database: db.database,
 }));
 
 vi.mock("@repo/observability/error", () => ({
@@ -24,6 +23,12 @@ vi.mock("@repo/observability/log", () => ({
   },
 }));
 
+let GET: typeof import("../app/cron/keep-alive/route").GET;
+
+beforeAll(async () => {
+  ({ GET } = await import("../app/cron/keep-alive/route"));
+});
+
 beforeEach(() => {
   process.env.CRON_SECRET = "cron-secret";
   vi.clearAllMocks();
@@ -34,8 +39,6 @@ afterEach(() => {
 });
 
 test("Cron keep-alive rejects missing authorization", async () => {
-  const { GET } = await import("../app/cron/keep-alive/route");
-
   const response = await GET(new Request("https://api.test/cron/keep-alive"));
 
   expect(response.status).toBe(401);
@@ -46,12 +49,10 @@ test("Cron keep-alive rejects missing authorization", async () => {
       message: "Unauthorized",
     },
   });
-  expect(insert).not.toHaveBeenCalled();
+  expect(db.insert).not.toHaveBeenCalled();
 });
 
 test("Cron keep-alive rejects invalid authorization", async () => {
-  const { GET } = await import("../app/cron/keep-alive/route");
-
   const response = await GET(
     new Request("https://api.test/cron/keep-alive", {
       headers: {
@@ -61,12 +62,10 @@ test("Cron keep-alive rejects invalid authorization", async () => {
   );
 
   expect(response.status).toBe(401);
-  expect(insert).not.toHaveBeenCalled();
+  expect(db.insert).not.toHaveBeenCalled();
 });
 
 test("Cron keep-alive accepts valid authorization", async () => {
-  const { GET } = await import("../app/cron/keep-alive/route");
-
   const response = await GET(
     new Request("https://api.test/cron/keep-alive", {
       headers: {
@@ -82,6 +81,6 @@ test("Cron keep-alive accepts valid authorization", async () => {
       status: "ok",
     },
   });
-  expect(insert).toHaveBeenCalledOnce();
-  expect(deleteMock).toHaveBeenCalledOnce();
+  expect(db.insert).toHaveBeenCalledOnce();
+  expect(db.deleteMock).toHaveBeenCalledOnce();
 });

@@ -2,6 +2,7 @@ import "server-only";
 
 export { backfillDocumentMirror } from "./backfill";
 export { deleteDocumentMirror } from "./delete-mirror";
+export { ensureCmsMirrorSchema } from "./ensure-schema";
 export { searchDocumentMirror } from "./search-mirror";
 export type {
   CmsSearchHit,

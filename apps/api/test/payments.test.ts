@@ -1,4 +1,6 @@
-import { beforeEach, expect, test, vi } from "vitest";
+import { beforeAll, beforeEach, expect, test, vi } from "vitest";
+
+vi.mock("@/lib/webhook-handlers", () => ({}));
 
 const headersMock = vi.hoisted(() => vi.fn());
 const constructEvent = vi.hoisted(() => vi.fn());
@@ -52,14 +54,19 @@ vi.mock("@repo/payments", () => ({
   },
 }));
 
+let GET: typeof import("../app/webhooks/payments/route").GET;
+let POST: typeof import("../app/webhooks/payments/route").POST;
+
+beforeAll(async () => {
+  ({ GET, POST } = await import("../app/webhooks/payments/route"));
+});
+
 beforeEach(() => {
   vi.clearAllMocks();
   headersMock.mockResolvedValue(new Headers());
 });
 
 test("Stripe webhook rejects missing signature", async () => {
-  const { POST } = await import("../app/webhooks/payments/route");
-
   const response = await POST(
     new Request("https://api.test/webhooks/payments", {
       body: "{}",
@@ -80,8 +87,6 @@ test("Stripe webhook rejects missing signature", async () => {
 });
 
 test("Stripe webhook rejects unsupported GET with Allow header", async () => {
-  const { GET } = await import("../app/webhooks/payments/route");
-
   const response = GET();
 
   expect(response.status).toBe(405);
@@ -95,21 +100,17 @@ test("Stripe webhook rejects unsupported GET with Allow header", async () => {
 });
 
 test("Stripe webhook rejects invalid signature", async () => {
-  headersMock.mockResolvedValue(
-    new Headers({
-      "stripe-signature": "invalid",
-    })
-  );
   constructEvent.mockImplementation(() => {
     throw new Error("signature mismatch");
   });
-
-  const { POST } = await import("../app/webhooks/payments/route");
 
   const response = await POST(
     new Request("https://api.test/webhooks/payments", {
       body: "{}",
       method: "POST",
+      headers: {
+        "stripe-signature": "invalid",
+      },
     })
   );
 
@@ -124,11 +125,6 @@ test("Stripe webhook rejects invalid signature", async () => {
 });
 
 test("Stripe webhook returns receipt metadata without leaking event object", async () => {
-  headersMock.mockResolvedValue(
-    new Headers({
-      "stripe-signature": "valid",
-    })
-  );
   constructEvent.mockReturnValue({
     data: {
       object: {},
@@ -137,12 +133,13 @@ test("Stripe webhook returns receipt metadata without leaking event object", asy
     type: "unknown.event",
   });
 
-  const { POST } = await import("../app/webhooks/payments/route");
-
   const response = await POST(
     new Request("https://api.test/webhooks/payments", {
       body: "{}",
       method: "POST",
+      headers: {
+        "stripe-signature": "valid",
+      },
     })
   );
 
@@ -151,7 +148,7 @@ test("Stripe webhook returns receipt metadata without leaking event object", asy
     ok: true,
     data: {
       received: true,
-      type: "unknown.event",
+      type: "stripe.unknown.event",
     },
   });
   expect(shutdown).toHaveBeenCalledOnce();

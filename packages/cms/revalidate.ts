@@ -3,6 +3,7 @@ import type { CollectionName } from "./collections";
 
 export {
   CMS_CACHE_TAG_ALL,
+  CMS_SETTINGS_TAG,
   cmsCollectionTag,
   cmsDocumentTag,
   getCmsCacheTags,
@@ -39,6 +40,17 @@ export const getCmsRevalidationPaths = ({
     if (collection === "legal" && slug) {
       paths.add(`${prefix}/legal/${slug}`);
     }
+  }
+
+  return [...paths];
+};
+
+export const getSiteSettingsRevalidationPaths = (): string[] => {
+  const paths = new Set<string>(["/sitemap.xml"]);
+
+  for (const targetLocale of cmsLocales) {
+    const prefix = localePathPrefix(targetLocale);
+    paths.add(prefix === "" ? "/" : prefix);
   }
 
   return [...paths];

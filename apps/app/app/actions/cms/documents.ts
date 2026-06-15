@@ -8,6 +8,7 @@ import {
   CMS_EVENT_UNPUBLISHED,
   type CmsDocumentEventInput,
 } from "@repo/cms/events";
+import { cmsCollectionSchema } from "@repo/cms";
 import {
   fetchDocumentListItems,
   type CmsDocumentListItem,
@@ -22,7 +23,6 @@ import {
 } from "@repo/cms/locale";
 import { createPreviewToken } from "@repo/cms/preview-token";
 import { getCmsCacheTags } from "@repo/cms/revalidate";
-import { notifyWebContentChanged } from "@repo/cms/revalidate-web";
 import {
   cmsReaders,
   collectionLabels,
@@ -40,14 +40,14 @@ import {
   upsertDocumentMirror,
   type CmsSearchHit,
 } from "@repo/cms/sync";
-import { enqueueWebhookEvent } from "@repo/webhooks/server";
+import { emitOrgEvent } from "@/lib/emit-org-event";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { env } from "@/env";
 
 export type { CmsDocumentListItem } from "@repo/cms/document-list";
 
-const collectionSchema = z.enum(["blog", "legal"]);
+const collectionSchema = cmsCollectionSchema;
 
 const saveDocumentSchema = z.object({
   collection: collectionSchema,
@@ -87,33 +87,16 @@ const revalidateCmsPaths = (
   }
 };
 
-const notifyPublicContentChange = async (
-  collection: CmsCollectionName,
-  locale: CmsLocale,
-  slug?: string
-) => {
-  await notifyWebContentChanged({
-    collection,
-    locale,
-    slug,
-    webUrl: env.NEXT_PUBLIC_WEB_URL,
-  });
-};
-
 const enqueueCmsWebhook = async (
   organizationId: string,
   eventType: typeof CMS_EVENT_PUBLISHED | typeof CMS_EVENT_UNPUBLISHED,
   payload: CmsDocumentEventInput
 ) => {
-  try {
-    await enqueueWebhookEvent(
-      organizationId,
-      eventType,
-      buildCmsDocumentEvent(payload)
-    );
-  } catch (error) {
-    console.error(`[cms] Webhook enqueue ${eventType} failed:`, error);
-  }
+  await emitOrgEvent(
+    organizationId,
+    eventType,
+    buildCmsDocumentEvent(payload)
+  );
 };
 
 const parsePublishedAt = (
@@ -230,6 +213,11 @@ export const saveDocument = async (
     }
 
     const locale = parsed.locale;
+    const priorRaw =
+      parsed.slug
+        ? await readRawDocument(parsed.collection, parsed.slug, locale)
+        : null;
+    const wasPublished = priorRaw?.frontmatter.status === "published";
 
     const result = await saveCmsDocument(parsed.collection, {
       slug: parsed.slug,
@@ -251,20 +239,27 @@ export const saveDocument = async (
       );
 
       if (isPublishedStatus(parsed.frontmatter)) {
-        await Promise.all([
-          notifyPublicContentChange(parsed.collection, locale, result.slug),
-          enqueueCmsWebhook(orgId, CMS_EVENT_PUBLISHED, {
-            collection: parsed.collection,
-            locale,
-            slug: result.slug,
-            title: String(parsed.frontmatter.title ?? ""),
-            status: "published",
-            publishedAt:
-              typeof parsed.frontmatter.date === "string"
-                ? parsed.frontmatter.date
-                : undefined,
-          }),
-        ]);
+        await enqueueCmsWebhook(orgId, CMS_EVENT_PUBLISHED, {
+          collection: parsed.collection,
+          locale,
+          slug: result.slug,
+          title: String(parsed.frontmatter.title ?? ""),
+          status: "published",
+          publishedAt:
+            typeof parsed.frontmatter.date === "string"
+              ? parsed.frontmatter.date
+              : undefined,
+        });
+      } else if (wasPublished) {
+        await enqueueCmsWebhook(orgId, CMS_EVENT_UNPUBLISHED, {
+          collection: parsed.collection,
+          locale,
+          slug: result.slug,
+          title: String(
+            parsed.frontmatter.title ?? priorRaw?.frontmatter.title ?? result.slug
+          ),
+          status: "draft",
+        });
       }
     }
 
@@ -299,16 +294,13 @@ export const deleteDocument = async (
       );
 
       if (wasPublished) {
-        await Promise.all([
-          notifyPublicContentChange(collection, normalizedLocale, slug),
-          enqueueCmsWebhook(orgId, CMS_EVENT_UNPUBLISHED, {
+        await enqueueCmsWebhook(orgId, CMS_EVENT_UNPUBLISHED, {
             collection,
             locale: normalizedLocale,
             slug,
             title: String(raw?.frontmatter.title ?? slug),
             status: "published",
-          }),
-        ]);
+        });
       }
     }
 

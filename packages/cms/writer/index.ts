@@ -22,17 +22,19 @@ export {
 export { slugifyTitle, isValidSlug } from "./slug";
 export { serializeDocument } from "./serialize-document";
 export { getWriteMode } from "./write-mode";
+export { readSiteSettings, saveSiteSettings } from "./settings";
+export type { SettingsSaveResult } from "./settings";
 
 const blogWriter = createCollectionWriter({
   name: "blog",
   schema: blogCollection.schema,
-  defaultFrontmatter: { status: "draft" },
+  defaultFrontmatter: blogCollection.createDefaultFrontmatter(),
 });
 
 const legalWriter = createCollectionWriter({
   name: "legal",
   schema: legalCollection.schema,
-  defaultFrontmatter: { status: "draft" },
+  defaultFrontmatter: legalCollection.createDefaultFrontmatter(),
 });
 
 export const cmsWriters = {
@@ -41,6 +43,13 @@ export const cmsWriters = {
 } as const;
 
 export { cmsReaders } from "../loader";
+export {
+  cmsCollectionNames,
+  cmsCollectionSchema,
+  getCollectionFrontmatterFields,
+  getDefaultFrontmatter,
+  isCmsCollection,
+} from "../collections";
 
 export const collectionLabels: Record<keyof typeof collections, string> = {
   blog: "Blog",
@@ -48,10 +57,6 @@ export const collectionLabels: Record<keyof typeof collections, string> = {
 };
 
 export type CmsCollectionName = keyof typeof collections;
-
-export const isCmsCollection = (
-  value: string
-): value is CmsCollectionName => value in collections;
 
 export const saveCmsDocument = async (
   collection: CmsCollectionName,

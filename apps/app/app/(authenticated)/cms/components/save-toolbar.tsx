@@ -14,6 +14,7 @@ type SaveToolbarProperties = {
   onPublish: () => void;
   onDelete?: () => void;
   onSharePreview?: () => void;
+  onOpenPublicPreview?: () => void;
 };
 
 export const SaveToolbar = ({
@@ -26,6 +27,7 @@ export const SaveToolbar = ({
   onPublish,
   onDelete,
   onSharePreview,
+  onOpenPublicPreview,
 }: SaveToolbarProperties) => (
   <div className="flex flex-wrap items-center gap-2 border-b pb-4">
     <Button disabled={isSaving || !isDirty} onClick={onSaveDraft} type="button">
@@ -47,6 +49,11 @@ export const SaveToolbar = ({
     {slug && onSharePreview ? (
       <Button onClick={onSharePreview} type="button" variant="outline">
         Copy public preview link
+      </Button>
+    ) : null}
+    {slug && onOpenPublicPreview ? (
+      <Button onClick={onOpenPublicPreview} type="button" variant="outline">
+        Open public preview
       </Button>
     ) : null}
     {slug && onDelete ? (

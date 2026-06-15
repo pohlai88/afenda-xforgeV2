@@ -13,3 +13,7 @@ export {
   legalFrontmatterSchema,
   type LegalFrontmatter,
 } from "./legal.schema";
+export {
+  siteSettingsSchema,
+  type SiteSettings,
+} from "./settings.schema";

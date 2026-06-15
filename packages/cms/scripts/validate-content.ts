@@ -4,7 +4,7 @@ const main = async (): Promise<void> => {
   const result = await validateAllContent();
 
   if (result.ok) {
-    console.log(`Validated ${result.fileCount} MDX file(s).`);
+    console.log(`Validated ${result.fileCount} content file(s).`);
     process.exit(0);
   }
 

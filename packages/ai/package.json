@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@ai-sdk/openai": "^3.0.41",
+    "@ai-sdk/react": "^3.0.207",
     "@t3-oss/env-nextjs": "^0.13.10",
     "ai": "^6.0.116",
     "react": "19.2.4",

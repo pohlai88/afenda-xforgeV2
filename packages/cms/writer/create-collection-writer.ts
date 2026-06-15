@@ -3,7 +3,7 @@ import "server-only";
 import { ZodError } from "zod";
 import type { CollectionName } from "../collections";
 import { collections } from "../collections";
-import { clearCompileCache } from "../compiler/cache";
+import { clearCompileCache } from "../compiler/mdx";
 import { getContentSource } from "../loader/resolve-source";
 import { normalizeLocale } from "../locale";
 import type { ContentStatus } from "../schemas";
@@ -77,6 +77,17 @@ export const createCollectionWriter = <
         code: "validation",
         message: "Slug must be lowercase kebab-case",
       };
+    }
+
+    if (
+      input.slug?.trim() &&
+      (await getContentSource().documentExists(
+        config.name,
+        locale,
+        candidate
+      ))
+    ) {
+      return candidate;
     }
 
     if (

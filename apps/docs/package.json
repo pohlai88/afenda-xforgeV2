@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start -p 3004",
     "clean": "git clean -xdf .cache .next .source .turbo dist node_modules",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "fumadocs-core": "^16.6.12",

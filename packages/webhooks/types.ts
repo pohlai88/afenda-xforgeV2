@@ -1,26 +1,52 @@
 import { z } from "zod";
-import type { CmsDocumentEvent } from "@repo/cms/events";
-import type { WebhookDeliveryStatus } from "@repo/database/schema";
+import type { CmsDocumentEvent, CmsSettingsUpdatedEvent } from "@repo/cms/events";
+import {
+  webhookDeliveryStatuses,
+  type WebhookDeliveryStatus,
+} from "@repo/database/schema";
+import {
+  CMS_WEBHOOK_EVENTS,
+  CMS_EVENT_PUBLISHED,
+  CMS_EVENT_UNPUBLISHED,
+  CMS_EVENT_SETTINGS_UPDATED,
+  OUTBOUND_WEBHOOK_EVENT_TYPES,
+  WEBHOOK_TEST_EVENT,
+  type CmsWebhookEventType,
+  type InboundStripeEventType,
+  INBOUND_STRIPE_EVENT_TYPES,
+  STRIPE_EVENT_CHECKOUT_COMPLETED,
+  STRIPE_EVENT_SUBSCRIPTION_SCHEDULE_CANCELED,
+} from "./lib/registry/events";
 
 export type { WebhookDeliveryStatus };
+export type { CmsWebhookEventType, InboundStripeEventType };
 
-export const WEBHOOK_TEST_EVENT = "webhook.test";
-
-export const CMS_WEBHOOK_EVENTS = [
-  "cms.document.published",
-  "cms.document.unpublished",
-] as const;
-
-export type CmsWebhookEventType = (typeof CMS_WEBHOOK_EVENTS)[number];
-
-export const ALL_WEBHOOK_EVENT_TYPES = [
-  ...CMS_WEBHOOK_EVENTS,
+export {
+  CMS_EVENT_PUBLISHED,
+  CMS_EVENT_UNPUBLISHED,
+  CMS_EVENT_SETTINGS_UPDATED,
+  CMS_WEBHOOK_EVENTS,
   WEBHOOK_TEST_EVENT,
-] as const;
+  OUTBOUND_WEBHOOK_EVENT_TYPES,
+  INBOUND_STRIPE_EVENT_TYPES,
+  STRIPE_EVENT_CHECKOUT_COMPLETED,
+  STRIPE_EVENT_SUBSCRIPTION_SCHEDULE_CANCELED,
+};
 
-export type WebhookEventType = (typeof ALL_WEBHOOK_EVENT_TYPES)[number];
+export const WEBHOOK_DELIVERY_STATUSES = webhookDeliveryStatuses;
 
-export const webhookEventTypeSchema = z.enum(ALL_WEBHOOK_EVENT_TYPES);
+export const webhookDeliveryStatusSchema = z.enum(webhookDeliveryStatuses);
+
+export const isWebhookDeliveryStatus = (
+  value: string | null | undefined
+): value is WebhookDeliveryStatus =>
+  webhookDeliveryStatusSchema.safeParse(value).success;
+
+export const ALL_WEBHOOK_EVENT_TYPES = OUTBOUND_WEBHOOK_EVENT_TYPES;
+
+export type WebhookEventType = (typeof OUTBOUND_WEBHOOK_EVENT_TYPES)[number];
+
+export const webhookEventTypeSchema = z.enum(OUTBOUND_WEBHOOK_EVENT_TYPES);
 
 export const cmsWebhookEventTypeSchema = z.enum(CMS_WEBHOOK_EVENTS);
 
@@ -28,6 +54,7 @@ export const cmsWebhookEventTypeSchema = z.enum(CMS_WEBHOOK_EVENTS);
 export type WebhookEventDataMap = {
   "cms.document.published": CmsDocumentEvent;
   "cms.document.unpublished": CmsDocumentEvent;
+  "cms.settings.updated": CmsSettingsUpdatedEvent;
   "webhook.test": { message: string };
 };
 
@@ -38,10 +65,6 @@ export type WebhookPayload<TType extends WebhookEventType> = {
   organizationId: string;
   data: WebhookEventDataMap[TType];
 };
-
-/** @deprecated Use WebhookPayload — event id is sent in the webhook-id header. */
-export type WebhookEnvelope<TType extends WebhookEventType> =
-  WebhookPayload<TType>;
 
 export type WebhookEndpointPublic = {
   id: string;
@@ -54,6 +77,9 @@ export type WebhookEndpointPublic = {
   updatedAt: Date;
   lastDeliveryStatus: WebhookDeliveryStatus | null;
   lastDeliveryError: string | null;
+  recentFailures: number;
+  disabledUntil: Date | null;
+  isAutoDisabled: boolean;
 };
 
 export type WebhookEndpointWithSecret = WebhookEndpointPublic & {
@@ -83,6 +109,16 @@ export type ListWebhookDeliveriesOptions = {
   cursor?: string;
 };
 
+export type ListWebhookDeliveriesResult = {
+  deliveries: WebhookDeliveryRecord[];
+  /** Delivery id cursor for the next page when `deliveries.length === limit`. */
+  nextCursor: string | null;
+};
+
+export type ReplayWebhookDeliveryResult = {
+  queued: true;
+};
+
 export type EnqueueWebhookResult = {
   eventId: string | null;
   deliveryCount: number;
@@ -90,7 +126,7 @@ export type EnqueueWebhookResult = {
 };
 
 export const isWebhookEventType = (value: string): value is WebhookEventType =>
-  (ALL_WEBHOOK_EVENT_TYPES as readonly string[]).includes(value);
+  (OUTBOUND_WEBHOOK_EVENT_TYPES as readonly string[]).includes(value);
 
 export const parseWebhookEventTypes = (
   events: string[]

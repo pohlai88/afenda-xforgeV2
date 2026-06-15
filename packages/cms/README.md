@@ -6,9 +6,12 @@ Git-backed, schema-validated MDX content for the XForge monorepo.
 - **Phase 2 acceptance:** [docs/PHASE2_ACCEPTANCE.md](./docs/PHASE2_ACCEPTANCE.md)
 - **Phase 3A acceptance:** [docs/PHASE3A_ACCEPTANCE.md](./docs/PHASE3A_ACCEPTANCE.md)
 - **Phase 3B acceptance:** [docs/PHASE3B_ACCEPTANCE.md](./docs/PHASE3B_ACCEPTANCE.md)
-- **Content:** `content/blog/`, `content/legal/`
-- **Public API:** `blog.getPost()`, `legal.getPostsMeta()`, etc. via `index.ts`
+- **Phase 3C acceptance:** [docs/PHASE3C_ACCEPTANCE.md](./docs/PHASE3C_ACCEPTANCE.md)
+- **Content:** `content/blog/{locale}/`, `content/legal/{locale}/`, `content/settings.json`
+- **Public API:** `blog.getPost()`, `legal.getPostsMeta()`, `getSiteSettings()` via `index.ts`
+- **Collections registry:** `cmsCollectionSchema`, `getCollectionFrontmatterFields()` via `@repo/cms/collections`
 - **Writer API:** `saveCmsDocument()`, `readRawDocument()` via `@repo/cms/writer`
+- **Mirror sync:** `pnpm cms:sync` (root) / `@repo/cms/sync`
 - **Revalidation:** `getCmsCacheTags()`, `getCmsRevalidationPaths()` via `@repo/cms/revalidate`
 - **Admin UI:** `apps/app` → `/cms` (requires `owner` or `editor` org role)
 
@@ -20,7 +23,7 @@ Git-backed, schema-validated MDX content for the XForge monorepo.
 | GitHub read | `CMS_READ_MODE=github` or `CMS_WRITE_MODE=github` | GitHub Contents API at request time |
 | Local write | `CMS_WRITE_MODE=local` (default) | Write MDX to repo filesystem |
 | GitHub write | `CMS_WRITE_MODE=github` | Commit MDX via GitHub Contents API |
-| Live publish | `CMS_REVALIDATE_SECRET` on `apps/app` + `apps/web` | Studio publish → `POST /api/revalidate` → ISR refresh |
+| Live publish | `WEBHOOK_FIRST_PARTY_*` on `apps/app` + `apps/web` | Studio publish → `@repo/webhooks` outbox → `POST /api/webhooks/cms-cache` on `apps/web` |
 
 Production `apps/web` should set `CMS_READ_MODE=github` (or rely on auto when write mode is `github`) so published content appears without redeploying the app.
 
@@ -34,4 +37,5 @@ Production `apps/web` should set `CMS_READ_MODE=github` (or rely on auto when wr
 | `CMS_GITHUB_REPO` | `owner/repo` |
 | `CMS_GITHUB_BRANCH` | Branch (default `main`) |
 | `CMS_PREVIEW_SECRET` | HMAC for signed draft preview URLs |
-| `CMS_REVALIDATE_SECRET` | Bearer token for `/api/revalidate` |
+| `WEBHOOK_FIRST_PARTY_WEB_URL` | Outbound URL for marketing cache (`apps/app`; see `@repo/webhooks`) |
+| `WEBHOOK_FIRST_PARTY_WEB_SECRET` | Shared Standard Webhooks secret (`apps/app` + `apps/web`) |

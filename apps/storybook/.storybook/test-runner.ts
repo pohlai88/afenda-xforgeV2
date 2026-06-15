@@ -11,6 +11,7 @@ const storybookConfigDir = dirname(fileURLToPath(import.meta.url));
 const reportDir = join(storybookConfigDir, "a11y-reports");
 const summaryPath = join(reportDir, "summary.md");
 const indexPath = join(reportDir, "index.json");
+const interactionLane = process.env.STORYBOOK_INTERACTION_LANE === "1";
 const overflowCheckEnabled = process.env.STORYBOOK_OVERFLOW_CHECK === "1";
 const overflowWidth = Number(process.env.STORYBOOK_OVERFLOW_WIDTH ?? 0);
 const overflowLabel =
@@ -162,6 +163,10 @@ const config: TestRunnerConfig = {
     await injectAxe(page);
   },
   async postVisit(page, context) {
+    if (interactionLane) {
+      return;
+    }
+
     const storyContext = await getStoryContext(page, context);
 
     if (overflowCheckEnabled && !shouldSkipPostVisitOverflow(storyContext)) {

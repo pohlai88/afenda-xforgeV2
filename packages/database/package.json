@@ -8,9 +8,9 @@
     "./schema": "./schema.ts"
   },
   "scripts": {
-    "build": "tsc --noEmit --emitDeclarationOnly false",
+    "build": "node -e \"console.log('@repo/database build skipped (types via typecheck)')\"",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:pull": "drizzle-kit pull",

@@ -3,6 +3,7 @@ import { database } from "@repo/database";
 import { cmsDocument, cmsDocumentRevision } from "@repo/database/schema";
 import { and, eq } from "drizzle-orm";
 import type { CollectionName } from "../collections";
+import { ensureCmsMirrorSchema } from "./ensure-schema";
 
 export const deleteDocumentMirror = async (input: {
   collection: CollectionName;
@@ -11,6 +12,8 @@ export const deleteDocumentMirror = async (input: {
   title: string;
   status: string;
 }): Promise<boolean> => {
+  await ensureCmsMirrorSchema();
+
   const [existing] = await database
     .select({ id: cmsDocument.id })
     .from(cmsDocument)

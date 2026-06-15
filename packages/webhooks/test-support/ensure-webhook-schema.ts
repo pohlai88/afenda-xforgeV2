@@ -9,7 +9,11 @@ const migrationsDir = path.resolve(
   "../../database/drizzle"
 );
 
-const migrationFiles = ["0007_webhook_outbox.sql", "0009_webhook_ops.sql"];
+const migrationFiles = [
+  "0007_webhook_outbox.sql",
+  "0009_webhook_ops.sql",
+  "0010_webhook_endpoint_health.sql",
+];
 
 const columnExists = async (
   tableName: string,
@@ -51,6 +55,24 @@ export const ensureWebhookOutboxSchema = async (): Promise<void> => {
   if (!hasResponseBody || !hasSecretPrevious) {
     const migrationSql = readFileSync(
       path.join(migrationsDir, migrationFiles[1]!),
+      "utf8"
+    );
+    await database.execute(sql.raw(migrationSql));
+  }
+
+  const hasRecentFailures = await columnExists(
+    "webhook_endpoints",
+    "recentFailures"
+  );
+  const hasDisabledUntil = await columnExists(
+    "webhook_endpoints",
+    "disabledUntil"
+  );
+  const hasKind = await columnExists("webhook_endpoints", "kind");
+
+  if (!hasRecentFailures || !hasDisabledUntil || !hasKind) {
+    const migrationSql = readFileSync(
+      path.join(migrationsDir, migrationFiles[2]!),
       "utf8"
     );
     await database.execute(sql.raw(migrationSql));

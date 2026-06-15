@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "predev": "node ./scripts/clean-vite-cache.mjs",
     "dev": "storybook dev -p 6006",
     "prebuild": "node ./scripts/clean-static.mjs",
     "build": "storybook build",
@@ -14,7 +15,7 @@
     "clean": "node ./scripts/clean.mjs",
     "test-storybook": "test-storybook --url http://127.0.0.1:6006 --skipTags visual-audit",
     "test-storybook:ci": "test-storybook --ci --url http://127.0.0.1:6006 --maxWorkers 1 --testTimeout 60000 --skipTags visual-audit",
-    "test-storybook:interaction": "test-storybook --ci --url http://127.0.0.1:6006 --maxWorkers 2 --testTimeout 20000 --includeTags interaction --skipTags visual-audit",
+    "test-storybook:interaction": "cross-env STORYBOOK_INTERACTION_LANE=1 test-storybook --ci --url http://127.0.0.1:6006 --maxWorkers 1 --testTimeout 45000 --includeTags interaction --skipTags visual-audit",
     "test-storybook:interaction:watch": "test-storybook --url http://127.0.0.1:6006 --watch --maxWorkers 1 --testTimeout 20000 --includeTags interaction --skipTags visual-audit",
     "test-storybook:coverage": "test-storybook --ci --url http://127.0.0.1:6006 --coverage --coverageDirectory coverage/storybook --maxWorkers 1 --testTimeout 60000 --skipTags visual-audit",
     "test-storybook:list": "test-storybook --url http://127.0.0.1:6006 --listTests --skipTags visual-audit",
@@ -22,7 +23,7 @@
     "test-storybook:snapshots:update": "test-storybook --url http://127.0.0.1:6006 --updateSnapshot --maxWorkers 1 --testTimeout 60000 --skipTags visual-audit",
     "test-storybook:watch": "test-storybook --url http://127.0.0.1:6006 --watch --skipTags visual-audit",
     "test-storybook:visual": "chromatic --exit-zero-on-changes --config-file chromatic.config.json",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -55,6 +56,7 @@
     "@types/react-dom": "19.2.3",
     "axe-playwright": "^2.2.2",
     "chromatic": "^15.2.0",
+    "cross-env": "^7.0.3",
     "postcss": "^8",
     "storybook": "^10.4.4",
     "tailwindcss": "^4.2.1",

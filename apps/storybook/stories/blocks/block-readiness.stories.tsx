@@ -38,10 +38,25 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+const contractRows = [
+  ["Northwind Trading", "Jordan Lee", "Pending", "4h"],
+  ["Contoso Retail", "Maya Chen", "Approved", "1d"],
+  ["Fabrikam Health", "Omar Ali", "Review", "2h"],
+] as const;
+
+const statsMetrics = [
+  ["Open approvals", "18"],
+  ["SLA risk", "4"],
+  ["Audit events", "236"],
+] as const;
+
 export const DataTableShellContract: Story = {
   render: () => (
     <section
-      className={cn("w-[880px]", blockRecipe("blockShell", "blockStack"))}
+      className={cn(
+        "w-[min(880px,calc(100vw-2rem))]",
+        blockRecipe("blockShell", "blockStack")
+      )}
     >
       <header className={blockRecipe("blockHeader")}>
         <div className={blockRecipe("blockHeaderContent")}>
@@ -54,7 +69,7 @@ export const DataTableShellContract: Story = {
         <div className={blockRecipe("blockToolbar")}>
           <Badge tone="warning">3 pending</Badge>
           <Button size="sm" variant="secondary">
-            <PlusIcon className="size-4" />
+            <PlusIcon aria-hidden="true" className="size-4" />
             New request
           </Button>
         </div>
@@ -66,9 +81,13 @@ export const DataTableShellContract: Story = {
         )}
       >
         <div className={blockRecipe("blockToolbar")}>
-          <Input className="max-w-64" placeholder="Search tenants..." />
+          <Input
+            aria-label="Search tenant approval contracts"
+            className="max-w-64"
+            placeholder="Search tenants..."
+          />
           <Button size="sm" variant="quiet">
-            <FilterIcon className="size-4" />
+            <FilterIcon aria-hidden="true" className="size-4" />
             Filters
           </Button>
         </div>
@@ -83,11 +102,7 @@ export const DataTableShellContract: Story = {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {[
-              ["Northwind Trading", "Jordan Lee", "Pending", "4h"],
-              ["Contoso Retail", "Maya Chen", "Approved", "1d"],
-              ["Fabrikam Health", "Omar Ali", "Review", "2h"],
-            ].map(([tenant, owner, status, sla]) => (
+            {contractRows.map(([tenant, owner, status, sla]) => (
               <TableRow key={tenant}>
                 <TableCell className="font-medium">{tenant}</TableCell>
                 <TableCell>{owner}</TableCell>
@@ -114,14 +129,13 @@ export const DataTableShellContract: Story = {
 export const StatsAndEmptyContracts: Story = {
   render: () => (
     <section
-      className={cn("w-[760px]", blockRecipe("blockShell", "blockStack"))}
+      className={cn(
+        "w-[min(760px,calc(100vw-2rem))]",
+        blockRecipe("blockShell", "blockStack")
+      )}
     >
-      <div className="grid grid-cols-3 gap-3">
-        {[
-          ["Open approvals", "18"],
-          ["SLA risk", "4"],
-          ["Audit events", "236"],
-        ].map(([label, value]) => (
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        {statsMetrics.map(([label, value]) => (
           <div
             className={cn(
               blockRecipe("blockPanel", "blockPanelPadding", "blockSection")
@@ -150,7 +164,10 @@ export const StatsAndEmptyContracts: Story = {
 export const SupportedBlockRegistry: Story = {
   render: () => (
     <section
-      className={cn("w-[920px]", blockRecipe("blockShell", "blockStack"))}
+      className={cn(
+        "w-[min(920px,calc(100vw-2rem))]",
+        blockRecipe("blockShell", "blockStack")
+      )}
     >
       <header className={blockRecipe("blockHeader")}>
         <div className={blockRecipe("blockHeaderContent")}>
@@ -167,7 +184,7 @@ export const SupportedBlockRegistry: Story = {
         </Badge>
       </header>
 
-      <div className={cn(blockRecipe("blockPanel"), "overflow-hidden")}>
+      <div className={cn(blockRecipe("blockPanel"), "overflow-x-auto")}>
         <Table variant="plain">
           <TableHeader>
             <TableRow>

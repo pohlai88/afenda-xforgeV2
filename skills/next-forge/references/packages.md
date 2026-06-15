@@ -4,17 +4,17 @@ All packages live in `/packages/` and are imported as `@repo/<name>`.
 
 ## Authentication (`@repo/auth`)
 
-**Provider**: Clerk
+**Provider**: Supabase Auth
 
-Handles user authentication, organization management, and session handling.
+Handles user authentication, organization membership, and session handling.
 
 **Key exports**:
 - `AuthProvider` — wrapped inside `DesignSystemProvider`
-- Pre-built Clerk components: `<OrganizationSwitcher>`, `<UserButton>`, `<SignIn>`, `<SignUp>`
+- Server guards: `withEditor`, `withOwner`, `withOrg`
 
-**Webhooks**: Clerk sends user lifecycle events to `POST /api/webhooks/auth` (handled in the `api` app). Events include user creation, updates, and deletion.
+**Inbound webhooks**: No HTTP auth webhook is active. `POST /webhooks/auth` on `apps/api` (port 3002) returns **501** — organization bootstrap runs on first authenticated app load.
 
-**Swappable to**: Supabase Auth, Auth.js, Better Auth.
+**Swappable to**: Auth.js, Better Auth, or other providers via `@repo/auth` adapters.
 
 ## Database (`@repo/database`)
 
@@ -225,29 +225,38 @@ const dict = await getDictionary(locale);
 
 ## Webhooks (`@repo/webhooks`)
 
-### Inbound
-- **Stripe**: `POST /api/webhooks/payments` — payment and subscription events
-- **Clerk**: `POST /api/webhooks/auth` — user lifecycle events
-- **Local testing**: Stripe CLI auto-forwards to localhost
+Canonical webhook control plane — Postgres outbox outbound + inbound gateway.
+
+### Inbound (`apps/api`, port 3002)
+
+| Route | Status | Notes |
+| ----- | ------ | ----- |
+| `POST /webhooks/payments` | Active | Stripe — `@repo/webhooks/inbound` + `@repo/payments/stripe-webhooks` |
+| `POST /webhooks/auth` | **501 stub** | Not configured; org bootstrap on first app load |
+
+**Local Stripe testing:** `stripe listen --forward-to localhost:3002/webhooks/payments`
 
 ### Outbound
+
 **Provider:** Internal outbox (`webhook_endpoints` + `webhook_deliveries`)
 
 **Key exports:**
 - `@repo/webhooks` — `verifyStandardWebhook`, types, signing helpers (isomorphic)
+- `@repo/webhooks/inbound` — `handleInboundWebhook`, `registerInboundHandler`
 - `@repo/webhooks/server` — enqueue, dispatch, endpoint CRUD, rotation, replay, retention
 
 | Server export | Purpose |
 | ------------- | ------- |
-| `enqueueWebhookEvent(orgId, eventType, data)` | Fan-out to matching endpoints |
+| `enqueueWebhookEvent(orgId, eventType, data)` | Fan-out to matching endpoints + first-party web |
 | `processPendingDeliveries(limit)` | Cron worker delivery + retries |
 | `createWebhookEndpoint` / `listWebhookEndpoints` / `updateWebhookEndpoint` / `deleteWebhookEndpoint` | Endpoint management |
+| `resetWebhookEndpointHealth` | Clear auto-disable strikes / cooldown |
 | `rotateWebhookEndpointSecret` | 24h grace dual-signature rotation |
 | `replayWebhookDelivery` | Re-queue failed deliveries |
-| `listWebhookDeliveries` | Audit history (filters: endpoint, status, cursor) |
+| `listWebhookDeliveries` | Audit history — `{ deliveries, nextCursor }` with endpoint, status, cursor filters |
 | `pruneOldWebhookDeliveries` | Retention cron cleanup |
 
-CMS publish enqueues events; `apps/api/cron/webhooks-deliver` delivers with Standard Webhooks v1 signing (`webhook-id`, `webhook-timestamp`, `webhook-signature`). Subscriber guide: `packages/webhooks/README.md`.
+CMS publish calls `emitOrgEvent` in `apps/app`; `apps/api/cron/webhooks-deliver` delivers with Standard Webhooks v1 signing. First-party marketing cache: `WEBHOOK_FIRST_PARTY_WEB_URL` → `apps/web` `POST /api/webhooks/cms-cache`. Subscriber guide: `packages/webhooks/README.md`.
 
 ## Cron Jobs (`@repo/cron`)
 

@@ -197,7 +197,7 @@ brew install stripe/stripe-cli/stripe
 stripe login
 ```
 
-The Stripe CLI automatically forwards webhook events to `http://localhost:3000/api/webhooks/payments` during local development.
+The Stripe CLI automatically forwards webhook events to `http://localhost:3002/webhooks/payments` during local development (`apps/api`).
 
 ## Running Development
 

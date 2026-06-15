@@ -112,24 +112,49 @@ export type {
 } from "./layout-contracts";
 export { afendaBlockLayoutContracts } from "./layout-contracts";
 export type {
+  MetadataActionConfigField,
+  MetadataAuditEvent,
+  MetadataAuditEventName,
+  MetadataBindingDiagnostic,
+  MetadataBindingResolution,
   MetadataDataSources,
+  MetadataDiagnosticEvent,
+  MetadataDiagnosticsReport,
+  MetadataDiagnosticsSink,
   MetadataPageRendererProps,
+  MetadataTelemetryEvent,
 } from "./metadata-page-renderer";
-export { MetadataPageRenderer } from "./metadata-page-renderer";
+export {
+  createMetadataDiagnosticsCollector,
+  createMetadataDiagnosticsDispatcher,
+  MetadataPageRenderer,
+  resolveMetadataBinding,
+} from "./metadata-page-renderer";
 export type {
   MetadataActionSurface,
   MetadataBlockBaseProps,
   MetadataBlockRenderContext,
+  MetadataGovernanceStatus,
+  MetadataPermissionContext,
+  MetadataPermissionDecision,
+  MetadataPermissionSubject,
 } from "./metadata-renderer-core";
 export {
   createMetadataBlockRenderContext,
+  resolveDefaultMetadataPermission,
   resolveMetadataBlockActions,
+  resolveMetadataBlockPermission,
+  resolveMetadataPermission,
 } from "./metadata-renderer-core";
 export type {
   MetadataBlock,
   MetadataBlockAction,
   MetadataDataBinding,
+  MetadataDataSourceEnvelope,
+  MetadataDataSourceState,
+  MetadataLayoutItem,
   MetadataPage,
+  MetadataPageLayout,
   MetadataScalar,
   MetadataValue,
 } from "./metadata-schema";
@@ -147,10 +172,20 @@ export {
   metadataBlockTypeSchema,
   metadataBulkActionBarBlockSchema,
   metadataDataBindingSchema,
+  metadataDataSourceEnvelopeSchema,
+  metadataDataSourceStateSchema,
+  metadataDataSourcesSchema,
   metadataDataTableBlockSchema,
   metadataEmptyPanelBlockSchema,
   metadataFilterBarBlockSchema,
+  metadataLayoutBreakpointValues,
+  metadataLayoutDependencyModeValues,
+  metadataLayoutItemSchema,
+  metadataLayoutItemTypeValues,
+  metadataLayoutResponsiveRuleSchema,
+  metadataLayoutVisibilitySchema,
   metadataPageHeaderBlockSchema,
+  metadataPageLayoutSchema,
   metadataPageSchema,
   metadataRuntimeStateBlockSchema,
   metadataScalarSchema,

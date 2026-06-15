@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import {
   removeEndpoint,
+  resetEndpointHealth,
   rotateEndpointSecret,
   testEndpoint,
   updateEndpoint,
@@ -173,9 +174,14 @@ export const EndpointsTable = ({
                 {endpoint.events.join(", ")}
               </TableCell>
               <TableCell>
-                <Badge variant={endpoint.enabled ? "default" : "secondary"}>
-                  {endpoint.enabled ? "Enabled" : "Disabled"}
-                </Badge>
+                <div className="flex flex-col gap-1">
+                  {endpoint.isAutoDisabled ? (
+                    <Badge variant="destructive">Auto-disabled</Badge>
+                  ) : null}
+                  <Badge variant={endpoint.enabled ? "default" : "secondary"}>
+                    {endpoint.enabled ? "Enabled" : "Disabled"}
+                  </Badge>
+                </div>
               </TableCell>
               <TableCell>
                 {endpoint.lastDeliveryStatus ? (
@@ -222,6 +228,19 @@ export const EndpointsTable = ({
                   >
                     {endpoint.enabled ? "Disable" : "Enable"}
                   </Button>
+                  {endpoint.isAutoDisabled ? (
+                    <Button
+                      disabled={isPending}
+                      onClick={() =>
+                        runAction(() => resetEndpointHealth(endpoint.id))
+                      }
+                      size="sm"
+                      type="button"
+                      variant="outline"
+                    >
+                      Re-enable
+                    </Button>
+                  ) : null}
                   <Button
                     disabled={isPending}
                     onClick={() => handleDelete(endpoint.id)}

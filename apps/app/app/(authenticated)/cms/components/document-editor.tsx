@@ -21,21 +21,6 @@ type DocumentEditorProperties = {
   initialBody: string;
 };
 
-const defaultBlogFrontmatter = (): Record<string, unknown> => ({
-  title: "",
-  description: "",
-  status: "draft",
-  date: new Date().toISOString().slice(0, 10),
-  authors: [],
-  categories: [],
-});
-
-const defaultLegalFrontmatter = (): Record<string, unknown> => ({
-  title: "",
-  description: "",
-  status: "draft",
-});
-
 export const DocumentEditor = ({
   collection,
   locale,
@@ -49,6 +34,7 @@ export const DocumentEditor = ({
   const [body, setBody] = useState(initialBody);
   const [isDirty, setIsDirty] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previewFeedback, setPreviewFeedback] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
@@ -115,6 +101,7 @@ export const DocumentEditor = ({
     }
 
     startTransition(async () => {
+      setPreviewFeedback(null);
       const result = await createPreviewLink(collection, locale, slug);
 
       if (!result.ok || !result.data.url) {
@@ -123,6 +110,25 @@ export const DocumentEditor = ({
       }
 
       await navigator.clipboard.writeText(result.data.url);
+      setPreviewFeedback("Public preview link copied.");
+    });
+  };
+
+  const handleOpenPublicPreview = () => {
+    if (!slug) {
+      return;
+    }
+
+    startTransition(async () => {
+      setPreviewFeedback(null);
+      const result = await createPreviewLink(collection, locale, slug);
+
+      if (!result.ok || !result.data.url) {
+        setError(result.ok ? "Preview token unavailable" : result.error);
+        return;
+      }
+
+      window.open(result.data.url, "_blank", "noopener,noreferrer");
     });
   };
 
@@ -161,11 +167,15 @@ export const DocumentEditor = ({
         isSaving={isPending}
         locale={locale}
         onDelete={slug ? handleDelete : undefined}
+        onOpenPublicPreview={slug ? handleOpenPublicPreview : undefined}
         onPublish={handlePublish}
         onSaveDraft={() => persist("draft")}
         onSharePreview={slug ? handleSharePreview : undefined}
         slug={slug}
       />
+      {previewFeedback ? (
+        <p className="text-muted-foreground text-sm">{previewFeedback}</p>
+      ) : null}
       {error ? (
         <p className="text-destructive text-sm" role="alert">
           {error}
@@ -189,8 +199,3 @@ export const DocumentEditor = ({
     </div>
   );
 };
-
-export const createDefaultFrontmatter = (
-  collection: CmsCollectionName
-): Record<string, unknown> =>
-  collection === "blog" ? defaultBlogFrontmatter() : defaultLegalFrontmatter();

@@ -12,24 +12,45 @@ import { blockRecipe } from "./block-recipes";
 import { type BlockRegistry, getBlockRegistryEntry } from "./block-registry";
 import { RuntimeStateBlock } from "./erp-state";
 import { EmptyPanel, FilterBar, PageHeader, StatsStrip } from "./foundation";
-import type { MetadataBlockRenderContext } from "./metadata-renderer-core";
+import type {
+  MetadataBindingDiagnostic,
+  MetadataBindingResolution,
+} from "./metadata-binding";
+import { isRecord, readPath, resolveMetadataBinding } from "./metadata-binding";
+import type {
+  MetadataDiagnosticsReport,
+  MetadataDiagnosticsSink,
+} from "./metadata-diagnostics";
+import {
+  createMetadataDiagnosticsCollector,
+  createMetadataDiagnosticsDispatcher,
+} from "./metadata-diagnostics";
+import type {
+  MetadataBlockRenderContext,
+  MetadataPermissionContext,
+  MetadataPermissionDecision,
+} from "./metadata-renderer-core";
 import {
   createMetadataBlockRenderContext,
   resolveMetadataBlockActions,
+  resolveMetadataBlockPermission,
 } from "./metadata-renderer-core";
 import type {
   MetadataBlock,
+  MetadataBlockAction,
   MetadataBlockByType,
   MetadataBlockType,
   MetadataDataBinding,
+  MetadataDataSources,
+  MetadataLayoutItem,
   MetadataPage,
+  MetadataPageLayout,
   MetadataScalar,
   MetadataValue,
 } from "./metadata-schema";
 import { metadataPageSchema } from "./metadata-schema";
 import { BulkActionBar, DataTableShell } from "./operator";
 
-type MetadataDataSources = Record<string, unknown>;
 interface MetadataDataTableProps {
   readonly block: MetadataBlockByType<"dataTable">;
   readonly dataSources: MetadataDataSources;
@@ -39,7 +60,10 @@ interface MetadataDataTableProps {
 interface MetadataPageRendererProps {
   readonly className?: string;
   readonly dataSources?: MetadataDataSources;
+  readonly debug?: boolean;
+  readonly diagnostics?: MetadataDiagnosticsSink;
   readonly page: MetadataPage | unknown;
+  readonly permissionContext?: MetadataPermissionContext;
 }
 
 interface MetadataBlockRendererProps<TType extends MetadataBlockType> {
@@ -55,28 +79,50 @@ type MetadataBlockRendererMap = {
   };
 };
 
-type BindingResolution =
-  | { readonly ok: true; readonly value: unknown }
-  | {
-      readonly binding: MetadataDataBinding;
-      readonly error: string;
-      readonly ok: false;
-    };
-
 function MetadataPageRenderer({
   className,
   dataSources = {},
+  debug = false,
+  diagnostics,
   page,
+  permissionContext,
 }: MetadataPageRendererProps) {
+  const diagnosticsCollector = createMetadataDiagnosticsCollector();
+  const diagnosticsSink = diagnostics
+    ? createMetadataDiagnosticsDispatcher([diagnosticsCollector, diagnostics])
+    : diagnosticsCollector;
   const parsedPage = metadataPageSchema.safeParse(page);
 
   if (!parsedPage.success) {
+    diagnosticsSink.emitDiagnostic?.({
+      code: "page.invalid",
+      details: {
+        issues: parsedPage.error.issues.map((issue) => ({
+          message: issue.message,
+          path: issue.path.join("."),
+        })),
+      },
+      message: "Page metadata must match the versioned block schema.",
+      severity: "error",
+    });
+    diagnosticsSink.emitTelemetry?.({
+      name: "metadata.page.invalid",
+      properties: {
+        issueCount: parsedPage.error.issues.length,
+      },
+    });
+
     return (
-      <InvalidMetadataBlock
-        blockId="metadata-page"
-        description="Page metadata must match the versioned block schema."
-        title="Invalid page metadata"
-      />
+      <>
+        <InvalidMetadataBlock
+          blockId="metadata-page"
+          description="Page metadata must match the versioned block schema."
+          title="Invalid page metadata"
+        />
+        {debug ? (
+          <MetadataDebugPanel report={diagnosticsCollector.report} />
+        ) : null}
+      </>
     );
   }
 
@@ -87,39 +133,514 @@ function MetadataPageRenderer({
       data-slot="metadata-page-renderer-block"
       data-version={parsedPage.data.version}
     >
-      {parsedPage.data.blocks.map((block) => (
+      {parsedPage.data.layout ? (
+        <MetadataPageLayoutRenderer
+          dataSources={dataSources}
+          diagnostics={diagnosticsSink}
+          layout={parsedPage.data.layout}
+          page={parsedPage.data}
+          permissionContext={permissionContext}
+        />
+      ) : (
+        parsedPage.data.blocks.map((block) => (
+          <MetadataBlockRenderer
+            block={block}
+            dataSources={dataSources}
+            diagnostics={diagnosticsSink}
+            key={block.blockId}
+            pageId={parsedPage.data.pageId}
+            permissionContext={permissionContext}
+          />
+        ))
+      )}
+      {debug ? (
+        <MetadataDebugPanel report={diagnosticsCollector.report} />
+      ) : null}
+    </section>
+  );
+}
+
+function MetadataPageLayoutRenderer({
+  dataSources,
+  diagnostics,
+  layout,
+  page,
+  permissionContext,
+}: {
+  readonly dataSources: MetadataDataSources;
+  readonly diagnostics?: MetadataDiagnosticsSink;
+  readonly layout: MetadataPageLayout;
+  readonly page: MetadataPage;
+  readonly permissionContext?: MetadataPermissionContext;
+}) {
+  const blockMap = new Map(
+    page.blocks.map((block) => [block.blockId, block] as const)
+  );
+  const visibleBlockIds = new Set<string>();
+
+  return (
+    <div
+      className="grid gap-4"
+      data-layout-density={layout.density}
+      data-layout-type={layout.type}
+      data-slot="metadata-page-layout-block"
+    >
+      {layout.regions.map((region) => (
+        <section
+          className="grid gap-4"
+          data-layout-responsive={formatResponsiveRules(region.responsive)}
+          data-region-id={region.regionId}
+          data-slot="metadata-page-layout-region"
+          key={region.regionId}
+        >
+          {region.label ? <h2 className="sr-only">{region.label}</h2> : null}
+          {region.children.map((item) => (
+            <MetadataLayoutItemRenderer
+              blockMap={blockMap}
+              dataSources={dataSources}
+              diagnostics={diagnostics}
+              item={item}
+              key={item.layoutId}
+              pageId={page.pageId}
+              permissionContext={permissionContext}
+              visibleBlockIds={visibleBlockIds}
+            />
+          ))}
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function MetadataLayoutItemRenderer({
+  blockMap,
+  dataSources,
+  diagnostics,
+  item,
+  pageId,
+  permissionContext,
+  visibleBlockIds,
+}: {
+  readonly blockMap: ReadonlyMap<string, MetadataBlock>;
+  readonly dataSources: MetadataDataSources;
+  readonly diagnostics?: MetadataDiagnosticsSink;
+  readonly item: MetadataLayoutItem;
+  readonly pageId?: string;
+  readonly permissionContext?: MetadataPermissionContext;
+  readonly visibleBlockIds: Set<string>;
+}) {
+  if (!isMetadataLayoutItemVisible(item, dataSources, visibleBlockIds)) {
+    return null;
+  }
+
+  if (item.type === "block") {
+    const block = blockMap.get(item.blockId);
+
+    if (!block) {
+      return (
+        <InvalidMetadataBlock
+          blockId={item.blockId}
+          description="Layout references a block that is not present in page metadata."
+          title="Invalid layout block"
+        />
+      );
+    }
+
+    if (isMetadataLayoutBlockVisible(block, permissionContext)) {
+      visibleBlockIds.add(block.blockId);
+    }
+
+    return (
+      <div
+        data-layout-id={item.layoutId}
+        data-layout-responsive={formatResponsiveRules(item.responsive)}
+        data-layout-type={item.type}
+        data-slot="metadata-layout-block-item"
+      >
         <MetadataBlockRenderer
           block={block}
           dataSources={dataSources}
-          key={block.blockId}
+          diagnostics={diagnostics}
+          pageId={pageId}
+          permissionContext={permissionContext}
         />
+      </div>
+    );
+  }
+
+  if (item.type === "group") {
+    return (
+      <section
+        className="grid gap-3"
+        data-layout-id={item.layoutId}
+        data-layout-responsive={formatResponsiveRules(item.responsive)}
+        data-layout-type={item.type}
+        data-slot="metadata-layout-group"
+      >
+        {item.title ? <h2 className="sr-only">{item.title}</h2> : null}
+        {item.children.map((child) => (
+          <MetadataLayoutItemRenderer
+            blockMap={blockMap}
+            dataSources={dataSources}
+            diagnostics={diagnostics}
+            item={child}
+            key={child.layoutId}
+            pageId={pageId}
+            permissionContext={permissionContext}
+            visibleBlockIds={visibleBlockIds}
+          />
+        ))}
+      </section>
+    );
+  }
+
+  if (item.type === "columns") {
+    return (
+      <section
+        className={cn(
+          "grid gap-4",
+          getMetadataLayoutColumnClass(item.columns.length)
+        )}
+        data-layout-id={item.layoutId}
+        data-layout-responsive={formatResponsiveRules(item.responsive)}
+        data-layout-type={item.type}
+        data-slot="metadata-layout-columns"
+      >
+        {item.title ? <h2 className="sr-only">{item.title}</h2> : null}
+        {item.columns.map((column) => (
+          <div
+            className="grid gap-4"
+            data-column-id={column.columnId}
+            data-column-span={column.span}
+            data-slot="metadata-layout-column"
+            key={column.columnId}
+          >
+            {column.children.map((child) => (
+              <MetadataLayoutItemRenderer
+                blockMap={blockMap}
+                dataSources={dataSources}
+                diagnostics={diagnostics}
+                item={child}
+                key={child.layoutId}
+                pageId={pageId}
+                permissionContext={permissionContext}
+                visibleBlockIds={visibleBlockIds}
+              />
+            ))}
+          </div>
+        ))}
+      </section>
+    );
+  }
+
+  return (
+    <section
+      className="grid gap-4"
+      data-layout-id={item.layoutId}
+      data-layout-responsive={formatResponsiveRules(item.responsive)}
+      data-layout-type={item.type}
+      data-slot="metadata-layout-tabs"
+    >
+      {item.title ? <h2 className="sr-only">{item.title}</h2> : null}
+      <div
+        className="flex flex-wrap gap-2"
+        data-slot="metadata-layout-tab-list"
+      >
+        {item.tabs.map((tab) => (
+          <span
+            className="rounded-md border border-border-subtle bg-surface-raised px-3 py-1 text-[length:var(--xforge-font-caption-size)] text-text-secondary leading-[var(--xforge-font-caption-line-height)]"
+            data-tab-id={tab.tabId}
+            key={tab.tabId}
+          >
+            {tab.label}
+          </span>
+        ))}
+      </div>
+      {item.tabs.map((tab) => (
+        <section
+          aria-label={tab.label}
+          className="grid gap-4"
+          data-slot="metadata-layout-tab-panel"
+          data-tab-id={tab.tabId}
+          key={tab.tabId}
+        >
+          {tab.children.map((child) => (
+            <MetadataLayoutItemRenderer
+              blockMap={blockMap}
+              dataSources={dataSources}
+              diagnostics={diagnostics}
+              item={child}
+              key={child.layoutId}
+              pageId={pageId}
+              permissionContext={permissionContext}
+              visibleBlockIds={visibleBlockIds}
+            />
+          ))}
+        </section>
       ))}
     </section>
   );
 }
 
+function isMetadataLayoutBlockVisible(
+  block: MetadataBlock,
+  permissionContext: MetadataPermissionContext | undefined
+) {
+  return (
+    resolveMetadataBlockPermission(block, permissionContext).status !== "hidden"
+  );
+}
+
+function isMetadataLayoutItemVisible(
+  item: MetadataLayoutItem,
+  dataSources: MetadataDataSources,
+  visibleBlockIds: ReadonlySet<string>
+) {
+  if (item.visibility?.hidden === true) {
+    return false;
+  }
+
+  if (
+    item.dependencies?.some(
+      (dependency) =>
+        dependency.mode === "visible" &&
+        !visibleBlockIds.has(dependency.blockId)
+    )
+  ) {
+    return false;
+  }
+
+  if (!item.visibility?.binding) {
+    return true;
+  }
+
+  const resolution = resolveMetadataBinding(
+    item.visibility.binding,
+    dataSources
+  );
+
+  if (resolution.status !== "ready") {
+    return false;
+  }
+
+  if (
+    item.visibility.equals !== undefined &&
+    !isMetadataScalarEqual(resolution.value, item.visibility.equals)
+  ) {
+    return false;
+  }
+
+  if (
+    item.visibility.notEquals !== undefined &&
+    isMetadataScalarEqual(resolution.value, item.visibility.notEquals)
+  ) {
+    return false;
+  }
+
+  if (
+    item.visibility.equals === undefined &&
+    item.visibility.notEquals === undefined
+  ) {
+    return Boolean(resolution.value);
+  }
+
+  return true;
+}
+
+function isMetadataScalarEqual(value: unknown, expected: MetadataScalar) {
+  return value === expected;
+}
+
+function formatResponsiveRules(
+  rules:
+    | MetadataLayoutItem["responsive"]
+    | MetadataPageLayout["regions"][number]["responsive"]
+) {
+  if (!rules?.length) {
+    return undefined;
+  }
+
+  return rules
+    .map((rule) =>
+      [
+        rule.breakpoint,
+        rule.columns ? `columns:${rule.columns}` : undefined,
+        rule.stack ? "stack" : undefined,
+        rule.hidden ? "hidden" : undefined,
+      ]
+        .filter(Boolean)
+        .join(":")
+    )
+    .join(" ");
+}
+
+function getMetadataLayoutColumnClass(columnCount: number) {
+  if (columnCount <= 1) {
+    return undefined;
+  }
+
+  if (columnCount === 2) {
+    return "lg:grid-cols-2";
+  }
+
+  if (columnCount === 3) {
+    return "lg:grid-cols-3";
+  }
+
+  return "lg:grid-cols-4";
+}
+
 function MetadataBlockRenderer({
   block,
   dataSources,
+  diagnostics,
+  pageId,
+  permissionContext,
 }: {
   readonly block: MetadataBlock;
   readonly dataSources: MetadataDataSources;
+  readonly diagnostics?: MetadataDiagnosticsSink;
+  readonly pageId?: string;
+  readonly permissionContext?: MetadataPermissionContext;
 }) {
-  const bindingDiagnostic = getRequiredBindingDiagnostic(block, dataSources);
+  const blockPermissionDecision = resolveMetadataBlockPermission(
+    block,
+    permissionContext
+  );
 
-  if (bindingDiagnostic) {
+  if (blockPermissionDecision.status === "hidden") {
+    diagnostics?.emitDiagnostic?.({
+      blockId: block.blockId,
+      blockType: block.type,
+      code: "block.hidden",
+      message: `Metadata block "${block.blockId}" is hidden by governance.`,
+      pageId,
+      severity: "info",
+    });
+    diagnostics?.emitTelemetry?.({
+      blockId: block.blockId,
+      blockType: block.type,
+      name: "metadata.block.hidden",
+      pageId,
+    });
+
+    return null;
+  }
+
+  if (blockPermissionDecision.status === "denied") {
+    diagnostics?.emitDiagnostic?.({
+      blockId: block.blockId,
+      blockType: block.type,
+      code: "block.denied",
+      details: {
+        code: blockPermissionDecision.code,
+      },
+      message: blockPermissionDecision.reason,
+      pageId,
+      severity: "warning",
+    });
+    diagnostics?.emitTelemetry?.({
+      blockId: block.blockId,
+      blockType: block.type,
+      name: "metadata.block.denied",
+      pageId,
+      properties: {
+        code: blockPermissionDecision.code,
+      },
+    });
+    diagnostics?.emitAudit?.({
+      blockId: block.blockId,
+      blockType: block.type,
+      capability: block.capability,
+      event: "metadata.block.denied",
+      pageId,
+      permission: block.permission,
+      reason: blockPermissionDecision.reason,
+      roles: block.roles,
+    });
+
     return (
-      <InvalidMetadataBlock
-        blockId={block.blockId}
-        description={bindingDiagnostic}
-        title="Missing required binding"
+      <ForbiddenMetadataBlock
+        block={block}
+        decision={blockPermissionDecision}
       />
     );
   }
 
-  const renderContext = createMetadataBlockRenderContext(block);
+  const bindingDiagnostic = getBlockingBindingDiagnostic(block, dataSources);
 
-  return renderRegisteredMetadataBlock(block, dataSources, renderContext);
+  if (bindingDiagnostic) {
+    emitBindingDiagnostic(diagnostics, pageId, block, bindingDiagnostic);
+
+    return (
+      <BindingDiagnosticBlock
+        blockId={block.blockId}
+        diagnostic={bindingDiagnostic}
+      />
+    );
+  }
+
+  const renderContext = createMetadataBlockRenderContext(
+    block,
+    permissionContext,
+    {
+      diagnostics,
+      pageId,
+    }
+  );
+  const staleDiagnostic = getStaleBindingDiagnostic(block, dataSources);
+  const renderedBlock = renderRegisteredMetadataBlock(
+    block,
+    dataSources,
+    renderContext
+  );
+
+  if (!staleDiagnostic) {
+    return renderedBlock;
+  }
+
+  emitBindingDiagnostic(diagnostics, pageId, block, staleDiagnostic);
+
+  return (
+    <section
+      data-binding-diagnostic={staleDiagnostic.message}
+      data-binding-source={staleDiagnostic.binding.source}
+      data-binding-source-state={staleDiagnostic.sourceState}
+      data-binding-status="stale"
+      data-slot="metadata-binding-diagnostic-block"
+    >
+      {renderedBlock}
+      <p className="sr-only">{staleDiagnostic.message}</p>
+    </section>
+  );
+}
+
+function ForbiddenMetadataBlock({
+  block,
+  decision,
+}: {
+  readonly block: MetadataBlock;
+  readonly decision: Extract<
+    MetadataPermissionDecision,
+    { readonly status: "denied" | "hidden" }
+  >;
+}) {
+  return (
+    <RuntimeStateBlock
+      blockId={block.blockId}
+      data-capability={block.capability}
+      data-governance-code={decision.code}
+      data-governance-status={decision.status}
+      data-permission={block.permission}
+      data-reason={decision.reason}
+      data-required-roles={block.roles?.join(" ")}
+      description={decision.reason}
+      intent={block.intent}
+      state="forbidden"
+      title="Access restricted"
+      tone="critical"
+    />
+  );
 }
 
 const metadataBlockRenderers = {
@@ -215,7 +736,7 @@ function renderBulkActionBarBlock({
     <BulkActionBar
       {...renderContext.baseProps}
       actions={resolveMetadataBlockActions(
-        block.actions,
+        resolveMetadataActions(block.actions, dataSources),
         renderContext,
         "primary"
       )}
@@ -252,7 +773,7 @@ function renderEmptyPanelBlock({
     <EmptyPanel
       {...renderContext.baseProps}
       actions={resolveMetadataBlockActions(
-        block.actions,
+        resolveMetadataActions(block.actions, dataSources),
         renderContext,
         "primary"
       )}
@@ -271,7 +792,7 @@ function renderFilterBarBlock({
     <FilterBar
       {...renderContext.baseProps}
       actions={resolveMetadataBlockActions(
-        block.actions,
+        resolveMetadataActions(block.actions, dataSources),
         renderContext,
         "primary"
       )}
@@ -299,7 +820,7 @@ function renderPageHeaderBlock({
     <PageHeader
       {...renderContext.baseProps}
       actions={resolveMetadataBlockActions(
-        block.actions,
+        resolveMetadataActions(block.actions, dataSources),
         renderContext,
         "primary"
       )}
@@ -324,7 +845,7 @@ function renderRuntimeStateBlock({
     <RuntimeStateBlock
       {...renderContext.baseProps}
       actions={resolveMetadataBlockActions(
-        block.actions,
+        resolveMetadataActions(block.actions, dataSources),
         renderContext,
         "primary"
       )}
@@ -363,6 +884,29 @@ function MetadataDataTable(props: MetadataDataTableProps) {
   );
 
   if (!rows.ok) {
+    renderContext.diagnostics?.emitDiagnostic?.({
+      blockId: block.blockId,
+      blockType: block.type,
+      code: "binding.invalid",
+      details: {
+        path: block.data.path,
+        source: block.data.source,
+      },
+      message: rows.error,
+      pageId: renderContext.pageId,
+      severity: "error",
+    });
+    renderContext.diagnostics?.emitTelemetry?.({
+      blockId: block.blockId,
+      blockType: block.type,
+      name: "metadata.binding.invalid",
+      pageId: renderContext.pageId,
+      properties: {
+        path: block.data.path,
+        source: block.data.source,
+      },
+    });
+
     return (
       <InvalidMetadataBlock
         blockId={block.blockId}
@@ -376,7 +920,7 @@ function MetadataDataTable(props: MetadataDataTableProps) {
     <DataTableShell
       {...renderContext.baseProps}
       actions={resolveMetadataBlockActions(
-        block.actions,
+        resolveMetadataActions(block.actions, dataSources),
         renderContext,
         "primary"
       )}
@@ -384,7 +928,7 @@ function MetadataDataTable(props: MetadataDataTableProps) {
         block.bulkActions ? (
           <BulkActionBar
             actions={resolveMetadataBlockActions(
-              block.bulkActions,
+              resolveMetadataActions(block.bulkActions, dataSources),
               renderContext,
               "bulk"
             )}
@@ -451,7 +995,15 @@ function resolveTableRows(
 ):
   | { readonly ok: true; readonly value: readonly Record<string, unknown>[] }
   | { readonly error: string; readonly ok: false } {
-  const resolved = resolveBindingValue(binding, dataSources);
+  const resolution = resolveMetadataBinding(binding, dataSources);
+  const resolved = getResolvedValue(resolution);
+
+  if (resolution.status !== "ready" && resolution.status !== "stale") {
+    return {
+      error: resolution.diagnostic.message,
+      ok: false,
+    };
+  }
 
   if (!Array.isArray(resolved)) {
     return {
@@ -477,35 +1029,13 @@ function resolveBindingValue(
   binding: MetadataDataBinding | undefined,
   dataSources: MetadataDataSources
 ) {
-  const resolution = resolveBinding(binding, dataSources);
-
-  return resolution.ok ? resolution.value : undefined;
-}
-
-function resolveBinding(
-  binding: MetadataDataBinding | undefined,
-  dataSources: MetadataDataSources
-): BindingResolution {
   if (!binding) {
-    return { ok: true, value: undefined };
+    return undefined;
   }
 
-  const source = dataSources[binding.source];
-  const resolved = readPath(source, binding.path);
+  const resolution = resolveMetadataBinding(binding, dataSources);
 
-  if (resolved === undefined && "fallback" in binding) {
-    return { ok: true, value: binding.fallback };
-  }
-
-  if (resolved === undefined && binding.required) {
-    return {
-      binding,
-      error: `Required binding "${binding.source}:${binding.path}" did not resolve.`,
-      ok: false,
-    };
-  }
-
-  return { ok: true, value: resolved };
+  return getResolvedValue(resolution);
 }
 
 function resolveMetadataValue(
@@ -522,6 +1052,26 @@ function resolveMetadataValue(
   }
 
   return value;
+}
+
+function resolveMetadataActions(
+  actions: readonly MetadataBlockAction[] | undefined,
+  dataSources: MetadataDataSources
+): readonly MetadataBlockAction[] | undefined {
+  return actions?.map((action) => {
+    const disabled =
+      typeof action.disabled === "boolean"
+        ? action.disabled
+        : toBooleanValue(resolveBindingValue(action.disabled, dataSources));
+
+    return {
+      ...action,
+      disabled,
+      href: resolveMetadataText(action.href, dataSources),
+      label: resolveMetadataText(action.label, dataSources) ?? action.key,
+      reason: resolveMetadataText(action.reason, dataSources),
+    };
+  });
 }
 
 function resolveMetadataText(
@@ -567,28 +1117,6 @@ function getRowKey(row: Record<string, unknown>, index: number) {
   return index;
 }
 
-function readPath(source: unknown, path: string) {
-  return path
-    .split(".")
-    .filter(Boolean)
-    .reduce<unknown>((current, segment) => {
-      if (current === undefined || current === null) {
-        return undefined;
-      }
-
-      if (Array.isArray(current)) {
-        const index = Number(segment);
-        return Number.isInteger(index) ? current[index] : undefined;
-      }
-
-      if (isRecord(current)) {
-        return current[segment];
-      }
-
-      return undefined;
-    }, source);
-}
-
 function readRecordValue(record: Record<string, unknown>, path: string) {
   return readPath(record, path);
 }
@@ -622,6 +1150,10 @@ function toNumberValue(value: unknown) {
   return typeof value === "number" ? value : undefined;
 }
 
+function toBooleanValue(value: unknown) {
+  return typeof value === "boolean" ? value : undefined;
+}
+
 function InvalidMetadataBlock({
   blockId,
   description,
@@ -642,28 +1174,232 @@ function InvalidMetadataBlock({
   );
 }
 
-function getRequiredBindingDiagnostic(
+function BindingDiagnosticBlock({
+  blockId,
+  diagnostic,
+}: {
+  readonly blockId: string;
+  readonly diagnostic: MetadataBindingDiagnostic;
+}) {
+  if (diagnostic.status === "loading") {
+    return (
+      <RuntimeStateBlock
+        blockId={blockId}
+        description={diagnostic.message}
+        state="loading"
+        title="Loading source data"
+      />
+    );
+  }
+
+  if (diagnostic.status === "empty") {
+    return (
+      <RuntimeStateBlock
+        blockId={blockId}
+        description={diagnostic.message}
+        state="empty"
+        title="Empty source data"
+      />
+    );
+  }
+
+  if (diagnostic.status === "forbidden") {
+    return (
+      <RuntimeStateBlock
+        blockId={blockId}
+        description={diagnostic.message}
+        state="forbidden"
+        title="Source access restricted"
+      />
+    );
+  }
+
+  if (diagnostic.status === "error") {
+    return (
+      <RuntimeStateBlock
+        blockId={blockId}
+        description={diagnostic.message}
+        state="error"
+        title="Source data unavailable"
+      />
+    );
+  }
+
+  return (
+    <InvalidMetadataBlock
+      blockId={blockId}
+      description={diagnostic.message}
+      title={
+        diagnostic.binding.required &&
+        (diagnostic.status === "missing-path" ||
+          diagnostic.status === "missing-source")
+          ? "Missing required binding"
+          : "Invalid data binding"
+      }
+    />
+  );
+}
+
+function emitBindingDiagnostic(
+  diagnostics: MetadataDiagnosticsSink | undefined,
+  pageId: string | undefined,
+  block: MetadataBlock,
+  diagnostic: MetadataBindingDiagnostic
+) {
+  diagnostics?.emitDiagnostic?.({
+    blockId: block.blockId,
+    blockType: block.type,
+    code:
+      diagnostic.status === "missing-path" ||
+      diagnostic.status === "missing-source"
+        ? "binding.missing"
+        : "binding.invalid",
+    details: {
+      path: diagnostic.binding.path,
+      source: diagnostic.binding.source,
+      status: diagnostic.status,
+    },
+    message: diagnostic.message,
+    pageId,
+    severity: diagnostic.status === "stale" ? "warning" : "error",
+  });
+  diagnostics?.emitTelemetry?.({
+    blockId: block.blockId,
+    blockType: block.type,
+    name: "metadata.binding.invalid",
+    pageId,
+    properties: {
+      sourceState: diagnostic.sourceState,
+      status: diagnostic.status,
+    },
+  });
+}
+
+function MetadataDebugPanel({
+  report,
+}: {
+  readonly report: MetadataDiagnosticsReport;
+}) {
+  const events = [
+    ...report.diagnostics.map((event) => ({
+      id: `diagnostic:${event.code}:${event.blockId ?? "page"}:${event.message}`,
+      label: event.code,
+      message: event.message,
+      severity: event.severity,
+      type: "diagnostic",
+    })),
+    ...report.audit.map((event) => ({
+      id: `audit:${event.event}:${event.blockId ?? "page"}:${event.actionKey ?? "state"}`,
+      label: event.event,
+      message: event.reason ?? event.auditEvent ?? "Audit payload emitted.",
+      severity: event.disabled ? "warning" : "info",
+      type: "audit",
+    })),
+    ...report.telemetry.map((event) => ({
+      id: `telemetry:${event.name}:${event.blockId ?? "page"}`,
+      label: event.name,
+      message: event.blockId
+        ? `Telemetry emitted for ${event.blockId}.`
+        : "Telemetry emitted for metadata page.",
+      severity: "info",
+      type: "telemetry",
+    })),
+  ];
+
+  return (
+    <section
+      className={cn(
+        blockRecipe("blockPanel", "blockPanelPadding", "blockSection"),
+        "text-left"
+      )}
+      data-audit-count={report.audit.length}
+      data-diagnostic-count={report.diagnostics.length}
+      data-slot="metadata-debug-panel-block"
+      data-telemetry-count={report.telemetry.length}
+    >
+      <div className={blockRecipe("blockHeader")}>
+        <div className={blockRecipe("blockHeaderContent")}>
+          <h2 className={blockRecipe("blockTitle")}>Metadata debug</h2>
+          <p className={blockRecipe("blockDescription")}>
+            Diagnostics, telemetry, and audit payloads emitted during render.
+          </p>
+        </div>
+        <dl className="flex flex-wrap gap-3 text-[length:var(--xforge-font-caption-size)] text-text-secondary leading-[var(--xforge-font-caption-line-height)]">
+          <div>
+            <dt className="sr-only">Diagnostics</dt>
+            <dd>{report.diagnostics.length} diagnostics</dd>
+          </div>
+          <div>
+            <dt className="sr-only">Audit events</dt>
+            <dd>{report.audit.length} audit</dd>
+          </div>
+          <div>
+            <dt className="sr-only">Telemetry events</dt>
+            <dd>{report.telemetry.length} telemetry</dd>
+          </div>
+        </dl>
+      </div>
+      <ul className="grid max-h-72 gap-2 overflow-auto">
+        {events.length ? (
+          events.map((event) => (
+            <li
+              className="grid gap-1 rounded-[var(--card-radius)] border border-border-subtle bg-surface px-3 py-2"
+              data-event-severity={event.severity}
+              data-event-type={event.type}
+              key={event.id}
+            >
+              <span className="font-mono text-[11px] text-text-primary leading-4">
+                {event.label}
+              </span>
+              <span className="text-[length:var(--xforge-font-caption-size)] text-text-secondary leading-[var(--xforge-font-caption-line-height)]">
+                {event.message}
+              </span>
+            </li>
+          ))
+        ) : (
+          <li className="text-[length:var(--xforge-font-caption-size)] text-text-secondary leading-[var(--xforge-font-caption-line-height)]">
+            No diagnostics emitted.
+          </li>
+        )}
+      </ul>
+    </section>
+  );
+}
+
+function getBlockingBindingDiagnostic(
   block: MetadataBlock,
   dataSources: MetadataDataSources
 ) {
-  const missingBinding = findMissingRequiredBinding(block, dataSources);
-
-  return missingBinding?.error;
+  return findBindingDiagnostic(block, dataSources, shouldBlockOnResolution);
 }
 
-function findMissingRequiredBinding(
-  value: unknown,
+function getStaleBindingDiagnostic(
+  block: MetadataBlock,
   dataSources: MetadataDataSources
-): (BindingResolution & { readonly ok: false }) | undefined {
-  if (isMetadataDataBinding(value)) {
-    const resolution = resolveBinding(value, dataSources);
+) {
+  return findBindingDiagnostic(
+    block,
+    dataSources,
+    (resolution) => resolution.status === "stale"
+  );
+}
 
-    return resolution.ok ? undefined : resolution;
+function findBindingDiagnostic(
+  value: unknown,
+  dataSources: MetadataDataSources,
+  predicate: (resolution: MetadataBindingResolution) => boolean
+): MetadataBindingDiagnostic | undefined {
+  if (isMetadataDataBinding(value)) {
+    const resolution = resolveMetadataBinding(value, dataSources);
+
+    return predicate(resolution) && resolution.diagnostic
+      ? resolution.diagnostic
+      : undefined;
   }
 
   if (Array.isArray(value)) {
     for (const item of value) {
-      const issue = findMissingRequiredBinding(item, dataSources);
+      const issue = findBindingDiagnostic(item, dataSources, predicate);
 
       if (issue) {
         return issue;
@@ -675,7 +1411,7 @@ function findMissingRequiredBinding(
 
   if (isRecord(value)) {
     for (const item of Object.values(value)) {
-      const issue = findMissingRequiredBinding(item, dataSources);
+      const issue = findBindingDiagnostic(item, dataSources, predicate);
 
       if (issue) {
         return issue;
@@ -686,8 +1422,25 @@ function findMissingRequiredBinding(
   return undefined;
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+function shouldBlockOnResolution(resolution: MetadataBindingResolution) {
+  if (resolution.status === "ready" || resolution.status === "stale") {
+    return false;
+  }
+
+  if (
+    resolution.status === "missing-path" ||
+    resolution.status === "missing-source"
+  ) {
+    return resolution.binding.required === true;
+  }
+
+  return true;
+}
+
+function getResolvedValue(resolution: MetadataBindingResolution) {
+  return resolution.status === "ready" || resolution.status === "stale"
+    ? resolution.value
+    : undefined;
 }
 
 function isMetadataDataBinding(value: unknown): value is MetadataDataBinding {
@@ -721,4 +1474,24 @@ function assertNever(value: never): never {
 }
 
 export { MetadataPageRenderer };
-export type { MetadataDataSources, MetadataPageRendererProps };
+export type {
+  MetadataBindingDiagnostic,
+  MetadataBindingResolution,
+} from "./metadata-binding";
+export { resolveMetadataBinding } from "./metadata-binding";
+export type {
+  MetadataActionConfigField,
+  MetadataActionSurface,
+  MetadataAuditEvent,
+  MetadataAuditEventName,
+  MetadataDiagnosticEvent,
+  MetadataDiagnosticsReport,
+  MetadataDiagnosticsSink,
+  MetadataTelemetryEvent,
+} from "./metadata-diagnostics";
+export {
+  createMetadataDiagnosticsCollector,
+  createMetadataDiagnosticsDispatcher,
+} from "./metadata-diagnostics";
+export type { MetadataDataSources } from "./metadata-schema";
+export type { MetadataPageRendererProps };

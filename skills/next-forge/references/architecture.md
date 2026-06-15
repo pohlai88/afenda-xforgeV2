@@ -35,7 +35,7 @@ next-forge/
 │   ├── seo/                   # Metadata, sitemap, JSON-LD
 │   ├── storage/               # Vercel Blob
 │   ├── typescript-config/     # Shared TS configs
-│   └── webhooks/              # Svix outbound + Stripe/Clerk inbound
+│   └── webhooks/              # Postgres outbox outbound + inbound gateway
 ├── turbo.json
 └── package.json
 ```
@@ -49,7 +49,7 @@ The main user-facing SaaS application. Includes authentication via Clerk, databa
 The marketing website. Integrates BaseHub CMS for blog posts and content, SEO optimization with metadata and sitemap generation, analytics tracking, and internationalization support.
 
 ### api (Port 3002)
-Serverless API endpoints for webhooks (Stripe, Clerk), cron jobs, and any dedicated API routes. Deployed as a separate Vercel project.
+Serverless API endpoints for inbound webhooks (Stripe), outbound webhook cron workers, and dedicated API routes. Deployed as a separate Vercel project on port **3002** (`POST /webhooks/payments`, `POST /webhooks/auth`).
 
 ### email (Port 3003)
 React Email preview server for developing and testing email templates. Templates are React components in the `@repo/email` package.

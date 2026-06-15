@@ -21,6 +21,16 @@ export const keys = () =>
         .int()
         .positive()
         .default(90),
+      STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_").optional(),
+      WEBHOOK_FIRST_PARTY_WEB_URL: z.string().url().optional(),
+      WEBHOOK_FIRST_PARTY_WEB_SECRET: z
+        .string()
+        .min(1)
+        .refine(
+          (value) => value.startsWith("whsec_") || value.length >= 16,
+          "Use whsec_… (Standard Webhooks) or a base64 signing secret"
+        )
+        .optional(),
     },
     runtimeEnv: {
       WEBHOOK_DELIVERY_TIMEOUT_MS: process.env.WEBHOOK_DELIVERY_TIMEOUT_MS,
@@ -28,5 +38,9 @@ export const keys = () =>
         process.env.WEBHOOK_SIGNATURE_TOLERANCE_SEC,
       WEBHOOK_DELIVERY_RETENTION_DAYS:
         process.env.WEBHOOK_DELIVERY_RETENTION_DAYS,
+      STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+      WEBHOOK_FIRST_PARTY_WEB_URL: process.env.WEBHOOK_FIRST_PARTY_WEB_URL,
+      WEBHOOK_FIRST_PARTY_WEB_SECRET:
+        process.env.WEBHOOK_FIRST_PARTY_WEB_SECRET,
     },
   });

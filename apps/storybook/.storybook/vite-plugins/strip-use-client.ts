@@ -15,9 +15,23 @@ interface EsbuildOnLoadArgs {
   readonly path: string;
 }
 
+type EsbuildLoader = "js" | "ts" | "tsx";
+
 interface EsbuildOnLoadResult {
   readonly contents: string;
-  readonly loader: "js";
+  readonly loader: EsbuildLoader;
+}
+
+function getEsbuildLoader(path: string): EsbuildLoader {
+  if (path.endsWith(".tsx")) {
+    return "tsx";
+  }
+
+  if (path.endsWith(".ts")) {
+    return "ts";
+  }
+
+  return "js";
 }
 
 interface EsbuildPluginBuild {
@@ -61,7 +75,7 @@ export function stripUseClientEsbuildPlugin() {
 
         return {
           contents: stripped,
-          loader: "js" as const,
+          loader: getEsbuildLoader(args.path),
         };
       });
     },

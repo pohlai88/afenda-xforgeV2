@@ -5,6 +5,7 @@ import { parseCmsRouteLocale } from "@repo/cms/locale";
 import { isCmsCollection } from "@repo/cms/writer";
 import { Button } from "@repo/design-system/components/ui/button";
 import { DocumentList } from "../../components/document-list";
+import { DocumentSearch } from "../../components/document-search";
 import { LocaleNav } from "../../components/locale-nav";
 
 interface CollectionLocalePageProperties {
@@ -34,6 +35,7 @@ const CollectionLocalePage = async ({
           <Link href={`/cms/${collection}/${locale}/new`}>New document</Link>
         </Button>
       </div>
+      <DocumentSearch collection={collection} locale={locale} />
       <DocumentList collection={collection} documents={rows} locale={locale} />
     </div>
   );

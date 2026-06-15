@@ -1,6 +1,8 @@
 import type {
+  MetadataDataSourceEnvelope,
   MetadataDataSources,
   MetadataPage,
+  MetadataPermissionContext,
 } from "@repo/design-system/components/blocks";
 import { MetadataPageRenderer } from "@repo/design-system/components/blocks/metadata-renderer";
 import type { Meta, StoryObj } from "@storybook/react";
@@ -136,6 +138,144 @@ const metadataPage = {
   version: 1,
 } satisfies MetadataPage;
 
+const composedMetadataPage = {
+  blocks: [
+    ...metadataPage.blocks,
+    {
+      blockId: "approval-risk-panel",
+      description:
+        "Risk escalation is shown only when the bound workspace source enables it.",
+      intent: "risk",
+      title: "SLA escalation",
+      tone: "warning",
+      type: "emptyPanel",
+    },
+    {
+      blockId: "approval-audit-panel",
+      description:
+        "Evidence review depends on the approval queue being present in the composed layout.",
+      intent: "audit",
+      title: "Audit evidence review",
+      type: "emptyPanel",
+    },
+  ],
+  layout: {
+    density: "compact",
+    regions: [
+      {
+        children: [
+          {
+            blockId: "approval-header",
+            layoutId: "approval-header-item",
+            type: "block",
+          },
+          {
+            blockId: "approval-metrics",
+            layoutId: "approval-metrics-item",
+            type: "block",
+          },
+          {
+            columns: [
+              {
+                children: [
+                  {
+                    layoutId: "approval-work-queue",
+                    title: "Approval work queue",
+                    type: "group",
+                    children: [
+                      {
+                        blockId: "approval-filters",
+                        layoutId: "approval-filters-item",
+                        type: "block",
+                      },
+                      {
+                        blockId: "approval-selection",
+                        layoutId: "approval-selection-item",
+                        type: "block",
+                      },
+                      {
+                        blockId: "approval-table",
+                        layoutId: "approval-table-item",
+                        type: "block",
+                      },
+                    ],
+                  },
+                ],
+                columnId: "queue",
+              },
+              {
+                children: [
+                  {
+                    layoutId: "approval-review-tabs",
+                    tabs: [
+                      {
+                        children: [
+                          {
+                            blockId: "approval-risk-panel",
+                            layoutId: "approval-risk-item",
+                            type: "block",
+                            visibility: {
+                              binding: {
+                                path: "summary.showRisk",
+                                source: "approvals",
+                              },
+                              equals: true,
+                            },
+                          },
+                        ],
+                        label: "Risk",
+                        tabId: "risk",
+                      },
+                      {
+                        children: [
+                          {
+                            blockId: "approval-audit-panel",
+                            dependencies: [
+                              {
+                                blockId: "approval-table",
+                                mode: "visible",
+                              },
+                            ],
+                            layoutId: "approval-audit-item",
+                            type: "block",
+                          },
+                        ],
+                        label: "Audit",
+                        tabId: "audit",
+                      },
+                    ],
+                    title: "Review panels",
+                    type: "tabs",
+                  },
+                ],
+                columnId: "review",
+              },
+            ],
+            layoutId: "approval-page-columns",
+            responsive: [
+              {
+                breakpoint: "base",
+                columns: 1,
+                stack: true,
+              },
+              {
+                breakpoint: "lg",
+                columns: 2,
+              },
+            ],
+            type: "columns",
+          },
+        ],
+        label: "Approval control center",
+        regionId: "workspace",
+      },
+    ],
+    type: "regions",
+  },
+  pageId: "approval-composed-layout-workspace",
+  version: 1,
+} satisfies MetadataPage;
+
 const dataSources: MetadataDataSources = {
   approvals: {
     rows: [
@@ -163,6 +303,7 @@ const dataSources: MetadataDataSources = {
     ],
     summary: {
       label: "3 approvals loaded from metadata binding",
+      showRisk: true,
       total: 3,
     },
   },
@@ -344,6 +485,254 @@ const malformedBlockPage = {
   version: 1,
 };
 
+const liveBindingPage = {
+  blocks: [
+    {
+      blockId: "live-binding-header",
+      description:
+        "Source state is supplied by a loader and consumed by the renderer.",
+      title: {
+        fallback: "Live approval queue",
+        path: "summary.title",
+        source: "liveApprovals",
+      },
+      type: "pageHeader",
+    },
+    {
+      blockId: "live-binding-stats",
+      columns: 3,
+      metrics: [
+        {
+          id: "total",
+          label: "Loaded",
+          value: {
+            expectedType: "number",
+            fallback: 0,
+            path: "summary.total",
+            source: "liveApprovals",
+          },
+        },
+        {
+          id: "selected",
+          label: "Selected",
+          value: {
+            expectedType: "number",
+            fallback: 0,
+            path: "summary.selected",
+            source: "liveApprovals",
+          },
+        },
+        {
+          id: "risk",
+          label: "Risk",
+          tone: "warning",
+          value: {
+            fallback: "Watch",
+            path: "summary.risk",
+            source: "liveApprovals",
+          },
+        },
+      ],
+      type: "statsStrip",
+    },
+    {
+      blockId: "live-binding-filters",
+      filtersBinding: {
+        expectedType: "array",
+        path: "filters.active",
+        source: "liveApprovals",
+      },
+      resultCount: {
+        expectedType: "number",
+        fallback: 0,
+        path: "summary.total",
+        source: "liveApprovals",
+      },
+      searchValueBinding: {
+        fallback: "",
+        path: "filters.query",
+        source: "liveApprovals",
+      },
+      type: "filterBar",
+    },
+    {
+      actions: [
+        {
+          disabled: {
+            expectedType: "boolean",
+            path: "actions.post.disabled",
+            source: "liveApprovals",
+          },
+          key: "post",
+          label: {
+            fallback: "Post ready",
+            path: "actions.post.label",
+            source: "liveApprovals",
+          },
+          reason: {
+            fallback: "Available for this source state.",
+            path: "actions.post.reason",
+            source: "liveApprovals",
+          },
+          variant: "primary",
+        },
+      ],
+      blockId: "live-binding-table",
+      columns: [
+        { header: "Approval ID", id: "approvalId", kind: "id" },
+        { header: "Tenant", id: "tenant" },
+        { align: "right", header: "Amount", id: "amount", kind: "money" },
+      ],
+      data: {
+        emptyFallback: [],
+        expectedType: "array",
+        path: "rows",
+        required: true,
+        source: "liveApprovals",
+      },
+      footer: {
+        fallback: "No loaded records",
+        path: "summary.label",
+        source: "liveApprovals",
+      },
+      selectedCount: {
+        expectedType: "number",
+        fallback: 0,
+        path: "summary.selected",
+        source: "liveApprovals",
+      },
+      title: "Live bound queue",
+      type: "dataTable",
+    },
+  ],
+  pageId: "live-binding-workspace",
+  version: 1,
+} satisfies MetadataPage;
+
+const readyLiveSource = {
+  data: {
+    actions: {
+      post: {
+        disabled: false,
+        label: "Post 2 ready",
+        reason: "All selected approvals have complete evidence.",
+      },
+    },
+    filters: {
+      active: [{ id: "risk", label: "Risk: watch", tone: "warning" }],
+      query: "AP-",
+    },
+    rows: [
+      {
+        amount: "86,420.00",
+        approvalId: "AP-10482",
+        tenant: "Northwind Trading",
+      },
+      {
+        amount: "122,900.00",
+        approvalId: "AP-10471",
+        tenant: "Mercury Parts",
+      },
+    ],
+    summary: {
+      label: "2 live approvals loaded",
+      risk: "Watch",
+      selected: 2,
+      title: "Live approval queue",
+      total: 2,
+    },
+  },
+  state: "ready",
+} satisfies MetadataDataSourceEnvelope;
+
+const sourceStateData = {
+  empty: {
+    data: {
+      rows: [],
+      summary: {
+        label: "No approvals matched the current loader context",
+        selected: 0,
+        total: 0,
+      },
+    },
+    state: "empty",
+  },
+  error: {
+    error: { message: "Approval service did not return a valid response." },
+    state: "error",
+  },
+  forbidden: {
+    diagnostics: { message: "Current role cannot inspect approval data." },
+    state: "forbidden",
+  },
+  loading: {
+    state: "loading",
+  },
+  ready: readyLiveSource,
+  stale: {
+    ...readyLiveSource,
+    diagnostics: { message: "Approval source is older than the SLA window." },
+    staleAt: "2026-06-15T09:00:00Z",
+    state: "stale",
+  },
+} satisfies Record<string, MetadataDataSourceEnvelope>;
+
+const governancePage = {
+  blocks: [
+    {
+      actions: [
+        {
+          auditEvent: "approval.approve.requested",
+          auditScope: "tenant:northwind",
+          capability: "approval:approve",
+          key: "approve",
+          label: "Approve",
+          permission: "approval.approve",
+          roles: ["approver"],
+          variant: "primary",
+        },
+        {
+          href: "/audit/evidence",
+          key: "view-audit",
+          label: "View audit",
+          variant: "secondary",
+        },
+      ],
+      blockId: "governance-header",
+      description:
+        "Denied actions remain visible with reason, permission, capability, and audit metadata.",
+      title: "Governed approval workspace",
+      type: "pageHeader",
+    },
+    {
+      blockId: "governance-restricted-panel",
+      capability: "tenant:configuration",
+      description: "Only tenant administrators can inspect this setup panel.",
+      permission: "tenant.configuration.read",
+      roles: ["tenant-admin"],
+      title: "Tenant configuration",
+      type: "emptyPanel",
+    },
+  ],
+  pageId: "governance-runtime-page",
+  version: 1,
+} satisfies MetadataPage;
+
+const governancePermissionContext = {
+  capabilities: ["pageHeader:primary:view-audit"],
+  permissions: ["blocks.pageHeader.primary.view-audit"],
+  roles: ["viewer"],
+} satisfies MetadataPermissionContext;
+
+function liveBindingArgs(source: MetadataDataSourceEnvelope): Story["args"] {
+  return {
+    dataSources: {
+      liveApprovals: source,
+    },
+    page: liveBindingPage,
+  };
+}
+
 export const ApprovalWorkspace: Story = {
   args: {
     dataSources,
@@ -374,6 +763,18 @@ export const DenseDataConfig: Story = {
   },
   render: (args) => (
     <div className="w-[min(1180px,calc(100vw-2rem))]">
+      <MetadataPageRenderer {...args} />
+    </div>
+  ),
+};
+
+export const ComposedErpPageLayout: Story = {
+  args: {
+    dataSources,
+    page: composedMetadataPage,
+  },
+  render: (args) => (
+    <div className="w-[min(1240px,calc(100vw-2rem))]">
       <MetadataPageRenderer {...args} />
     </div>
   ),
@@ -449,6 +850,85 @@ export const InvalidPage: Story = {
   },
   render: (args) => (
     <div className="w-[min(740px,calc(100vw-2rem))]">
+      <MetadataPageRenderer {...args} />
+    </div>
+  ),
+};
+
+export const PermissionGovernanceRuntime: Story = {
+  args: {
+    page: governancePage,
+    permissionContext: governancePermissionContext,
+  },
+  render: (args) => (
+    <div className="w-[min(920px,calc(100vw-2rem))]">
+      <MetadataPageRenderer {...args} />
+    </div>
+  ),
+};
+
+export const MetadataDebugPanel: Story = {
+  args: {
+    dataSources: {},
+    debug: true,
+    page: metadataPage,
+  },
+  render: (args) => (
+    <div className="w-[min(1120px,calc(100vw-2rem))]">
+      <MetadataPageRenderer {...args} />
+    </div>
+  ),
+};
+
+export const LiveReadySource: Story = {
+  args: liveBindingArgs(sourceStateData.ready),
+  render: (args) => (
+    <div className="w-[min(1120px,calc(100vw-2rem))]">
+      <MetadataPageRenderer {...args} />
+    </div>
+  ),
+};
+
+export const LiveLoadingSource: Story = {
+  args: liveBindingArgs(sourceStateData.loading),
+  render: (args) => (
+    <div className="w-[min(920px,calc(100vw-2rem))]">
+      <MetadataPageRenderer {...args} />
+    </div>
+  ),
+};
+
+export const LiveEmptySource: Story = {
+  args: liveBindingArgs(sourceStateData.empty),
+  render: (args) => (
+    <div className="w-[min(920px,calc(100vw-2rem))]">
+      <MetadataPageRenderer {...args} />
+    </div>
+  ),
+};
+
+export const LiveErrorSource: Story = {
+  args: liveBindingArgs(sourceStateData.error),
+  render: (args) => (
+    <div className="w-[min(920px,calc(100vw-2rem))]">
+      <MetadataPageRenderer {...args} />
+    </div>
+  ),
+};
+
+export const LiveForbiddenSource: Story = {
+  args: liveBindingArgs(sourceStateData.forbidden),
+  render: (args) => (
+    <div className="w-[min(920px,calc(100vw-2rem))]">
+      <MetadataPageRenderer {...args} />
+    </div>
+  ),
+};
+
+export const LiveStaleSource: Story = {
+  args: liveBindingArgs(sourceStateData.stale),
+  render: (args) => (
+    <div className="w-[min(1120px,calc(100vw-2rem))]">
       <MetadataPageRenderer {...args} />
     </div>
   ),

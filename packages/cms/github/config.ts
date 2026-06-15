@@ -24,6 +24,9 @@ export const documentContentPath = (
   slug: string
 ): string => `${localeContentDirectory(collection, locale)}/${slug}.mdx`;
 
+export const settingsContentPath = (): string =>
+  "packages/cms/content/settings.json";
+
 export const getGitHubConfig = (): GitHubConfig => {
   const env = keys();
 

@@ -8,6 +8,8 @@ export const searchDocumentMirror = async (input: {
   collection?: string;
   locale?: string;
   limit?: number;
+  /** When true, only published documents are returned (public search). */
+  publishedOnly?: boolean;
 }): Promise<CmsSearchHit[]> => {
   const trimmedQuery = input.query.trim();
 
@@ -25,6 +27,10 @@ export const searchDocumentMirror = async (input: {
 
   if (input.locale) {
     filters.push(eq(cmsDocument.locale, input.locale));
+  }
+
+  if (input.publishedOnly) {
+    filters.push(eq(cmsDocument.status, "published"));
   }
 
   const rows = await database

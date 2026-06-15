@@ -6,6 +6,9 @@ const packageRoot = path.dirname(fileURLToPath(import.meta.url));
 
 export const contentRoot = path.join(packageRoot, "..", "content");
 
+export const settingsFilePath = (): string =>
+  path.join(contentRoot, "settings.json");
+
 export const collectionDirectory = (collectionName: string): string =>
   path.join(contentRoot, collectionName);
 

@@ -6,11 +6,14 @@ import type {
   WebhookEndpointPublic,
 } from "@repo/webhooks";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
+import { getWebhookDeliveries } from "@/app/actions/webhooks/endpoints";
 import { DeliveriesTable } from "./deliveries-table";
 
 type DeliveriesPanelProperties = {
   deliveries: WebhookDeliveryRecord[];
   endpoints: WebhookEndpointPublic[];
+  initialNextCursor: string | null;
   isOwner: boolean;
   statusFilter: WebhookDeliveryStatus | "all";
   endpointFilter: string;
@@ -19,12 +22,23 @@ type DeliveriesPanelProperties = {
 export const DeliveriesPanel = ({
   deliveries,
   endpoints,
+  initialNextCursor,
   isOwner,
   statusFilter,
   endpointFilter,
 }: DeliveriesPanelProperties) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [rows, setRows] = useState(deliveries);
+  const [nextCursor, setNextCursor] = useState(initialNextCursor);
+  const [loadMoreError, setLoadMoreError] = useState<string | null>(null);
+  const [isLoadingMore, startLoadMore] = useTransition();
+
+  useEffect(() => {
+    setRows(deliveries);
+    setNextCursor(initialNextCursor);
+    setLoadMoreError(null);
+  }, [deliveries, initialNextCursor]);
 
   const pushFilters = (updates: {
     status?: WebhookDeliveryStatus | "all";
@@ -60,13 +74,42 @@ export const DeliveriesPanel = ({
     pushFilters({ endpointId });
   };
 
+  const handleLoadMore = () => {
+    if (!nextCursor) {
+      return;
+    }
+
+    startLoadMore(async () => {
+      setLoadMoreError(null);
+
+      const result = await getWebhookDeliveries({
+        limit: 50,
+        cursor: nextCursor,
+        ...(statusFilter !== "all" ? { status: statusFilter } : {}),
+        ...(endpointFilter !== "all" ? { endpointId: endpointFilter } : {}),
+      });
+
+      if (!result.ok) {
+        setLoadMoreError(result.error ?? "Failed to load more deliveries");
+        return;
+      }
+
+      setRows((previous) => [...previous, ...result.data.deliveries]);
+      setNextCursor(result.data.nextCursor);
+    });
+  };
+
   return (
     <DeliveriesTable
-      deliveries={deliveries}
+      deliveries={rows}
       endpointFilter={endpointFilter}
       endpoints={endpoints}
+      isLoadingMore={isLoadingMore}
       isOwner={isOwner}
+      loadMoreError={loadMoreError}
+      nextCursor={nextCursor}
       onEndpointFilterChange={handleEndpointFilterChange}
+      onLoadMore={handleLoadMore}
       onStatusFilterChange={handleStatusFilterChange}
       statusFilter={statusFilter}
     />

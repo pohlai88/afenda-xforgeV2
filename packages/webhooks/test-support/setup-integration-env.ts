@@ -1,27 +1,13 @@
-import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { config } from "dotenv";
 
-const configDir = path.dirname(fileURLToPath(import.meta.url));
-
-config({ path: path.resolve(configDir, "../../../.env") });
-config({
-  path: path.resolve(configDir, "../../../.env.local"),
-  override: true,
-});
-config({
-  path: path.resolve(configDir, "../../database/.env"),
-  override: true,
-});
-
-type GlobalPool = typeof globalThis & {
-  pool?: { end: () => Promise<void> };
-};
-
-const globalWithPool = globalThis as GlobalPool;
-
-if (globalWithPool.pool) {
-  await globalWithPool.pool.end();
-  globalWithPool.pool = undefined;
+// Local env sync points first-party webhooks at localhost — blocked by outbound URL validation.
+// Integration tests that need first-party fan-out set WEBHOOK_FIRST_PARTY_* in beforeAll.
+const firstPartyUrl = process.env.WEBHOOK_FIRST_PARTY_WEB_URL?.trim() ?? "";
+if (
+  !firstPartyUrl ||
+  /localhost|127\.0\.0\.1/i.test(firstPartyUrl)
+) {
+  delete process.env.WEBHOOK_FIRST_PARTY_WEB_URL;
+  delete process.env.WEBHOOK_FIRST_PARTY_WEB_SECRET;
 }

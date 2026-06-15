@@ -1,7 +1,7 @@
 # XForge Lightweight CMS — Architecture & Requirements
 
-**Version:** 0.1  
-**Status:** Phase 1 accepted (2026-06-15)  
+**Version:** 0.2  
+**Status:** Phases 1–3C accepted (2026-06-15)  
 **Benchmark reference:** [Keystatic](https://keystatic.com/) (MIT, Thinkmill)  
 **Monorepo package:** `@repo/cms`  
 **Last updated:** 2026-06-15
@@ -25,7 +25,7 @@ Keystatic was chosen as the single reference OSS CMS because it matches our targ
 | License | MIT | Same freedom to fork patterns |
 | Storage | Git (MDX/YAML/JSON) | Same model we use |
 | Database | None (Phase 1) | Same — no CMS DB required initially |
-| Admin UI | Built-in (`/keystatic`) | We defer; plan optional `apps/studio` |
+| Admin UI | Built-in (`/keystatic`) | Custom studio at `apps/app/(authenticated)/cms` |
 | Reader API | `createReader()` + collections | We mirror with `blog.getPost()` |
 | Schema | `keystatic.config.ts` fields API | We use Zod per collection |
 | Formats | Markdoc + MDX | We use MDX + frontmatter |
@@ -40,23 +40,25 @@ Keystatic was chosen as the single reference OSS CMS because it matches our targ
 
 Scoring: **0** missing, **1** partial, **2** meets need, **3** exceeds / better fit for XForge.
 
-| Capability | Keystatic | XForge CMS (today) | XForge CMS (target) | Notes |
-|------------|-----------|--------------------|---------------------|-------|
-| Git-backed content | 2 | 2 | 2 | Parity |
-| No runtime CMS token | 2 | 2 | 2 | Parity vs BaseHub |
-| Typed Reader API | 2 | 2 | 3 | Zod + inferred types |
-| Collection registry | 2 | 1 | 2 | Refactor loader → registry |
-| Admin UI | 3 | 2 | 2 | `apps/app/cms` studio |
-| Draft / publish | 1 | 2 | 2 | Frontmatter `status` + ISR |
-| Image pipeline | 2 | 2 | 2 | Vercel Blob via `@repo/storage` |
-| i18n collections | 1 | 2 | 2 | `content/{collection}/{locale}/` |
-| GitHub write mode | 2 | 2 | 2 | Writer + GitHub Contents API |
-| GitHub read mode | 2 | 2 | 2 | Runtime reader in production |
-| Live publish (no redeploy) | 2 | 2 | 2 | `unstable_cache` + on-demand revalidation |
-| DB fallback | 0 | 0 | 1 | Optional Supabase Phase 3 |
-| Monorepo isolation | 1 | 3 | 3 | Dedicated `@repo/cms` package |
-| Zero extra deploy | 2 | 2 | 2 | ISR; no app redeploy for content |
-| Auth integration | 1 | 2 | 2 | `@repo/auth` editor guard in studio |
+| Capability | Keystatic | XForge CMS (today) | Notes |
+|------------|-----------|--------------------|-------|
+| Git-backed content | 2 | 2 | Parity |
+| No runtime CMS token | 2 | 2 | Parity vs BaseHub |
+| Typed Reader API | 2 | 3 | Zod + inferred types |
+| Collection registry | 2 | 2 | `collections/` + generic loader |
+| Admin UI | 3 | 2 | Keystatic `/keystatic` vs `apps/app/cms` studio |
+| Draft / publish | 1 | 2 | Frontmatter `status` + ISR |
+| Image pipeline | 2 | 2 | Vercel Blob via `@repo/storage` |
+| i18n collections | 1 | 2 | `content/{collection}/{locale}/` |
+| GitHub write mode | 2 | 2 | Writer + GitHub Contents API |
+| GitHub read mode | 2 | 2 | Runtime reader in production |
+| Live publish (no redeploy) | 2 | 2 | `unstable_cache` + on-demand revalidation |
+| DB mirror / search | 0 | 1 | Optional Postgres FTS (Phase 3C) |
+| Monorepo isolation | 1 | 3 | Dedicated `@repo/cms` package |
+| Zero extra deploy | 2 | 2 | ISR; no app redeploy for content |
+| Auth integration | 1 | 2 | `@repo/auth` editor guard in studio |
+| Schema-driven studio fields | 2 | 2 | `frontmatterFields` on collection config |
+| Site settings singleton | 1 | 2 | `content/settings.json` + `getSiteSettings()` |
 
 **Summary:** XForge CMS **matches Keystatic** on git-backed storage, GitHub mode, and live publish via ISR. **Leads** on monorepo packaging and Zod validation.
 
@@ -94,8 +96,8 @@ Scoring: **0** missing, **1** partial, **2** meets need, **3** exceeds / better 
 | FR-04 | Compile MDX body + syntax highlighting | P0 | 1 ✅ |
 | FR-05 | Generate TOC and reading time | P1 | 1 ✅ |
 | FR-06 | Expose typed **Reader API** (`blog`, `legal`) | P0 | 1 ✅ |
-| FR-07 | Support **draft** vs **published** filtering | P1 | 1.5 |
-| FR-08 | Generic **collection registry** (no duplicated loaders) | P1 | 1.5 |
+| FR-07 | Support **draft** vs **published** filtering | P1 | 1.5 ✅ |
+| FR-08 | Generic **collection registry** (no duplicated loaders) | P1 | 1.5 ✅ |
 | FR-09 | **Admin UI** for non-developers | P2 | 2 ✅ |
 | FR-10 | **Image upload** to Vercel Blob | P2 | 2 ✅ |
 | FR-11 | **GitHub commit mode** for production edits | P2 | 2 ✅ |
@@ -181,19 +183,24 @@ flowchart TB
     CONTENT[(content/ git)]
   end
 
+  subgraph webhooks_pkg ["@repo/webhooks"]
+    OUTBOX[outbox enqueue + deliver]
+  end
+
   subgraph web ["apps/web"]
     PAGES[blog / legal pages]
-    REVALIDATE["/api/revalidate"]
+    CMSCACHE["POST /api/webhooks/cms-cache"]
   end
 
   UI --> SA
   SA --> SESS
   SA --> WRITER
   SA --> Blob
+  SA -->|emitOrgEvent| OUTBOX
+  OUTBOX -->|Standard Webhooks| CMSCACHE
+  CMSCACHE --> PAGES
   WRITER --> GITHUB
   GITHUB --> CONTENT
-  SA -->|notifyWebContentChanged| REVALIDATE
-  REVALIDATE --> PAGES
   READER --> GITHUB
   READER --> CONTENT
   PAGES --> READER
@@ -202,7 +209,7 @@ flowchart TB
 **Database:** None for CMS content. Assets in Vercel Blob.  
 **Backend:** Server Actions in `apps/app`; GitHub Contents API for prod read/write.  
 **Frontend:** Admin at `apps/app/(authenticated)/cms`; public at `apps/web`.  
-**Live updates:** `unstable_cache` tags + `POST /api/revalidate` on publish (no app redeploy).
+**Live updates:** `unstable_cache` tags + `@repo/webhooks` outbox → `POST /api/webhooks/cms-cache` on `apps/web` (Standard Webhooks, no app redeploy).
 
 ### 6.3 Phase 3 — Optional DB mirror (search / workflows)
 
@@ -212,10 +219,9 @@ flowchart LR
   SYNC --> PG[(Supabase Postgres next_forge.cms_documents)]
   PG --> SEARCH[FTS / API]
   READER[@repo/cms Reader API] --> GIT
-  READER -.->|fallback| PG
 ```
 
-Use only when git-only search or approval workflows become insufficient.
+Git remains source of truth; Postgres mirror is for search and audit only (no Reader fallback).
 
 ---
 
@@ -364,7 +370,7 @@ CREATE INDEX cms_documents_collection_status_idx
 - [x] Preview URL (`?preview=draft` + signed token) and in-app preview
 - [x] GitHub runtime reader (`CMS_READ_MODE` / auto when write mode is `github`)
 - [x] Tagged `unstable_cache` on collection reads
-- [x] `apps/web` `POST /api/revalidate` + publish hook from `apps/app`
+- [x] `@repo/webhooks` outbox fan-out → `apps/web` `POST /api/webhooks/cms-cache` via `emitOrgEvent`
 
 ### Phase 3A — Locale collections (✅ shipped)
 
@@ -417,85 +423,110 @@ Signing: Standard Webhooks v1 — `webhook-id`, `webhook-timestamp`, `webhook-si
 
 ---
 
-## 10. Directory trees
-
-### 10.1 Current — `packages/cms`
+## 10. Directory tree (current)
 
 ```text
 packages/cms/
 ├── README.md
 ├── docs/
-│   └── ARCHITECTURE.md          # this document
+│   ├── ARCHITECTURE.md
+│   └── PHASE*_ACCEPTANCE.md
 ├── package.json
 ├── tsconfig.json
-├── .gitignore
+├── tsconfig.scripts.json
+├── vitest.integration.config.mts
 │
-├── index.ts                     # public Reader API exports
+├── index.ts                     # public Reader API (blog, legal)
 ├── types.ts                     # Post, LegalPost, ContentBody, …
-├── schemas.ts                   # Zod frontmatter (→ schemas/ in 1.5)
-├── loader.ts                    # file read + map (→ loader/ in 1.5)
-├── mdx.ts                       # compile, TOC, reading time
-│
-├── content/                     # SOURCE OF TRUTH (git)
-│   ├── blog/
-│   │   └── welcome-to-xforge.mdx
-│   └── legal/
-│       ├── privacy.mdx
-│       └── terms.mdx
-│
-└── components/                  # presentation helpers for consumers
-    ├── body.tsx                 # client MDX renderer
-    ├── toc.tsx
-    └── image.tsx                # next/image wrapper
-```
-
-### 10.2 Target — `packages/cms` (Phase 1.5–2)
-
-```text
-packages/cms/
-├── docs/
-│   └── ARCHITECTURE.md
-├── index.ts
-├── types.ts
+├── events.ts                    # webhook event types + Zod schemas
+├── settings.ts                  # cached getSiteSettings()
+├── settings-io.ts               # local/GitHub settings.json I/O
+├── locale.ts
+├── keys.ts
+├── revalidate.ts                # cache tags + ISR paths
+├── reader-options.ts
+├── document-list.ts
+├── static-params.ts
+├── preview-token.ts
 │
 ├── collections/
-│   ├── index.ts                 # registry + types inferred from config
+│   ├── index.ts                 # registry + isCmsCollection
 │   ├── blog.config.ts
-│   └── legal.config.ts
+│   ├── legal.config.ts
+│   ├── defaults.ts
+│   └── types.ts
 │
 ├── schemas/
+│   ├── index.ts
+│   ├── shared.schema.ts
 │   ├── blog.schema.ts
 │   ├── legal.schema.ts
-│   └── shared.schema.ts           # image, author, status enum
+│   └── settings.schema.ts
 │
 ├── loader/
-│   ├── read-collection.ts         # generic list/get
-│   ├── read-document.ts
-│   └── paths.ts                   # content root resolution
+│   ├── index.ts                 # cached blog/legal readers
+│   ├── read-collection.ts
+│   ├── cached-reads.ts
+│   ├── paths.ts
+│   ├── content-source.ts
+│   ├── local-source.ts
+│   ├── github-source.ts
+│   ├── resolve-source.ts
+│   └── read-mode.ts
 │
 ├── compiler/
-│   ├── mdx.ts
-│   ├── toc.ts
-│   └── cache.ts                   # unstable_cache wrapper
+│   ├── mdx.ts                   # compile, TOC, reading time, compile cache
+│   └── heading-slug.ts
 │
-├── writer/                        # Phase 2
-│   ├── save-document.ts           # server-only
-│   └── github-commit.ts
+├── writer/
+│   ├── index.ts
+│   ├── create-collection-writer.ts
+│   ├── settings.ts
+│   ├── github-commit.ts
+│   ├── local-storage.ts
+│   ├── serialize-document.ts
+│   ├── slug.ts                  # document slug (kebab-case)
+│   ├── write-mode.ts
+│   └── types.ts
+│
+├── sync/                        # Phase 3C Postgres mirror
+│   ├── index.ts
+│   ├── upsert-mirror.ts
+│   ├── delete-mirror.ts
+│   ├── search-mirror.ts
+│   ├── backfill.ts
+│   ├── ensure-schema.ts
+│   └── types.ts
+│
+├── github/
+│   ├── config.ts
+│   └── file-metadata.ts
+│
+├── validation/
+│   └── validate-content.ts
 │
 ├── scripts/
-│   └── validate-content.mjs       # CI: load all MDX + Zod parse
+│   ├── validate-content.ts      # pnpm cms:validate
+│   └── sync-content.ts          # pnpm cms:sync
 │
-├── content/
-│   ├── blog/
-│   └── legal/
+├── components/
+│   ├── body.tsx
+│   ├── toc.tsx
+│   └── image.tsx
 │
-└── components/
-    ├── body.tsx
-    ├── toc.tsx
-    └── image.tsx
+├── content/                     # SOURCE OF TRUTH (git)
+│   ├── settings.json
+│   ├── blog/{locale}/*.mdx
+│   └── legal/{locale}/*.mdx
+│
+├── test/
+│   └── smoke-phase3c.integration.test.ts
+└── test-support/
+    ├── setup-integration-env.ts
+    └── server-only-stub.ts
 ```
 
-### 10.3 Consumer — `apps/web` (frontend, public)
+### 10.1 Consumer — `apps/web` (frontend, public)
 
 ```text
 apps/web/
@@ -516,60 +547,46 @@ apps/web/
         └── placeholder.svg        # static assets referenced in frontmatter
 ```
 
-### 10.4 Admin — `apps/studio` (Phase 2, planned)
+### 10.2 Admin — `apps/app/(authenticated)/cms` (✅ shipped)
 
 ```text
-apps/studio/                       # NEW APP — port 3003
-├── app/
-│   ├── layout.tsx
-│   ├── (auth)/
-│   │   └── sign-in/               # redirect to apps/app or shared auth
-│   └── (cms)/
-│       ├── layout.tsx               # sidebar nav
-│       ├── page.tsx                 # dashboard
-│       ├── [collection]/
-│       │   ├── page.tsx             # document list
-│       │   ├── new/page.tsx
-│       │   └── [slug]/
-│       │       ├── page.tsx         # editor
-│       │       └── preview/page.tsx
-│       └── api/
-│           ├── upload/route.ts      # → Supabase Storage
-│           └── publish/route.ts     # → writer.save + optional GitHub
-├── actions/
-│   ├── documents.ts               # Server Actions
-│   └── media.ts
+apps/app/app/(authenticated)/cms/
+├── page.tsx                       # collection dashboard
+├── [collection]/[locale]/         # document list + Postgres search
+├── [collection]/[locale]/[slug]/  # editor + preview
 ├── components/
 │   ├── document-list.tsx
+│   ├── document-search.tsx
 │   ├── mdx-editor.tsx
-│   └── frontmatter-form.tsx       # generated from Zod schema
-└── env.ts
+│   └── frontmatter-form.tsx       # schema-driven from collection config
+└── (actions live in apps/app/app/actions/cms/)
 ```
 
-### 10.5 Database & storage (Phase 2–3)
+### 10.3 Database & storage (Phase 2–3)
 
 ```text
-Supabase (project icfqhigdbkzpfimxvdnl)
-├── Storage
-│   └── bucket: cms-assets
-│       └── blog/{uuid}.{ext}
-│
-└── Postgres (schema next_forge)     # Phase 3 optional
-    ├── cms_documents
-    └── cms_revisions
+Vercel Blob (via @repo/storage)
+└── cms-assets/
+    └── {collection}/{uuid}.{ext}
+
+Postgres (schema next_forge)         # Phase 3C optional mirror
+├── cms_documents
+└── cms_document_revisions
+
+Git (source of truth)
+└── content/settings.json            # site singleton
 ```
 
 **Note:** App data (users, orgs, pages) stays in existing `next_forge` tables managed by Drizzle. CMS tables are **additive** and optional.
 
-### 10.6 Monorepo context
+### 10.4 Monorepo context
 
 ```text
 afenda-Xforge/
 ├── apps/
-│   ├── app/                       # product app (:3000)
+│   ├── app/                       # product app (:3000) — includes /cms studio
 │   ├── web/                       # marketing site (:3001) — CMS consumer
-│   ├── api/                       # API (:3002)
-│   └── studio/                    # CMS admin (:3003) — Phase 2
+│   ├── api/                       # API (:3002) — CMS search
 ├── packages/
 │   ├── cms/                       # THIS PACKAGE
 │   ├── auth/                      # Supabase auth (studio guard)
@@ -585,7 +602,7 @@ afenda-Xforge/
 | Layer | May import | Must not |
 |-------|------------|----------|
 | `apps/web` | `@repo/cms`, `@repo/cms/components/*` | Read `packages/cms/content` directly |
-| `apps/studio` | `@repo/cms`, `@repo/cms/writer` | Bypass Zod validation |
+| `apps/app` (studio) | `@repo/cms`, `@repo/cms/writer`, `@repo/cms/sync` | Bypass Zod validation |
 | `@repo/cms` | Node fs, mdx-bundler, zod | `@repo/auth`, UI routes |
 | `@repo/database` | Drizzle | CMS presentation logic |
 
@@ -630,18 +647,18 @@ afenda-Xforge/
 |-------------------|-------------------|
 | `keystatic.config.ts` | `collections/*.config.ts` + Zod |
 | `collections.posts` | `content/blog/` + `blog` Reader |
-| `singletons` | `content/settings.json` (future) |
+| `singletons` | `content/settings.json` + `getSiteSettings()` |
 | `createReader()` | `blog.getPost()` / loader |
 | `fields.markdoc()` | MDX + mdx-bundler |
 | `storage: local` | `content/` git |
 | `storage: github` | `writer/github-commit.ts` |
-| Admin `/keystatic` | `apps/studio` |
+| Admin `/keystatic` | `apps/app/(authenticated)/cms` |
 
-## Appendix B — Content validation script (planned)
+## Appendix B — Content validation script (✅ shipped)
 
 ```bash
-pnpm --filter @repo/cms validate
-# Loads every MDX under content/, runs Zod parse, exits non-zero on failure
+pnpm cms:validate
+# Loads every MDX under content/, runs Zod parse, validates settings.json
 ```
 
 ## Appendix C — Adding a new collection (target)

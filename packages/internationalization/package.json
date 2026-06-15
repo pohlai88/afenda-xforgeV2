@@ -2,10 +2,14 @@
   "name": "@repo/internationalization",
   "version": "0.0.0",
   "private": true,
+  "exports": {
+    ".": "./index.ts",
+    "./languine.json": "./languine.json"
+  },
   "scripts": {
     "translate": "npx -y languine@latest translate",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.8.1",

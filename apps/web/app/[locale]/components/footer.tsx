@@ -1,15 +1,20 @@
-import { legal } from "@repo/cms";
+import { legal, getSiteSettings } from "@repo/cms";
+import { localePathPrefix } from "@repo/cms/locale";
 import { Status } from "@repo/observability/status";
 import Link from "next/link";
 import { env } from "@/env";
 
 export const Footer = async ({ locale }: { locale: string }) => {
-  const legalPages = await legal.getPostsMeta({ locale });
+  const prefix = localePathPrefix(locale);
+  const [legalPages, siteSettings] = await Promise.all([
+    legal.getPostsMeta({ locale }),
+    getSiteSettings(),
+  ]);
 
   const navigationItems = [
     {
       title: "Home",
-      href: "/",
+      href: prefix === "" ? "/" : prefix,
       description: "",
     },
     {
@@ -18,7 +23,7 @@ export const Footer = async ({ locale }: { locale: string }) => {
       items: [
         {
           title: "Blog",
-          href: "/blog",
+          href: `${prefix}/blog`,
         },
       ],
     },
@@ -27,7 +32,7 @@ export const Footer = async ({ locale }: { locale: string }) => {
       description: "We stay on top of the latest legal requirements.",
       items: legalPages.map((post) => ({
         title: post._title,
-        href: `/legal/${post._slug}`,
+        href: `${prefix}/legal/${post._slug}`,
       })),
     },
   ];
@@ -47,10 +52,10 @@ export const Footer = async ({ locale }: { locale: string }) => {
             <div className="flex flex-col items-start gap-8">
               <div className="flex flex-col gap-2">
                 <h2 className="max-w-xl text-left font-regular text-3xl tracking-tighter md:text-5xl">
-                  next-forge
+                  {siteSettings.siteName}
                 </h2>
                 <p className="max-w-lg text-left text-foreground/75 text-lg leading-relaxed tracking-tight">
-                  This is the start of something new.
+                  {siteSettings.tagline}
                 </p>
               </div>
               <Status />

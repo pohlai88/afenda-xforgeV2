@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validateWebhookUrl } from "../lib/url-validation";
+import { validateWebhookUrl } from "../lib/outbound/url-validation";
 
 describe("validateWebhookUrl", () => {
   it("accepts public https URLs", () => {

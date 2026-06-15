@@ -1,11 +1,54 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalDependencies": ["**/.env.*local"],
+  "globalDependencies": [
+    "**/.env.*local",
+    "vitest.shared.mts",
+    "test-support/**",
+    "packages/typescript-config/**",
+    "pnpm-lock.yaml"
+  ],
   "ui": "tui",
   "envMode": "loose",
+  "boundaries": {
+    "tags": {
+      "tooling": {
+        "dependencies": {
+          "deny": ["library", "deployable"]
+        }
+      },
+      "library": {
+        "dependencies": {
+          "deny": ["deployable"]
+        }
+      },
+      "deployable": {
+        "dependencies": {
+          "allow": ["library", "tooling", "deployable"]
+        }
+      }
+    }
+  },
   "tasks": {
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
+      "inputs": [
+        "**/*.ts",
+        "**/*.tsx",
+        "tsconfig.json",
+        "!**/*.md",
+        "!**/*.mdx",
+        "!**/*.stories.{ts,tsx,mdx}",
+        "!test/**",
+        "!test-support/**",
+        "!**/*.test.ts",
+        "!**/*.test.tsx",
+        "!**/*.integration.test.ts",
+        "!vitest.config.*"
+      ],
+      "outputs": []
+    },
     "build": {
-      "dependsOn": ["^build", "test"],
+      "dependsOn": ["^build"],
       "outputs": [
         ".next/**",
         "!.next/cache/**",
@@ -14,8 +57,69 @@
         ".react-email/**"
       ]
     },
+    "app#build": {
+      "env": [
+        "NODE_ENV",
+        "SKIP_ENV_VALIDATION",
+        "NEXT_PUBLIC_*",
+        "DATABASE_URL",
+        "DIRECT_URL"
+      ],
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.stories.{tsx,jsx,mdx}"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "web#build": {
+      "env": [
+        "NODE_ENV",
+        "SKIP_ENV_VALIDATION",
+        "NEXT_PUBLIC_*",
+        "DATABASE_URL",
+        "DIRECT_URL"
+      ],
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.stories.{tsx,jsx,mdx}"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "api#build": {
+      "env": [
+        "NODE_ENV",
+        "SKIP_ENV_VALIDATION",
+        "NEXT_PUBLIC_*",
+        "DATABASE_URL",
+        "DIRECT_URL"
+      ],
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.stories.{tsx,jsx,mdx}"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "storybook#build": {
+      "env": ["NODE_ENV", "SKIP_ENV_VALIDATION", "NEXT_PUBLIC_*", "STORYBOOK_DISABLE_MCP"],
+      "outputs": ["storybook-static/**"]
+    },
     "test": {
-      "dependsOn": ["^test"]
+      "dependsOn": [],
+      "inputs": [
+        "test/**",
+        "test-support/**",
+        "../../test-support/**",
+        "vitest.config.*",
+        "../../vitest.shared.mts"
+      ],
+      "outputs": []
+    },
+    "test:integration": {
+      "dependsOn": [],
+      "cache": false,
+      "inputs": [
+        "test/integration/**",
+        "test/**/*.integration.test.ts",
+        "test-support/**",
+        "../../test-support/**",
+        "vitest.config.*",
+        "vitest.integration.config.*",
+        "../../vitest.shared.mts"
+      ]
+    },
+    "boundaries": {
+      "cache": false
     },
     "analyze": {
       "dependsOn": ["^analyze"]

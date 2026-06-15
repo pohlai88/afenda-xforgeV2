@@ -22,8 +22,8 @@
 | GitHub write mode | **Pass** | `CMS_WRITE_MODE=github` + `writer/github-commit.ts` |
 | GitHub runtime read | **Pass** | `loader/github-source.ts` + `CMS_READ_MODE` |
 | Tagged reader cache | **Pass** | `loader/cached-reads.ts` + `unstable_cache` tags |
-| On-demand revalidation | **Pass** | `apps/web/app/api/revalidate` + `notifyWebContentChanged` |
-| Live publish (no redeploy) | **Pass** | Publish → revalidate → next request reads fresh content |
+| On-demand revalidation | **Pass** | `apps/web/app/api/webhooks/cms-cache` + `@repo/webhooks` outbox |
+| Live publish (no redeploy) | **Pass** | Publish → webhook delivery → ISR tag/path revalidation |
 | Signed public preview | **Pass** | Full `NEXT_PUBLIC_WEB_URL` preview links on `apps/web` |
 | Package boundary | **Pass** | Apps import `@repo/cms` / `@repo/cms/writer` only |
 
@@ -54,22 +54,23 @@
 | `CMS_GITHUB_REPO` | server | `owner/repo` |
 | `CMS_GITHUB_BRANCH` | server | Target branch (default `main`) |
 | `CMS_PREVIEW_SECRET` | server | HMAC secret for public draft preview tokens |
-| `CMS_REVALIDATE_SECRET` | server | Shared secret for `POST /api/revalidate` |
+| `WEBHOOK_FIRST_PARTY_WEB_URL` | server | First-party subscriber URL (`apps/app`) |
+| `WEBHOOK_FIRST_PARTY_WEB_SECRET` | server | Shared Standard Webhooks secret (`apps/app` + `apps/web`) |
 | `BLOB_READ_WRITE_TOKEN` | server | Vercel Blob uploads |
-| `NEXT_PUBLIC_WEB_URL` | client | `apps/app` — target for revalidation + preview links |
+| `NEXT_PUBLIC_WEB_URL` | client | `apps/app` — first-party URL target + preview links |
 
 ---
 
 ## Manual smoke
 
-1. Set `CMS_REVALIDATE_SECRET` (same value) in `apps/app` and `apps/web` `.env.local`
+1. Set `WEBHOOK_FIRST_PARTY_WEB_URL` and `WEBHOOK_FIRST_PARTY_WEB_SECRET` (same secret in `apps/app` and `apps/web`) — or run `pnpm env:sync`
 2. Sign in to `apps/app` as org **owner** or **editor**
 3. Open `/cms` → create or edit a blog draft → save
 4. Publish → refresh `localhost:3001/blog` — new/updated post appears **without** restarting dev servers
 5. Copy public preview link → opens on `localhost:3001` with `?preview=draft&token=`
 6. Upload image in blog frontmatter → Blob URL saved and renders on web
 
-**Production:** `apps/web` needs `CMS_READ_MODE=github`, `CMS_GITHUB_*`, and `CMS_REVALIDATE_SECRET`. `apps/app` needs `CMS_WRITE_MODE=github`, same GitHub vars, revalidate secret, and `NEXT_PUBLIC_WEB_URL`.
+**Production:** `apps/web` needs `CMS_READ_MODE=github`, `CMS_GITHUB_*`, and `WEBHOOK_FIRST_PARTY_WEB_SECRET`. `apps/app` needs `CMS_WRITE_MODE=github`, same GitHub vars, `WEBHOOK_FIRST_PARTY_WEB_URL`, matching webhook secret, and `NEXT_PUBLIC_WEB_URL`.
 
 ---
 

@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { bundleMDX } from "mdx-bundler";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
-import { createHeadingSlugger, slugifyHeading } from "../slug";
+import { createHeadingSlugger, slugifyHeading } from "./heading-slug";
 import type { ContentBody, TocItem } from "../types";
 
 const WORDS_PER_MINUTE = 200;

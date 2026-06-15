@@ -8,10 +8,21 @@ export type {
   TocItem,
 } from "./types";
 
-export type { BlogReader, LegalReader } from "./readers";
 export type { ReaderOptions } from "./collections/types";
-export { collections } from "./collections";
+export {
+  collections,
+  cmsCollectionNames,
+  cmsCollectionSchema,
+  getCollectionFrontmatterFields,
+  getDefaultFrontmatter,
+  isCmsCollection,
+  type CollectionName,
+} from "./collections";
+export type { SiteSettings } from "./settings";
+export { getSiteSettings } from "./settings";
 
+import type { LegalPost, LegalPostMeta, Post, PostMeta } from "./types";
+import type { ReaderOptions } from "./collections/types";
 import {
   getBlogPost,
   getBlogPosts,
@@ -20,7 +31,18 @@ import {
   getLegalPosts,
   getLegalPostsMeta,
 } from "./loader";
-import type { BlogReader, LegalReader } from "./readers";
+
+export interface BlogReader {
+  getPosts(options?: ReaderOptions): Promise<PostMeta[]>;
+  getPost(slug: string, options?: ReaderOptions): Promise<Post | null>;
+  getLatestPost(options?: ReaderOptions): Promise<Post | null>;
+}
+
+export interface LegalReader {
+  getPostsMeta(options?: ReaderOptions): Promise<LegalPostMeta[]>;
+  getPosts(options?: ReaderOptions): Promise<LegalPost[]>;
+  getPost(slug: string, options?: ReaderOptions): Promise<LegalPost | null>;
+}
 
 export const blog = {
   getPosts: getBlogPosts,

@@ -39,6 +39,6 @@ Existing files moved to `en/`:
 2. Create `/cms/blog/es/new`, publish — file at `content/blog/es/{slug}.mdx`
 3. Visit `/es/blog` — shows Spanish posts only; `/en/blog` unchanged
 4. Visit `/es/blog/{slug}` with no Spanish file but English exists — falls back to English content
-5. Publish from studio — `apps/web` updates without redeploy (same `CMS_REVALIDATE_SECRET`)
+5. Publish from studio — `apps/web` updates without redeploy (`WEBHOOK_FIRST_PARTY_*` + outbox delivery)
 
 **Phase 3A verdict: Accepted (static gates)**

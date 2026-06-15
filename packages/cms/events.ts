@@ -1,10 +1,11 @@
 import { z } from "zod";
-import type { CollectionName } from "./collections";
+import { cmsCollectionSchema, type CollectionName } from "./collections";
 import { cmsLocaleSchema, type CmsLocale } from "./locale";
-import type { ContentStatus } from "./schemas";
+import { contentStatusSchema, type ContentStatus } from "./schemas";
 
 export const CMS_EVENT_PUBLISHED = "cms.document.published";
 export const CMS_EVENT_UNPUBLISHED = "cms.document.unpublished";
+export const CMS_EVENT_SETTINGS_UPDATED = "cms.settings.updated";
 
 export type CmsDocumentEventInput = {
   collection: CollectionName;
@@ -16,15 +17,28 @@ export type CmsDocumentEventInput = {
 };
 
 export const cmsDocumentEventSchema = z.object({
-  collection: z.enum(["blog", "legal"]),
+  collection: cmsCollectionSchema,
   locale: cmsLocaleSchema,
   slug: z.string(),
   title: z.string(),
-  status: z.enum(["draft", "published"]),
+  status: contentStatusSchema,
   publishedAt: z.string().optional(),
 });
 
 export type CmsDocumentEvent = z.infer<typeof cmsDocumentEventSchema>;
+
+export const cmsSettingsUpdatedEventSchema = z.object({
+  updatedAt: z.string(),
+});
+
+export type CmsSettingsUpdatedEvent = z.infer<
+  typeof cmsSettingsUpdatedEventSchema
+>;
+
+export const buildCmsSettingsUpdatedEvent = (): CmsSettingsUpdatedEvent =>
+  cmsSettingsUpdatedEventSchema.parse({
+    updatedAt: new Date().toISOString(),
+  });
 
 export const buildCmsDocumentEvent = (
   input: CmsDocumentEventInput

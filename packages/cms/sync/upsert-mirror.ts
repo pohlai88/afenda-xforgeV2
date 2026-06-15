@@ -5,6 +5,7 @@ import {
   cmsDocumentRevision,
   type CmsDocumentRevisionAction,
 } from "@repo/database/schema";
+import { ensureCmsMirrorSchema } from "./ensure-schema";
 import type { MirrorDocumentInput } from "./types";
 
 const appendRevision = async (input: {
@@ -32,6 +33,8 @@ const appendRevision = async (input: {
 export const upsertDocumentMirror = async (
   input: MirrorDocumentInput
 ): Promise<string | null> => {
+  await ensureCmsMirrorSchema();
+
   const now = new Date();
 
   const [row] = await database

@@ -15,6 +15,14 @@ export const CollectionNav = () => (
     >
       Overview
     </Link>
+    <Link
+      className={cn(
+        "rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
+      )}
+      href="/cms/settings"
+    >
+      Settings
+    </Link>
     {collections.map((collection) => (
       <Link
         className={cn(

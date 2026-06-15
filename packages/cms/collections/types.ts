@@ -3,6 +3,19 @@ import type { CmsLocale } from "../locale";
 import type { ContentStatus } from "../schemas";
 import type { ContentBody } from "../types";
 
+export type FrontmatterFieldType =
+  | "text"
+  | "textarea"
+  | "date"
+  | "status"
+  | "image";
+
+export type FrontmatterField = {
+  readonly key: string;
+  readonly label: string;
+  readonly type: FrontmatterFieldType;
+};
+
 export type ReaderOptions = {
   includeDrafts?: boolean;
   locale?: CmsLocale;
@@ -15,6 +28,8 @@ export type CollectionConfig<
 > = {
   readonly name: string;
   readonly schema: z.ZodType<TFrontmatter>;
+  readonly frontmatterFields: readonly FrontmatterField[];
+  readonly createDefaultFrontmatter: () => TFrontmatter;
   readonly toMeta: (slug: string, frontmatter: TFrontmatter) => TMeta;
   readonly sortMeta?: (left: TMeta, right: TMeta) => number;
   readonly isPublished: (frontmatter: TFrontmatter) => boolean;

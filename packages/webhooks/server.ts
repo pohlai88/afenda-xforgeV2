@@ -7,18 +7,24 @@ export {
   listWebhookEndpoints,
   pruneOldWebhookDeliveries,
   replayWebhookDelivery,
+  resetWebhookEndpointHealth,
   rotateWebhookEndpointSecret,
   updateWebhookEndpoint,
-} from "./lib/endpoints";
-export { enqueueWebhookEvent, enqueueTestWebhook } from "./lib/enqueue";
+} from "./lib/outbound/endpoints";
+export { enqueueWebhookEvent, enqueueTestWebhook } from "./lib/outbound/enqueue";
 export {
   MAX_WEBHOOK_ATTEMPTS,
   processPendingDeliveries,
   processWebhookDeliveries,
   type DeliveryProcessResult,
   type ProcessWebhookDeliveriesOptions,
-} from "./lib/dispatcher";
-export { CLAIM_LEASE_MS, tryClaimDelivery } from "./lib/claim";
-export { getNextAttemptAt, WEBHOOK_RETRY_DELAYS_MS } from "./lib/retry";
+} from "./lib/outbound/dispatcher";
+export { CLAIM_LEASE_MS, tryClaimDelivery } from "./lib/outbound/claim";
+export {
+  classifyHttpFailure,
+  getNextAttemptAt,
+  MAX_TRANSIENT_ATTEMPTS,
+  WEBHOOK_TRANSIENT_RETRY_DELAYS_MS,
+} from "./lib/outbound/retry";
 export { generateWebhookSecret } from "./lib/secrets";
-export { validateWebhookUrl } from "./lib/url-validation";
+export { validateWebhookUrl } from "./lib/outbound/url-validation";

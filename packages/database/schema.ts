@@ -77,6 +77,9 @@ export const webhookEndpoint = nextForge.table("webhook_endpoints", {
   enabled: boolean("enabled").default(true).notNull(),
   events: text("events").array().notNull(),
   description: text("description"),
+  recentFailures: integer("recentFailures").default(0).notNull(),
+  disabledUntil: timestamp("disabledUntil", { precision: 3, mode: "date" }),
+  kind: text("kind").default("customer").notNull(),
   createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
     .defaultNow()
     .notNull(),

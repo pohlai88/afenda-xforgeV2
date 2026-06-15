@@ -1,6 +1,5 @@
 import { getOrganizationRole } from "@repo/auth/cms";
 import { requireOrg } from "@repo/auth/server";
-import type { WebhookDeliveryStatus } from "@repo/webhooks";
 import {
   getWebhookDeliveries,
   getWebhookEndpoints,
@@ -9,6 +8,7 @@ import { CreateEndpointForm } from "./components/create-endpoint-form";
 import { DeliveriesPanel } from "./components/deliveries-panel";
 import { EndpointsTable } from "./components/endpoints-table";
 import { SubscriberDocsPanel } from "./components/subscriber-docs-panel";
+import { parseWebhooksSearchParams } from "./search-params";
 
 export const metadata = {
   title: "Webhooks",
@@ -17,7 +17,7 @@ export const metadata = {
 
 type WebhooksPageProperties = {
   searchParams: Promise<{
-    status?: WebhookDeliveryStatus;
+    status?: string;
     endpointId?: string;
   }>;
 };
@@ -26,25 +26,26 @@ const WebhooksPage = async ({ searchParams }: WebhooksPageProperties) => {
   const { userId, orgId } = await requireOrg();
   const role = await getOrganizationRole(userId, orgId);
   const isOwner = role === "owner";
-  const params = await searchParams;
-  const statusFilter = params.status;
-  const endpointFilter = params.endpointId;
+  const rawParams = await searchParams;
+  const filters = parseWebhooksSearchParams(rawParams);
 
   const [endpointsResult, deliveriesResult] = await Promise.all([
     getWebhookEndpoints(),
     getWebhookDeliveries({
-      ...(statusFilter ? { status: statusFilter } : {}),
-      ...(endpointFilter ? { endpointId: endpointFilter } : {}),
+      ...(filters.status ? { status: filters.status } : {}),
+      ...(filters.endpointId ? { endpointId: filters.endpointId } : {}),
       limit: 50,
     }),
   ]);
 
   const endpoints = endpointsResult.ok ? endpointsResult.data : [];
-  const deliveries = deliveriesResult.ok ? deliveriesResult.data : [];
+  const deliveryPage = deliveriesResult.ok
+    ? deliveriesResult.data
+    : { deliveries: [], nextCursor: null };
   const selectedEndpointId =
-    endpointFilter &&
-    endpoints.some((endpoint) => endpoint.id === endpointFilter)
-      ? endpointFilter
+    filters.endpointId &&
+    endpoints.some((endpoint) => endpoint.id === filters.endpointId)
+      ? filters.endpointId
       : "all";
 
   return (
@@ -66,11 +67,12 @@ const WebhooksPage = async ({ searchParams }: WebhooksPageProperties) => {
       <section className="flex flex-col gap-4">
         <h2 className="font-medium text-lg">Recent deliveries</h2>
         <DeliveriesPanel
-          deliveries={deliveries}
+          deliveries={deliveryPage.deliveries}
           endpointFilter={selectedEndpointId}
           endpoints={endpoints}
+          initialNextCursor={deliveryPage.nextCursor}
           isOwner={isOwner}
-          statusFilter={statusFilter ?? "all"}
+          statusFilter={filters.status ?? "all"}
         />
       </section>
 

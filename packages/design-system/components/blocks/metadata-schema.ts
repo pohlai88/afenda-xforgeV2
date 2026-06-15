@@ -60,8 +60,63 @@ const metadataScalarSchema = z.union([
   z.string(),
 ]);
 
+const metadataDataSourceStateSchema = z.enum([
+  "empty",
+  "error",
+  "forbidden",
+  "idle",
+  "loading",
+  "ready",
+  "stale",
+]);
+
+const metadataBindingExpectedTypeSchema = z.enum([
+  "array",
+  "boolean",
+  "number",
+  "record",
+  "scalar",
+  "string",
+]);
+
+const metadataSourceErrorSchema = z
+  .object({
+    code: z.string().min(1).optional(),
+    message: z.string().min(1),
+  })
+  .strict();
+
+const metadataSourceDiagnosticsSchema = z
+  .object({
+    message: z.string().min(1).optional(),
+    reason: z.string().min(1).optional(),
+  })
+  .catchall(metadataScalarSchema)
+  .strict();
+
+const metadataDataSourceEnvelopeSchema = z
+  .object({
+    data: z.unknown().optional(),
+    diagnostics: metadataSourceDiagnosticsSchema.optional(),
+    error: metadataSourceErrorSchema.optional(),
+    staleAt: z.string().min(1).optional(),
+    state: metadataDataSourceStateSchema,
+    updatedAt: z.string().min(1).optional(),
+    version: z.union([z.number(), z.string().min(1)]).optional(),
+  })
+  .strict();
+
+const metadataDataSourcesSchema = z.record(
+  z.string().min(1),
+  z.union([metadataDataSourceEnvelopeSchema, z.unknown()])
+);
+
 const metadataDataBindingSchema = z
   .object({
+    emptyFallback: z
+      .lazy((): z.ZodType<unknown> => metadataValueSchema)
+      .optional(),
+    expectedType: metadataBindingExpectedTypeSchema.optional(),
     fallback: metadataScalarSchema.optional(),
     params: z.record(z.string().min(1), metadataScalarSchema).optional(),
     path: z.string().min(1),
@@ -103,13 +158,13 @@ const metadataBlockActionSchema = z
     capability: z.string().min(1).optional(),
     confirmationLabel: z.string().min(1).optional(),
     destructive: z.boolean().optional(),
-    disabled: z.boolean().optional(),
-    href: z.string().min(1).optional(),
+    disabled: z.union([z.boolean(), metadataDataBindingSchema]).optional(),
+    href: metadataValueSchema.optional(),
     iconKey: z.string().min(1).optional(),
     key: z.string().min(1),
-    label: z.string().min(1),
+    label: metadataValueSchema,
     permission: z.string().min(1).optional(),
-    reason: z.string().min(1).optional(),
+    reason: metadataValueSchema.optional(),
     roles: z.array(z.string().min(1)).min(1).optional(),
     variant: z.enum(blockActionVariantValues).optional(),
   })
@@ -123,6 +178,7 @@ const metadataBlockActionListSchema = z
 
 const metadataBlockBaseSchema = z.object({
   blockId: z.string().min(1),
+  capability: z.string().min(1).optional(),
   density: z.enum(blockDensityValues).optional(),
   intent: z.enum(blockIntentValues).optional(),
   orchestration: z
@@ -140,6 +196,8 @@ const metadataBlockBaseSchema = z.object({
     })
     .strict()
     .optional(),
+  permission: z.string().min(1).optional(),
+  roles: z.array(z.string().min(1)).min(1).optional(),
   state: z.enum(blockRuntimeStateValues).optional(),
   tone: metadataBlockToneSchema.optional(),
 });
@@ -300,9 +358,197 @@ const metadataBlockSchema = z.discriminatedUnion("type", [
   metadataBlockSchemas.statsStrip,
 ]);
 
+const metadataLayoutBreakpointValues = ["base", "sm", "md", "lg"] as const;
+const metadataLayoutItemTypeValues = [
+  "block",
+  "columns",
+  "group",
+  "tabs",
+] as const;
+const metadataLayoutDependencyModeValues = ["present", "visible"] as const;
+
+const metadataLayoutResponsiveRuleSchema = z
+  .object({
+    breakpoint: z.enum(metadataLayoutBreakpointValues),
+    columns: z
+      .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+      .optional(),
+    hidden: z.boolean().optional(),
+    stack: z.boolean().optional(),
+  })
+  .strict();
+
+const metadataLayoutVisibilitySchema = z
+  .object({
+    binding: metadataDataBindingSchema.optional(),
+    equals: metadataScalarSchema.optional(),
+    hidden: z.boolean().optional(),
+    notEquals: metadataScalarSchema.optional(),
+  })
+  .strict();
+
+const metadataLayoutDependencySchema = z
+  .object({
+    blockId: z.string().min(1),
+    mode: z.enum(metadataLayoutDependencyModeValues).optional(),
+  })
+  .strict();
+
+const metadataLayoutItemBaseSchema = z.object({
+  dependencies: z.array(metadataLayoutDependencySchema).optional(),
+  layoutId: z.string().min(1),
+  responsive: z.array(metadataLayoutResponsiveRuleSchema).optional(),
+  title: z.string().min(1).optional(),
+  visibility: metadataLayoutVisibilitySchema.optional(),
+});
+
+type MetadataLayoutItemInput = z.input<typeof metadataLayoutItemBaseSchema> &
+  (
+    | {
+        readonly blockId: string;
+        readonly type: "block";
+      }
+    | {
+        readonly children: readonly MetadataLayoutItemInput[];
+        readonly type: "group";
+      }
+    | {
+        readonly columns: readonly {
+          readonly children: readonly MetadataLayoutItemInput[];
+          readonly columnId: string;
+          readonly span?: 1 | 2 | 3 | 4;
+        }[];
+        readonly type: "columns";
+      }
+    | {
+        readonly tabs: readonly {
+          readonly children: readonly MetadataLayoutItemInput[];
+          readonly label: string;
+          readonly tabId: string;
+        }[];
+        readonly type: "tabs";
+      }
+  );
+
+type MetadataLayoutItemOutput = z.output<typeof metadataLayoutItemBaseSchema> &
+  (
+    | {
+        readonly blockId: string;
+        readonly type: "block";
+      }
+    | {
+        readonly children: readonly MetadataLayoutItemOutput[];
+        readonly type: "group";
+      }
+    | {
+        readonly columns: readonly {
+          readonly children: readonly MetadataLayoutItemOutput[];
+          readonly columnId: string;
+          readonly span?: 1 | 2 | 3 | 4;
+        }[];
+        readonly type: "columns";
+      }
+    | {
+        readonly tabs: readonly {
+          readonly children: readonly MetadataLayoutItemOutput[];
+          readonly label: string;
+          readonly tabId: string;
+        }[];
+        readonly type: "tabs";
+      }
+  );
+
+const metadataLayoutItemSchema: z.ZodType<
+  MetadataLayoutItemOutput,
+  MetadataLayoutItemInput
+> = z.lazy(() =>
+  z.discriminatedUnion("type", [
+    metadataLayoutItemBaseSchema
+      .extend({
+        blockId: z.string().min(1),
+        type: z.literal("block"),
+      })
+      .strict(),
+    metadataLayoutItemBaseSchema
+      .extend({
+        children: z.array(metadataLayoutItemSchema).min(1),
+        type: z.literal("group"),
+      })
+      .strict(),
+    metadataLayoutItemBaseSchema
+      .extend({
+        columns: z
+          .array(
+            z
+              .object({
+                children: z.array(metadataLayoutItemSchema).min(1),
+                columnId: z.string().min(1),
+                span: z
+                  .union([
+                    z.literal(1),
+                    z.literal(2),
+                    z.literal(3),
+                    z.literal(4),
+                  ])
+                  .optional(),
+              })
+              .strict()
+          )
+          .min(1)
+          .superRefine((columns, context) => {
+            addDuplicateFieldIssues(columns, "columnId", context);
+          }),
+        type: z.literal("columns"),
+      })
+      .strict(),
+    metadataLayoutItemBaseSchema
+      .extend({
+        tabs: z
+          .array(
+            z
+              .object({
+                children: z.array(metadataLayoutItemSchema).min(1),
+                label: z.string().min(1),
+                tabId: z.string().min(1),
+              })
+              .strict()
+          )
+          .min(1)
+          .superRefine((tabs, context) => {
+            addDuplicateFieldIssues(tabs, "tabId", context);
+          }),
+        type: z.literal("tabs"),
+      })
+      .strict(),
+  ])
+);
+
+const metadataPageLayoutSchema = z
+  .object({
+    density: z.enum(blockDensityValues).optional(),
+    regions: z
+      .array(
+        z
+          .object({
+            children: z.array(metadataLayoutItemSchema).min(1),
+            label: z.string().min(1).optional(),
+            regionId: z.string().min(1),
+            responsive: z.array(metadataLayoutResponsiveRuleSchema).optional(),
+          })
+          .strict()
+      )
+      .min(1)
+      .superRefine((regions, context) => {
+        addDuplicateFieldIssues(regions, "regionId", context);
+      }),
+    type: z.literal("regions"),
+  })
+  .strict();
+
 const metadataPageSchema = z
   .object({
     blocks: z.array(metadataBlockSchema).min(1),
+    layout: metadataPageLayoutSchema.optional(),
     pageId: z.string().min(1),
     version: z.literal(1),
   })
@@ -321,7 +567,145 @@ const metadataPageSchema = z
 
       seenBlockIds.add(block.blockId);
     }
+
+    if (page.layout) {
+      validateMetadataPageLayout(page.layout, seenBlockIds, context);
+    }
   });
+
+function validateMetadataPageLayout(
+  layout: z.output<typeof metadataPageLayoutSchema>,
+  blockIds: ReadonlySet<string>,
+  context: z.RefinementCtx
+) {
+  const placedBlockIds = new Set<string>();
+  const layoutIds = new Set<string>();
+
+  for (const [regionIndex, region] of layout.regions.entries()) {
+    for (const [itemIndex, item] of region.children.entries()) {
+      validateMetadataLayoutItem(
+        item,
+        blockIds,
+        placedBlockIds,
+        layoutIds,
+        ["layout", "regions", regionIndex, "children", itemIndex],
+        context
+      );
+    }
+  }
+}
+
+function validateMetadataLayoutItem(
+  item: MetadataLayoutItemOutput,
+  blockIds: ReadonlySet<string>,
+  placedBlockIds: Set<string>,
+  layoutIds: Set<string>,
+  path: (number | string)[],
+  context: z.RefinementCtx
+) {
+  if (layoutIds.has(item.layoutId)) {
+    context.addIssue({
+      code: "custom",
+      message: `Duplicate layoutId "${item.layoutId}"`,
+      path: [...path, "layoutId"],
+    });
+  }
+
+  layoutIds.add(item.layoutId);
+
+  for (const [dependencyIndex, dependency] of (
+    item.dependencies ?? []
+  ).entries()) {
+    if (!blockIds.has(dependency.blockId)) {
+      context.addIssue({
+        code: "custom",
+        message: `Layout dependency references unknown blockId "${dependency.blockId}"`,
+        path: [...path, "dependencies", dependencyIndex, "blockId"],
+      });
+    }
+  }
+
+  if (item.type === "block") {
+    validateMetadataLayoutBlockItem(
+      item,
+      blockIds,
+      placedBlockIds,
+      path,
+      context
+    );
+    return;
+  }
+
+  if (item.type === "group") {
+    for (const [childIndex, child] of item.children.entries()) {
+      validateMetadataLayoutItem(
+        child,
+        blockIds,
+        placedBlockIds,
+        layoutIds,
+        [...path, "children", childIndex],
+        context
+      );
+    }
+    return;
+  }
+
+  if (item.type === "columns") {
+    for (const [columnIndex, column] of item.columns.entries()) {
+      for (const [childIndex, child] of column.children.entries()) {
+        validateMetadataLayoutItem(
+          child,
+          blockIds,
+          placedBlockIds,
+          layoutIds,
+          [...path, "columns", columnIndex, "children", childIndex],
+          context
+        );
+      }
+    }
+    return;
+  }
+
+  for (const [tabIndex, tab] of item.tabs.entries()) {
+    for (const [childIndex, child] of tab.children.entries()) {
+      validateMetadataLayoutItem(
+        child,
+        blockIds,
+        placedBlockIds,
+        layoutIds,
+        [...path, "tabs", tabIndex, "children", childIndex],
+        context
+      );
+    }
+  }
+}
+
+function validateMetadataLayoutBlockItem(
+  item: Extract<MetadataLayoutItemOutput, { readonly type: "block" }>,
+  blockIds: ReadonlySet<string>,
+  placedBlockIds: Set<string>,
+  path: (number | string)[],
+  context: z.RefinementCtx
+) {
+  if (!blockIds.has(item.blockId)) {
+    context.addIssue({
+      code: "custom",
+      message: `Layout references unknown blockId "${item.blockId}"`,
+      path: [...path, "blockId"],
+    });
+    return;
+  }
+
+  if (placedBlockIds.has(item.blockId)) {
+    context.addIssue({
+      code: "custom",
+      message: `Layout places blockId "${item.blockId}" more than once`,
+      path: [...path, "blockId"],
+    });
+  }
+
+  placedBlockIds.add(item.blockId);
+}
 
 function addDuplicateFieldIssues<
   TItem extends Record<TKey, string>,
@@ -350,6 +734,7 @@ export {
   blockIntentValues,
   blockRuntimeStateValues,
   blockToneValues,
+  metadataBindingExpectedTypeSchema,
   metadataBlockActionSchema,
   metadataBlockActionListSchema,
   metadataBlockBaseSchema,
@@ -359,12 +744,22 @@ export {
   metadataBlockTypeSchema,
   metadataBulkActionBarBlockSchema,
   metadataDataBindingSchema,
+  metadataDataSourceEnvelopeSchema,
+  metadataDataSourcesSchema,
+  metadataDataSourceStateSchema,
   metadataDataTableBlockSchema,
   metadataEmptyPanelBlockSchema,
   metadataErpRiskLevelSchema,
   metadataErpSaveStateSchema,
   metadataFilterBarBlockSchema,
+  metadataLayoutBreakpointValues,
+  metadataLayoutDependencyModeValues,
+  metadataLayoutItemSchema,
+  metadataLayoutItemTypeValues,
+  metadataLayoutResponsiveRuleSchema,
+  metadataLayoutVisibilitySchema,
   metadataPageHeaderBlockSchema,
+  metadataPageLayoutSchema,
   metadataPageSchema,
   metadataRuntimeStateBlockSchema,
   metadataScalarSchema,
@@ -379,6 +774,15 @@ export type MetadataBlockByType<TType extends MetadataBlock["type"]> = Extract<
 >;
 export type MetadataBlockType = MetadataBlock["type"];
 export type MetadataDataBinding = z.infer<typeof metadataDataBindingSchema>;
+export type MetadataDataSourceEnvelope = z.infer<
+  typeof metadataDataSourceEnvelopeSchema
+>;
+export type MetadataDataSources = z.infer<typeof metadataDataSourcesSchema>;
+export type MetadataDataSourceState = z.infer<
+  typeof metadataDataSourceStateSchema
+>;
+export type MetadataLayoutItem = z.infer<typeof metadataLayoutItemSchema>;
+export type MetadataPageLayout = z.infer<typeof metadataPageLayoutSchema>;
 export type MetadataPage = z.infer<typeof metadataPageSchema>;
 export type MetadataScalar = z.infer<typeof metadataScalarSchema>;
 export type MetadataValue = z.infer<typeof metadataValueSchema>;

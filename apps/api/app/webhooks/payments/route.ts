@@ -6,72 +6,17 @@ import {
   methodNotAllowed,
   withApiRoute,
 } from "@repo/api";
-import { createAdminClient } from "@repo/auth/server";
-import { parseError } from "@repo/observability/error";
-import { log } from "@repo/observability/log";
-import type { Stripe } from "@repo/payments";
 import { stripe } from "@repo/payments";
-import { headers } from "next/headers";
+import { verifyStripeWebhookPayload } from "@repo/payments/stripe-webhooks";
+import { handleInboundWebhook } from "@repo/webhooks/inbound";
 import { env } from "@/env";
-
-const getUserFromCustomerId = async (customerId: string) => {
-  try {
-    const admin = createAdminClient();
-    const { data } = await admin.auth.admin.listUsers();
-
-    return data.users.find(
-      (user) => user.user_metadata?.stripeCustomerId === customerId
-    );
-  } catch {
-    return undefined;
-  }
-};
-
-const handleCheckoutSessionCompleted = async (
-  data: Stripe.Checkout.Session
-) => {
-  if (!data.customer) {
-    return;
-  }
-
-  const customerId =
-    typeof data.customer === "string" ? data.customer : data.customer.id;
-  const user = await getUserFromCustomerId(customerId);
-
-  if (!user) {
-    return;
-  }
-
-  analytics?.capture({
-    event: "User Subscribed",
-    distinctId: user.id,
-  });
-};
-
-const handleSubscriptionScheduleCanceled = async (
-  data: Stripe.SubscriptionSchedule
-) => {
-  if (!data.customer) {
-    return;
-  }
-
-  const customerId =
-    typeof data.customer === "string" ? data.customer : data.customer.id;
-  const user = await getUserFromCustomerId(customerId);
-
-  if (!user) {
-    return;
-  }
-
-  analytics?.capture({
-    event: "User Unsubscribed",
-    distinctId: user.id,
-  });
-};
+import "@/lib/webhook-handlers";
 
 export const POST = withApiRoute(
   async (request: Request): Promise<Response> => {
-    if (!(stripe && env.STRIPE_WEBHOOK_SECRET)) {
+    const stripeClient = stripe;
+
+    if (!(stripeClient && env.STRIPE_WEBHOOK_SECRET)) {
       return apiError(
         "not_configured",
         "Stripe webhook is not configured",
@@ -79,48 +24,37 @@ export const POST = withApiRoute(
       );
     }
 
-    const body = await request.text();
-    const headerPayload = await headers();
-    const signature = headerPayload.get("stripe-signature");
+    const webhookSecret = env.STRIPE_WEBHOOK_SECRET;
 
-    if (!signature) {
-      throw new ApiError(
-        "missing_signature",
-        "Missing stripe-signature header",
-        400
-      );
-    }
+    const result = await handleInboundWebhook("stripe", request, {
+      stripe: {
+        secret: webhookSecret,
+        verify: verifyStripeWebhookPayload,
+      },
+    });
 
-    let event: Stripe.Event;
-
-    try {
-      event = stripe.webhooks.constructEvent(
-        body,
-        signature,
-        env.STRIPE_WEBHOOK_SECRET
-      );
-    } catch (error) {
-      log.warn(parseError(error));
-      throw new ApiError("invalid_signature", "Invalid webhook signature", 400);
-    }
-
-    switch (event.type) {
-      case "checkout.session.completed": {
-        await handleCheckoutSessionCompleted(event.data.object);
-        break;
+    if (!result.ok) {
+      if (
+        result.status === 400 &&
+        result.error === "Missing stripe-signature header"
+      ) {
+        throw new ApiError("missing_signature", result.error, 400);
       }
-      case "subscription_schedule.canceled": {
-        await handleSubscriptionScheduleCanceled(event.data.object);
-        break;
+
+      if (result.status === 400) {
+        throw new ApiError("invalid_signature", result.error, 400);
       }
-      default: {
-        log.warn(`Unhandled event type ${event.type}`);
+
+      if (result.status === 503) {
+        return apiError("not_configured", result.error, 503);
       }
+
+      return apiError("bad_request", result.error, 400);
     }
 
     await analytics?.shutdown();
 
-    return apiOk({ received: true, type: event.type });
+    return apiOk({ received: true, type: result.type });
   }
 );
 

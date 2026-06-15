@@ -1,7 +1,8 @@
 import { z } from "zod";
-import languine from "../internationalization/languine.json" with {
+import languine from "@repo/internationalization/languine.json" with {
   type: "json",
 };
+import type { CollectionName } from "./collections";
 
 export const DEFAULT_LOCALE = languine.locale.source;
 
@@ -26,7 +27,7 @@ export const localePathPrefix = (locale: string): string => {
 };
 
 export const publicContentPath = (
-  collection: "blog" | "legal",
+  collection: CollectionName,
   locale: string,
   slug: string
 ): string => {
@@ -38,7 +39,7 @@ export const publicContentPath = (
 };
 
 export const publicPreviewPath = (
-  collection: "blog" | "legal",
+  collection: CollectionName,
   locale: string,
   slug: string,
   token: string

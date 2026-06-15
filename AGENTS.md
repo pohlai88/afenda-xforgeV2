@@ -154,11 +154,67 @@ Run the **narrowest** relevant command first, then widen:
 
 ```bash
 pnpm --filter <package> typecheck
-pnpm --filter <package> test
-pnpm check                    # Ultracite (Biome) — repo-wide lint/format
-pnpm boundaries               # Turborepo boundary checks
-pnpm env:doctor               # Env contract validation
+pnpm --filter <package> test          # unit tests only (fast PR gate)
+pnpm typecheck                        # all packages via Turbo (^typecheck graph)
+pnpm typecheck:affected               # affected packages vs origin/main
+pnpm check:ci                         # parallel typecheck + test (affected); no build
+pnpm test                             # all package unit tests via Turbo
+pnpm test:affected                    # affected unit tests vs origin/main
+pnpm test:integration                 # DB smoke tests (opt-in, not in default test)
+pnpm test:integration:affected       # affected integration tests vs origin/main
+pnpm check                            # Ultracite (Biome) — repo-wide lint/format
+pnpm boundaries                       # Turborepo boundary tag checks
+pnpm env:doctor                       # Env contract validation
 ```
+
+### Turbo task graph (PR vs deploy)
+
+Three layers stay **parallel**, not chained:
+
+| Layer | Turbo task | Role |
+|-------|------------|------|
+| Types | `typecheck` | `tsc --noEmit` via `@repo/typescript-config`; `dependsOn: ["^typecheck"]` |
+| Runtime UI | `test` | Vitest unit tests; `dependsOn: []` — **not** `^build`, `^test`, or `^typecheck` (types gated by parallel `typecheck` in `check:ci`) |
+| Ship | `build` | `next build` / Storybook static; `dependsOn: ["^build"]` only |
+
+**Do not** add `build dependsOn typecheck` or `build dependsOn test` — that serializes deploy and duplicates CI. PR gate: `pnpm check:ci` runs `typecheck` and `test` in one Turbo invocation (parallel scheduling).
+
+`@repo/database` `build` is a noop stub; **`typecheck` owns all `tsc --noEmit`**. Library packages tag `library`, apps tag `deployable`, `@repo/typescript-config` tags `tooling`. Root `turbo.json` boundaries deny libraries from depending on deployables.
+
+### Storybook TypeScript (`apps/storybook`)
+
+- Storybook is Vite/bundler-owned for runtime output. Keep `apps/storybook/package.json` `typecheck` as `tsc --noEmit`.
+- Do **not** add `--emitDeclarationOnly false`; it is redundant when `--noEmit` is present and creates noisy drift.
+- Do **not** enable declaration emit in Storybook. `.d.ts` generation belongs only in explicit library declaration build scripts, not Storybook preview/typecheck.
+- Keep `apps/storybook/tsconfig.json` on `moduleResolution: "Bundler"` and `allowImportingTsExtensions: true`; this matches Storybook/Vite resolution and TypeScript's bundler guidance.
+
+**Vitest `isolate` ≠ Turbo isolation** — Vitest per-package `isolate: false` (e.g. design-system) is a test-runtime optimization; Turbo task cache boundaries are unrelated.
+
+**Test pyramid (mandatory):**
+
+| Lane | Pattern | Turbo task | Rules |
+|------|---------|------------|-------|
+| Unit | `test/**/*.test.{ts,tsx}` | `test` | Mock `@repo/database`, env, and HTTP; no dotenv; no real DB/network |
+| Integration | `*.integration.test.ts` | `test:integration` | Real DB/network only here; `maxWorkers: 1`, `pool: forks` |
+| E2E | Playwright (`apps/app/e2e`) | *(not in Turbo `test`)* | Full browser flows only |
+
+**Head-to-toe prohibition:** unit tests must not import live database clients, load `.env` for persistence, or exercise multi-package outbound flows. Put those in `test:integration` or Playwright.
+
+**Shared config:** [`vitest.shared.mts`](vitest.shared.mts) exports `sharedUnitTestOptions` and `sharedIntegrationTestOptions` (CI: `github-actions` reporter + `bail: 1`). Repo bootstrap: [`test-support/setup-unit-env.ts`](test-support/setup-unit-env.ts) (unit) and [`test-support/load-integration-env.ts`](test-support/load-integration-env.ts) / [`test-support/setup-integration-env.ts`](test-support/setup-integration-env.ts) (integration). Package `test-support/` holds package-specific integration hooks only.
+
+**Vitest config conventions:**
+- Unit package configs use `defineProject` only — do not `mergeConfig` with a shared default export (avoids duplicate workspace banners).
+- Integration schema migrations run once via per-package `globalSetup` (e.g. `test-support/global-setup-integration.ts`), not per-file `beforeAll`.
+- Unit DB stubs: use [`test-support/mock-database.ts`](test-support/mock-database.ts) with `vi.hoisted()` — do not import live `@repo/database` in unit tests.
+
+**Test layout:** specs live in each package's `test/` folder. Integration files live under `test/integration/` or use the `*.integration.test.ts` suffix. Turbo `test:integration` has `dependsOn: []` — no upstream unit re-run.
+
+### Remote cache and env mode
+
+- **Remote cache:** link with `npx turbo link` (Vercel) or set `TURBO_TOKEN` + `TURBO_TEAM` in CI (see `.github/workflows/monorepo-check.yml`). Shares `typecheck` / `test` / `build` artifacts across machines.
+- **Env-aware build cache:** `app#build`, `web#build`, `api#build`, and `storybook#build` declare build-relevant env vars. Next.js app builds exclude `*.stories.*` from inputs.
+- **`typecheck` inputs** exclude `test/`, `test-support/`, spec files, and Vitest configs — tests are gated by `test`, not `tsc`.
+- **`envMode`:** currently `loose`. Switch to `strict` only after env lists are verified and CI stays green with explicit per-task `env` arrays.
 
 Add shadcn components: `npx shadcn@latest add [component] -c packages/design-system`
 

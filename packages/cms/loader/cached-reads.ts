@@ -1,6 +1,6 @@
 import { unstable_cache } from "next/cache";
-import { DEFAULT_LOCALE, normalizeLocale } from "../locale";
 import type { CollectionReader, ReaderOptions } from "../collections/types";
+import { DEFAULT_LOCALE, normalizeLocale } from "../locale";
 import type { ContentBody } from "../types";
 
 export const CMS_CACHE_TAG_ALL = "cms";

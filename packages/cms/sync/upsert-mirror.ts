@@ -1,9 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
 import { database } from "@repo/database";
 import {
+  type CmsDocumentRevisionAction,
   cmsDocument,
   cmsDocumentRevision,
-  type CmsDocumentRevisionAction,
 } from "@repo/database/schema";
 import { ensureCmsMirrorSchema } from "./ensure-schema";
 import type { MirrorDocumentInput } from "./types";

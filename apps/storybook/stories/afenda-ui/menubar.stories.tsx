@@ -1,5 +1,5 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
 import {
+  Badge,
   Menubar,
   MenubarContent,
   MenubarItem,
@@ -7,11 +7,12 @@ import {
   MenubarSeparator,
   MenubarShortcut,
   MenubarTrigger,
-} from "@repo/design-system/components/afenda-ui/menubar";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Menubar",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: Menubar,
   parameters: {
     layout: "centered",

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Plugin, UserConfig } from "vite";
@@ -18,6 +19,65 @@ const workspacePackages = [
   "design-system",
   "internationalization",
 ] as const;
+
+const designSystemDir = join(packagesDir, "design-system");
+
+/** Map package.json export subpaths before the coarse @repo/design-system alias. */
+function readDesignSystemExportAliases(): Array<{
+  find: RegExp | string;
+  replacement: string;
+}> {
+  const pkg = JSON.parse(
+    readFileSync(join(designSystemDir, "package.json"), "utf8")
+  ) as { exports?: Record<string, string> };
+  const aliases: Array<{ find: RegExp | string; replacement: string }> = [];
+  const exportEntries = Object.entries(pkg.exports ?? {});
+
+  for (const [exportKey, target] of exportEntries) {
+    if (!(exportKey.startsWith("./") && exportKey.includes("*"))) {
+      continue;
+    }
+
+    const prefix = exportKey.slice(2).replace("*", "");
+    const targetPrefix = target.replace("*", "");
+    aliases.push({
+      find: new RegExp(
+        `^@repo/design-system/${prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(.+)$`
+      ),
+      replacement: `${join(designSystemDir, targetPrefix).replace(/\\/g, "/")}$1`,
+    });
+  }
+
+  for (const [exportKey, target] of exportEntries) {
+    if (!exportKey.startsWith("./") || exportKey.includes("*")) {
+      continue;
+    }
+
+    aliases.push({
+      find: `@repo/design-system/${exportKey.slice(2)}`,
+      replacement: join(designSystemDir, target),
+    });
+  }
+
+  aliases.push(
+    {
+      find: "@repo/design-system/tokens/token-usage.policy",
+      replacement: join(designSystemDir, "tokens/token-usage.policy.ts"),
+    },
+    {
+      find: "@repo/design-system/tokens/tokens.json",
+      replacement: join(designSystemDir, "tokens/tokens.json"),
+    },
+    {
+      find: "@repo/design-system/providers/theme",
+      replacement: join(designSystemDir, "providers/theme.tsx"),
+    }
+  );
+
+  return aliases;
+}
+
+const designSystemExportAliases = readDesignSystemExportAliases();
 
 export const repoPackageAliases = Object.fromEntries(
   workspacePackages.map((name) => [`@repo/${name}`, join(packagesDir, name)])
@@ -107,10 +167,17 @@ export async function applyStorybookViteConfig(
     ] satisfies Plugin[],
     resolve: {
       dedupe: ["react", "react-dom"],
-      alias: {
-        ...repoPackageAliases,
-        "server-only": join(storybookAppDir, "vite-shims/server-only.ts"),
-      },
+      alias: [
+        ...designSystemExportAliases,
+        ...Object.entries(repoPackageAliases).map(([find, replacement]) => ({
+          find,
+          replacement,
+        })),
+        {
+          find: "server-only",
+          replacement: join(storybookAppDir, "vite-shims/server-only.ts"),
+        },
+      ],
     },
     esbuild: {
       jsx: "automatic",

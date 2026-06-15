@@ -1,7 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { DEFAULT_WEBHOOK_SIGNATURE_TOLERANCE_SEC } from "./constants";
-import { buildSignedContent } from "./signing";
 import { parseSigningSecret } from "./secrets";
+import { buildSignedContent } from "./signing";
 
 export type VerifyStandardWebhookInput = {
   secret: string;
@@ -83,7 +83,7 @@ export const verifyStandardWebhook = (
   const timestamp = headers["webhook-timestamp"];
   const signatureHeader = headers["webhook-signature"];
 
-  if (!id || !timestamp || !signatureHeader) {
+  if (!(id && timestamp && signatureHeader)) {
     return { ok: false, error: "Missing webhook headers" };
   }
 

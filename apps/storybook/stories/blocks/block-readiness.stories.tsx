@@ -1,18 +1,16 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
 import {
+  Badge,
+  Button,
+  blockRecipe,
+  blockRegistryEntries,
+  Input,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
-import {
-  blockRecipe,
-  blockRegistryEntries,
-} from "@repo/design-system/components/blocks";
+} from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Meta, StoryObj } from "@storybook/react";
 import { FilterIcon, PlusIcon } from "lucide-react";
@@ -21,7 +19,7 @@ import { layoutStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
   title: "Blocks/Block Readiness",
-  tags: ["autodocs"],
+  tags: ["autodocs", "block"],
   parameters: {
     ...layoutStoryParameters,
     layout: "centered",

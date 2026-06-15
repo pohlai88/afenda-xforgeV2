@@ -5,31 +5,32 @@ import {
   FieldHint,
   FieldLabel,
   FieldRequired,
-} from "@repo/design-system/components/afenda-ui/field"
-import { Input } from "@repo/design-system/components/afenda-ui/input"
-import type { Meta, StoryObj } from "@storybook/react"
-import type * as React from "react"
+  Input,
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import type * as React from "react";
 
-import * as InputStories from "./input.stories"
+import { Invalid as InputInvalidStory } from "./input.stories";
 
-const shell = "min-h-[540px] bg-surface-canvas p-6 text-[13px] text-text-primary"
+const shell =
+  "min-h-[540px] bg-surface-canvas p-6 text-[13px] text-text-primary";
 const panel =
-  "mx-auto grid max-w-5xl gap-5 rounded-xl border border-border-default bg-surface-raised p-5 shadow-panel"
+  "mx-auto grid max-w-5xl gap-5 rounded-xl border border-border-default bg-surface-raised p-5 shadow-panel";
 
-type FieldItemConfig = {
-  id: string
-  label: string
-  value?: string
-  hint?: string
-  error?: string
-  errorId?: string
-  required?: boolean
-  inputArgs?: React.ComponentProps<typeof Input>
+interface FieldItemConfig {
+  error?: string;
+  errorId?: string;
+  hint?: string;
+  id: string;
+  inputArgs?: React.ComponentProps<typeof Input>;
+  label: string;
+  required?: boolean;
+  value?: string;
 }
 
 type FieldStoryArgs = React.ComponentProps<typeof Field> & {
-  fields?: FieldItemConfig[]
-}
+  fields?: FieldItemConfig[];
+};
 
 function FieldFormPreview({ fields }: { fields: FieldItemConfig[] }) {
   return (
@@ -53,7 +54,9 @@ function FieldFormPreview({ fields }: { fields: FieldItemConfig[] }) {
                 id={item.id}
                 {...item.inputArgs}
                 aria-describedby={item.errorId}
-                aria-invalid={item.error ? true : item.inputArgs?.["aria-invalid"]}
+                aria-invalid={
+                  item.error ? true : item.inputArgs?.["aria-invalid"]
+                }
               />
               {item.hint ? <FieldHint>{item.hint}</FieldHint> : null}
               {item.error ? (
@@ -64,7 +67,7 @@ function FieldFormPreview({ fields }: { fields: FieldItemConfig[] }) {
         </FieldGroup>
       </section>
     </div>
-  )
+  );
 }
 
 const meta = {
@@ -77,7 +80,7 @@ const meta = {
     FieldGroup,
     FieldRequired,
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -87,15 +90,15 @@ const meta = {
       },
     },
   },
-} satisfies Meta<FieldStoryArgs>
+} satisfies Meta<FieldStoryArgs>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 const renderFieldList = ({ fields = [] }: FieldStoryArgs) => (
   <FieldFormPreview fields={fields} />
-)
+);
 
 export const Default: Story = {
   render: () => (
@@ -127,7 +130,7 @@ export const Default: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const Invalid: Story = {
   render: () => (
@@ -152,7 +155,9 @@ export const Invalid: Story = {
             defaultValue="ops"
             id="afenda-field-email-invalid"
           />
-          <FieldHint>Used for audit notifications and approval routing.</FieldHint>
+          <FieldHint>
+            Used for audit notifications and approval routing.
+          </FieldHint>
           <FieldError id="afenda-field-email-error">
             Enter a valid tenant email address.
           </FieldError>
@@ -160,11 +165,11 @@ export const Invalid: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const Empty: Story = {
   render: () => <FieldFormPreview fields={[]} />,
-}
+};
 
 export const ManyFields: Story = {
   render: () => (
@@ -191,7 +196,7 @@ export const ManyFields: Story = {
       ]}
     />
   ),
-}
+};
 
 export const OneInvalidField: Story = {
   render: () => (
@@ -205,11 +210,11 @@ export const OneInvalidField: Story = {
           errorId: "afenda-field-email-error",
           required: true,
           inputArgs: {
-            ...InputStories.Invalid.args,
+            ...InputInvalidStory.args,
             id: "afenda-field-email-invalid",
           },
         },
       ]}
     />
   ),
-}
+};

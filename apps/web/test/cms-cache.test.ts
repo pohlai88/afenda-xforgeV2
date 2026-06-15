@@ -1,10 +1,8 @@
-import { CMS_EVENT_PUBLISHED } from "@repo/webhooks";
-import { signStandardWebhookHeader } from "@repo/webhooks";
+import { CMS_EVENT_PUBLISHED, signStandardWebhookHeader } from "@repo/webhooks";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const TEST_SECRET =
-  "whsec_dGVzdC1sb2NhbC13ZWJob29rLXNlY3JldC1kZXYxMjM=";
+const TEST_SECRET = "whsec_dGVzdC1sb2NhbC13ZWJob29rLXNlY3JldC1kZXYxMjM=";
 
 vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
@@ -20,10 +18,11 @@ vi.mock("@repo/webhooks/keys", () => ({
 const buildSignedRequest = (body: string): Request => {
   const webhookId = "evt_cms_cache_test";
   const timestamp = String(Math.floor(Date.now() / 1000));
-  const signature = signStandardWebhookHeader(
-    [TEST_SECRET],
-    { id: webhookId, timestamp, body }
-  );
+  const signature = signStandardWebhookHeader([TEST_SECRET], {
+    id: webhookId,
+    timestamp,
+    body,
+  });
 
   return new Request("http://localhost:3001/api/webhooks/cms-cache", {
     method: "POST",

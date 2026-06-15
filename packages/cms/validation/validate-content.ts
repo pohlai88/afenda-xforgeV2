@@ -2,12 +2,12 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ZodError } from "zod";
 import { collections } from "../collections";
-import { contentRoot } from "../loader/paths";
 import {
   listLocaleDirectories,
   listMdxFilesInDirectory,
   readMdxFileFromPath,
 } from "../loader/local-source";
+import { contentRoot } from "../loader/paths";
 import { DEFAULT_LOCALE, normalizeLocale } from "../locale";
 import { siteSettingsSchema } from "../schemas/settings.schema";
 
@@ -88,7 +88,6 @@ export const validateAllContent = async (): Promise<ValidationResult> => {
               file,
               message: `Frontmatter locale "${frontmatter.locale}" does not match path locale "${locale}"`,
             });
-            continue;
           }
         } catch (error) {
           const message =

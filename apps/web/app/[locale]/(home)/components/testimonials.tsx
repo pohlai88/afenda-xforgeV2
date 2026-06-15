@@ -4,13 +4,11 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@repo/design-system/components/afenda-ui/avatar";
-import {
   Carousel,
   type CarouselApi,
   CarouselContent,
   CarouselItem,
-} from "@repo/design-system/components/afenda-ui/carousel";
+} from "@repo/design-system/design-system";
 import type { Dictionary } from "@repo/internationalization";
 import { User } from "lucide-react";
 import { useEffect, useState } from "react";

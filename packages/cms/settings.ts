@@ -1,15 +1,12 @@
 import "server-only";
 
 import { unstable_cache } from "next/cache";
+import { CMS_CACHE_TAG_ALL, CMS_SETTINGS_TAG } from "./loader/cached-reads";
 import {
-  CMS_CACHE_TAG_ALL,
-  CMS_SETTINGS_TAG,
-} from "./loader/cached-reads";
-import { readSettingsRaw } from "./settings-io";
-import {
-  siteSettingsSchema,
   type SiteSettings,
+  siteSettingsSchema,
 } from "./schemas/settings.schema";
+import { readSettingsRaw } from "./settings-io";
 
 export type { SiteSettings };
 

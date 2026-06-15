@@ -1,6 +1,6 @@
-import { defineConfig, devices } from "@playwright/test";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { defineConfig, devices } from "@playwright/test";
 import { appDir, loadE2eEnv } from "./helpers/load-env.mjs";
 
 const e2eDir = path.dirname(fileURLToPath(import.meta.url));
@@ -18,7 +18,13 @@ export default defineConfig({
   workers: 1,
   reporter: [
     ["list"],
-    ["html", { open: "never", outputFolder: path.join(appDir, "output/playwright/report") }],
+    [
+      "html",
+      {
+        open: "never",
+        outputFolder: path.join(appDir, "output/playwright/report"),
+      },
+    ],
   ],
   outputDir: path.join(appDir, "output/playwright/test-results"),
   use: {

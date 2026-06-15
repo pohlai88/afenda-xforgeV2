@@ -5,7 +5,8 @@ type FetchHandler = (
   init?: RequestInit
 ) => Response | Promise<Response>;
 
-let fetchHandler: FetchHandler = async () => new Response("ok", { status: 200 });
+let fetchHandler: FetchHandler = async () =>
+  new Response("ok", { status: 200 });
 
 /** Override the integration fetch mock for the current test file. */
 export const setIntegrationFetchHandler = (handler: FetchHandler): void => {

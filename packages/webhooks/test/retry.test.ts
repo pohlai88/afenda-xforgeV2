@@ -28,9 +28,7 @@ describe("getNextAttemptAt", () => {
   });
 
   it("returns null after max client error attempts", () => {
-    expect(
-      getNextAttemptAt(MAX_CLIENT_ERROR_ATTEMPTS, "client")
-    ).toBeNull();
+    expect(getNextAttemptAt(MAX_CLIENT_ERROR_ATTEMPTS, "client")).toBeNull();
   });
 
   it("schedules a future retry before max transient attempts", () => {

@@ -4,8 +4,8 @@ import type {
   MetadataPage,
   MetadataPageRendererProps,
   MetadataScalar,
-} from "@repo/design-system/components/blocks";
-import { MetadataPageRenderer } from "@repo/design-system/components/blocks";
+} from "@repo/design-system/design-system";
+import { MetadataPageRenderer } from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { layoutStoryParameters } from "../../.storybook/essentials";

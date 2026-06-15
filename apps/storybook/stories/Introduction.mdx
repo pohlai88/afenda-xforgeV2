@@ -5,15 +5,18 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # Afenda Storybook
 
-Workshop for `@repo/design-system` — Afenda UI, Blocks, and legacy `ui/*` reference stories.
+Workshop for `@repo/design-system` — Afenda UI primitives, composed Blocks, Foundations tokens, and Governance readiness evidence.
 
 ## Layers
 
 | Sidebar | Purpose |
 | --- | --- |
-| **Afenda UI** | Product primitives and patterns (primary surface) |
-| **Blocks** | Composed operator workflows |
-| **ui/** | shadcn reference — smoke only; axe skipped in CI for this lane |
+| **Afenda UI** | Product primitives (`stories/afenda-ui/`) |
+| **Blocks** | Composed operator workflows (`stories/blocks/`) |
+| **Foundations** | Token reference and usage policy |
+| **Governance** | Internal readiness matrices (hidden by default via `internal` tag) |
+
+Internal shadcn source lives in `packages/design-system/components/ui` and is **not** published as Storybook stories.
 
 ## Toolbars
 
@@ -26,7 +29,8 @@ Workshop for `@repo/design-system` — Afenda UI, Blocks, and legacy `ui/*` refe
 
 ```bash
 pnpm --filter storybook dev
-pnpm --filter storybook check          # typecheck + static build
+pnpm --filter storybook check          # typecheck + hygiene + static build
+pnpm --filter storybook hygiene        # story structure and import gates
 pnpm --filter storybook test-storybook:interaction
 ```
 

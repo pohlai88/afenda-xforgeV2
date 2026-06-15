@@ -1,10 +1,10 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { parseCmsRouteLocale } from "@repo/cms/locale";
-import { cmsReaders, isCmsCollection } from "@repo/cms/writer";
 import { Body } from "@repo/cms/components/body";
 import { TableOfContents } from "@repo/cms/components/toc";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { parseCmsRouteLocale } from "@repo/cms/locale";
+import { cmsReaders, isCmsCollection } from "@repo/cms/writer";
+import { Button } from "@repo/design-system/design-system";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
 interface PreviewDocumentPageProperties {
   readonly params: Promise<{
@@ -20,7 +20,7 @@ const PreviewDocumentPage = async ({
   const { collection, locale: localeParam, slug } = await params;
   const locale = parseCmsRouteLocale(localeParam);
 
-  if (!isCmsCollection(collection) || !locale) {
+  if (!(isCmsCollection(collection) && locale)) {
     notFound();
   }
 

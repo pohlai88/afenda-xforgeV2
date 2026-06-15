@@ -3,11 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 import { isValidLocale } from "../locale";
 import type { ContentSource, ParsedMdxDocument } from "./content-source";
-import {
-  collectionDirectory,
-  localeDirectory,
-  slugFromPath,
-} from "./paths";
+import { collectionDirectory, localeDirectory, slugFromPath } from "./paths";
 
 const listMdxFiles = async (directory: string): Promise<string[]> => {
   const entries = await fs.readdir(directory, { withFileTypes: true });

@@ -1,9 +1,4 @@
-import {
-  apiError,
-  apiOk,
-  methodNotAllowed,
-  withApiRoute,
-} from "@repo/api";
+import { apiError, apiOk, methodNotAllowed, withApiRoute } from "@repo/api";
 import { cmsCollectionSchema } from "@repo/cms";
 import { searchDocumentMirror } from "@repo/cms/sync";
 import { z } from "zod";
@@ -25,7 +20,12 @@ export const GET = withApiRoute(async (request) => {
   });
 
   if (!parsed.success) {
-    return apiError("bad_request", "Invalid search query", 400, parsed.error.flatten());
+    return apiError(
+      "bad_request",
+      "Invalid search query",
+      400,
+      parsed.error.flatten()
+    );
   }
 
   const results = await searchDocumentMirror({

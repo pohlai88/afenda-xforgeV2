@@ -60,9 +60,10 @@ function ChartContainer({
 }) {
   const uniqueId = useId();
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
+  const contextValue = useMemo<ChartContextProps>(() => ({ config }), [config]);
 
   return (
-    <ChartContext.Provider value={{ config }}>
+    <ChartContext.Provider value={contextValue}>
       <div
         aria-label={props["aria-label"] ?? "Chart"}
         className={cn(

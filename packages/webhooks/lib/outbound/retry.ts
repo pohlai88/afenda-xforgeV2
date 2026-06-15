@@ -4,7 +4,7 @@ export const MAX_TRANSIENT_ATTEMPTS = 8;
 
 export const WEBHOOK_TRANSIENT_RETRY_DELAYS_MS = [
   0,
-  5_000,
+  5000,
   5 * 60_000,
   30 * 60_000,
   2 * 60 * 60_000,

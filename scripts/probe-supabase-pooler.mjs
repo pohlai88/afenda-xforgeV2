@@ -3,7 +3,13 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const require = createRequire(
-  path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "packages", "database", "package.json")
+  path.join(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "..",
+    "packages",
+    "database",
+    "package.json"
+  )
 );
 const pg = require("pg");
 
@@ -53,7 +59,7 @@ for (const region of regions) {
         console.log(JSON.stringify({ host, port, region, prefix }, null, 2));
         process.exit(0);
       } catch {
-        await pool.end().catch(() => {});
+        await pool.end().catch(() => undefined);
       }
     }
   }

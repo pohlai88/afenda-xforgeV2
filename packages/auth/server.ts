@@ -1,28 +1,39 @@
 import "server-only";
 
 import { createServerClient } from "@supabase/ssr";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
+import {
+  createClient as createSupabaseClient,
+  type SupabaseClient,
+} from "@supabase/supabase-js";
 import { cookies } from "next/headers";
-import { resolveActiveOrganizationId } from "./organization-context";
 import {
   getOrganizationIdFromAccessTokenClaims,
   type SupabaseAccessTokenClaims,
 } from "./access-token-claims";
-import { readAccessTokenClaims } from "./read-access-token-claims";
 import {
   getSupabasePublishableKey,
   getSupabaseSecretKey,
   getSupabaseUrl,
 } from "./keys";
-import type {
-  AuthContext,
-  AuthSession,
-  AuthenticatedContext,
-} from "./types";
-import {
-  MissingOrganizationError,
-  UnauthenticatedError,
-} from "./types";
+import { resolveActiveOrganizationId } from "./organization-context";
+import type { AuthContext, AuthenticatedContext, AuthSession } from "./types";
+import { MissingOrganizationError, UnauthenticatedError } from "./types";
+
+/**
+ * Verified access-token claims via `supabase.auth.getClaims()`.
+ * Prefer this over manual JWT parsing or shared-secret verification.
+ */
+const readAccessTokenClaims = async (
+  supabase: SupabaseClient
+): Promise<SupabaseAccessTokenClaims | null> => {
+  const { data, error } = await supabase.auth.getClaims();
+
+  if (error || !data?.claims?.sub) {
+    return null;
+  }
+
+  return data.claims as SupabaseAccessTokenClaims;
+};
 
 export const createClient = async () => {
   // Per-request client — never store in module scope (Vercel Fluid compute).
@@ -50,7 +61,15 @@ export const createClient = async () => {
   });
 };
 
-export const createAdminClient = () => {
+type AdminClientOptions = {
+  /** End-user IP for Supabase rate limiting (requires sb_forwarded_for_enabled). */
+  forwardedFor?: string | null;
+};
+
+/** Secret-key Supabase client for server-side Auth admin calls. */
+export const createAdminClient = ({
+  forwardedFor,
+}: AdminClientOptions = {}) => {
   const secretKey = getSupabaseSecretKey();
 
   if (!secretKey) {
@@ -59,13 +78,34 @@ export const createAdminClient = () => {
     );
   }
 
+  const headers: Record<string, string> = {};
+
+  if (forwardedFor) {
+    headers["sb-forwarded-for"] = forwardedFor;
+  }
+
   return createSupabaseClient(getSupabaseUrl(), secretKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
       experimental: { passkey: true },
     },
+    global: Object.keys(headers).length > 0 ? { headers } : undefined,
   });
+};
+
+/** Prefer x-forwarded-for first hop, then x-real-ip. */
+export const resolveClientIp = (request: Request): string | null => {
+  const forwarded = request.headers.get("x-forwarded-for");
+
+  if (forwarded) {
+    const first = forwarded.split(",")[0]?.trim();
+    if (first) {
+      return first;
+    }
+  }
+
+  return request.headers.get("x-real-ip")?.trim() || null;
 };
 
 export const currentUser = async () => {
@@ -159,15 +199,6 @@ export const getAuthSession = async (): Promise<AuthSession | null> => {
   };
 };
 
-export type {
-  AuthActionResult,
-  AuthContext,
-  AuthOtpType,
-  AuthSession,
-  AuthenticatedContext,
-  ConfirmAuthLinkParams,
-  ConfirmAuthLinkResult,
-} from "./types";
 export {
   getSupabaseAuthIssuer,
   getSupabaseJwksUrl,
@@ -175,10 +206,18 @@ export {
   type SupabaseApiKeyJwtClaims,
   validateAccessTokenClaims,
 } from "./access-token-claims";
-export { readAccessTokenClaims } from "./read-access-token-claims";
+export type {
+  AuthActionResult,
+  AuthContext,
+  AuthenticatedContext,
+  AuthOtpType,
+  AuthSession,
+  ConfirmAuthLinkParams,
+  ConfirmAuthLinkResult,
+} from "./types";
 export {
   AUTH_OTP_TYPES,
   MissingOrganizationError,
-  UnauthorizedOrganizationError,
   UnauthenticatedError,
+  UnauthorizedOrganizationError,
 } from "./types";

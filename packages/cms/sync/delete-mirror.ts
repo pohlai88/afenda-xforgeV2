@@ -42,9 +42,7 @@ export const deleteDocumentMirror = async (input: {
     occurredAt: new Date(),
   });
 
-  await database
-    .delete(cmsDocument)
-    .where(eq(cmsDocument.id, existing.id));
+  await database.delete(cmsDocument).where(eq(cmsDocument.id, existing.id));
 
   return true;
 };

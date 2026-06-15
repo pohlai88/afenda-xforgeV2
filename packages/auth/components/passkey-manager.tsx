@@ -1,17 +1,27 @@
 "use client";
 
 import {
-  Alert,
-  AlertDescription,
   Button,
   cn,
   recipe,
 } from "@repo/design-system/design-system";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { fromSupabaseError } from "../auth-result";
 import { isPasskeyOriginSupported } from "../auth-ui-settings";
 import { createClient } from "../client";
 import { useAuthUiConfig } from "../context/auth-ui-config";
+import {
+  AuthConfigNotice,
+  AuthErrorAlert,
+  AuthSuccessAlert,
+  PasskeyOriginNotice,
+} from "./auth-feedback";
+import { AuthPendingButton } from "./auth-pending-button";
+import {
+  AuthLoadingState,
+  AuthSection,
+  AuthSectionHeader,
+} from "./auth-section";
 import { PasskeyIcon } from "./auth-icons";
 
 type PasskeyRecord = {
@@ -24,6 +34,7 @@ type PasskeyRecord = {
 export const PasskeyManager = () => {
   const { settings } = useAuthUiConfig();
   const supabase = createClient();
+  const titleId = useId();
   const [passkeys, setPasskeys] = useState<PasskeyRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [action, setAction] = useState<"register" | "delete" | null>(null);
@@ -37,7 +48,8 @@ export const PasskeyManager = () => {
     const { data, error: listError } = await supabase.auth.passkey.list();
 
     if (listError) {
-      setError(listError.message);
+      const failure = fromSupabaseError(listError);
+      setError(failure?.error ?? "Could not load passkeys.");
       setPasskeys([]);
       setLoading(false);
       return;
@@ -110,35 +122,34 @@ export const PasskeyManager = () => {
   const passkeyOriginSupported = isPasskeyOriginSupported(settings.passkey);
 
   return (
-    <section className={cn("flex flex-col", recipe("sectionGap"))}>
-      <div className="flex flex-col gap-1">
-        <h2 className="font-medium text-text-primary">Passkeys</h2>
-        <p className={recipe("captionText")}>
-          Sign in with biometrics or a security key on this device.
-        </p>
-      </div>
-      {!passkeyOriginSupported ? (
-        <Alert tone="critical">
-          <AlertDescription>
-            Passkeys are not available on this origin. Hosted Supabase projects cannot
-            register loopback origins (localhost) with a production RP ID. Test on{" "}
-            {settings.passkey.rpOrigins.join(", ") || "your production URL"}, or use
-            email / Google sign-in locally.
-          </AlertDescription>
-        </Alert>
+    <AuthSection aria-busy={loading} aria-labelledby={titleId}>
+      <AuthSectionHeader
+        description="Sign in with biometrics or a security key on this device."
+        title="Passkeys"
+        titleId={titleId}
+      />
+      {passkeyOriginSupported ? null : (
+        <AuthConfigNotice>
+          <PasskeyOriginNotice rpOrigins={settings.passkey.rpOrigins} />
+          <p className={cn("mt-2", recipe("captionText"))}>
+            On localhost, test passkeys on a Vercel preview or production URL that
+            matches the configured RP origins.
+          </p>
+        </AuthConfigNotice>
+      )}
+      {error && !loading ? (
+        <AuthErrorAlert
+          message={error}
+          onRetry={
+            passkeys.length === 0 && action === null
+              ? () => void loadPasskeys()
+              : undefined
+          }
+        />
       ) : null}
-      {error ? (
-        <Alert tone="critical">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : null}
-      {message ? (
-        <Alert tone="positive">
-          <AlertDescription>{message}</AlertDescription>
-        </Alert>
-      ) : null}
+      {message ? <AuthSuccessAlert message={message} /> : null}
       {loading ? (
-        <p className={recipe("captionText")}>Loading passkeys…</p>
+        <AuthLoadingState label="Loading passkeys…" />
       ) : passkeys.length === 0 ? (
         <p className={recipe("captionText")}>
           No passkeys registered for this account yet.
@@ -177,15 +188,17 @@ export const PasskeyManager = () => {
           ))}
         </ul>
       )}
-      <Button
+      <AuthPendingButton
         className="w-fit"
-        disabled={action !== null || !passkeyOriginSupported}
+        disabled={(action !== null && action !== "register") || !passkeyOriginSupported}
         onClick={handleRegister}
+        pending={action === "register"}
+        pendingLabel="Waiting for passkey…"
         type="button"
         variant="secondary"
       >
-        {action === "register" ? "Waiting for passkey…" : "Add passkey"}
-      </Button>
-    </section>
+        Add passkey
+      </AuthPendingButton>
+    </AuthSection>
   );
 };

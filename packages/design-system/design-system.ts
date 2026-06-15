@@ -367,10 +367,16 @@ export type {
   ApprovalDecisionTrailProps,
   ApprovalQueueBlockProps,
   ApprovalQueueRow,
+  AppShellAuditDockPlacement,
+  AppShellSidebarConfig,
+  AppShellSiteContainerConfig,
+  AppShellSiteContainerGeometry,
+  AppShellSiteContainerMode,
   AuditEvidenceWorkspaceProps,
   AuditSafeDestructiveActionProps,
   AuditTrailEvent,
   AuditTrailPanelProps,
+  AuthenticatedAppShellBlockProps,
   BatchPostingReviewProps,
   BatchPostingRow,
   BlockAction,
@@ -476,6 +482,7 @@ export {
   AuditEvidenceWorkspace,
   AuditSafeDestructiveAction,
   AuditTrailPanel,
+  AuthenticatedAppShellBlock,
   afendaBlockLayoutContracts,
   approvalControlCenterDataSources,
   approvalControlCenterMetadata,
@@ -569,4 +576,6 @@ export {
   afendaBlockRecipe,
   blockRecipe,
 } from "./components/blocks/block-recipes";
+export { ModeToggle } from "./components/mode-toggle";
+export { DesignSystemProvider } from "./index";
 export { cn } from "./lib/utils";

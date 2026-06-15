@@ -1,30 +1,33 @@
 "use client";
 
 import {
-  Alert,
-  AlertDescription,
-  Button,
+  cn,
   Field,
+  FieldError,
   FieldHint,
   FieldLabel,
   Input,
-  cn,
   recipe,
 } from "@repo/design-system/design-system";
-import { useMemo, useState } from "react";
 import { isAuthApiError } from "@supabase/supabase-js";
+import { useMemo, useState } from "react";
 import {
+  type AuthFieldErrors,
+  fromSupabaseError,
+  parseAuthFormFields,
+} from "../auth-result";
+import {
+  type ChangePasswordVariant,
   changePassword,
   requestPasswordChangeReauthentication,
-  type ChangePasswordVariant,
 } from "../change-password";
-import { fromSupabaseError, isAuthFailure, parseAuthForm } from "../auth-result";
-import { completeAuthNavigation } from "../client-navigation";
 import { createClient } from "../client";
+import { completeAuthNavigation } from "../client-navigation";
 import { useAuthUiConfig } from "../context/auth-ui-config";
 import { createUpdatePasswordSchema } from "../schemas";
+import { AuthErrorAlert } from "./auth-feedback";
+import { AuthPendingButton } from "./auth-pending-button";
 import { PasswordField } from "./password-field";
-import { PasswordSecurityTips } from "./password-security-tips";
 
 const currentPasswordFieldId = "update-password-current";
 const nonceFieldId = "update-password-nonce";
@@ -37,6 +40,16 @@ type UpdatePasswordFormProperties = {
   variant?: ChangePasswordVariant;
   onSuccess?: () => void;
   redirectTo?: string;
+};
+
+const focusField = (field: keyof AuthFieldErrors) => {
+  const ids: Record<string, string> = {
+    currentPassword: currentPasswordFieldId,
+    nonce: nonceFieldId,
+    password: passwordFieldId,
+    confirmPassword: confirmFieldId,
+  };
+  document.getElementById(ids[field] ?? passwordFieldId)?.focus();
 };
 
 export const UpdatePasswordForm = ({
@@ -52,7 +65,8 @@ export const UpdatePasswordForm = ({
   const [reauthLoading, setReauthLoading] = useState(false);
   const [reauthSent, setReauthSent] = useState(false);
   const [needsReauth, setNeedsReauth] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
   const supabase = createClient();
   const { settings, passwordPolicy } = useAuthUiConfig();
 
@@ -61,7 +75,8 @@ export const UpdatePasswordForm = ({
     isAccountChange && settings.security.requireCurrentPasswordOnChange;
   const requireReauthentication =
     isAccountChange && settings.security.requireReauthenticationOnChange;
-  const showReauthField = requireReauthentication && (needsReauth || reauthSent);
+  const showReauthField =
+    requireReauthentication && (needsReauth || reauthSent);
 
   const updatePasswordSchema = useMemo(
     () =>
@@ -79,9 +94,14 @@ export const UpdatePasswordForm = ({
     ]
   );
 
+  const clearErrors = () => {
+    setFormError(null);
+    setFieldErrors({});
+  };
+
   const handleRequestReauth = async () => {
     setReauthLoading(true);
-    setError(null);
+    clearErrors();
 
     const { error: reauthError } =
       await requestPasswordChangeReauthentication(supabase);
@@ -89,7 +109,7 @@ export const UpdatePasswordForm = ({
     const failure = fromSupabaseError(reauthError);
 
     if (failure) {
-      setError(failure.error);
+      setFormError(failure.error);
       setReauthLoading(false);
       return;
     }
@@ -103,18 +123,30 @@ export const UpdatePasswordForm = ({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    setError(null);
+    clearErrors();
 
-    const validated = parseAuthForm(updatePasswordSchema, {
+    const validated = parseAuthFormFields(updatePasswordSchema, {
       currentPassword,
       nonce,
       password,
       confirmPassword,
     });
 
-    if (isAuthFailure(validated)) {
-      setError(validated.error);
+    if (!validated.ok) {
+      setFieldErrors(validated.fieldErrors);
+      setFormError(validated.formError ?? null);
       setLoading(false);
+      const firstField =
+        validated.fieldErrors.currentPassword
+          ? "currentPassword"
+          : validated.fieldErrors.nonce
+            ? "nonce"
+            : validated.fieldErrors.password
+              ? "password"
+              : validated.fieldErrors.confirmPassword
+                ? "confirmPassword"
+                : "password";
+      focusField(firstField);
       return;
     }
 
@@ -144,8 +176,9 @@ export const UpdatePasswordForm = ({
         setNeedsReauth(true);
       }
 
-      setError(failure.error);
+      setFormError(failure.error);
       setLoading(false);
+      focusField("password");
       return;
     }
 
@@ -158,97 +191,161 @@ export const UpdatePasswordForm = ({
     completeAuthNavigation(redirectTo);
   };
 
+  const hasFieldErrors = Object.keys(fieldErrors).length > 0;
+
   return (
     <form
       className={cn("flex flex-col", recipe("sectionGap"))}
       noValidate
       onSubmit={handleSubmit}
     >
-      {error ? (
-        <Alert id={formErrorId} tone="critical">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+      {formError && !hasFieldErrors ? (
+        <AuthErrorAlert id={formErrorId} message={formError} />
       ) : null}
       {requireCurrentPassword ? (
         <Field>
           <PasswordField
             autoComplete="current-password"
-            describedBy={error ? formErrorId : undefined}
+            describedBy={
+              fieldErrors.currentPassword
+                ? `${currentPasswordFieldId}-error`
+                : undefined
+            }
             id={currentPasswordFieldId}
-            invalid={Boolean(error)}
+            invalid={Boolean(fieldErrors.currentPassword)}
             label="Current password"
             name="currentPassword"
-            onChange={setCurrentPassword}
+            onChange={(value) => {
+              setCurrentPassword(value);
+              if (fieldErrors.currentPassword) {
+                setFieldErrors((current) => ({
+                  ...current,
+                  currentPassword: undefined,
+                }));
+              }
+            }}
             value={currentPassword}
           />
+          {fieldErrors.currentPassword ? (
+            <FieldError id={`${currentPasswordFieldId}-error`}>
+              {fieldErrors.currentPassword}
+            </FieldError>
+          ) : null}
         </Field>
       ) : null}
       {showReauthField ? (
         <Field>
           <FieldLabel htmlFor={nonceFieldId}>Confirmation code</FieldLabel>
           <Input
+            aria-describedby={
+              fieldErrors.nonce
+                ? `${nonceFieldId}-error`
+                : `${nonceFieldId}-hint`
+            }
+            aria-invalid={fieldErrors.nonce ? true : undefined}
             autoComplete="one-time-code"
             id={nonceFieldId}
             inputMode="numeric"
             name="nonce"
-            onChange={(event) => setNonce(event.target.value)}
+            onChange={(event) => {
+              setNonce(event.target.value);
+              if (fieldErrors.nonce) {
+                setFieldErrors((current) => ({ ...current, nonce: undefined }));
+              }
+            }}
             placeholder="Code from your email"
             value={nonce}
           />
-          <FieldHint>
+          <FieldHint id={`${nonceFieldId}-hint`}>
             {reauthSent
               ? "Enter the code we sent to your email to confirm this change."
               : "Confirm your identity before changing your password."}
           </FieldHint>
+          {fieldErrors.nonce ? (
+            <FieldError id={`${nonceFieldId}-error`}>
+              {fieldErrors.nonce}
+            </FieldError>
+          ) : null}
         </Field>
       ) : null}
       {requireReauthentication && needsReauth && !reauthSent ? (
-        <Button
+        <AuthPendingButton
           className="w-full"
-          disabled={reauthLoading}
           onClick={() => void handleRequestReauth()}
+          pending={reauthLoading}
+          pendingLabel="Sending…"
           type="button"
           variant="secondary"
         >
-          {reauthLoading ? "Sending…" : "Send confirmation code"}
-        </Button>
+          Send confirmation code
+        </AuthPendingButton>
       ) : null}
       <Field>
         <PasswordField
           autoComplete="new-password"
-          describedBy={error ? formErrorId : undefined}
+          describedBy={
+            fieldErrors.password ? `${passwordFieldId}-error` : undefined
+          }
           id={passwordFieldId}
-          invalid={Boolean(error)}
+          invalid={Boolean(fieldErrors.password)}
           label="New password"
           name="password"
-          onChange={setPassword}
+          onChange={(value) => {
+            setPassword(value);
+            if (fieldErrors.password) {
+              setFieldErrors((current) => ({
+                ...current,
+                password: undefined,
+              }));
+            }
+          }}
           policy={passwordPolicy}
           showRequirements
           value={password}
         />
+        {fieldErrors.password ? (
+          <FieldError id={`${passwordFieldId}-error`}>
+            {fieldErrors.password}
+          </FieldError>
+        ) : null}
       </Field>
       <Field>
         <PasswordField
           autoComplete="new-password"
-          describedBy={error ? formErrorId : undefined}
+          describedBy={
+            fieldErrors.confirmPassword ? `${confirmFieldId}-error` : undefined
+          }
           id={confirmFieldId}
-          invalid={Boolean(error)}
+          invalid={Boolean(fieldErrors.confirmPassword)}
           label="Confirm password"
           name="confirmPassword"
-          onChange={setConfirmPassword}
+          onChange={(value) => {
+            setConfirmPassword(value);
+            if (fieldErrors.confirmPassword) {
+              setFieldErrors((current) => ({
+                ...current,
+                confirmPassword: undefined,
+              }));
+            }
+          }}
           policy={passwordPolicy}
           value={confirmPassword}
         />
+        {fieldErrors.confirmPassword ? (
+          <FieldError id={`${confirmFieldId}-error`}>
+            {fieldErrors.confirmPassword}
+          </FieldError>
+        ) : null}
       </Field>
-      <PasswordSecurityTips />
-      <Button
+      <AuthPendingButton
         className="w-full"
-        disabled={loading}
+        pending={loading}
+        pendingLabel="Updating…"
         type="submit"
         variant="primary"
       >
-        {loading ? "Updating…" : "Update password"}
-      </Button>
+        Update password
+      </AuthPendingButton>
     </form>
   );
 };

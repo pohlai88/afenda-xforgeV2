@@ -15,7 +15,8 @@ export const collectionDirectory = (collectionName: string): string =>
 export const localeDirectory = (
   collectionName: string,
   locale: string
-): string => path.join(collectionDirectory(collectionName), normalizeLocale(locale));
+): string =>
+  path.join(collectionDirectory(collectionName), normalizeLocale(locale));
 
 export const documentPath = (
   collectionName: string,

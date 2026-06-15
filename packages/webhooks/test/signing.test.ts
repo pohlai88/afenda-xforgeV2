@@ -16,7 +16,9 @@ describe("signStandardWebhook", () => {
     const signature = signStandardWebhook(secret, { id, timestamp, body });
 
     expect(signature).toMatch(/^v1,[A-Za-z0-9+/]+=*$/);
-    expect(signature).toBe(signStandardWebhook(secret, { id, timestamp, body }));
+    expect(signature).toBe(
+      signStandardWebhook(secret, { id, timestamp, body })
+    );
   });
 
   it("signs id.timestamp.body content", () => {

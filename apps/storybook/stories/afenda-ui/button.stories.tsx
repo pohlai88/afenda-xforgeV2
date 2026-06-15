@@ -1,18 +1,19 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { DownloadIcon, Loader2Icon, PlusIcon, ShieldAlertIcon } from "lucide-react"
-
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
-import { Button } from "@repo/design-system/components/afenda-ui/button"
-
+import { Badge, Button } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 import {
-  afendaButtonArgTypes,
-} from "../../.storybook/args"
-import { matrixStoryParameters } from "../../.storybook/essentials"
+  DownloadIcon,
+  Loader2Icon,
+  PlusIcon,
+  ShieldAlertIcon,
+} from "lucide-react";
+
+import { afendaButtonArgTypes } from "../../.storybook/args";
+import { matrixStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
   title: "Afenda UI/Button",
   component: Button,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   argTypes: afendaButtonArgTypes,
   parameters: {
     layout: "centered",
@@ -29,11 +30,11 @@ const meta = {
     children: "Edit record",
   },
   render: (args) => <Button {...args}>{args.children}</Button>,
-} satisfies Meta<typeof Button>
+} satisfies Meta<typeof Button>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const DoctrineMatrix: Story = {
   parameters: matrixStoryParameters,
@@ -42,8 +43,11 @@ export const DoctrineMatrix: Story = {
       <div className="flex items-start justify-between gap-3">
         <div className="grid gap-1">
           <div className="flex items-center gap-2">
-            <ShieldAlertIcon aria-hidden="true" className="size-4 text-text-secondary" />
-            <h2 className="text-[14px] font-semibold text-text-primary">
+            <ShieldAlertIcon
+              aria-hidden="true"
+              className="size-4 text-text-secondary"
+            />
+            <h2 className="font-semibold text-[14px] text-text-primary">
               Afenda button doctrine
             </h2>
           </div>
@@ -80,7 +84,7 @@ export const DoctrineMatrix: Story = {
         ))}
       </div>
 
-      <div className="flex items-center gap-2 border-t border-border-default pt-3">
+      <div className="flex items-center gap-2 border-border-default border-t pt-3">
         <Button disabled variant="secondary">
           <Loader2Icon className="size-4 animate-spin" />
           Processing
@@ -89,12 +93,12 @@ export const DoctrineMatrix: Story = {
           <DownloadIcon className="size-4" />
           Export
         </Button>
-        <Button size="icon-sm" variant="quiet" aria-label="Create record">
+        <Button aria-label="Create record" size="icon-sm" variant="quiet">
           <PlusIcon className="size-4" />
         </Button>
       </div>
     </section>
   ),
-}
+};
 
-export const Playground: Story = {}
+export const Playground: Story = {};

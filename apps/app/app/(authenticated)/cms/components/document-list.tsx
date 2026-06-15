@@ -1,16 +1,16 @@
-import Link from "next/link";
 import type { CmsDocumentListItem } from "@repo/cms/document-list";
 import type { CmsLocale } from "@repo/cms/locale";
 import type { CmsCollectionName } from "@repo/cms/writer";
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
 import {
+  Badge,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
+} from "@repo/design-system/design-system";
+import Link from "next/link";
 
 type DocumentListProperties = {
   collection: CmsCollectionName;
@@ -50,7 +50,9 @@ export const DocumentList = ({
               >
                 {document.title}
               </Link>
-              <p className="text-muted-foreground text-xs">{document.description}</p>
+              <p className="text-muted-foreground text-xs">
+                {document.description}
+              </p>
             </TableCell>
             <TableCell>
               <Badge

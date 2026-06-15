@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Button,
-  cn,
-  recipe,
-} from "@repo/design-system/design-system";
+import { Button, cn, recipe } from "@repo/design-system/design-system";
 
 export const DEVELOPER_SIGN_IN_CREDENTIALS = {
   email: "developer@afenda.com",
@@ -29,7 +25,7 @@ export const DeveloperSignInPanel = ({
   return (
     <details
       className={cn(
-        "rounded-md border border-dashed border-border-default bg-surface-muted/30 px-3 py-2",
+        "rounded-md border border-border-default border-dashed bg-surface-muted/30 px-3 py-2",
         recipe("captionText")
       )}
     >

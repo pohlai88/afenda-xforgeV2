@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Button } from "@repo/design-system/design-system";
 import { fonts } from "@repo/design-system/lib/fonts";
 import { captureException } from "@sentry/nextjs";
 import type NextError from "next/error";

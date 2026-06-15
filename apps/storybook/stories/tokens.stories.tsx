@@ -151,9 +151,9 @@ function PolicyRow({
 }
 
 const meta = {
-  title: "foundations/Tokens",
+  title: "Foundations/Tokens",
   component: TokenReference,
-  tags: ["autodocs"],
+  tags: ["autodocs", "foundations"],
   parameters: {
     layout: "centered",
   },

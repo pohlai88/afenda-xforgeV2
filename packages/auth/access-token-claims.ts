@@ -94,9 +94,6 @@ export type SupabaseApiKeyJwtClaims = {
   exp: number;
 };
 
-/** @deprecated Use SupabaseAccessTokenClaims */
-export type AccessTokenClaims = SupabaseAccessTokenClaims;
-
 const REQUIRED_AUTHENTICATED_CLAIM_KEYS = [
   "iss",
   "aud",
@@ -111,7 +108,9 @@ const REQUIRED_AUTHENTICATED_CLAIM_KEYS = [
   "is_anonymous",
 ] as const satisfies readonly (keyof SupabaseAccessTokenClaims)[];
 
-export const getSupabaseAuthIssuer = (supabaseUrl = getSupabaseUrl()): string => {
+export const getSupabaseAuthIssuer = (
+  supabaseUrl = getSupabaseUrl()
+): string => {
   const base = supabaseUrl.replace(/\/$/, "");
   return `${base}/auth/v1`;
 };
@@ -129,11 +128,16 @@ export const parseAccessTokenAppMetadata = (
 
   const record = appMetadata as Record<string, unknown>;
   const organizationId =
-    typeof record.organization_id === "string" ? record.organization_id : undefined;
+    typeof record.organization_id === "string"
+      ? record.organization_id
+      : undefined;
   const organizationRole = parseOrganizationRole(record.organization_role);
-  const provider = typeof record.provider === "string" ? record.provider : undefined;
+  const provider =
+    typeof record.provider === "string" ? record.provider : undefined;
   const providers = Array.isArray(record.providers)
-    ? record.providers.filter((entry): entry is string => typeof entry === "string")
+    ? record.providers.filter(
+        (entry): entry is string => typeof entry === "string"
+      )
     : undefined;
 
   return {
@@ -146,12 +150,8 @@ export const parseAccessTokenAppMetadata = (
 
 export const getOrganizationIdFromAccessTokenClaims = (
   claims: Partial<SupabaseAccessTokenClaims> | null | undefined
-): string | null => parseAccessTokenAppMetadata(claims?.app_metadata).organization_id ?? null;
-
-export const getOrganizationRoleFromAccessTokenClaims = (
-  claims: Partial<SupabaseAccessTokenClaims> | null | undefined
-): OrganizationRole | null =>
-  parseAccessTokenAppMetadata(claims?.app_metadata).organization_role ?? null;
+): string | null =>
+  parseAccessTokenAppMetadata(claims?.app_metadata).organization_id ?? null;
 
 export const isAccessTokenExpired = (
   claims: Partial<SupabaseAccessTokenClaims> | null | undefined,

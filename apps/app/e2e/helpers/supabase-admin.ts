@@ -39,7 +39,10 @@ export const hasSupabaseAdminEnv = () => {
   return Boolean(url && serviceRoleKey);
 };
 
-const adminRequest = async <T>(path: string, init?: RequestInit): Promise<T> => {
+const adminRequest = async <T>(
+  path: string,
+  init?: RequestInit
+): Promise<T> => {
   const { url, serviceRoleKey } = getSupabaseAdminEnv();
   const response = await fetch(`${url}${path}`, {
     ...init,
@@ -125,7 +128,8 @@ export const generateAuthLink = async (
     email,
     options: {
       redirectTo:
-        options.redirectTo ?? `${baseURL}/auth/confirm?next=${encodeURIComponent("/")}`,
+        options.redirectTo ??
+        `${baseURL}/auth/confirm?next=${encodeURIComponent("/")}`,
     },
   };
 

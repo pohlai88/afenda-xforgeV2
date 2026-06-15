@@ -1,11 +1,11 @@
 "use client";
 
-import { createContext, useContext, useMemo, type ReactNode } from "react";
+import { createContext, type ReactNode, useContext, useMemo } from "react";
 import {
-  defaultAuthUiSettings,
-  resolvePasswordPolicy,
   type AuthUiSettings,
+  defaultAuthUiSettings,
   type PasswordPolicy,
+  resolvePasswordPolicy,
 } from "../auth-ui-settings";
 
 type AuthUiConfig = {

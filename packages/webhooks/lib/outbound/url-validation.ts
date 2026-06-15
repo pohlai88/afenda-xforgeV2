@@ -1,9 +1,4 @@
-const BLOCKED_HOSTNAMES = new Set([
-  "localhost",
-  "127.0.0.1",
-  "0.0.0.0",
-  "::1",
-]);
+const BLOCKED_HOSTNAMES = new Set(["localhost", "127.0.0.1", "0.0.0.0", "::1"]);
 
 const isPrivateIpv4 = (hostname: string): boolean => {
   const parts = hostname.split(".").map(Number);
@@ -53,7 +48,9 @@ export const validateWebhookUrl = (rawUrl: string): URL => {
   const hostname = parsed.hostname.toLowerCase();
 
   if (BLOCKED_HOSTNAMES.has(hostname) || isPrivateIpv4(hostname)) {
-    throw new Error("Webhook URL must not target localhost or private networks");
+    throw new Error(
+      "Webhook URL must not target localhost or private networks"
+    );
   }
 
   return parsed;

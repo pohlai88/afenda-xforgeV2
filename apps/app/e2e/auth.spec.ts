@@ -10,10 +10,14 @@ const e2ePassword =
   "123qweasdzxc!@#";
 
 test.describe("Supabase auth flows", () => {
-  test("redirects unauthenticated users from / to sign-in", async ({ page }) => {
+  test("redirects unauthenticated users from / to sign-in", async ({
+    page,
+  }) => {
     await page.goto("/");
     await expect(page).toHaveURL(/\/sign-in$/);
-    await expect(page.getByRole("heading", { name: "Welcome back" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Welcome back" })
+    ).toBeVisible();
   });
 
   test("shows error for invalid credentials", async ({ page }) => {
@@ -22,18 +26,24 @@ test.describe("Supabase auth flows", () => {
     await page.getByLabel("Password").fill("wrong-password-123");
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    await expect(page.getByText("Email or password is incorrect.")).toBeVisible();
+    await expect(
+      page.getByText("Email or password is incorrect.")
+    ).toBeVisible();
     await expect(page).toHaveURL(/\/sign-in/);
   });
 
-  test("signs in with valid credentials and loads workspace", async ({ page }) => {
+  test("signs in with valid credentials and loads workspace", async ({
+    page,
+  }) => {
     await page.goto("/sign-in");
     await page.getByLabel("Email").fill(e2eEmail);
     await page.getByLabel("Password").fill(e2ePassword);
     await page.getByRole("button", { name: "Sign in" }).click();
 
     await expect(page).toHaveURL(/\/$/);
-    await expect(page.getByRole("heading", { name: "Governed tenant dashboard" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Governed tenant dashboard" })
+    ).toBeVisible();
   });
 
   test("signs out and blocks authenticated routes", async ({ page }) => {
@@ -54,14 +64,24 @@ test.describe("Supabase auth flows", () => {
     await expect(page).toHaveURL(/\/sign-in$/);
   });
 
-  test("renders forgot-password and update-password pages", async ({ page }) => {
+  test("renders forgot-password and update-password pages", async ({
+    page,
+  }) => {
     await page.goto("/forgot-password");
-    await expect(page.getByRole("heading", { name: "Forgot password" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Send reset link" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Forgot password" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Send reset link" })
+    ).toBeVisible();
 
     await page.goto("/update-password");
-    await expect(page.getByRole("heading", { name: "Update password" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Update password" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Update password" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Update password" })
+    ).toBeVisible();
   });
 
   test("validates password mismatch on update-password", async ({ page }) => {
@@ -73,8 +93,12 @@ test.describe("Supabase auth flows", () => {
     await expect(page.getByText("Passwords do not match.")).toBeVisible();
   });
 
-  test("redirects invalid auth confirm links to sign-in with error", async ({ page }) => {
-    await page.goto("/auth/confirm?token_hash=invalid&type=recovery&next=/update-password");
+  test("redirects invalid auth confirm links to sign-in with error", async ({
+    page,
+  }) => {
+    await page.goto(
+      "/auth/confirm?token_hash=invalid&type=recovery&next=/update-password"
+    );
 
     await expect(page).toHaveURL(/\/sign-in\?error=/);
     await expect(page.getByText(/invalid or has expired/i)).toBeVisible();
@@ -82,8 +106,12 @@ test.describe("Supabase auth flows", () => {
 
   test("renders sign-up-success page", async ({ page }) => {
     await page.goto("/sign-up-success");
-    await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Back to sign in" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Check your email" })
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: "Back to sign in" })
+    ).toBeVisible();
   });
 
   test("validates password policy on sign-up", async ({ page }) => {
@@ -94,10 +122,14 @@ test.describe("Supabase auth flows", () => {
     await page.getByRole("button", { name: "Create account" }).click();
 
     await expect(page).toHaveURL(/\/sign-up/);
-    await expect(page.getByText(/At least \d+ characters|uppercase|symbol/i)).toBeVisible();
+    await expect(
+      page.getByText(/At least \d+ characters|uppercase|symbol/i)
+    ).toBeVisible();
   });
 
-  test("loads authenticated search results from the database", async ({ page }) => {
+  test("loads authenticated search results from the database", async ({
+    page,
+  }) => {
     await page.goto("/sign-in");
     await page.getByLabel("Email").fill(e2eEmail);
     await page.getByLabel("Password").fill(e2ePassword);
@@ -105,6 +137,8 @@ test.describe("Supabase auth flows", () => {
     await expect(page).toHaveURL(/\/$/);
 
     await page.goto("/search?q=Building");
-    await expect(page.getByText("Building Your Application").first()).toBeVisible();
+    await expect(
+      page.getByText("Building Your Application").first()
+    ).toBeVisible();
   });
 });

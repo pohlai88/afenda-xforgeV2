@@ -1,9 +1,8 @@
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import type {
   QualityGateItem,
   QualityGateViewport,
-} from "@repo/design-system/components/blocks";
-import { QualityGatesBlock } from "@repo/design-system/components/blocks";
+} from "@repo/design-system/design-system";
+import { Button, QualityGatesBlock } from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { PlayIcon, RefreshCwIcon } from "lucide-react";
 

@@ -1,7 +1,7 @@
 import "./styles.css";
+import { AnalyticsProvider } from "@repo/analytics/provider";
 import { getAuthUiSettings } from "@repo/auth/auth-ui-settings.server";
 import { AuthProvider } from "@repo/auth/provider";
-import { AnalyticsProvider } from "@repo/analytics/provider";
 import { DesignSystemProvider } from "@repo/design-system";
 import { fonts } from "@repo/design-system/lib/fonts";
 import { Toolbar } from "@repo/feature-flags/components/toolbar";

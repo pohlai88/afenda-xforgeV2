@@ -29,8 +29,23 @@ const mcpAddon = {
 
 const config: StorybookConfig = {
   stories: [
-    "../stories/**/*.mdx",
-    "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)",
+    "../stories/Introduction.mdx",
+    {
+      directory: "../stories/afenda-ui",
+      files: "**/*.stories.@(js|jsx|mjs|ts|tsx)",
+    },
+    {
+      directory: "../stories/blocks",
+      files: "**/*.stories.@(js|jsx|mjs|ts|tsx)",
+    },
+    {
+      directory: "../stories",
+      files: "tokens.stories.tsx",
+    },
+    {
+      directory: "../stories",
+      files: "primitive-readiness.stories.tsx",
+    },
   ],
   addons: [
     getAbsolutePath("@chromatic-com/storybook"),

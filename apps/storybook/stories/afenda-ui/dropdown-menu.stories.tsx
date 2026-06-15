@@ -1,6 +1,6 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
+  Badge,
+  Button,
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -15,7 +15,7 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   MoreHorizontalIcon,
@@ -27,7 +27,7 @@ import {
 const meta = {
   title: "Afenda UI/DropdownMenu",
   component: DropdownMenu,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {

@@ -167,7 +167,9 @@ function buildPayload() {
     const subject = readTemplateSubject(configText, meta.configSection);
 
     if (!subject) {
-      throw new Error(`Missing subject in config.toml for ${meta.configSection}`);
+      throw new Error(
+        `Missing subject in config.toml for ${meta.configSection}`
+      );
     }
 
     payload[meta.subjectKey] = subject;
@@ -181,13 +183,17 @@ function buildPayload() {
     const enabled = readTemplateEnabled(configText, meta.configSection);
 
     if (!subject) {
-      throw new Error(`Missing subject in config.toml for ${meta.configSection}`);
+      throw new Error(
+        `Missing subject in config.toml for ${meta.configSection}`
+      );
     }
 
     payload[meta.enabledKey] = enabled;
     payload[meta.subjectKey] = subject;
     payload[meta.contentKey] = readTemplateFile(meta.file);
-    console.log(`  • ${name}: ${meta.file} (${enabled ? "enabled" : "disabled"})`);
+    console.log(
+      `  • ${name}: ${meta.file} (${enabled ? "enabled" : "disabled"})`
+    );
   }
 
   return payload;

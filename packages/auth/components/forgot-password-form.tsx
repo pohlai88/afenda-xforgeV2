@@ -2,20 +2,23 @@
 
 import {
   Button,
+  cn,
   Field,
   FieldError,
   FieldHint,
   FieldLabel,
   Input,
-  cn,
   recipe,
 } from "@repo/design-system/design-system";
 import Link from "next/link";
 import { useState } from "react";
-import { fromSupabaseError, isAuthFailure, parseAuthForm } from "../auth-result";
-import { buildEmailConfirmRedirect } from "../email-redirect";
+import { fromSupabaseError, parseAuthFormFields } from "../auth-result";
 import { createClient } from "../client";
+import { buildEmailConfirmRedirect } from "../redirects";
 import { forgotPasswordSchema } from "../schemas";
+import { AuthSuccessAlert } from "./auth-feedback";
+import { AuthPendingButton } from "./auth-pending-button";
+import { authLinkClass } from "./auth-section";
 
 const emailFieldId = "forgot-password-email";
 const emailErrorId = "forgot-password-email-error";
@@ -33,11 +36,12 @@ export const ForgotPasswordForm = () => {
     setError(null);
     setSuccess(false);
 
-    const validated = parseAuthForm(forgotPasswordSchema, { email });
+    const validated = parseAuthFormFields(forgotPasswordSchema, { email });
 
-    if (isAuthFailure(validated)) {
-      setError(validated.error);
+    if (!validated.ok) {
+      setError(validated.fieldErrors.email ?? validated.formError ?? null);
       setLoading(false);
+      document.getElementById(emailFieldId)?.focus();
       return;
     }
 
@@ -53,6 +57,7 @@ export const ForgotPasswordForm = () => {
     if (failure) {
       setError(failure.error);
       setLoading(false);
+      document.getElementById(emailFieldId)?.focus();
       return;
     }
 
@@ -62,17 +67,11 @@ export const ForgotPasswordForm = () => {
 
   if (success) {
     return (
-      <div
-        className={cn("flex flex-col", recipe("sectionGap"))}
-        role="status"
-      >
-        <div className="flex flex-col gap-1.5">
-          <p className="font-medium text-text-primary">Check your email</p>
-          <p className={cn("text-text-secondary", recipe("captionText"))}>
-            If an account exists for that address, you will receive a password
-            reset link shortly.
-          </p>
-        </div>
+      <div className={cn("flex flex-col", recipe("sectionGap"))}>
+        <AuthSuccessAlert
+          message="If an account exists for that address, you will receive a password reset link shortly."
+          title="Check your email"
+        />
         <Button asChild className="w-full" variant="primary">
           <Link href="/sign-in">Back to sign in</Link>
         </Button>
@@ -90,13 +89,20 @@ export const ForgotPasswordForm = () => {
         <FieldLabel htmlFor={emailFieldId}>Email</FieldLabel>
         <Input
           aria-describedby={
-            error ? `${emailErrorId} forgot-password-hint` : "forgot-password-hint"
+            error
+              ? `${emailErrorId} forgot-password-hint`
+              : "forgot-password-hint"
           }
           aria-invalid={error ? true : undefined}
           autoComplete="email"
           id={emailFieldId}
           name="email"
-          onChange={(event) => setEmail(event.target.value)}
+          onChange={(event) => {
+            setEmail(event.target.value);
+            if (error) {
+              setError(null);
+            }
+          }}
           placeholder="you@example.com"
           required
           type="email"
@@ -107,14 +113,17 @@ export const ForgotPasswordForm = () => {
         </FieldHint>
         {error ? <FieldError id={emailErrorId}>{error}</FieldError> : null}
       </Field>
-      <Button className="w-full" disabled={loading} type="submit" variant="primary">
-        {loading ? "Sending…" : "Send reset link"}
-      </Button>
+      <AuthPendingButton
+        className="w-full"
+        pending={loading}
+        pendingLabel="Sending…"
+        type="submit"
+        variant="primary"
+      >
+        Send reset link
+      </AuthPendingButton>
       <p className={cn("text-center", recipe("captionText"))}>
-        <Link
-          className="underline underline-offset-4"
-          href="/sign-in"
-        >
+        <Link className={authLinkClass} href="/sign-in">
           Back to sign in
         </Link>
       </p>

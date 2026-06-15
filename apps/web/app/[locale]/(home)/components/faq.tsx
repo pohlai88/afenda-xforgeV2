@@ -3,8 +3,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@repo/design-system/components/afenda-ui/accordion";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+  Button,
+} from "@repo/design-system/design-system";
 import type { Dictionary } from "@repo/internationalization";
 import { PhoneCall } from "lucide-react";
 import Link from "next/link";

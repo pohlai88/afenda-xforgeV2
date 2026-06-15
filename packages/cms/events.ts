@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { cmsCollectionSchema, type CollectionName } from "./collections";
-import { cmsLocaleSchema, type CmsLocale } from "./locale";
-import { contentStatusSchema, type ContentStatus } from "./schemas";
+import { type CollectionName, cmsCollectionSchema } from "./collections";
+import { type CmsLocale, cmsLocaleSchema } from "./locale";
+import { type ContentStatus, contentStatusSchema } from "./schemas";
 
 export const CMS_EVENT_PUBLISHED = "cms.document.published";
 export const CMS_EVENT_UNPUBLISHED = "cms.document.unpublished";

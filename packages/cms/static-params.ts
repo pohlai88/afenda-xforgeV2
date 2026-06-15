@@ -1,4 +1,4 @@
-import { cmsLocales, type CmsLocale } from "./locale";
+import { type CmsLocale, cmsLocales } from "./locale";
 
 export const buildLocaleSlugParams = async (
   fetchSlugsForLocale: (locale: CmsLocale) => Promise<string[]>

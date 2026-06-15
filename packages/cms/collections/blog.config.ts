@@ -1,6 +1,6 @@
 import {
-  blogFrontmatterSchema,
   type BlogFrontmatter,
+  blogFrontmatterSchema,
 } from "../schemas/blog.schema";
 import type { Post, PostMeta } from "../types";
 import { defaultBlogImage } from "./defaults";

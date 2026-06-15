@@ -155,6 +155,13 @@
       "when": 1720267200000,
       "tag": "0021_pages_server_only",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1720353600000,
+      "tag": "0022_org_invite_bootstrap",
+      "breakpoints": true
     }
   ]
 }

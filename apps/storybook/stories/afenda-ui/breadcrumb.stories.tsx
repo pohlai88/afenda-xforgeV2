@@ -1,6 +1,3 @@
-import { Fragment } from "react"
-import type { Meta, StoryObj } from "@storybook/react"
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,11 +5,13 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@repo/design-system/components/afenda-ui/breadcrumb"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import { Fragment } from "react";
 
-type BreadcrumbSegment = {
-  label: string
-  href?: string
+interface BreadcrumbSegment {
+  href?: string;
+  label: string;
 }
 
 const defaultSegments: BreadcrumbSegment[] = [
@@ -20,7 +19,7 @@ const defaultSegments: BreadcrumbSegment[] = [
   { label: "Northwind Trading", href: "#" },
   { label: "Payroll close", href: "#" },
   { label: "Audit packet AP-2048" },
-]
+];
 
 function BreadcrumbTrail({ segments }: { segments: BreadcrumbSegment[] }) {
   return (
@@ -31,7 +30,9 @@ function BreadcrumbTrail({ segments }: { segments: BreadcrumbSegment[] }) {
             {index > 0 ? <BreadcrumbSeparator /> : null}
             <BreadcrumbItem>
               {segment.href ? (
-                <BreadcrumbLink href={segment.href}>{segment.label}</BreadcrumbLink>
+                <BreadcrumbLink href={segment.href}>
+                  {segment.label}
+                </BreadcrumbLink>
               ) : (
                 <BreadcrumbPage>{segment.label}</BreadcrumbPage>
               )}
@@ -40,27 +41,27 @@ function BreadcrumbTrail({ segments }: { segments: BreadcrumbSegment[] }) {
         ))}
       </BreadcrumbList>
     </Breadcrumb>
-  )
+  );
 }
 
 function BreadcrumbSurface({ segments }: { segments: BreadcrumbSegment[] }) {
   return (
     <div className="min-h-screen bg-surface-muted p-6">
       <div className="mx-auto max-w-5xl rounded-lg border border-border-default bg-surface-raised">
-        <div className="border-b border-border-default px-4 py-3">
+        <div className="border-border-default border-b px-4 py-3">
           <BreadcrumbTrail segments={segments} />
         </div>
         <div className="grid gap-2 p-4">
-          <p className="text-[12px] font-medium uppercase tracking-wide text-text-secondary">
+          <p className="font-medium text-[12px] text-text-secondary uppercase tracking-wide">
             Current surface
           </p>
-          <h3 className="text-[15px] font-semibold text-text-primary">
+          <h3 className="font-semibold text-[15px] text-text-primary">
             {segments.at(-1)?.label}
           </h3>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 const meta = {
@@ -73,17 +74,17 @@ const meta = {
     BreadcrumbPage,
     BreadcrumbSeparator,
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof Breadcrumb>
+} satisfies Meta<typeof Breadcrumb>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => <BreadcrumbSurface segments={defaultSegments} />,
-}
+};
 
 export const ShortTrail: Story = {
   render: () => (
@@ -94,4 +95,4 @@ export const ShortTrail: Story = {
       ]}
     />
   ),
-}
+};

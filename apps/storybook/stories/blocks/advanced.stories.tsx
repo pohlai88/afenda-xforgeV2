@@ -1,12 +1,12 @@
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
 import {
   ApprovalQueueBlock,
+  Button,
   CommandSearchBlock,
+  Input,
   OperationalDashboardShell,
   RecordEditorBlock,
   RiskEvidencePanel,
-} from "@repo/design-system/components/blocks";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   ClipboardCheckIcon,

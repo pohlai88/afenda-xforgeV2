@@ -1,26 +1,32 @@
 import { createId } from "@paralleldrive/cuid2";
-import {
-  CMS_EVENT_PUBLISHED,
-  cmsDocumentEventSchema,
-} from "@repo/cms/events";
+import { CMS_EVENT_PUBLISHED, cmsDocumentEventSchema } from "@repo/cms/events";
 import { database } from "@repo/database";
-import { organization, webhookDelivery, webhookEndpoint } from "@repo/database/schema";
+import {
+  organization,
+  webhookDelivery,
+  webhookEndpoint,
+} from "@repo/database/schema";
 import { and, eq } from "drizzle-orm";
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
-import { enqueueWebhookEvent } from "../../lib/outbound/enqueue";
+import {
+  afterAll,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from "vitest";
 import { processWebhookDeliveries } from "../../lib/outbound/dispatcher";
 import { FIRST_PARTY_ENDPOINT_KIND } from "../../lib/outbound/endpoint-kinds";
+import { enqueueWebhookEvent } from "../../lib/outbound/enqueue";
 import { verifyStandardWebhook } from "../../lib/verify";
 import { setIntegrationFetchHandler } from "../../test-support/setup-integration-fetch";
 
 const FIRST_PARTY_URL =
   "https://first-party-integration.test/api/webhooks/cms-cache";
-const FIRST_PARTY_SECRET =
-  "whsec_dGVzdC1sb2NhbC13ZWJob29rLXNlY3JldC1kZXYxMjM=";
+const FIRST_PARTY_SECRET = "whsec_dGVzdC1sb2NhbC13ZWJob29rLXNlY3JldC1kZXYxMjM=";
 
-const hasDatabase = Boolean(
-  process.env.DATABASE_URL ?? process.env.DIRECT_URL
-);
+const hasDatabase = Boolean(process.env.DATABASE_URL ?? process.env.DIRECT_URL);
 
 describe.skipIf(!hasDatabase)("first-party webhook fan-out integration", () => {
   const organizationId = createId();
@@ -55,7 +61,9 @@ describe.skipIf(!hasDatabase)("first-party webhook fan-out integration", () => {
     await database
       .delete(webhookEndpoint)
       .where(eq(webhookEndpoint.organizationId, organizationId));
-    await database.delete(organization).where(eq(organization.id, organizationId));
+    await database
+      .delete(organization)
+      .where(eq(organization.id, organizationId));
   });
 
   it("enqueues and delivers CMS events to the configured first-party URL", async () => {

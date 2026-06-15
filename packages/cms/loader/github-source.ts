@@ -1,7 +1,6 @@
 import "server-only";
 
 import matter from "gray-matter";
-import { isValidLocale } from "../locale";
 import {
   documentContentPath,
   getGitHubConfig,
@@ -12,14 +11,15 @@ import {
   decodeGitHubBase64Content,
   getGitHubFileSha,
 } from "../github/file-metadata";
+import { isValidLocale } from "../locale";
 import type { ContentSource, ParsedMdxDocument } from "./content-source";
 
 const MDX_EXTENSION_PATTERN = /\.mdx$/;
 
 interface GitHubContentEntry {
   name: string;
-  type: "file" | "dir";
   path: string;
+  type: "file" | "dir";
 }
 
 interface GitHubFileResponse {

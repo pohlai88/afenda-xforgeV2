@@ -2,8 +2,7 @@
 
 import type { CmsLocale } from "@repo/cms/locale";
 import type { CmsCollectionName } from "@repo/cms/writer";
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
+import { Badge, Input } from "@repo/design-system/design-system";
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { searchDocuments } from "@/app/actions/cms/documents";
@@ -68,7 +67,8 @@ export const DocumentSearch = ({
   }, [collection, debouncedQuery, locale]);
 
   const showResults =
-    debouncedQuery.length >= MIN_QUERY_LENGTH && (results.length > 0 || isPending);
+    debouncedQuery.length >= MIN_QUERY_LENGTH &&
+    (results.length > 0 || isPending);
 
   return (
     <div className="flex flex-col gap-3">
@@ -90,8 +90,7 @@ export const DocumentSearch = ({
         </p>
       ) : null}
 
-      {debouncedQuery.length > 0 &&
-      debouncedQuery.length < MIN_QUERY_LENGTH ? (
+      {debouncedQuery.length > 0 && debouncedQuery.length < MIN_QUERY_LENGTH ? (
         <p className="text-muted-foreground text-sm">
           Type at least {MIN_QUERY_LENGTH} characters to search.
         </p>

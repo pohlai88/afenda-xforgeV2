@@ -1,24 +1,24 @@
-import { FilterIcon, SearchIcon } from "lucide-react"
-import type { Meta, StoryObj } from "@storybook/react"
-
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
   InputGroupText,
-} from "@repo/design-system/components/afenda-ui/input-group"
-import { Kbd } from "@repo/design-system/components/afenda-ui/kbd"
+  Kbd,
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import { FilterIcon, SearchIcon } from "lucide-react";
 
 const meta = {
   title: "Afenda UI/InputGroup",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: InputGroup,
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof InputGroup>
+} satisfies Meta<typeof InputGroup>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -28,10 +28,13 @@ export const Default: Story = {
           <div>
             <h3 className="font-semibold text-[15px]">Audit work queue</h3>
             <p className="text-text-secondary text-xs">
-              Search across tenant records, payroll runs, evidence IDs, and operators.
+              Search across tenant records, payroll runs, evidence IDs, and
+              operators.
             </p>
           </div>
-          <span className="font-mono text-text-secondary text-xs">412 open items</span>
+          <span className="font-mono text-text-secondary text-xs">
+            412 open items
+          </span>
         </div>
         <div className="grid gap-3">
           <InputGroup>
@@ -62,19 +65,21 @@ export const Default: Story = {
           </InputGroup>
         </div>
         <div className="grid rounded-lg border border-border-subtle text-xs">
-          {["PAY-1042 · off-cycle approval", "AUD-7781 · missing bank evidence", "TEN-44 · role boundary change"].map(
-            (item) => (
-              <div
-                className="flex items-center justify-between border-border-subtle border-b px-3 py-2 last:border-b-0"
-                key={item}
-              >
-                <span>{item}</span>
-                <span className="text-text-secondary">Updated 09:42</span>
-              </div>
-            )
-          )}
+          {[
+            "PAY-1042 · off-cycle approval",
+            "AUD-7781 · missing bank evidence",
+            "TEN-44 · role boundary change",
+          ].map((item) => (
+            <div
+              className="flex items-center justify-between border-border-subtle border-b px-3 py-2 last:border-b-0"
+              key={item}
+            >
+              <span>{item}</span>
+              <span className="text-text-secondary">Updated 09:42</span>
+            </div>
+          ))}
         </div>
       </section>
     </div>
   ),
-}
+};

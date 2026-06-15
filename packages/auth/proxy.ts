@@ -6,11 +6,28 @@ import {
 } from "next/server";
 import { applyAuthResponseCacheHeaders } from "./auth-cache";
 import { getSupabasePublishableKey, getSupabaseUrl } from "./keys";
+import { buildMfaChallengeHref, getMfaAssuranceStatus } from "./mfa-login";
 
 type AuthMiddlewareHandler = (
   request: NextRequest,
   event: NextFetchEvent
 ) => Response | Promise<Response | void | undefined>;
+
+const MFA_EXEMPT_PATH_PREFIXES = [
+  "/sign-in",
+  "/sign-up",
+  "/forgot-password",
+  "/update-password",
+  "/sign-up-success",
+  "/auth/confirm",
+  "/mfa-challenge",
+  "/api/",
+] as const;
+
+const isMfaExemptPath = (pathname: string) =>
+  MFA_EXEMPT_PATH_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(prefix)
+  );
 
 /** Copy refreshed session cookies and cache headers onto another response. */
 export const applySupabaseSessionToResponse = (
@@ -35,8 +52,17 @@ export const applySupabaseSessionToResponse = (
  * Refreshes the Supabase Auth session for a request.
  * @see https://supabase.com/docs/guides/auth/server-side/creating-a-client
  */
-export const updateSession = async (request: NextRequest): Promise<NextResponse> => {
-  let supabaseResponse = NextResponse.next({ request });
+export const updateSession = async (
+  request: NextRequest
+): Promise<NextResponse> => {
+  const pathname = request.nextUrl.pathname;
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-pathname", pathname);
+  requestHeaders.set("x-search", request.nextUrl.search);
+
+  let supabaseResponse = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 
   const supabase = createServerClient(
     getSupabaseUrl(),
@@ -55,7 +81,9 @@ export const updateSession = async (request: NextRequest): Promise<NextResponse>
             request.cookies.set(name, value);
           }
 
-          supabaseResponse = NextResponse.next({ request });
+          supabaseResponse = NextResponse.next({
+            request: { headers: requestHeaders },
+          });
 
           for (const { name, value, options } of cookiesToSet) {
             supabaseResponse.cookies.set(name, value, options);
@@ -71,6 +99,29 @@ export const updateSession = async (request: NextRequest): Promise<NextResponse>
 
   // Do not run code between createServerClient and getClaims().
   await supabase.auth.getClaims();
+
+  if (!isMfaExemptPath(pathname)) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      const assurance = await getMfaAssuranceStatus(supabase);
+
+      if (assurance.needsChallenge) {
+        const intended = `${pathname}${request.nextUrl.search}`;
+        const challengeResponse = NextResponse.redirect(
+          new URL(buildMfaChallengeHref(intended), request.url)
+        );
+
+        for (const cookie of supabaseResponse.cookies.getAll()) {
+          challengeResponse.cookies.set(cookie);
+        }
+
+        return applyAuthResponseCacheHeaders(challengeResponse);
+      }
+    }
+  }
 
   return applyAuthResponseCacheHeaders(supabaseResponse);
 };

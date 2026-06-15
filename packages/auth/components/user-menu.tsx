@@ -1,19 +1,23 @@
 "use client";
 
 import {
-  Button,
+  cn,
+  recipe,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-  cn,
-  recipe,
 } from "@repo/design-system/design-system";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
+import { fromSupabaseError } from "../auth-result";
 import { createClient } from "../client";
 import { getUserDisplayName } from "../metadata";
+import { AuthErrorAlert } from "./auth-feedback";
+import { AuthPendingButton } from "./auth-pending-button";
+import { authLinkClass } from "./auth-section";
 
 type Organization = {
   id: string;
@@ -34,9 +38,7 @@ export const OrganizationSwitcher = ({
   const [isPending, startTransition] = useTransition();
 
   if (organizations.length === 0) {
-    return (
-      <p className={recipe("captionText")}>No organizations</p>
-    );
+    return <p className={recipe("captionText")}>No organizations</p>;
   }
 
   return (
@@ -75,11 +77,22 @@ type UserButtonProperties = {
 export const UserButton = ({ email, name }: UserButtonProperties) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const supabase = createClient();
 
   const handleSignOut = async () => {
     setLoading(true);
-    await supabase.auth.signOut();
+    setError(null);
+
+    const { error: signOutError } = await supabase.auth.signOut();
+    const failure = fromSupabaseError(signOutError);
+
+    if (failure) {
+      setError(failure.error);
+      setLoading(false);
+      return;
+    }
+
     router.push("/sign-in");
     router.refresh();
   };
@@ -94,15 +107,20 @@ export const UserButton = ({ email, name }: UserButtonProperties) => {
       {name && email ? (
         <span className={cn("truncate", recipe("captionText"))}>{email}</span>
       ) : null}
-      <Button
+      {error ? <AuthErrorAlert message={error} /> : null}
+      <Link className={authLinkClass} href="/account/security">
+        Security settings
+      </Link>
+      <AuthPendingButton
         className="h-auto w-fit justify-start p-0"
-        disabled={loading}
         onClick={handleSignOut}
+        pending={loading}
+        pendingLabel="Signing out…"
         type="button"
         variant="link"
       >
-        {loading ? "Signing out…" : "Sign out"}
-      </Button>
+        Sign out
+      </AuthPendingButton>
     </div>
   );
 };
@@ -113,22 +131,23 @@ export const useAuthUser = () => {
   const supabase = createClient();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    const applyUser = (user: { email?: string | null; user_metadata?: Record<string, unknown> } | null | undefined) => {
       setEmail(user?.email ?? null);
       setName(getUserDisplayName(user?.user_metadata ?? undefined));
+    };
+
+    void supabase.auth.getSession().then(({ data: { session } }) => {
+      applyUser(session?.user);
     });
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(() => {
-      void supabase.auth.getUser().then(({ data: { user } }) => {
-        setEmail(user?.email ?? null);
-        setName(getUserDisplayName(user?.user_metadata ?? undefined));
-      });
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      applyUser(session?.user);
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, []);
 
   return { email, name };
 };

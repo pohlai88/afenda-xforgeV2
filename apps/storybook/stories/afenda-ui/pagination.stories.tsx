@@ -1,5 +1,3 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
 import {
   Pagination,
   PaginationContent,
@@ -8,58 +6,55 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@repo/design-system/components/afenda-ui/pagination"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Pagination",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: Pagination,
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof Pagination>
+} satisfies Meta<typeof Pagination>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
+
+const auditEventLabels = [
+  "Payroll variance approved",
+  "Export permission reviewed",
+  "Emergency admin grant escalated",
+] as const;
 
 export const Default: Story = {
   render: () => (
     <div className="min-h-screen bg-surface-muted p-6">
       <div className="mx-auto max-w-5xl rounded-lg border border-border-default bg-surface-raised">
-        <div className="flex items-center justify-between border-b border-border-default px-4 py-3">
+        <div className="flex items-center justify-between border-border-default border-b px-4 py-3">
           <div>
-            <p className="text-[12px] font-medium uppercase tracking-wide text-text-secondary">
+            <p className="font-medium text-[12px] text-text-secondary uppercase tracking-wide">
               Audit events
             </p>
-            <h3 className="text-[15px] font-semibold text-text-primary">
+            <h3 className="font-semibold text-[15px] text-text-primary">
               2,418 retained records
             </h3>
           </div>
-          <span className="text-[12px] text-text-secondary">
-            Page 2 of 97
-          </span>
+          <span className="text-[12px] text-text-secondary">Page 2 of 97</span>
         </div>
         <div className="grid divide-y divide-border-default px-4 text-[13px]">
           {["NWT-1042", "CTR-8831", "FBH-2219"].map((tenant, index) => (
-            <div
-              key={tenant}
-              className="grid grid-cols-[120px_1fr_80px] py-2"
-            >
-              <span className="tabular-nums text-text-secondary">
-                {tenant}
-              </span>
+            <div className="grid grid-cols-[120px_1fr_80px] py-2" key={tenant}>
+              <span className="text-text-secondary tabular-nums">{tenant}</span>
               <span className="text-text-primary">
-                {index === 0
-                  ? "Payroll variance approved"
-                  : index === 1
-                    ? "Export permission reviewed"
-                    : "Emergency admin grant escalated"}
+                {auditEventLabels[index]}
               </span>
-              <span className="text-right tabular-nums text-text-secondary">
+              <span className="text-right text-text-secondary tabular-nums">
                 09:{48 - index * 7}
               </span>
             </div>
           ))}
         </div>
-        <div className="border-t border-border-default px-4 py-3">
+        <div className="border-border-default border-t px-4 py-3">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -88,4 +83,4 @@ export const Default: Story = {
       </div>
     </div>
   ),
-}
+};

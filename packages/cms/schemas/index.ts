@@ -1,19 +1,19 @@
 export {
-  authorSchema,
-  baseFrontmatterSchema,
-  contentStatusSchema,
-  imageSchema,
-  type ContentStatus,
-} from "./shared.schema";
-export {
-  blogFrontmatterSchema,
   type BlogFrontmatter,
+  blogFrontmatterSchema,
 } from "./blog.schema";
 export {
-  legalFrontmatterSchema,
   type LegalFrontmatter,
+  legalFrontmatterSchema,
 } from "./legal.schema";
 export {
-  siteSettingsSchema,
   type SiteSettings,
+  siteSettingsSchema,
 } from "./settings.schema";
+export {
+  authorSchema,
+  baseFrontmatterSchema,
+  type ContentStatus,
+  contentStatusSchema,
+  imageSchema,
+} from "./shared.schema";

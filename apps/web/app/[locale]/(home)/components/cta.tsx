@@ -1,4 +1,4 @@
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Button } from "@repo/design-system/design-system";
 import type { Dictionary } from "@repo/internationalization";
 import { MoveRight, PhoneCall } from "lucide-react";
 import Link from "next/link";

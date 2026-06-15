@@ -1,8 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { ChevronRightIcon, ShieldCheckIcon } from "lucide-react"
-
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
 import {
+  Badge,
+  Button,
   Card,
   CardAction,
   CardContent,
@@ -10,8 +8,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@repo/design-system/components/afenda-ui/card"
-import { Button } from "@repo/design-system/components/afenda-ui/button"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import { ChevronRightIcon, ShieldCheckIcon } from "lucide-react";
 
 const meta = {
   title: "Afenda UI/Card",
@@ -24,7 +23,7 @@ const meta = {
     CardFooter,
     CardAction,
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   globals: {
     backgrounds: { value: "surface" },
   },
@@ -37,11 +36,11 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof Card>
+} satisfies Meta<typeof Card>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -67,13 +66,13 @@ export const Default: Story = {
                 ["SLA left", "43m"],
               ].map(([label, value]) => (
                 <div
-                  key={label}
                   className="rounded-md border border-border-default bg-surface px-3 py-2"
+                  key={label}
                 >
                   <span className="text-[12px] text-text-secondary">
                     {label}
                   </span>
-                  <strong className="block text-[20px] leading-tight tabular-nums text-text-primary">
+                  <strong className="block text-[20px] text-text-primary tabular-nums leading-tight">
                     {value}
                   </strong>
                 </div>
@@ -97,7 +96,9 @@ export const Default: Story = {
         <Card>
           <CardHeader>
             <CardTitle>Control posture</CardTitle>
-            <CardDescription>Current policy and tenant safeguards</CardDescription>
+            <CardDescription>
+              Current policy and tenant safeguards
+            </CardDescription>
             <CardAction>
               <ShieldCheckIcon className="size-4 text-text-secondary" />
             </CardAction>
@@ -109,8 +110,8 @@ export const Default: Story = {
               ["Policy exceptions", "2", "warning"],
             ].map(([label, value, tone]) => (
               <div
-                key={label}
                 className="flex items-center justify-between rounded-md bg-surface-muted px-3 py-2"
+                key={label}
               >
                 <span className="text-text-secondary">{label}</span>
                 <Badge
@@ -126,7 +127,7 @@ export const Default: Story = {
       </div>
     </div>
   ),
-}
+};
 
 export const WithAction: Story = {
   render: () => (
@@ -150,11 +151,11 @@ export const WithAction: Story = {
             ["Emergency admin elevation", "FBH-2219", "Breached", "critical"],
           ].map(([request, tenant, sla, tone]) => (
             <div
-              key={request}
               className="grid grid-cols-[1fr_auto_auto] items-center gap-3 rounded-md border border-border-default bg-surface px-3 py-2 text-[13px]"
+              key={request}
             >
               <span className="font-medium text-text-primary">{request}</span>
-              <span className="tabular-nums text-text-secondary">{tenant}</span>
+              <span className="text-text-secondary tabular-nums">{tenant}</span>
               <Badge
                 tone={tone as "warning" | "neutral" | "critical"}
                 variant={tone === "critical" ? "solid" : "outline"}
@@ -172,4 +173,4 @@ export const WithAction: Story = {
       </Card>
     </div>
   ),
-}
+};

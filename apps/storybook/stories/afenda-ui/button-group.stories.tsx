@@ -1,28 +1,27 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Button } from "@repo/design-system/components/afenda-ui/button"
 import {
+  Button,
   ButtonGroup,
   ButtonGroupText,
-} from "@repo/design-system/components/afenda-ui/button-group"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
-type QueueAction = {
-  label: string
-  variant?: "primary" | "secondary" | "quiet" | "destructive" | "link"
+interface QueueAction {
+  label: string;
+  variant?: "primary" | "secondary" | "quiet" | "destructive" | "link";
 }
 
 function QueueActionGroup({
   actions,
   queueLabel,
 }: {
-  actions: QueueAction[]
-  queueLabel: string
+  actions: QueueAction[];
+  queueLabel: string;
 }) {
   return (
     <div className="grid w-[560px] gap-3 rounded-[var(--card-radius)] border border-border-default bg-surface-raised p-4 shadow-panel">
       <div className="flex items-start justify-between gap-3">
         <div className="grid gap-1">
-          <span className="text-[13px] font-medium text-text-primary">
+          <span className="font-medium text-[13px] text-text-primary">
             Bulk approval actions
           </span>
           <span className="text-[12px] text-text-secondary">
@@ -39,7 +38,7 @@ function QueueActionGroup({
         ))}
       </ButtonGroup>
     </div>
-  )
+  );
 }
 
 const meta = {
@@ -48,7 +47,7 @@ const meta = {
   subcomponents: {
     ButtonGroupText,
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {
@@ -58,34 +57,34 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof ButtonGroup>
+} satisfies Meta<typeof ButtonGroup>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const QueueActions: Story = {
   render: () => (
     <QueueActionGroup
-      queueLabel="Queue: 12"
       actions={[
         { label: "Approve", variant: "secondary" },
         { label: "Hold", variant: "secondary" },
         { label: "Assign reviewer", variant: "quiet" },
       ]}
+      queueLabel="Queue: 12"
     />
   ),
-}
+};
 
 export const PrimaryDecision: Story = {
   render: () => (
     <QueueActionGroup
-      queueLabel="Queue: 3"
       actions={[
         { label: "Approve request", variant: "primary" },
         { label: "Edit record", variant: "secondary" },
         { label: "Delete record", variant: "destructive" },
       ]}
+      queueLabel="Queue: 3"
     />
   ),
-}
+};

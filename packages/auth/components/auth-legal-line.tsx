@@ -3,11 +3,12 @@
 import { cn, recipe } from "@repo/design-system/design-system";
 import Link from "next/link";
 import { useAuthUiConfig } from "../context/auth-ui-config";
+import { authLinkClass } from "./auth-section";
 
 export const AuthLegalLine = () => {
   const { termsUrl, privacyUrl } = useAuthUiConfig();
 
-  if (!termsUrl && !privacyUrl) {
+  if (!(termsUrl || privacyUrl)) {
     return null;
   }
 
@@ -16,7 +17,7 @@ export const AuthLegalLine = () => {
       By continuing, you agree to our{" "}
       {termsUrl ? (
         <Link
-          className="underline underline-offset-4"
+          className={authLinkClass}
           href={termsUrl}
           rel="noopener noreferrer"
           target="_blank"
@@ -29,7 +30,7 @@ export const AuthLegalLine = () => {
       {termsUrl && privacyUrl ? " and " : null}
       {privacyUrl ? (
         <Link
-          className="underline underline-offset-4"
+          className={authLinkClass}
           href={privacyUrl}
           rel="noopener noreferrer"
           target="_blank"

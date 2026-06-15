@@ -1,7 +1,6 @@
 "use client";
 
-import { Progress } from "@repo/design-system/components/afenda-ui/progress";
-import { Separator } from "@repo/design-system/components/afenda-ui/separator";
+import { Progress, Separator } from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import {
   AccessibilityIcon,

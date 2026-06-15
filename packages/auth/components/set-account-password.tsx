@@ -1,20 +1,24 @@
 "use client";
 
 import {
-  Alert,
-  AlertDescription,
-  Button,
-  Field,
   cn,
+  Field,
+  FieldError,
   recipe,
 } from "@repo/design-system/design-system";
-import { useMemo, useState } from "react";
-import { fromSupabaseError, isAuthFailure, parseAuthForm } from "../auth-result";
+import { useId, useMemo, useState } from "react";
+import {
+  type AuthFieldErrors,
+  fromSupabaseError,
+  parseAuthFormFields,
+} from "../auth-result";
 import { createClient } from "../client";
 import { useAuthUiConfig } from "../context/auth-ui-config";
 import { createUpdatePasswordSchema } from "../schemas";
+import { AuthErrorAlert, AuthSuccessAlert } from "./auth-feedback";
+import { AuthPendingButton } from "./auth-pending-button";
+import { AuthSection, AuthSectionHeader } from "./auth-section";
 import { PasswordField } from "./password-field";
-import { PasswordSecurityTips } from "./password-security-tips";
 
 const passwordFieldId = "set-account-password";
 const confirmFieldId = "set-account-password-confirm";
@@ -23,12 +27,22 @@ type SetAccountPasswordProperties = {
   onSuccess?: () => void;
 };
 
+const focusField = (field: keyof AuthFieldErrors) => {
+  const id = field === "password" ? passwordFieldId : confirmFieldId;
+  document.getElementById(id)?.focus();
+};
+
 /** Adds email/password sign-in to OAuth-only accounts (Supabase updateUser password). */
-export const SetAccountPassword = ({ onSuccess }: SetAccountPasswordProperties) => {
+export const SetAccountPassword = ({
+  onSuccess,
+}: SetAccountPasswordProperties) => {
+  const titleId = useId();
+  const formErrorId = useId();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
   const [message, setMessage] = useState<string | null>(null);
   const supabase = createClient();
   const { passwordPolicy } = useAuthUiConfig();
@@ -40,14 +54,22 @@ export const SetAccountPassword = ({ onSuccess }: SetAccountPasswordProperties) 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
-    setError(null);
+    setFormError(null);
+    setFieldErrors({});
     setMessage(null);
 
-    const validated = parseAuthForm(schema, { password, confirmPassword });
+    const validated = parseAuthFormFields(schema, { password, confirmPassword });
 
-    if (isAuthFailure(validated)) {
-      setError(validated.error);
+    if (!validated.ok) {
+      setFieldErrors(validated.fieldErrors);
+      setFormError(validated.formError ?? null);
       setLoading(false);
+      const firstField = validated.fieldErrors.password
+        ? "password"
+        : validated.fieldErrors.confirmPassword
+          ? "confirmPassword"
+          : "password";
+      focusField(firstField);
       return;
     }
 
@@ -58,8 +80,9 @@ export const SetAccountPassword = ({ onSuccess }: SetAccountPasswordProperties) 
     const failure = fromSupabaseError(updateError);
 
     if (failure) {
-      setError(failure.error);
+      setFormError(failure.error);
       setLoading(false);
+      focusField("password");
       return;
     }
 
@@ -70,25 +93,19 @@ export const SetAccountPassword = ({ onSuccess }: SetAccountPasswordProperties) 
     onSuccess?.();
   };
 
+  const hasFieldErrors = Object.keys(fieldErrors).length > 0;
+
   return (
-    <section className={cn("flex flex-col", recipe("sectionGap"))}>
-      <div className="flex flex-col gap-1">
-        <h2 className="font-medium text-text-primary">Email & password</h2>
-        <p className={recipe("captionText")}>
-          Add a password to sign in with email if you originally registered with
-          Google or another provider.
-        </p>
-      </div>
-      {error ? (
-        <Alert tone="critical">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+    <AuthSection aria-busy={loading} aria-labelledby={titleId}>
+      <AuthSectionHeader
+        description="Add a password to sign in with email if you originally registered with Google or another provider."
+        title="Email & password"
+        titleId={titleId}
+      />
+      {formError && !hasFieldErrors ? (
+        <AuthErrorAlert id={formErrorId} message={formError} />
       ) : null}
-      {message ? (
-        <Alert role="status" tone="positive">
-          <AlertDescription>{message}</AlertDescription>
-        </Alert>
-      ) : null}
+      {message ? <AuthSuccessAlert message={message} /> : null}
       <form
         className={cn("flex flex-col", recipe("sectionGap"))}
         noValidate
@@ -97,38 +114,72 @@ export const SetAccountPassword = ({ onSuccess }: SetAccountPasswordProperties) 
         <Field>
           <PasswordField
             autoComplete="new-password"
+            describedBy={
+              fieldErrors.password ? `${passwordFieldId}-error` : undefined
+            }
             id={passwordFieldId}
-            invalid={Boolean(error)}
+            invalid={Boolean(fieldErrors.password)}
             label="Password"
             name="password"
-            onChange={setPassword}
+            onChange={(value) => {
+              setPassword(value);
+              if (fieldErrors.password) {
+                setFieldErrors((current) => ({
+                  ...current,
+                  password: undefined,
+                }));
+              }
+            }}
             policy={passwordPolicy}
             showRequirements
             value={password}
           />
+          {fieldErrors.password ? (
+            <FieldError id={`${passwordFieldId}-error`}>
+              {fieldErrors.password}
+            </FieldError>
+          ) : null}
         </Field>
         <Field>
           <PasswordField
             autoComplete="new-password"
+            describedBy={
+              fieldErrors.confirmPassword
+                ? `${confirmFieldId}-error`
+                : undefined
+            }
             id={confirmFieldId}
-            invalid={Boolean(error)}
+            invalid={Boolean(fieldErrors.confirmPassword)}
             label="Confirm password"
             name="confirmPassword"
-            onChange={setConfirmPassword}
+            onChange={(value) => {
+              setConfirmPassword(value);
+              if (fieldErrors.confirmPassword) {
+                setFieldErrors((current) => ({
+                  ...current,
+                  confirmPassword: undefined,
+                }));
+              }
+            }}
             policy={passwordPolicy}
             value={confirmPassword}
           />
+          {fieldErrors.confirmPassword ? (
+            <FieldError id={`${confirmFieldId}-error`}>
+              {fieldErrors.confirmPassword}
+            </FieldError>
+          ) : null}
         </Field>
-        <PasswordSecurityTips />
-        <Button
-          className="w-fit"
-          disabled={loading}
+        <AuthPendingButton
+          className="w-full"
+          pending={loading}
+          pendingLabel="Saving…"
           type="submit"
-          variant="secondary"
+          variant="primary"
         >
-          {loading ? "Saving…" : "Set password"}
-        </Button>
+          Set password
+        </AuthPendingButton>
       </form>
-    </section>
+    </AuthSection>
   );
 };

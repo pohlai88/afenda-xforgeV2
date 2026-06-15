@@ -9,8 +9,8 @@
  */
 
 import fs from "node:fs";
-import path from "node:path";
 import { createRequire } from "node:module";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -134,15 +134,15 @@ async function main() {
       postgresStorageEnabled: !management.audit_log_disable_postgres,
       totalEventsLast7Days: totals.rows[0]?.total_7d ?? 0,
       eventsWithAuditIpLast7Days: totals.rows[0]?.with_audit_ip_7d ?? 0,
-      sessionsWithIpLast7Days: sessionIpSample.rows[0]?.sessions_with_ip_7d ?? 0,
+      sessionsWithIpLast7Days:
+        sessionIpSample.rows[0]?.sessions_with_ip_7d ?? 0,
       topActionsLast7Days: byAction.rows,
     },
     ipForwarding: {
       sbForwardedForEnabled: Boolean(
         management.security_sb_forwarded_for_enabled
       ),
-      note:
-        "auth.audit_log_entries.ip_address is often empty on hosted Supabase; join auth.sessions for sign-in IP.",
+      note: "auth.audit_log_entries.ip_address is often empty on hosted Supabase; join auth.sessions for sign-in IP.",
     },
     recommendations: [],
   };

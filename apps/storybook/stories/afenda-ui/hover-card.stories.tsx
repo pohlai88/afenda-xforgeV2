@@ -1,14 +1,15 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
+  Badge,
+  Button,
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@repo/design-system/components/afenda-ui/hover-card";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/HoverCard",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: HoverCard,
   parameters: {
     layout: "centered",

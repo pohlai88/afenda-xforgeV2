@@ -8,21 +8,16 @@ import {
   OrganizationSwitcher,
   UserButton,
 } from "@repo/auth/components/user-menu";
-import { ModeToggle } from "@repo/design-system/components/mode-toggle";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@repo/design-system/components/afenda-ui/collapsible";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
-import {
+  ModeToggle,
   Sidebar,
   SidebarContent,
   SidebarFooter,
@@ -39,7 +34,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   useSidebar,
-} from "@repo/design-system/components/afenda-ui/sidebar";
+} from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import {
   AnchorIcon,
@@ -64,8 +59,8 @@ import { useEffect, useState, useTransition } from "react";
 import { Search } from "./search";
 
 interface GlobalSidebarProperties {
-  readonly children: ReactNode;
   readonly activeOrganizationId: string | null;
+  readonly children: ReactNode;
   readonly userEmail?: string | null;
   readonly userName?: string | null;
 }
@@ -155,6 +150,10 @@ const data = {
         {
           title: "Billing",
           url: "#",
+        },
+        {
+          title: "Organization",
+          url: "/account/organization",
         },
         {
           title: "Security",

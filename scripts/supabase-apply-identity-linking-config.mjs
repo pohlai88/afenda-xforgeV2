@@ -34,7 +34,8 @@ function parseToken(filePath, key) {
 function parseManualLinkingFromConfig() {
   const configPath = path.join(root, "supabase", "config.toml");
   const text = fs.readFileSync(configPath, "utf8");
-  const authSection = text.split("[auth]")[1]?.split("[auth.sessions]")[0] ?? "";
+  const authSection =
+    text.split("[auth]")[1]?.split("[auth.sessions]")[0] ?? "";
   const enabled = /^\s*enable_manual_linking\s*=\s*true/m.test(authSection);
 
   return {

@@ -2,7 +2,6 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
 const root = process.cwd();
-const uiDir = join(root, "packages", "design-system", "components", "ui");
 const afendaUiDir = join(
   root,
   "packages",

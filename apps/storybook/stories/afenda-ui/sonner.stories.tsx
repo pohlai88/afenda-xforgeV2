@@ -1,12 +1,11 @@
-import { toast } from "sonner"
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Button } from "@repo/design-system/components/afenda-ui/button"
+import { Button } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import { toast } from "sonner";
 
 const meta = {
   title: "Afenda UI/Sonner",
   component: Button,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {
@@ -16,17 +15,17 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof Button>
+} satisfies Meta<typeof Button>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const OperationalNotification: Story = {
   render: () => (
     <section className="grid w-[460px] gap-3 rounded-[var(--card-radius)] border border-border-default bg-surface-raised p-4 shadow-panel">
       <div className="grid gap-1">
-        <h2 className="text-[14px] font-semibold text-text-primary">
+        <h2 className="font-semibold text-[14px] text-text-primary">
           Approval result
         </h2>
         <p className="text-[12px] text-text-secondary">
@@ -38,11 +37,11 @@ export const OperationalNotification: Story = {
         onClick={() => {
           toast.success("Record approved", {
             description: "Approval status has been saved to the audit trail.",
-          })
+          });
         }}
       >
         Show notification
       </Button>
     </section>
   ),
-}
+};

@@ -1,22 +1,25 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import { Label } from "@repo/design-system/components/afenda-ui/label";
 import {
+  Badge,
+  Button,
+  Input,
+  Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@repo/design-system/components/afenda-ui/popover";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { FilterIcon, SearchIcon } from "lucide-react";
 import { expect, screen } from "storybook/test";
 
 import { interactionStoryParameters } from "../../.storybook/essentials";
 
+const QUICK_FILTER_NAME = /quick filter/i;
+const WORK_ORDER_OR_TENANT_PLACEHOLDER = /work order or tenant/i;
+
 const meta = {
   title: "Afenda UI/Popover",
   component: Popover,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {
@@ -146,7 +149,7 @@ export const Interactive: Story = {
     layout: "centered",
     ...interactionStoryParameters,
   },
-  tags: ["interaction"],
+  tags: ["interaction", "afenda-ui", "primitive"],
   render: () => (
     <Popover>
       <PopoverTrigger asChild>
@@ -158,18 +161,17 @@ export const Interactive: Story = {
       <PopoverContent align="start" className="w-72">
         <div className="grid gap-2">
           <Label htmlFor="popover-play-search">Search</Label>
-          <Input
-            id="popover-play-search"
-            placeholder="Work order or tenant"
-          />
+          <Input id="popover-play-search" placeholder="Work order or tenant" />
         </div>
       </PopoverContent>
     </Popover>
   ),
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole("button", { name: /quick filter/i }));
+    await userEvent.click(
+      canvas.getByRole("button", { name: QUICK_FILTER_NAME })
+    );
     await expect(
-      await screen.findByPlaceholderText(/work order or tenant/i)
+      await screen.findByPlaceholderText(WORK_ORDER_OR_TENANT_PLACEHOLDER)
     ).toBeVisible();
   },
 };

@@ -33,7 +33,8 @@ export const POST = withApiRoute(async () => {
   }
 
   const { user, orgId } = session;
-  const name = getUserDisplayName(user.user_metadata) ?? user.email ?? undefined;
+  const name =
+    getUserDisplayName(user.user_metadata) ?? user.email ?? undefined;
   const avatar = getUserAvatarUrl(user.user_metadata) ?? undefined;
 
   return authenticate({

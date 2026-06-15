@@ -3,11 +3,13 @@ import "server-only";
 import { database } from "@repo/database";
 import { organizationMember } from "@repo/database/schema";
 import { and, eq } from "drizzle-orm";
+import {
+  ORGANIZATION_ROLES,
+  type OrganizationRole,
+} from "./organization-roles";
 import { requireOrg } from "./server";
 import type { AuthenticatedContext } from "./types";
 import { InsufficientRoleError } from "./types";
-
-import { ORGANIZATION_ROLES, type OrganizationRole } from "./organization-roles";
 
 export const CMS_EDITOR_ROLES = ["owner", "editor"] as const;
 
@@ -45,11 +47,14 @@ export const getOrganizationRole = async (
   return role;
 };
 
-export const canEditCms = (role: OrganizationRole | null): role is CmsEditorRole =>
+export const canEditCms = (
+  role: OrganizationRole | null
+): role is CmsEditorRole =>
   role !== null && CMS_EDITOR_ROLES.includes(role as CmsEditorRole);
 
-export const canOwnOrg = (role: OrganizationRole | null): role is CmsOwnerRole =>
-  role === "owner";
+export const canOwnOrg = (
+  role: OrganizationRole | null
+): role is CmsOwnerRole => role === "owner";
 
 export const requireEditor = async (): Promise<
   AuthenticatedContext & { orgId: string; role: CmsEditorRole }

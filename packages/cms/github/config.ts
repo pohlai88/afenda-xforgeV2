@@ -1,7 +1,7 @@
 import "server-only";
 
-import { normalizeLocale } from "../locale";
 import { keys } from "../keys";
+import { normalizeLocale } from "../locale";
 
 export type GitHubConfig = {
   token: string;
@@ -16,7 +16,8 @@ export const collectionContentDirectory = (collection: string): string =>
 export const localeContentDirectory = (
   collection: string,
   locale: string
-): string => `${collectionContentDirectory(collection)}/${normalizeLocale(locale)}`;
+): string =>
+  `${collectionContentDirectory(collection)}/${normalizeLocale(locale)}`;
 
 export const documentContentPath = (
   collection: string,

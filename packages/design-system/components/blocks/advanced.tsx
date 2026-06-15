@@ -1,9 +1,9 @@
 "use client";
 
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Checkbox } from "@repo/design-system/components/afenda-ui/checkbox";
 import {
+  Badge,
+  Button,
+  Checkbox,
   Command,
   CommandEmpty,
   CommandGroup,
@@ -12,34 +12,29 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from "@repo/design-system/components/afenda-ui/command";
-import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import { Kbd, KbdSequence } from "@repo/design-system/components/afenda-ui/kbd";
-import { Progress } from "@repo/design-system/components/afenda-ui/progress";
-import { Separator } from "@repo/design-system/components/afenda-ui/separator";
-import { Skeleton } from "@repo/design-system/components/afenda-ui/skeleton";
-import {
+  Input,
+  Kbd,
+  KbdSequence,
+  Progress,
+  Separator,
+  Skeleton,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
-import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@repo/design-system/components/afenda-ui/tabs";
+} from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import {
   type ColumnDef,

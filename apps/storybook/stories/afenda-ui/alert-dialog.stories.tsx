@@ -8,16 +8,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@repo/design-system/components/afenda-ui/alert-dialog";
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+  Badge,
+  Button,
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { Trash2Icon } from "lucide-react";
 
 const meta = {
   title: "Afenda UI/AlertDialog",
   component: AlertDialog,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {

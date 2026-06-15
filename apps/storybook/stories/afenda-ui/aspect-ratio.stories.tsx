@@ -1,12 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { AspectRatio } from "@repo/design-system/components/afenda-ui/aspect-ratio"
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
+import { AspectRatio, Badge } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/AspectRatio",
   component: AspectRatio,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {
@@ -16,18 +14,18 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof AspectRatio>
+} satisfies Meta<typeof AspectRatio>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const EvidencePreview: Story = {
   render: () => (
     <section className="w-[520px] rounded-[var(--card-radius)] border border-border-default bg-surface-raised p-4 shadow-panel">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="grid gap-1">
-          <h2 className="text-[14px] font-semibold text-text-primary">
+          <h2 className="font-semibold text-[14px] text-text-primary">
             Attachment preview
           </h2>
           <p className="text-[12px] text-text-secondary">
@@ -48,4 +46,4 @@ export const EvidencePreview: Story = {
       </AspectRatio>
     </section>
   ),
-}
+};

@@ -69,6 +69,7 @@ const blockComponentIds = [
   "AuditEvidenceWorkspace",
   "AuditSafeDestructiveAction",
   "AuditTrailPanel",
+  "AuthenticatedAppShellBlock",
   "BatchPostingReview",
   "BlockActionButton",
   "BlockActions",
@@ -230,6 +231,7 @@ const metadataBlockIds = [
 
 const workflowBlockIds = [
   "ApprovalControlCenter",
+  "AuthenticatedAppShellBlock",
   "AuditEvidenceWorkspace",
   "BatchPostingReview",
   "OperationalDashboardShell",
@@ -279,7 +281,7 @@ function createBlockScorecard(id: BlockComponentId): ComponentScorecard {
     keyboardSupport: "covered",
     kind: "block",
     owner,
-    overflowBehavior: id.includes("Table") ? "horizontal-scroll" : "bounded",
+    overflowBehavior: getBlockOverflowBehavior(id),
     reducedMotion: "manual",
     statesCovered: [
       "default",
@@ -292,6 +294,20 @@ function createBlockScorecard(id: BlockComponentId): ComponentScorecard {
     status: "ready",
     visualBaselineStory: `Blocks/${getBlockStoryGroup(id)}`,
   };
+}
+
+function getBlockOverflowBehavior(
+  id: BlockComponentId
+): ComponentOverflowBehavior {
+  if (id.includes("AppShell")) {
+    return "viewport-managed";
+  }
+
+  if (id.includes("Table")) {
+    return "horizontal-scroll";
+  }
+
+  return "bounded";
 }
 
 function getBlockOwner(id: BlockComponentId): ComponentScorecardOwner {

@@ -122,16 +122,19 @@ export const webhookEndpointRelations = relations(
   })
 );
 
-export const webhookDeliveryRelations = relations(webhookDelivery, ({ one }) => ({
-  organization: one(organization, {
-    fields: [webhookDelivery.organizationId],
-    references: [organization.id],
-  }),
-  endpoint: one(webhookEndpoint, {
-    fields: [webhookDelivery.endpointId],
-    references: [webhookEndpoint.id],
-  }),
-}));
+export const webhookDeliveryRelations = relations(
+  webhookDelivery,
+  ({ one }) => ({
+    organization: one(organization, {
+      fields: [webhookDelivery.organizationId],
+      references: [organization.id],
+    }),
+    endpoint: one(webhookEndpoint, {
+      fields: [webhookDelivery.endpointId],
+      references: [webhookEndpoint.id],
+    }),
+  })
+);
 
 export const cmsDocumentStatuses = ["draft", "published"] as const;
 
@@ -156,7 +159,10 @@ export const cmsDocument = nextForge.table(
     locale: text("locale").notNull().default("en"),
     title: text("title").notNull(),
     description: text("description"),
-    status: text("status").$type<CmsDocumentStatus>().notNull().default("draft"),
+    status: text("status")
+      .$type<CmsDocumentStatus>()
+      .notNull()
+      .default("draft"),
     frontmatter: jsonb("frontmatter").notNull().default({}),
     bodyMdx: text("bodyMdx").notNull(),
     publishedAt: timestamp("publishedAt", { precision: 3, mode: "date" }),

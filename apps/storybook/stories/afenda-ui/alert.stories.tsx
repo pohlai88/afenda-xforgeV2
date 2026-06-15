@@ -1,22 +1,22 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { AlertCircleIcon, AlertTriangleIcon, InfoIcon } from "lucide-react"
-
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@repo/design-system/components/afenda-ui/alert"
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
+  Badge,
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import { AlertCircleIcon, AlertTriangleIcon, InfoIcon } from "lucide-react";
 
 const meta = {
   title: "Afenda UI/Alert",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: Alert,
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof Alert>
+} satisfies Meta<typeof Alert>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Warning: Story = {
   render: () => (
@@ -24,10 +24,10 @@ export const Warning: Story = {
       <div className="mx-auto grid max-w-4xl gap-3">
         <div className="flex items-center justify-between rounded-lg border border-border-default bg-surface-raised px-4 py-3">
           <div>
-            <p className="text-[12px] font-medium uppercase tracking-wide text-text-secondary">
+            <p className="font-medium text-[12px] text-text-secondary uppercase tracking-wide">
               Incident lane
             </p>
-            <h3 className="text-[15px] font-semibold text-text-primary">
+            <h3 className="font-semibold text-[15px] text-text-primary">
               Payroll close alerts
             </h3>
           </div>
@@ -60,4 +60,4 @@ export const Warning: Story = {
       </div>
     </div>
   ),
-}
+};

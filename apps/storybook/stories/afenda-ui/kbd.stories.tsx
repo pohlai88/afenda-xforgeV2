@@ -1,26 +1,26 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Kbd, KbdSequence } from "@repo/design-system/components/afenda-ui/kbd"
+import { Kbd, KbdSequence } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Kbd",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: Kbd,
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof Kbd>
+} satisfies Meta<typeof Kbd>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
     <div className="min-h-screen bg-surface p-6">
       <div className="mx-auto max-w-3xl rounded-lg border border-border-default bg-surface-raised p-4">
         <div className="mb-3">
-          <p className="text-[12px] font-medium uppercase tracking-wide text-text-primary">
+          <p className="font-medium text-[12px] text-text-primary uppercase tracking-wide">
             Operator shortcuts
           </p>
-          <h3 className="text-[15px] font-semibold text-text-primary">
+          <h3 className="font-semibold text-[15px] text-text-primary">
             Review console keyboard map
           </h3>
         </div>
@@ -32,8 +32,8 @@ export const Default: Story = {
             ["Move to next tenant", ["J"]],
           ].map(([action, keys]) => (
             <div
-              key={action as string}
               className="flex items-center justify-between rounded-md bg-surface px-3 py-2"
+              key={action as string}
             >
               <span className="text-text-primary">{action as string}</span>
               <KbdSequence>
@@ -49,4 +49,4 @@ export const Default: Story = {
       </div>
     </div>
   ),
-}
+};

@@ -2,50 +2,48 @@
 
 import { withEditor } from "@repo/auth/guards";
 import type { AuthActionResult } from "@repo/auth/types";
+import { cmsCollectionSchema } from "@repo/cms";
+import {
+  type CmsDocumentListItem,
+  fetchDocumentListItems,
+} from "@repo/cms/document-list";
 import {
   buildCmsDocumentEvent,
   CMS_EVENT_PUBLISHED,
   CMS_EVENT_UNPUBLISHED,
   type CmsDocumentEventInput,
 } from "@repo/cms/events";
-import { cmsCollectionSchema } from "@repo/cms";
 import {
-  fetchDocumentListItems,
-  type CmsDocumentListItem,
-} from "@repo/cms/document-list";
-import {
+  type CmsLocale,
   cmsLocaleSchema,
   cmsLocales,
   DEFAULT_LOCALE,
   normalizeLocale,
   publicPreviewPath,
-  type CmsLocale,
 } from "@repo/cms/locale";
 import { createPreviewToken } from "@repo/cms/preview-token";
 import { getCmsCacheTags } from "@repo/cms/revalidate";
 import {
-  cmsReaders,
-  collectionLabels,
-  deleteCmsDocument,
-  isCmsCollection,
-  readRawDocument,
-  saveCmsDocument,
-  type CmsCollectionName,
-  type DeleteResult,
-  type SaveResult,
-} from "@repo/cms/writer";
-import {
+  type CmsSearchHit,
   deleteDocumentMirror,
   searchDocumentMirror,
   upsertDocumentMirror,
-  type CmsSearchHit,
 } from "@repo/cms/sync";
-import { emitOrgEvent } from "@/lib/emit-org-event";
+import {
+  type CmsCollectionName,
+  cmsReaders,
+  collectionLabels,
+  type DeleteResult,
+  deleteCmsDocument,
+  isCmsCollection,
+  readRawDocument,
+  type SaveResult,
+  saveCmsDocument,
+} from "@repo/cms/writer";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { env } from "@/env";
-
-export type { CmsDocumentListItem } from "@repo/cms/document-list";
+import { emitOrgEvent } from "@/lib/emit-org-event";
 
 const collectionSchema = cmsCollectionSchema;
 
@@ -57,7 +55,7 @@ const saveDocumentSchema = z.object({
   body: z.string(),
 });
 
-export type CmsDocumentDetail = {
+type CmsDocumentDetail = {
   collection: CmsCollectionName;
   locale: CmsLocale;
   slug: string;
@@ -92,11 +90,7 @@ const enqueueCmsWebhook = async (
   eventType: typeof CMS_EVENT_PUBLISHED | typeof CMS_EVENT_UNPUBLISHED,
   payload: CmsDocumentEventInput
 ) => {
-  await emitOrgEvent(
-    organizationId,
-    eventType,
-    buildCmsDocumentEvent(payload)
-  );
+  await emitOrgEvent(organizationId, eventType, buildCmsDocumentEvent(payload));
 };
 
 const parsePublishedAt = (
@@ -136,7 +130,8 @@ const syncDocumentMirror = async (
       status,
       frontmatter,
       bodyMdx: body,
-      publishedAt: status === "published" ? parsePublishedAt(frontmatter) : null,
+      publishedAt:
+        status === "published" ? parsePublishedAt(frontmatter) : null,
       revisionAction,
     });
   } catch (error) {
@@ -213,10 +208,9 @@ export const saveDocument = async (
     }
 
     const locale = parsed.locale;
-    const priorRaw =
-      parsed.slug
-        ? await readRawDocument(parsed.collection, parsed.slug, locale)
-        : null;
+    const priorRaw = parsed.slug
+      ? await readRawDocument(parsed.collection, parsed.slug, locale)
+      : null;
     const wasPublished = priorRaw?.frontmatter.status === "published";
 
     const result = await saveCmsDocument(parsed.collection, {
@@ -256,7 +250,9 @@ export const saveDocument = async (
           locale,
           slug: result.slug,
           title: String(
-            parsed.frontmatter.title ?? priorRaw?.frontmatter.title ?? result.slug
+            parsed.frontmatter.title ??
+              priorRaw?.frontmatter.title ??
+              result.slug
           ),
           status: "draft",
         });
@@ -295,11 +291,11 @@ export const deleteDocument = async (
 
       if (wasPublished) {
         await enqueueCmsWebhook(orgId, CMS_EVENT_UNPUBLISHED, {
-            collection,
-            locale: normalizedLocale,
-            slug,
-            title: String(raw?.frontmatter.title ?? slug),
-            status: "published",
+          collection,
+          locale: normalizedLocale,
+          slug,
+          title: String(raw?.frontmatter.title ?? slug),
+          status: "published",
         });
       }
     }
@@ -376,7 +372,8 @@ export const getCollectionSummaries = async (): Promise<
 
               return {
                 total: documents.length,
-                drafts: documents.filter((doc) => doc.status === "draft").length,
+                drafts: documents.filter((doc) => doc.status === "draft")
+                  .length,
               };
             })
           );

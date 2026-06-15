@@ -36,9 +36,9 @@ interface StoryContextLike {
   title: string;
 }
 
-/** Afenda/block axe lane — skip legacy ui reference stories and interaction plays. */
+/** Afenda/block axe lane — skip internal governance stories and interaction plays. */
 function shouldSkipPostVisitA11y(storyContext: StoryContextLike) {
-  if (storyContext.title.startsWith("ui/")) {
+  if (storyContext.tags?.includes("internal")) {
     return true;
   }
 
@@ -62,7 +62,7 @@ function shouldSkipPostVisitA11y(storyContext: StoryContextLike) {
 }
 
 function shouldSkipPostVisitOverflow(storyContext: StoryContextLike) {
-  if (storyContext.title.startsWith("ui/")) {
+  if (storyContext.tags?.includes("internal")) {
     return true;
   }
 

@@ -31,12 +31,16 @@ function parseToken(filePath, key) {
 }
 
 function readBool(section, key) {
-  const match = section.match(new RegExp(`^\\s*${key}\\s*=\\s*(true|false)`, "m"));
+  const match = section.match(
+    new RegExp(`^\\s*${key}\\s*=\\s*(true|false)`, "m")
+  );
   return match?.[1] === "true";
 }
 
 function readInt(section, key) {
-  const value = section.match(new RegExp(`^\\s*${key}\\s*=\\s*(\\d+)`, "m"))?.[1];
+  const value = section.match(
+    new RegExp(`^\\s*${key}\\s*=\\s*(\\d+)`, "m")
+  )?.[1];
   return value ? Number(value) : undefined;
 }
 
@@ -46,11 +50,13 @@ async function main() {
   const configText = fs.readFileSync(configPath, "utf8");
   const mfaBlock =
     /\[auth\.mfa\]\s*\n([\s\S]*?)(?=\n\[)/m.exec(configText)?.[1] ?? "";
+  const totpBlock =
+    /\[auth\.mfa\.totp\]\s*\n([\s\S]*?)(?=\n\[)/m.exec(configText)?.[1] ?? "";
 
   const payload = {
     mfa_max_enrolled_factors: readInt(mfaBlock, "max_enrolled_factors") ?? 10,
-    mfa_totp_enroll_enabled: readBool(mfaBlock, "totp_enroll_enabled"),
-    mfa_totp_verify_enabled: readBool(mfaBlock, "totp_verify_enabled"),
+    mfa_totp_enroll_enabled: readBool(totpBlock, "enroll_enabled"),
+    mfa_totp_verify_enabled: readBool(totpBlock, "verify_enabled"),
   };
 
   const response = await fetch(

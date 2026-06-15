@@ -1,6 +1,6 @@
 {
   "projectRef": "icfqhigdbkzpfimxvdnl",
-  "fetchedAt": "2026-06-15T15:57:36.993Z",
+  "fetchedAt": "2026-06-15T20:09:27.186Z",
   "publicSettings": {
     "external": {
       "anonymous_users": false,
@@ -38,13 +38,15 @@
     "passkeys_enabled": true
   },
   "managementConfig": {
-    "uri_allow_list": "https://www.nexuscanon.com,http://localhost:3000,http://localhost:3000/api/auth/callback,http://localhost:3000/auth/confirm,http://localhost:3000/**",
+    "uri_allow_list": "https://www.nexuscanon.com,http://localhost:3000,http://localhost:3000/**,http://localhost:3000/api/auth/callback,http://localhost:3000/auth/confirm,http://localhost:3000/update-password",
     "jwt_exp": 3600,
     "api_max_request_duration": 10,
     "db_max_pool_size": 10,
     "db_max_pool_size_unit": "connections",
     "disable_signup": false,
     "security_manual_linking_enabled": true,
+    "security_update_password_require_reauthentication": true,
+    "security_update_password_require_current_password": true,
     "refresh_token_rotation_enabled": true,
     "security_refresh_token_reuse_interval": 10,
     "site_url": "https://www.nexuscanon.com",
@@ -52,14 +54,18 @@
     "mfa_allow_low_aal": false,
     "rate_limit_anonymous_users": 30,
     "rate_limit_sms_sent": 30,
-    "rate_limit_verify": 30,
+    "rate_limit_verify": 60,
     "rate_limit_token_refresh": 150,
-    "rate_limit_otp": 30,
+    "rate_limit_otp": 60,
     "audit_log_disable_postgres": false,
     "sessions_timebox": 0,
     "sessions_inactivity_timeout": 24,
     "sessions_single_per_user": true,
     "sessions_tags": null,
+    "hook_custom_access_token_enabled": true,
+    "hook_custom_access_token_uri": "pg-functions://postgres/public/hook_custom_access_token",
+    "hook_before_user_created_enabled": false,
+    "hook_before_user_created_uri": null,
     "nimbus_oauth_client_id": null,
     "external_anonymous_users_enabled": false,
     "external_apple_additional_client_ids": null,
@@ -91,7 +97,7 @@
     "external_gitlab_enabled": false,
     "external_gitlab_url": null,
     "external_google_additional_client_ids": null,
-    "external_google_client_id": "1029107925159-ui1cci75sqm9sm6db4o76jbjc0261ojp.apps.googleusercontent.com",
+    "external_google_client_id": "287671797626-c1vfek5u8aj4h7406n41t055gd4l5aq4.apps.googleusercontent.com",
     "external_google_email_optional": false,
     "external_google_enabled": true,
     "external_google_skip_nonce_check": false,
@@ -135,12 +141,22 @@
     "external_zoom_client_id": null,
     "external_zoom_email_optional": false,
     "external_zoom_enabled": false,
+    "hook_after_user_created_enabled": false,
+    "hook_after_user_created_uri": null,
+    "hook_mfa_verification_attempt_enabled": false,
+    "hook_mfa_verification_attempt_uri": null,
+    "hook_password_verification_attempt_enabled": false,
+    "hook_password_verification_attempt_uri": null,
+    "hook_send_sms_enabled": false,
+    "hook_send_sms_uri": null,
+    "hook_send_email_enabled": false,
+    "hook_send_email_uri": null,
     "mailer_allow_unverified_email_sign_ins": false,
     "mailer_autoconfirm": false,
     "mailer_otp_exp": 3600,
     "mailer_otp_length": 6,
     "mailer_secure_email_change_enabled": true,
-    "mfa_totp_enroll_enabled": false,
+    "mfa_totp_enroll_enabled": true,
     "mfa_totp_verify_enabled": true,
     "mfa_phone_enroll_enabled": false,
     "mfa_phone_verify_enabled": false,
@@ -151,13 +167,16 @@
     "passkey_enabled": true,
     "webauthn_rp_display_name": "afenda-xforge",
     "webauthn_rp_id": "nexuscanon.com",
-    "webauthn_rp_origins": "https://nexuscanon.com",
-    "rate_limit_email_sent": 100,
+    "webauthn_rp_origins": "https://www.nexuscanon.com,https://nexuscanon.com",
+    "password_hibp_enabled": true,
+    "password_min_length": 8,
+    "password_required_characters": "abcdefghijklmnopqrstuvwxyz:ABCDEFGHIJKLMNOPQRSTUVWXYZ:0123456789:!@#$%^&*()_+-=[]{};'\\\\:\"|<>?,./`~",
+    "rate_limit_email_sent": 500,
     "rate_limit_web3": 30,
     "saml_allow_encrypted_assertions": false,
     "saml_enabled": false,
     "saml_external_url": null,
-    "security_sb_forwarded_for_enabled": false,
+    "security_sb_forwarded_for_enabled": true,
     "security_captcha_enabled": false,
     "security_captcha_provider": "hcaptcha",
     "sms_autoconfirm": false,
@@ -172,16 +191,14 @@
     "sms_textlocal_api_key": null,
     "sms_textlocal_sender": null,
     "sms_twilio_account_sid": null,
-    "sms_twilio_auth_token": null,
     "sms_twilio_message_service_sid": null,
     "sms_twilio_verify_account_sid": null,
-    "sms_twilio_verify_auth_token": null,
     "sms_twilio_verify_message_service_sid": null,
     "sms_vonage_api_key": null,
     "sms_vonage_from": null,
     "smtp_admin_email": "no-reply@nexuscanon.com",
     "smtp_host": "smtp.zoho.com",
-    "smtp_max_frequency": 60,
+    "smtp_max_frequency": 30,
     "smtp_port": "465",
     "smtp_sender_name": "afenda-Xforge",
     "smtp_user": "no-reply@nexuscanon.com",
@@ -201,30 +218,89 @@
     },
     "signup": {
       "disableSignup": false,
-      "mailerAutoconfirm": false
+      "mailerAutoconfirm": false,
+      "anonymousUsers": false
     },
     "passkeys": {
       "enabled": true,
       "rpId": "nexuscanon.com",
       "rpDisplayName": "afenda-xforge",
-      "rpOrigins": "https://nexuscanon.com"
+      "rpOrigins": "https://www.nexuscanon.com,https://nexuscanon.com"
     },
     "mfa": {
       "maxEnrolledFactors": 10,
       "phoneEnrollEnabled": false,
       "phoneVerifyEnabled": false,
-      "totpEnrollEnabled": false,
+      "totpEnrollEnabled": true,
       "totpVerifyEnabled": true
     },
     "urls": {
       "siteUrl": "https://www.nexuscanon.com",
       "additionalRedirectUrls": null,
-      "uriAllowList": "https://www.nexuscanon.com,http://localhost:3000,http://localhost:3000/api/auth/callback,http://localhost:3000/auth/confirm,http://localhost:3000/**"
+      "uriAllowList": "https://www.nexuscanon.com,http://localhost:3000,http://localhost:3000/**,http://localhost:3000/api/auth/callback,http://localhost:3000/auth/confirm,http://localhost:3000/update-password"
+    },
+    "sessions": {
+      "jwtExpSeconds": 3600,
+      "timeboxHours": 0,
+      "inactivityTimeoutHours": 24,
+      "singlePerUser": true,
+      "refreshTokenRotationEnabled": true,
+      "refreshTokenReuseIntervalSeconds": 10
     },
     "security": {
       "captchaEnabled": false,
       "captchaProvider": "hcaptcha",
-      "passwordMinLength": null
+      "passwordMinLength": 8,
+      "manualLinkingEnabled": true
+    },
+    "otp": {
+      "length": 6,
+      "expSeconds": 3600,
+      "rateLimitSeconds": 60
+    },
+    "hooks": [
+      {
+        "hook": "before_user_created",
+        "enabled": false,
+        "uri": null
+      },
+      {
+        "hook": "custom_access_token",
+        "enabled": true,
+        "uri": "pg-functions://postgres/public/hook_custom_access_token"
+      },
+      {
+        "hook": "send_sms",
+        "enabled": false,
+        "uri": null
+      },
+      {
+        "hook": "send_email",
+        "enabled": false,
+        "uri": null
+      },
+      {
+        "hook": "mfa_verification_attempt",
+        "enabled": false,
+        "uri": null
+      },
+      {
+        "hook": "password_verification_attempt",
+        "enabled": false,
+        "uri": null
+      }
+    ],
+    "audit": {
+      "postgresStorageEnabled": true
+    },
+    "smtp": {
+      "configured": true,
+      "host": "smtp.zoho.com",
+      "port": "465",
+      "adminEmail": "no-reply@nexuscanon.com",
+      "senderName": "afenda-Xforge",
+      "maxFrequencySeconds": 30,
+      "rateLimitEmailSentPerHour": 500
     }
   }
 }

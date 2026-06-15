@@ -8,6 +8,10 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import {
+  hostedSection,
+  readHostedConfigText,
+} from "./supabase-auth-hosted-config.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const configPath = path.join(root, "supabase", "config.toml");
@@ -52,12 +56,16 @@ function section(text, header) {
 }
 
 function readInt(sectionText, key) {
-  const match = sectionText.match(new RegExp(`^\\s*${key}\\s*=\\s*(\\d+)`, "m"));
+  const match = sectionText.match(
+    new RegExp(`^\\s*${key}\\s*=\\s*(\\d+)`, "m")
+  );
   return match ? Number(match[1]) : undefined;
 }
 
 function readBool(sectionText, key) {
-  const match = sectionText.match(new RegExp(`^\\s*${key}\\s*=\\s*(true|false)`, "m"));
+  const match = sectionText.match(
+    new RegExp(`^\\s*${key}\\s*=\\s*(true|false)`, "m")
+  );
   return match ? match[1] === "true" : undefined;
 }
 
@@ -98,20 +106,22 @@ function parseDurationSeconds(value) {
 
 function parseRateLimitsFromConfig() {
   const text = fs.readFileSync(configPath, "utf8");
-  const authSection = section(text, "[auth]");
+  const hostedText = readHostedConfigText();
+  const hostedSectionRoot = hostedSection(hostedText, "[auth_hosted]");
+  const hostedSessionsSection = hostedSection(hostedText, "[auth_hosted.sessions]");
   const emailSection = section(text, "[auth.email]");
   const rateSection = section(text, "[auth.rate_limit]");
 
   const envEmailSent = readEnvValue("AUTH_RATE_LIMIT_EMAIL_SENT");
   const envSmtpMaxFrequency = readEnvValue("SUPABASE_SMTP_MAX_FREQUENCY");
-  const maxFrequency =
-    envSmtpMaxFrequency
-      ? Number(envSmtpMaxFrequency)
-      : parseDurationSeconds(readString(emailSection, "max_frequency")) ?? 60;
+  const maxFrequency = envSmtpMaxFrequency
+    ? Number(envSmtpMaxFrequency)
+    : (parseDurationSeconds(readString(emailSection, "max_frequency")) ?? 60);
 
   return {
-    rate_limit_email_sent:
-      envEmailSent ? Number(envEmailSent) : readInt(rateSection, "email_sent"),
+    rate_limit_email_sent: envEmailSent
+      ? Number(envEmailSent)
+      : readInt(rateSection, "email_sent"),
     rate_limit_sms_sent: readInt(rateSection, "sms_sent"),
     rate_limit_anonymous_users: readInt(rateSection, "anonymous_users"),
     rate_limit_token_refresh: readInt(rateSection, "token_refresh"),
@@ -120,9 +130,10 @@ function parseRateLimitsFromConfig() {
     rate_limit_web3: readInt(rateSection, "web3"),
     smtp_max_frequency: maxFrequency,
     security_sb_forwarded_for_enabled: readBool(
-      authSection,
+      hostedSectionRoot,
       "sb_forwarded_for_enabled"
     ),
+    sessions_single_per_user: readBool(hostedSessionsSection, "single_per_user"),
   };
 }
 
@@ -186,6 +197,7 @@ async function main() {
         smtp_max_frequency: updated.smtp_max_frequency,
         security_sb_forwarded_for_enabled:
           updated.security_sb_forwarded_for_enabled,
+        sessions_single_per_user: updated.sessions_single_per_user,
       },
       null,
       2

@@ -15,7 +15,7 @@ const uploadSchema = z.object({
   size: z.number().max(5 * 1024 * 1024),
 });
 
-export type CmsUploadedImage = {
+type CmsUploadedImage = {
   url: string;
   width: number;
   height: number;

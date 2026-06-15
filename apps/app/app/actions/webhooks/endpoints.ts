@@ -4,7 +4,6 @@ import { withOrg, withOwner } from "@repo/auth/guards";
 import type { AuthActionResult } from "@repo/auth/types";
 import {
   cmsWebhookEventTypeSchema,
-  type CmsWebhookEventType,
   type ListWebhookDeliveriesResult,
   type ReplayWebhookDeliveryResult,
   type WebhookEndpointPublic,
@@ -35,8 +34,7 @@ const webhookUrlSchema = z
     } catch (error) {
       context.addIssue({
         code: "custom",
-        message:
-          error instanceof Error ? error.message : "Invalid webhook URL",
+        message: error instanceof Error ? error.message : "Invalid webhook URL",
       });
     }
   });
@@ -64,8 +62,7 @@ const deliveryFiltersSchema = z.object({
 
 export const getWebhookEndpoints = async (): Promise<
   AuthActionResult<WebhookEndpointPublic[]>
-> =>
-  withOrg(async ({ orgId }) => listWebhookEndpoints(orgId));
+> => withOrg(async ({ orgId }) => listWebhookEndpoints(orgId));
 
 export const getWebhookDeliveries = async (
   filters?: z.infer<typeof deliveryFiltersSchema>
@@ -114,7 +111,9 @@ export const removeEndpoint = async (
 export const rotateEndpointSecret = async (
   endpointId: string
 ): Promise<AuthActionResult<{ secret: string } | null>> =>
-  withOwner(async ({ orgId }) => rotateWebhookEndpointSecret(orgId, endpointId));
+  withOwner(async ({ orgId }) =>
+    rotateWebhookEndpointSecret(orgId, endpointId)
+  );
 
 export const replayDelivery = async (
   deliveryId: string
@@ -150,5 +149,3 @@ export const resetEndpointHealth = async (
   endpointId: string
 ): Promise<AuthActionResult<boolean>> =>
   withOwner(async ({ orgId }) => resetWebhookEndpointHealth(orgId, endpointId));
-
-export type { CmsWebhookEventType };

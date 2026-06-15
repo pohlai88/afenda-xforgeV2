@@ -4,8 +4,8 @@ import { createHash } from "node:crypto";
 import { bundleMDX } from "mdx-bundler";
 import rehypePrettyCode from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
-import { createHeadingSlugger, slugifyHeading } from "./heading-slug";
 import type { ContentBody, TocItem } from "../types";
+import { createHeadingSlugger, slugifyHeading } from "./heading-slug";
 
 const WORDS_PER_MINUTE = 200;
 
@@ -80,7 +80,9 @@ const compileCache = new Map<string, ContentBody>();
 const hashSource = (source: string): string =>
   createHash("sha256").update(source).digest("hex");
 
-export const compileMdxCached = async (source: string): Promise<ContentBody> => {
+export const compileMdxCached = async (
+  source: string
+): Promise<ContentBody> => {
   const cacheKey = hashSource(source);
   const cached = compileCache.get(cacheKey);
 

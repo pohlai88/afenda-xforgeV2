@@ -1,8 +1,8 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import { Label } from "@repo/design-system/components/afenda-ui/label";
 import {
+  Badge,
+  Button,
+  Input,
+  Label,
   Sheet,
   SheetBody,
   SheetClose,
@@ -12,17 +12,23 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@repo/design-system/components/afenda-ui/sheet";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { FilterIcon, XIcon } from "lucide-react";
 import { expect, screen } from "storybook/test";
 
-import { mobileViewportParameters, interactionStoryParameters } from "../../.storybook/essentials";
+import {
+  interactionStoryParameters,
+  mobileViewportParameters,
+} from "../../.storybook/essentials";
+
+const FILTER_QUEUE_NAME = /filter queue/i;
+const SEARCH_LABEL = /search/i;
 
 const meta = {
   title: "Afenda UI/Sheet",
   component: Sheet,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   globals: {
     backgrounds: { value: "surface" },
   },
@@ -205,7 +211,7 @@ export const Interactive: Story = {
     layout: "centered",
     ...interactionStoryParameters,
   },
-  tags: ["interaction"],
+  tags: ["interaction", "afenda-ui", "primitive"],
   render: () => (
     <Sheet>
       <SheetTrigger asChild>
@@ -229,10 +235,12 @@ export const Interactive: Story = {
     </Sheet>
   ),
   play: async ({ canvas, userEvent }) => {
-    await userEvent.click(canvas.getByRole("button", { name: /filter queue/i }));
+    await userEvent.click(
+      canvas.getByRole("button", { name: FILTER_QUEUE_NAME })
+    );
 
     const panel = screen.getByRole("dialog");
     await expect(panel).toBeVisible();
-    await expect(screen.getByLabelText(/search/i)).toBeInTheDocument();
+    await expect(screen.getByLabelText(SEARCH_LABEL)).toBeInTheDocument();
   },
 };

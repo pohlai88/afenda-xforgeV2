@@ -1,12 +1,12 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
+  Button,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
+} from "@repo/design-system/design-system";
 import { Languages } from "lucide-react";
 import { useParams, usePathname, useRouter } from "next/navigation";
 

@@ -1,11 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from "@repo/design-system/components/afenda-ui/input-otp"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 function InputOTPStory() {
   return (
@@ -26,18 +25,19 @@ function InputOTPStory() {
         <InputOTPSlot index={5} />
       </InputOTPGroup>
     </InputOTP>
-  )
+  );
 }
 
 const meta = {
   title: "Afenda UI/InputOTP",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: InputOTPStory,
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof InputOTPStory>
+} satisfies Meta<typeof InputOTPStory>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -45,7 +45,9 @@ export const Default: Story = {
       <section className="mx-auto grid max-w-4xl gap-5 rounded-xl border border-border-default bg-surface-raised p-5 shadow-panel">
         <div className="flex items-center justify-between border-border-subtle border-b pb-3">
           <div>
-            <h3 className="font-semibold text-[15px]">Privileged payroll approval</h3>
+            <h3 className="font-semibold text-[15px]">
+              Privileged payroll approval
+            </h3>
             <p className="text-text-secondary text-xs">
               Confirm the second factor before releasing the off-cycle batch.
             </p>
@@ -74,4 +76,4 @@ export const Default: Story = {
       </section>
     </div>
   ),
-}
+};

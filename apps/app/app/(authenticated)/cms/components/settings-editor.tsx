@@ -1,13 +1,15 @@
 "use client";
 
 import type { SiteSettings } from "@repo/cms/settings";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import { Label } from "@repo/design-system/components/afenda-ui/label";
-import { Textarea } from "@repo/design-system/components/afenda-ui/textarea";
-import { updateSettings } from "@/app/actions/cms/settings";
+import {
+  Button,
+  Input,
+  Label,
+  Textarea,
+} from "@repo/design-system/design-system";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { updateSettings } from "@/app/actions/cms/settings";
 
 type SettingsEditorProperties = {
   initialSettings: SiteSettings;

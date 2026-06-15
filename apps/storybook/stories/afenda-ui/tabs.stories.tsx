@@ -1,17 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
 import {
+  Badge,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@repo/design-system/components/afenda-ui/tabs"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Tabs",
   component: Tabs,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {
@@ -21,11 +20,11 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof Tabs>
+} satisfies Meta<typeof Tabs>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const RecordViews: Story = {
   render: () => (
@@ -35,7 +34,7 @@ export const RecordViews: Story = {
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div className="grid gap-1">
-          <h2 className="text-[14px] font-semibold text-text-primary">
+          <h2 className="font-semibold text-[14px] text-text-primary">
             Employee record
           </h2>
           <p className="text-[12px] text-text-secondary">
@@ -51,16 +50,25 @@ export const RecordViews: Story = {
         <TabsTrigger value="audit">Audit</TabsTrigger>
         <TabsTrigger value="access">Access</TabsTrigger>
       </TabsList>
-      <TabsContent className="pt-4 text-[13px] text-text-secondary" value="overview">
+      <TabsContent
+        className="pt-4 text-[13px] text-text-secondary"
+        value="overview"
+      >
         Payroll profile, compensation band, and current assignment are in good
         standing.
       </TabsContent>
-      <TabsContent className="pt-4 text-[13px] text-text-secondary" value="audit">
+      <TabsContent
+        className="pt-4 text-[13px] text-text-secondary"
+        value="audit"
+      >
         Three approval changes were recorded in the last seven days.
       </TabsContent>
-      <TabsContent className="pt-4 text-[13px] text-text-secondary" value="access">
+      <TabsContent
+        className="pt-4 text-[13px] text-text-secondary"
+        value="access"
+      >
         Workspace permissions are limited to HR operations and payroll review.
       </TabsContent>
     </Tabs>
   ),
-}
+};

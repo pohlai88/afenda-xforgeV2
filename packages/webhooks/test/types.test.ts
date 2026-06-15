@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   isWebhookDeliveryStatus,
-  webhookDeliveryStatusSchema,
   WEBHOOK_DELIVERY_STATUSES,
+  webhookDeliveryStatusSchema,
 } from "../types";
 
 describe("webhook delivery status types", () => {

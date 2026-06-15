@@ -1,15 +1,15 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
+  Badge,
+  Button,
   Empty,
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@repo/design-system/components/afenda-ui/empty";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import { Separator } from "@repo/design-system/components/afenda-ui/separator";
+  Input,
+  Separator,
+} from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import { SearchIcon, XIcon } from "lucide-react";
 import type {

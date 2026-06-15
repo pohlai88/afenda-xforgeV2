@@ -1,7 +1,10 @@
 import type { AuthError } from "@supabase/supabase-js";
 import type { z } from "zod";
+import {
+  humanizeAuthError,
+  humanizeUnknownAuthError,
+} from "./auth-form-messages";
 import type { AuthActionResult } from "./types";
-import { humanizeAuthError, humanizeUnknownAuthError } from "./auth-form-messages";
 
 export type AuthFieldErrors = Partial<Record<string, string>>;
 
@@ -52,22 +55,8 @@ export const parseAuthFormFields = <TInput>(
   return {
     ok: false,
     fieldErrors,
-    formError:
-      Object.keys(fieldErrors).length === 0 ? firstMessage : undefined,
+    formError: Object.keys(fieldErrors).length === 0 ? firstMessage : undefined,
   };
-};
-
-export const parseAuthForm = <TInput>(
-  schema: z.ZodType<TInput>,
-  input: unknown
-): AuthActionResult<TInput> => {
-  const parsed = schema.safeParse(input);
-
-  if (!parsed.success) {
-    return authFailure(parsed.error.issues[0]?.message ?? "Invalid input");
-  }
-
-  return authSuccess(parsed.data);
 };
 
 type AuthFailureSource = AuthError | { message: string } | null;

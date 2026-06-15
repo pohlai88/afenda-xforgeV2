@@ -30,7 +30,9 @@ console.log(
   `Starting shadcn/studio toolbar on http://localhost:${config.toolbarPort} -> ${target.label} (port ${target.appPort})`
 );
 console.log(`shadcn CLI cwd: ${config.shadcnCwd}`);
-console.log("Ensure the target dev server is already running before using the toolbar.");
+console.log(
+  "Ensure the target dev server is already running before using the toolbar."
+);
 
 const child = spawn("npx", args, {
   cwd: root,

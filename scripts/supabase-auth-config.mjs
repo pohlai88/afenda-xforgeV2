@@ -77,15 +77,10 @@ function summarizeForUi(publicSettings, managementConfig) {
       disableSignup: publicSettings?.disable_signup ?? false,
       mailerAutoconfirm: publicSettings?.mailer_autoconfirm ?? false,
       anonymousUsers:
-        external.anonymous_users ??
-        m.external_anonymous_users_enabled ??
-        false,
+        external.anonymous_users ?? m.external_anonymous_users_enabled ?? false,
     },
     passkeys: {
-      enabled:
-        publicSettings?.passkeys_enabled ??
-        m.passkey_enabled ??
-        false,
+      enabled: publicSettings?.passkeys_enabled ?? m.passkey_enabled ?? false,
       rpId: m.webauthn_rp_id ?? null,
       rpDisplayName: m.webauthn_rp_display_name ?? null,
       rpOrigins: m.webauthn_rp_origins ?? null,
@@ -176,7 +171,9 @@ function printHumanReport(payload) {
   console.log("Supabase Auth configuration report");
   console.log(`Project: ${payload.projectRef}`);
   console.log("");
-  console.log("MCP gap: no get_auth_config tool — use this script or Supabase CLI.");
+  console.log(
+    "MCP gap: no get_auth_config tool — use this script or Supabase CLI."
+  );
   console.log("");
   console.log("UI summary:");
   console.log(JSON.stringify(payload.uiSummary, null, 2));
@@ -193,7 +190,9 @@ function printHumanReport(payload) {
     console.log(
       "Management API: skipped — add SUPABASE_ACCESS_TOKEN to .env.secret"
     );
-    console.log("  Create token: https://supabase.com/dashboard/account/tokens");
+    console.log(
+      "  Create token: https://supabase.com/dashboard/account/tokens"
+    );
   }
 }
 
@@ -205,7 +204,7 @@ async function main() {
     process.exit(1);
   }
 
-  if (!supabaseUrl || !anonKey) {
+  if (!(supabaseUrl && anonKey)) {
     console.error(
       "NEXT_PUBLIC_SUPABASE_URL and anon/publishable key missing in .env"
     );

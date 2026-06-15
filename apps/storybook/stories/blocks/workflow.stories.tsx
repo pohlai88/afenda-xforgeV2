@@ -1,4 +1,3 @@
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import type {
   ApprovalQueueRow,
   AuditTrailEvent,
@@ -9,14 +8,15 @@ import type {
   RiskEvidenceItem,
   StatsMetric,
   StatusTimelineItem,
-} from "@repo/design-system/components/blocks";
+} from "@repo/design-system/design-system";
 import {
   ApprovalControlCenter,
   AuditEvidenceWorkspace,
   BatchPostingReview,
+  Button,
   PolicyLockManager,
   TenantOperationsWorkspace,
-} from "@repo/design-system/components/blocks";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   DownloadIcon,

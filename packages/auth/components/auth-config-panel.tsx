@@ -1,25 +1,19 @@
 "use client";
 
-import { cn, recipe } from "@repo/design-system/design-system";
 import { formatJwtLifetime } from "../auth-ui-settings";
 import { useAuthUiConfig } from "../context/auth-ui-config";
 import { passwordRequirementsSummary } from "./password-requirements";
-
-const ConfigRow = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) => (
-  <div className="flex flex-col gap-0.5 border-border-default border-b py-3 last:border-b-0">
-    <dt className={recipe("captionText")}>{label}</dt>
-    <dd className={recipe("bodyMediumText")}>{value}</dd>
-  </div>
-);
+import {
+  AuthConfigList,
+  AuthConfigRow,
+  AuthSection,
+  AuthSectionHeader,
+} from "./auth-section";
+import { useId } from "react";
 
 export const AuthConfigPanel = () => {
   const { settings, passwordPolicy } = useAuthUiConfig();
+  const titleId = useId();
 
   const enabledMethods = [
     settings.email ? "Email" : null,
@@ -36,19 +30,18 @@ export const AuthConfigPanel = () => {
       : "Off";
 
   return (
-    <section className={cn("flex flex-col", recipe("sectionGap"))}>
-      <div className="flex flex-col gap-1">
-        <h2 className="font-medium text-text-primary">Sign-in configuration</h2>
-        <p className={recipe("captionText")}>
-          Synced from your Supabase project. These rules are enforced server-side.
-        </p>
-      </div>
-      <dl className="rounded-[var(--xforge-radius-md)] border border-border-default px-4">
-        <ConfigRow
+    <AuthSection aria-labelledby={titleId}>
+      <AuthSectionHeader
+        description="Synced from your Supabase project. These rules are enforced server-side."
+        title="Sign-in configuration"
+        titleId={titleId}
+      />
+      <AuthConfigList>
+        <AuthConfigRow
           label="Allow new sign-ups"
           value={settings.disableSignup ? "Disabled" : "Enabled"}
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Confirm email"
           value={
             settings.mailerAutoconfirm
@@ -56,24 +49,51 @@ export const AuthConfigPanel = () => {
               : "Required before first sign-in"
           }
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Anonymous sign-ins"
-          value={settings.anonymous ? "Enabled" : "Disabled"}
+          value={
+            settings.anonymous
+              ? "Enabled"
+              : "Disabled — UI ready; enable in Supabase to show"
+          }
         />
-        <ConfigRow
+        <AuthConfigRow
+          label="Phone sign-in"
+          value={
+            settings.phone
+              ? "Enabled"
+              : "Disabled — UI ready; enable phone provider in Supabase"
+          }
+        />
+        <AuthConfigRow
+          label="SAML SSO"
+          value={
+            settings.saml
+              ? "Enabled"
+              : "Disabled — UI ready; configure SAML in Supabase"
+          }
+        />
+        <AuthConfigRow
           label="Manual identity linking"
-          value={settings.security.manualLinkingEnabled ? "Enabled" : "Disabled"}
+          value={
+            settings.security.manualLinkingEnabled ? "Enabled" : "Disabled"
+          }
         />
-        <ConfigRow label="Enabled methods" value={enabledMethods || "None"} />
-        <ConfigRow
+        <AuthConfigRow
+          label="Enabled methods"
+          value={enabledMethods || "None"}
+        />
+        <AuthConfigRow
           label="Password policy"
           value={passwordRequirementsSummary(passwordPolicy)}
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Leaked password protection"
-          value={passwordPolicy.blockLeakedPasswords ? "Enabled (HIBP)" : "Disabled"}
+          value={
+            passwordPolicy.blockLeakedPasswords ? "Enabled (HIBP)" : "Disabled"
+          }
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Require current password to change"
           value={
             settings.security.requireCurrentPasswordOnChange
@@ -81,7 +101,7 @@ export const AuthConfigPanel = () => {
               : "Disabled"
           }
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Secure password change (reauth)"
           value={
             settings.security.requireReauthenticationOnChange
@@ -89,11 +109,11 @@ export const AuthConfigPanel = () => {
               : "Disabled"
           }
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Magic link / OTP"
           value={`${settings.otp.length} digits, expires in ${Math.round(settings.otp.expSeconds / 60)} minutes`}
         />
-        <ConfigRow
+        <AuthConfigRow
           label="OTP / email rate limits"
           value={
             settings.rateLimits.emailSentPerHour !== null
@@ -101,13 +121,13 @@ export const AuthConfigPanel = () => {
               : "Not loaded from project"
           }
         />
-        <ConfigRow
+        <AuthConfigRow
           label="IP forwarding (rate limits)"
           value={
             settings.rateLimits.sbForwardedForEnabled ? "Enabled" : "Disabled"
           }
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Audit logs (Postgres)"
           value={
             settings.audit.postgresStorageEnabled
@@ -115,7 +135,7 @@ export const AuthConfigPanel = () => {
               : "Postgres storage disabled (dashboard logs only)"
           }
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Audit log IP capture"
           value={
             settings.rateLimits.sbForwardedForEnabled
@@ -123,8 +143,18 @@ export const AuthConfigPanel = () => {
               : "Enable IP forwarding for accurate server-side rate limits"
           }
         />
-        <ConfigRow label="Multi-factor auth" value={mfaStatus} />
-        <ConfigRow
+        <AuthConfigRow label="Multi-factor auth" value={mfaStatus} />
+        <AuthConfigRow
+          label="Phone MFA"
+          value={
+            settings.mfa.phoneEnrollEnabled
+              ? "Phone enrollment enabled"
+              : settings.mfa.phoneVerifyEnabled
+                ? "Phone verify only"
+                : "Off — UI ready when phone MFA is enabled"
+          }
+        />
+        <AuthConfigRow
           label="Passkey origins"
           value={
             settings.passkey.rpOrigins.length > 0
@@ -132,41 +162,43 @@ export const AuthConfigPanel = () => {
               : "Not configured"
           }
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Passkey RP ID"
           value={settings.passkey.rpId ?? "Not configured"}
         />
-        <ConfigRow
+        <AuthConfigRow
           label="CAPTCHA"
           value={
             settings.security.captchaEnabled
-              ? settings.security.captchaProvider ?? "Enabled"
-              : "Disabled — built-in Auth rate limits; optional free OSS: Altcha or mCaptcha"
+              ? (settings.security.captchaProvider ?? "Enabled")
+              : "Disabled — UI ready; set NEXT_PUBLIC_CAPTCHA_SITE_KEY when enabled"
           }
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Auth hooks (hosted)"
-          value="custom_access_token only — MFA/password verification hooks not required"
+          value="custom_access_token active — MFA/password verification hooks documented in auth.hosted.toml (Enterprise)"
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Site URL"
           value={settings.urls.siteUrl ?? "Not set"}
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Access token (JWT) lifetime"
           value={formatJwtLifetime(settings.sessions.jwtExpSeconds)}
         />
-        <ConfigRow
+        <AuthConfigRow
           label="Refresh token rotation"
           value={
-            settings.sessions.refreshTokenRotationEnabled ? "Enabled" : "Disabled"
+            settings.sessions.refreshTokenRotationEnabled
+              ? "Enabled"
+              : "Disabled"
           }
         />
-        <ConfigRow
+        <AuthConfigRow
           label="JWT org claims (custom hook)"
           value="organization_id and organization_role in app_metadata when hook is enabled"
         />
-      </dl>
-    </section>
+      </AuthConfigList>
+    </AuthSection>
   );
 };

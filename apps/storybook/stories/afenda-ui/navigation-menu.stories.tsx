@@ -1,18 +1,19 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
 import {
+  Badge,
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/navigation-menu";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { layoutStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
   title: "Afenda UI/NavigationMenu",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: NavigationMenu,
   parameters: {
     ...layoutStoryParameters,

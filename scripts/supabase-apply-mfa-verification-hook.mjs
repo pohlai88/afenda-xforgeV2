@@ -11,7 +11,10 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 
-const scriptPath = path.join(import.meta.dirname, "supabase-apply-auth-hooks.mjs");
+const scriptPath = path.join(
+  import.meta.dirname,
+  "supabase-apply-auth-hooks.mjs"
+);
 
 const result = spawnSync(
   process.execPath,

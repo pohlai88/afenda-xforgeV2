@@ -1,0 +1,26 @@
+# Hosted-only auth settings (Management API apply scripts; not read by Supabase CLI).
+#
+# Enterprise auth hooks (Teams/Enterprise plan):
+#   pnpm supabase:apply-auth-hooks -- --hook=mfa_verification_attempt
+#   pnpm supabase:apply-auth-hooks -- --hook=password_verification_attempt
+# Functions live in migrations 0012 (MFA) and 0014 (password). Do not enable on
+# production unless you explicitly approve — hooks are off by default on remote.
+
+[auth_hosted]
+sb_forwarded_for_enabled = true
+
+[auth_hosted.sessions]
+single_per_user = true
+
+[auth_hosted.password]
+hibp_enabled = true
+require_current_password_on_change = true
+
+# Optional Enterprise hooks — disabled by default; apply via supabase:apply-auth-hooks.
+[auth.hook.mfa_verification_attempt]
+enabled = false
+uri = "pg-functions://postgres/public/hook_mfa_verification_attempt"
+
+[auth.hook.password_verification_attempt]
+enabled = false
+uri = "pg-functions://postgres/public/hook_password_verification_attempt"

@@ -1,4 +1,4 @@
-import { legal, getSiteSettings } from "@repo/cms";
+import { getSiteSettings, legal } from "@repo/cms";
 import { localePathPrefix } from "@repo/cms/locale";
 import { Status } from "@repo/observability/status";
 import Link from "next/link";

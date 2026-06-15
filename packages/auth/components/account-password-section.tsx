@@ -1,22 +1,46 @@
 "use client";
 
-import { cn, recipe } from "@repo/design-system/design-system";
-import { useCallback, useEffect, useState } from "react";
 import type { UserIdentity } from "@supabase/supabase-js";
+import { useCallback, useEffect, useId, useState } from "react";
+import { fromSupabaseError } from "../auth-result";
 import { createClient } from "../client";
 import { hasEmailPasswordIdentity } from "../identities";
+import { AuthErrorAlert } from "./auth-feedback";
+import {
+  AuthLoadingState,
+  AuthSection,
+  AuthSectionHeader,
+} from "./auth-section";
 import { SetAccountPassword } from "./set-account-password";
 import { UpdatePasswordForm } from "./update-password-form";
+
+const sectionTitle = "Password";
+
+const sectionDescription =
+  "Change your account password. You may need your current password or a confirmation code from email depending on project settings.";
 
 /** Set password (OAuth-only) or change password (email identity) on account security. */
 export const AccountPasswordSection = () => {
   const supabase = createClient();
+  const titleId = useId();
   const [identities, setIdentities] = useState<UserIdentity[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const loadIdentities = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase.auth.getUserIdentities();
+    setError(null);
+
+    const { data, error: listError } = await supabase.auth.getUserIdentities();
+
+    if (listError) {
+      const failure = fromSupabaseError(listError);
+      setError(failure?.error ?? "Could not load password settings.");
+      setIdentities([]);
+      setLoading(false);
+      return;
+    }
+
     setIdentities(data?.identities ?? []);
     setLoading(false);
   }, [supabase.auth]);
@@ -25,29 +49,29 @@ export const AccountPasswordSection = () => {
     void loadIdentities();
   }, [loadIdentities]);
 
-  if (loading) {
-    return null;
+  if (!loading && !error && !hasEmailPasswordIdentity(identities)) {
+    return <SetAccountPassword onSuccess={loadIdentities} />;
   }
 
-  if (hasEmailPasswordIdentity(identities)) {
-    return (
-      <section className={cn("flex flex-col", recipe("sectionGap"))}>
-        <div className="flex flex-col gap-1">
-          <h2 className="font-medium text-text-primary">Password</h2>
-          <p className={recipe("captionText")}>
-            Change your account password. You may need your current password or
-            a confirmation code from email depending on project settings.
-          </p>
-        </div>
-        <UpdatePasswordForm
-          onSuccess={() => {
-            void loadIdentities();
-          }}
-          variant="account"
+  return (
+    <AuthSection aria-busy={loading} aria-labelledby={titleId}>
+      <AuthSectionHeader
+        description={sectionDescription}
+        title={sectionTitle}
+        titleId={titleId}
+      />
+      {error ? (
+        <AuthErrorAlert
+          message={error}
+          onRetry={() => void loadIdentities()}
         />
-      </section>
-    );
-  }
-
-  return <SetAccountPassword onSuccess={loadIdentities} />;
+      ) : null}
+      {loading ? (
+        <AuthLoadingState label="Loading password settings…" />
+      ) : null}
+      {!loading && !error ? (
+        <UpdatePasswordForm onSuccess={loadIdentities} variant="account" />
+      ) : null}
+    </AuthSection>
+  );
 };

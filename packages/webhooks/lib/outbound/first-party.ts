@@ -8,11 +8,11 @@ import {
   CMS_WEBHOOK_EVENTS,
   type CmsWebhookEventType,
 } from "../registry/events";
-import { validateWebhookUrl } from "./url-validation";
 import {
   CUSTOMER_ENDPOINT_KIND,
   FIRST_PARTY_ENDPOINT_KIND,
 } from "./endpoint-kinds";
+import { validateWebhookUrl } from "./url-validation";
 
 export { CUSTOMER_ENDPOINT_KIND, FIRST_PARTY_ENDPOINT_KIND };
 

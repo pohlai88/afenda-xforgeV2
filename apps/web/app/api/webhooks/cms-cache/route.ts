@@ -1,10 +1,4 @@
 import {
-  CMS_EVENT_PUBLISHED,
-  CMS_EVENT_UNPUBLISHED,
-  CMS_EVENT_SETTINGS_UPDATED,
-  verifyStandardWebhook,
-} from "@repo/webhooks";
-import {
   cmsDocumentEventSchema,
   cmsSettingsUpdatedEventSchema,
 } from "@repo/cms/events";
@@ -16,6 +10,12 @@ import {
   getCmsRevalidationPaths,
   getSiteSettingsRevalidationPaths,
 } from "@repo/cms/revalidate";
+import {
+  CMS_EVENT_PUBLISHED,
+  CMS_EVENT_SETTINGS_UPDATED,
+  CMS_EVENT_UNPUBLISHED,
+  verifyStandardWebhook,
+} from "@repo/webhooks";
 import { keys as webhooksKeys } from "@repo/webhooks/keys";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";

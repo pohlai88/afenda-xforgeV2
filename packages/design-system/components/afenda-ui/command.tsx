@@ -6,7 +6,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@repo/design-system/components/afenda-ui/dialog";
+} from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import { Command as CommandPrimitive } from "cmdk";
 import { SearchIcon } from "lucide-react";

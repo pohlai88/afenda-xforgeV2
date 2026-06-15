@@ -9,11 +9,7 @@ const targets = [
   "coverage",
   join(".storybook", "a11y-reports"),
   join("node_modules", ".cache", "storybook"),
-  join(
-    "node_modules",
-    ".cache",
-    "vite-plugin-react-docgen-typescript"
-  ),
+  join("node_modules", ".cache", "vite-plugin-react-docgen-typescript"),
   ".cache",
   ".turbo",
 ];

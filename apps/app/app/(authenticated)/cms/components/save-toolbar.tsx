@@ -1,7 +1,7 @@
 "use client";
 
 import type { CmsCollectionName } from "@repo/cms/writer";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Button } from "@repo/design-system/design-system";
 import Link from "next/link";
 
 type SaveToolbarProperties = {
@@ -43,7 +43,9 @@ export const SaveToolbar = ({
     </Button>
     {slug ? (
       <Button asChild type="button" variant="secondary">
-        <Link href={`/cms/${collection}/${locale}/${slug}/preview`}>Preview</Link>
+        <Link href={`/cms/${collection}/${locale}/${slug}/preview`}>
+          Preview
+        </Link>
       </Button>
     ) : null}
     {slug && onSharePreview ? (

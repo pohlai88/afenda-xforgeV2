@@ -11,6 +11,10 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import {
+  hostedSection,
+  readHostedConfigText,
+} from "./supabase-auth-hosted-config.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const configPath = path.join(root, "supabase", "config.toml");
@@ -57,7 +61,10 @@ function parseGeneralAuthFromConfig() {
   const authSection = section(text, "[auth]");
   const emailSection = section(text, "[auth.email]");
   const anonymousSection = section(text, "[auth.external.anonymous_users]");
-  const passwordSection = section(text, "[auth.password]");
+  const passwordSection = hostedSection(
+    readHostedConfigText(),
+    "[auth_hosted.password]"
+  );
 
   const enableSignup = flag(authSection, "enable_signup", true);
   const enableManualLinking = flag(authSection, "enable_manual_linking", false);

@@ -36,9 +36,7 @@ function filterPayload(fullPayload, hookName) {
   return Object.fromEntries(
     Object.entries(fullPayload).filter(
       ([key]) =>
-        key === fields.enabled ||
-        key === fields.uri ||
-        key === fields.secrets
+        key === fields.enabled || key === fields.uri || key === fields.secrets
     )
   );
 }
@@ -147,7 +145,9 @@ async function main() {
       );
     }
 
-    const enterpriseFailure = failures.some((failure) => failure.status === 402);
+    const enterpriseFailure = failures.some(
+      (failure) => failure.status === 402
+    );
     if (enterpriseFailure) {
       console.error("");
       console.error(

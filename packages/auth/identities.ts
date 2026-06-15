@@ -23,7 +23,9 @@ export const getIdentityProviderLabel = (provider: string): string =>
   IDENTITY_PROVIDER_LABELS[provider] ?? provider;
 
 /** Prefer generated `email` when present — do not use identity_data for authorization. */
-export const getIdentityDisplayEmail = (identity: UserIdentity): string | null => {
+export const getIdentityDisplayEmail = (
+  identity: UserIdentity
+): string | null => {
   const withEmail = identity as UserIdentity & { email?: string | null };
 
   if (typeof withEmail.email === "string" && withEmail.email.length > 0) {
@@ -35,7 +37,9 @@ export const getIdentityDisplayEmail = (identity: UserIdentity): string | null =
   return typeof fromData === "string" ? fromData : null;
 };
 
-export const formatIdentityLastUsed = (value: string | undefined): string | null => {
+export const formatIdentityLastUsed = (
+  value: string | undefined
+): string | null => {
   if (!value) {
     return null;
   }

@@ -1,9 +1,7 @@
 "use client";
 
 import {
-  Alert,
-  AlertDescription,
-  Button,
+  cn,
   Field,
   FieldError,
   FieldHint,
@@ -12,31 +10,36 @@ import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-  cn,
   recipe,
 } from "@repo/design-system/design-system";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { isAuthApiError, isAuthWeakPasswordError } from "@supabase/supabase-js";
-import { humanizeAuthError } from "../auth-form-messages";
+import Link from "next/link";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  type AuthFieldErrors,
   fromSupabaseError,
   parseAuthFormFields,
-  type AuthFieldErrors,
 } from "../auth-result";
-import { buildEmailConfirmRedirect } from "../email-redirect";
-import { completeAuthNavigation } from "../client-navigation";
 import { createClient } from "../client";
+import { completeAuthenticatedNavigation } from "../client-navigation";
 import { useAuthUiConfig } from "../context/auth-ui-config";
-import { createEmailOtpVerifySchema, createSignInSchema, forgotPasswordSchema } from "../schemas";
+import { buildEmailConfirmRedirect } from "../redirects";
+import {
+  createEmailOtpVerifySchema,
+  createSignInSchema,
+  forgotPasswordSchema,
+} from "../schemas";
 import {
   getPreferredSignInMethod,
   preferredSignInMethodLabel,
-  setPreferredSignInMethod,
   type SignInMethod,
+  setPreferredSignInMethod,
 } from "../sign-in-preference";
 import { AlternativeAuthMethods } from "./alternative-auth-methods";
+import { AnonymousSignInButton } from "./anonymous-sign-in-button";
+import { AuthCaptcha, useCaptchaOptions } from "./auth-captcha";
+import { AuthErrorAlert, AuthSuccessAlert } from "./auth-feedback";
+import { AuthPendingButton } from "./auth-pending-button";
 import {
   DEVELOPER_SIGN_IN_CREDENTIALS,
   type DeveloperSignInCredentials,
@@ -44,11 +47,15 @@ import {
 } from "./developer-sign-in-panel";
 import { PasswordField } from "./password-field";
 import { passwordRequirementsSummary } from "./password-requirements";
+import { PhoneAuthPanel } from "./phone-auth-panel";
+import { SsoSignInPanel } from "./sso-sign-in-panel";
+import { authLinkClass } from "./auth-section";
 
 const emailFieldId = "sign-in-email";
 const passwordFieldId = "sign-in-password";
 const otpFieldId = "sign-in-otp";
 const formErrorId = "sign-in-error";
+const signInSchema = createSignInSchema();
 
 type SignInMode = "password" | "magic-link";
 
@@ -65,17 +72,18 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [mode, setMode] = useState<SignInMode>("magic-link");
-  const [preferredMethod, setPreferredMethod] = useState<SignInMethod>("magic-link");
+  const [preferredMethod, setPreferredMethod] =
+    useState<SignInMethod>("magic-link");
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(initialError);
   const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [weakPasswordBlocked, setWeakPasswordBlocked] = useState(false);
-  const searchParams = useSearchParams();
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaOptions = useCaptchaOptions(captchaToken);
   const supabase = createClient();
   const { settings, passwordPolicy } = useAuthUiConfig();
-  const signInSchema = useMemo(() => createSignInSchema(), []);
   const emailOtpSchema = useMemo(
     () => createEmailOtpVerifySchema(settings.otp.length),
     [settings.otp.length]
@@ -86,29 +94,14 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
     const preferred = getPreferredSignInMethod();
     setPreferredMethod(preferred);
 
-    if (preferred === "password") {
+    if (process.env.NODE_ENV === "development") {
+      setEmail(DEVELOPER_SIGN_IN_CREDENTIALS.email);
+      setPassword(DEVELOPER_SIGN_IN_CREDENTIALS.password);
       setMode("password");
-    } else {
-      setMode("magic-link");
-    }
-  }, []);
-
-  useEffect(() => {
-    const queryError = searchParams.get("error");
-
-    if (queryError) {
-      setFormError(humanizeAuthError(decodeURIComponent(queryError)));
-    }
-  }, [searchParams]);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV !== "development") {
       return;
     }
 
-    setEmail(DEVELOPER_SIGN_IN_CREDENTIALS.email);
-    setPassword(DEVELOPER_SIGN_IN_CREDENTIALS.password);
-    setMode("password");
+    setMode(preferred === "password" ? "password" : "magic-link");
   }, []);
 
   const clearErrors = () => {
@@ -140,9 +133,16 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
       return;
     }
 
-    const { error: signInError } = await supabase.auth.signInWithPassword(
-      validated.data
-    );
+    if (settings.security.captchaEnabled && !captchaToken) {
+      setFormError("Complete the CAPTCHA before signing in.");
+      setLoading(false);
+      return;
+    }
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      ...validated.data,
+      options: captchaOptions,
+    });
 
     const failure = fromSupabaseError(signInError);
 
@@ -165,7 +165,7 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
     }
 
     setPreferredSignInMethod("password");
-    completeAuthNavigation("/");
+    await completeAuthenticatedNavigation("/");
   };
 
   const handleMagicLinkSignIn = async (event: React.FormEvent) => {
@@ -185,6 +185,13 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
       return;
     }
 
+    if (settings.security.captchaEnabled && !captchaToken) {
+      setFormError("Complete the CAPTCHA before continuing.");
+      setLoading(false);
+      focusField("email");
+      return;
+    }
+
     const emailRedirectTo = buildEmailConfirmRedirect("/");
 
     const { error: otpError } = await supabase.auth.signInWithOtp({
@@ -192,6 +199,7 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
       options: {
         emailRedirectTo,
         shouldCreateUser: false,
+        ...captchaOptions,
       },
     });
 
@@ -249,10 +257,12 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
     }
 
     setPreferredSignInMethod("magic-link");
-    completeAuthNavigation("/");
+    await completeAuthenticatedNavigation("/");
   };
 
-  const applyDeveloperCredentials = (credentials: DeveloperSignInCredentials) => {
+  const applyDeveloperCredentials = (
+    credentials: DeveloperSignInCredentials
+  ) => {
     setEmail(credentials.email);
     setPassword(credentials.password);
     clearErrors();
@@ -271,41 +281,53 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
   const passwordInvalid = Boolean(fieldErrors.password);
   const otpInvalid = Boolean(fieldErrors.token);
 
+  const submitLabel =
+    mode === "password"
+      ? "Sign in"
+      : magicLinkSent
+        ? "Verify code"
+        : "Send sign-in email";
+  const submitPendingLabel =
+    mode === "password"
+      ? "Signing in…"
+      : magicLinkSent
+        ? "Verifying code…"
+        : "Sending email…";
+
   return (
-    <form
-      className={cn("flex flex-col", recipe("sectionGap"))}
-      noValidate
-      onSubmit={
-        mode === "password"
-          ? handlePasswordSignIn
-          : magicLinkSent
-            ? handleVerifyEmailOtp
-            : handleMagicLinkSignIn
-      }
-    >
+    <div className={cn("flex flex-col", recipe("sectionGap"))}>
       <AlternativeAuthMethods mode="sign-in" onError={setFormError} />
       {preferredMethod !== "magic-link" ? (
-        <p className={cn("text-center text-text-secondary", recipe("captionText"))}>
-          You usually sign in with {preferredSignInMethodLabel(preferredMethod)}.
+        <p
+          className={cn(
+            "text-center text-text-secondary",
+            recipe("captionText")
+          )}
+        >
+          You usually sign in with {preferredSignInMethodLabel(preferredMethod)}
+          .
         </p>
       ) : null}
-      {magicLinkSent ? (
-        <Alert role="status" tone="positive">
-          <AlertDescription>
-            Check your email for a sign-in link or {settings.otp.length}-digit
-            code. Both expire in about {Math.round(settings.otp.expSeconds / 60)}{" "}
-            minutes.
-          </AlertDescription>
-        </Alert>
-      ) : null}
-      {formError &&
-      !fieldErrors.email &&
-      !fieldErrors.password &&
-      !fieldErrors.token ? (
-        <Alert id={formErrorId} tone="critical">
-          <AlertDescription>{formError}</AlertDescription>
-        </Alert>
-      ) : null}
+      <form
+        className={cn("flex flex-col", recipe("sectionGap"))}
+        noValidate
+        onSubmit={
+          mode === "password"
+            ? handlePasswordSignIn
+            : magicLinkSent
+              ? handleVerifyEmailOtp
+              : handleMagicLinkSignIn
+        }
+      >
+        {magicLinkSent ? (
+          <AuthSuccessAlert message={`Check your email for a sign-in link or ${settings.otp.length}-digit code. Both expire in about ${Math.round(settings.otp.expSeconds / 60)} minutes.`} />
+        ) : null}
+        {formError &&
+        !fieldErrors.email &&
+        !fieldErrors.password &&
+        !fieldErrors.token ? (
+          <AuthErrorAlert id={formErrorId} message={formError} />
+        ) : null}
       <Field>
         <FieldLabel htmlFor={emailFieldId}>Email</FieldLabel>
         <Input
@@ -327,7 +349,9 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
           value={email}
         />
         {fieldErrors.email ? (
-          <FieldError id={`${emailFieldId}-error`}>{fieldErrors.email}</FieldError>
+          <FieldError id={`${emailFieldId}-error`}>
+            {fieldErrors.email}
+          </FieldError>
         ) : null}
       </Field>
       {mode === "password" ? (
@@ -335,10 +359,7 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
           <div className="flex items-center justify-between gap-2">
             <FieldLabel htmlFor={passwordFieldId}>Password</FieldLabel>
             <Link
-              className={cn(
-                "underline underline-offset-4",
-                recipe("captionText")
-              )}
+              className={cn(authLinkClass, recipe("captionText"))}
               href="/forgot-password"
             >
               Forgot password?
@@ -373,10 +394,7 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
             <FieldHint id={`${passwordFieldId}-weak-hint`}>
               Your password no longer meets current security requirements (
               {passwordRequirementsSummary(passwordPolicy)}).{" "}
-              <Link
-                className="underline underline-offset-4"
-                href="/forgot-password"
-              >
+              <Link className={authLinkClass} href="/forgot-password">
                 Reset your password
               </Link>{" "}
               to sign in again.
@@ -404,7 +422,7 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
           >
             <InputOTPGroup>
               {Array.from({ length: settings.otp.length }, (_, index) => (
-                <InputOTPSlot index={index} key={index} />
+                <InputOTPSlot index={index} key={`sign-in-otp-slot-${index}`} />
               ))}
             </InputOTPGroup>
           </InputOTP>
@@ -412,37 +430,28 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
             Enter the code from your email if you prefer not to use the link.
           </FieldHint>
           {fieldErrors.token ? (
-            <FieldError id={`${otpFieldId}-error`}>{fieldErrors.token}</FieldError>
+            <FieldError id={`${otpFieldId}-error`}>
+              {fieldErrors.token}
+            </FieldError>
           ) : null}
         </Field>
       ) : null}
-      <Button
+      {settings.security.captchaEnabled ? (
+        <AuthCaptcha onTokenChange={setCaptchaToken} />
+      ) : null}
+      <AuthPendingButton
         className="w-full"
-        disabled={
-          loading ||
-          (mode === "magic-link" &&
-            magicLinkSent &&
-            otpCode.length < settings.otp.length)
-        }
+        pending={loading}
+        pendingLabel={submitPendingLabel}
         type="submit"
         variant="primary"
       >
-        {loading
-          ? mode === "password"
-            ? "Signing in…"
-            : magicLinkSent
-              ? "Verifying code…"
-              : "Sending email…"
-          : mode === "password"
-            ? "Sign in"
-            : magicLinkSent
-              ? "Verify code"
-              : "Send sign-in email"}
-      </Button>
+        {submitLabel}
+      </AuthPendingButton>
       {settings.email ? (
         <p className={cn("text-center", recipe("captionText"))}>
           <button
-            className="underline underline-offset-4"
+            className={authLinkClass}
             onClick={toggleMode}
             type="button"
           >
@@ -452,13 +461,17 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
           </button>
         </p>
       ) : null}
+      </form>
       <p className={cn("text-center", recipe("captionText"))}>
         No account?{" "}
-        <Link className="underline underline-offset-4" href="/sign-up">
+        <Link className={authLinkClass} href="/sign-up">
           Sign up
         </Link>
       </p>
       <DeveloperSignInPanel onApply={applyDeveloperCredentials} />
-    </form>
+      <SsoSignInPanel onError={setFormError} />
+      <PhoneAuthPanel mode="sign-in" onError={setFormError} />
+      <AnonymousSignInButton onError={setFormError} />
+    </div>
   );
 };

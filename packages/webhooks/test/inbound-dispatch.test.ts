@@ -4,9 +4,7 @@ import {
   handleInboundWebhook,
   registerInboundHandler,
 } from "../inbound";
-import {
-  STRIPE_EVENT_CHECKOUT_COMPLETED,
-} from "../lib/registry/events";
+import { STRIPE_EVENT_CHECKOUT_COMPLETED } from "../lib/registry/events";
 
 describe("handleInboundWebhook", () => {
   it("returns 503 when stripe secret is missing", async () => {

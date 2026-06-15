@@ -19,7 +19,9 @@ console.log(`  NEXT_PUBLIC_SUPABASE_URL: ${status.url ? "yes" : "no"}`);
 console.log(
   `  anon/publishable key: ${status.anonOrPublishableKey ? "yes" : "no"}`
 );
-console.log(`  SUPABASE_SERVICE_ROLE_KEY: ${status.serviceRoleKey ? "yes" : "no"}`);
+console.log(
+  `  SUPABASE_SERVICE_ROLE_KEY: ${status.serviceRoleKey ? "yes" : "no"}`
+);
 console.log("");
 console.log(
   status.readyForIntegrationTests

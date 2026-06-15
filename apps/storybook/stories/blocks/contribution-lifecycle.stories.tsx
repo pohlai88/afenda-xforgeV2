@@ -1,17 +1,17 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
 import {
+  contributionLayerEntries,
+  contributionLifecycleEntries,
+} from "@repo/design-system/contracts/contribution-lifecycle";
+import {
+  Badge,
+  blockRecipe,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
-import { blockRecipe } from "@repo/design-system/components/blocks";
-import {
-  contributionLayerEntries,
-  contributionLifecycleEntries,
-} from "@repo/design-system/contracts/contribution-lifecycle";
+} from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Meta, StoryObj } from "@storybook/react";
 

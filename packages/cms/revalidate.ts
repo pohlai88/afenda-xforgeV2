@@ -1,5 +1,5 @@
-import { cmsLocales, DEFAULT_LOCALE, localePathPrefix, normalizeLocale } from "./locale";
 import type { CollectionName } from "./collections";
+import { cmsLocales, localePathPrefix, normalizeLocale } from "./locale";
 
 export {
   CMS_CACHE_TAG_ALL,
@@ -21,9 +21,7 @@ export const getCmsRevalidationPaths = ({
   slug,
 }: CmsRevalidateInput): string[] => {
   const paths = new Set<string>(["/sitemap.xml"]);
-  const targetLocales = locale
-    ? [normalizeLocale(locale)]
-    : [...cmsLocales];
+  const targetLocales = locale ? [normalizeLocale(locale)] : [...cmsLocales];
 
   for (const targetLocale of targetLocales) {
     const prefix = localePathPrefix(targetLocale);

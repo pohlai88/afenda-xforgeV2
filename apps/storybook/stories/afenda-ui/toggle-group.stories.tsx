@@ -1,28 +1,26 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@repo/design-system/components/afenda-ui/toggle-group"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/ToggleGroup",
   component: ToggleGroup,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {
       description: {
-        component:
-          "Toggle group previewed as a compact view-density selector.",
+        component: "Toggle group previewed as a compact view-density selector.",
       },
     },
   },
-} satisfies Meta<typeof ToggleGroup>
+} satisfies Meta<typeof ToggleGroup>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const ViewDensity: Story = {
   args: {
@@ -33,7 +31,7 @@ export const ViewDensity: Story = {
   render: (args) => (
     <div className="grid w-[460px] gap-3 rounded-[var(--card-radius)] border border-border-default bg-surface-raised p-4 shadow-panel">
       <div className="grid gap-1">
-        <span className="text-[13px] font-medium text-text-primary">
+        <span className="font-medium text-[13px] text-text-primary">
           Approval window
         </span>
         <span className="text-[12px] text-text-secondary">
@@ -47,4 +45,4 @@ export const ViewDensity: Story = {
       </ToggleGroup>
     </div>
   ),
-}
+};

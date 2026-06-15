@@ -1,20 +1,20 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@repo/design-system/components/afenda-ui/avatar"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Avatar",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: Avatar,
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof Avatar>
+} satisfies Meta<typeof Avatar>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -22,16 +22,20 @@ export const Default: Story = {
       <div className="mx-auto max-w-3xl rounded-lg border border-border-default bg-surface-raised p-4">
         <div className="mb-3 flex items-center justify-between">
           <div>
-            <p className="text-[12px] font-medium uppercase tracking-wide text-text-secondary">
+            <p className="font-medium text-[12px] text-text-secondary uppercase tracking-wide">
               Operator presence
             </p>
-            <h3 className="text-[15px] font-semibold text-text-primary">
+            <h3 className="font-semibold text-[15px] text-text-primary">
               Payroll close reviewers
             </h3>
           </div>
           <div className="flex -space-x-2">
             {["JL", "MC", "OA"].map((initials) => (
-              <Avatar key={initials} size="sm" className="border-2 border-surface-raised">
+              <Avatar
+                className="border-2 border-surface-raised"
+                key={initials}
+                size="sm"
+              >
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
             ))}
@@ -44,15 +48,15 @@ export const Default: Story = {
             ["Omar Ali", "Security admin · FBH-2219", "OA", "Escalated"],
           ].map(([name, role, initials, state]) => (
             <div
-              key={name}
               className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-md bg-surface-muted px-3 py-2"
+              key={name}
             >
               <Avatar size="md">
-                <AvatarImage src="https://github.com/shadcn.png" alt={name} />
+                <AvatarImage alt={name} src="https://github.com/shadcn.png" />
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
               <div>
-                <p className="text-[13px] font-medium text-text-primary">
+                <p className="font-medium text-[13px] text-text-primary">
                   {name}
                 </p>
                 <p className="text-[12px] text-text-secondary">{role}</p>
@@ -61,7 +65,7 @@ export const Default: Story = {
             </div>
           ))}
         </div>
-    </div>
+      </div>
     </div>
   ),
-}
+};

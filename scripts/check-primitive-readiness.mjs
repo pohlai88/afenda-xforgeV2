@@ -70,7 +70,7 @@ const componentSets = [
 ];
 
 for (const { dir, label, storyDir } of componentSets) {
-  if (!existsSync(dir) || !existsSync(storyDir)) {
+  if (!(existsSync(dir) && existsSync(storyDir))) {
     continue;
   }
 
@@ -135,8 +135,10 @@ for (const file of walk([uiDir, afendaUiDir])) {
       .join(" ");
 
     if (
-      !focusAffordancePattern.test(context) &&
-      !hasFileLevelFocusAffordance(content)
+      !(
+        focusAffordancePattern.test(context) ||
+        hasFileLevelFocusAffordance(content)
+      )
     ) {
       warnings.push(
         `Outline removed without nearby focus affordance: ${path}:${index + 1}`

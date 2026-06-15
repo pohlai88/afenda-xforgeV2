@@ -17,8 +17,7 @@ export type StripeWebhookVerifier = (
 
 const STRIPE_TYPE_MAP: Record<string, string> = {
   "checkout.session.completed": STRIPE_EVENT_CHECKOUT_COMPLETED,
-  "subscription_schedule.canceled":
-    STRIPE_EVENT_SUBSCRIPTION_SCHEDULE_CANCELED,
+  "subscription_schedule.canceled": STRIPE_EVENT_SUBSCRIPTION_SCHEDULE_CANCELED,
 };
 
 export const normalizeStripeEventType = (stripeType: string): string =>

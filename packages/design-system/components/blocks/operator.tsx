@@ -1,6 +1,4 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Separator } from "@repo/design-system/components/afenda-ui/separator";
+import { Badge, Button, Separator } from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import { CheckCircle2Icon, CircleIcon, XIcon } from "lucide-react";
 import type { ComponentProps, MouseEventHandler, ReactNode } from "react";

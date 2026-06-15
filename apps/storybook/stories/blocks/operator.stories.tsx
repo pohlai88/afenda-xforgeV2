@@ -1,29 +1,25 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Checkbox } from "@repo/design-system/components/afenda-ui/checkbox";
 import {
+  AuditTrailPanel,
+  Badge,
+  BulkActionBar,
+  Button,
+  Checkbox,
+  DataTableShell,
+  EntitySummaryPanel,
   Pagination,
   PaginationContent,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@repo/design-system/components/afenda-ui/pagination";
-import {
+  StatusTimeline,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
-import {
-  AuditTrailPanel,
-  BulkActionBar,
-  DataTableShell,
-  EntitySummaryPanel,
-  StatusTimeline,
-} from "@repo/design-system/components/blocks";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   ArchiveIcon,

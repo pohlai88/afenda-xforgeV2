@@ -1,9 +1,9 @@
-import type { BlockStateInput } from "@repo/design-system/components/blocks";
+import type { BlockStateInput } from "@repo/design-system/design-system";
 import {
   orchestrateBlockState,
   RuntimeStateBlock,
   resolveStateSignal,
-} from "@repo/design-system/components/blocks";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { layoutStoryParameters } from "../../.storybook/essentials";

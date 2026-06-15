@@ -1,36 +1,53 @@
 "use client";
 
-import {
-  Alert,
-  AlertDescription,
-  Button,
-  cn,
-  recipe,
-} from "@repo/design-system/design-system";
+import { recipe } from "@repo/design-system/design-system";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { fromSupabaseError } from "../auth-result";
+import { formatJwtLifetime, formatSessionHours } from "../auth-ui-settings";
 import { createClient } from "../client";
 import { useAuthUiConfig } from "../context/auth-ui-config";
+import { AuthErrorAlert, AuthSuccessAlert } from "./auth-feedback";
+import { AuthPendingButton } from "./auth-pending-button";
 import {
-  formatJwtLifetime,
-  formatSessionHours,
-} from "../auth-ui-settings";
+  AuthConfigList,
+  AuthConfigRow,
+  AuthSection,
+  AuthSectionHeader,
+} from "./auth-section";
+
+const SIGN_OUT_REDIRECT_MS = 1200;
 
 export const SessionControls = () => {
   const { settings } = useAuthUiConfig();
   const router = useRouter();
   const supabase = createClient();
+  const titleId = useId();
+  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [loading, setLoading] = useState<"local" | "global" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
   const { sessions } = settings;
 
+  useEffect(
+    () => () => {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+      }
+    },
+    []
+  );
+
   const handleSignOut = async (scope: "local" | "global") => {
     setLoading(scope);
     setError(null);
     setMessage(null);
+
+    if (redirectTimeoutRef.current) {
+      clearTimeout(redirectTimeoutRef.current);
+      redirectTimeoutRef.current = null;
+    }
 
     const { error: signOutError } = await supabase.auth.signOut({ scope });
 
@@ -48,86 +65,77 @@ export const SessionControls = () => {
         : "Signed out on this device."
     );
     setLoading(null);
-    router.push("/sign-in");
-    router.refresh();
+
+    redirectTimeoutRef.current = setTimeout(() => {
+      router.push("/sign-in");
+      router.refresh();
+    }, SIGN_OUT_REDIRECT_MS);
   };
 
   return (
-    <section className={cn("flex flex-col", recipe("sectionGap"))}>
-      <div className="flex flex-col gap-1">
-        <h2 className="font-medium text-text-primary">Session policy</h2>
-        <p className={recipe("captionText")}>
-          Enforced by Supabase Auth on sign-in and token refresh. This app uses
-          PKCE with cookie-backed sessions via{" "}
-          <code className="text-xs">@supabase/ssr</code>.
-        </p>
-      </div>
-      <dl className="rounded-[var(--xforge-radius-md)] border border-border-default px-4">
-        <div className="flex flex-col gap-0.5 border-border-default border-b py-3">
-          <dt className={recipe("captionText")}>Access token (JWT) lifetime</dt>
-          <dd className={recipe("bodyMediumText")}>
-            {formatJwtLifetime(sessions.jwtExpSeconds)}
-          </dd>
-        </div>
-        <div className="flex flex-col gap-0.5 border-border-default border-b py-3">
-          <dt className={recipe("captionText")}>Session time-box</dt>
-          <dd className={recipe("bodyMediumText")}>
-            {formatSessionHours(sessions.timeboxHours)}
-          </dd>
-        </div>
-        <div className="flex flex-col gap-0.5 border-border-default border-b py-3">
-          <dt className={recipe("captionText")}>Inactivity timeout</dt>
-          <dd className={recipe("bodyMediumText")}>
-            {formatSessionHours(sessions.inactivityTimeoutHours)}
-          </dd>
-        </div>
-        <div className="flex flex-col gap-0.5 border-border-default border-b py-3">
-          <dt className={recipe("captionText")}>Single session per user</dt>
-          <dd className={recipe("bodyMediumText")}>
-            {sessions.singlePerUser ? "Enabled" : "Disabled"}
-          </dd>
-        </div>
-        <div className="flex flex-col gap-0.5 border-border-default border-b py-3">
-          <dt className={recipe("captionText")}>Refresh token rotation</dt>
-          <dd className={recipe("bodyMediumText")}>
-            {sessions.refreshTokenRotationEnabled
+    <AuthSection aria-labelledby={titleId}>
+      <AuthSectionHeader
+        description={
+          <>
+            Enforced by Supabase Auth on sign-in and token refresh. This app
+            uses PKCE with cookie-backed sessions via{" "}
+            <code className="text-xs">@supabase/ssr</code>.
+          </>
+        }
+        title="Session policy"
+        titleId={titleId}
+      />
+      <AuthConfigList>
+        <AuthConfigRow
+          label="Access token (JWT) lifetime"
+          value={formatJwtLifetime(sessions.jwtExpSeconds)}
+        />
+        <AuthConfigRow
+          label="Session time-box"
+          value={formatSessionHours(sessions.timeboxHours)}
+        />
+        <AuthConfigRow
+          label="Inactivity timeout"
+          value={formatSessionHours(sessions.inactivityTimeoutHours)}
+        />
+        <AuthConfigRow
+          label="Single session per user"
+          value={sessions.singlePerUser ? "Enabled" : "Disabled"}
+        />
+        <AuthConfigRow
+          label="Refresh token rotation"
+          value={
+            sessions.refreshTokenRotationEnabled
               ? `Enabled (${sessions.refreshTokenReuseIntervalSeconds}s reuse window for SSR)`
-              : "Disabled"}
-          </dd>
-        </div>
-        <div className="flex flex-col gap-0.5 py-3">
-          <dt className={recipe("captionText")}>Flow</dt>
-          <dd className={recipe("bodyMediumText")}>PKCE (recommended for Next.js)</dd>
-        </div>
-      </dl>
-      {error ? (
-        <Alert tone="critical">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      ) : null}
-      {message ? (
-        <Alert tone="positive">
-          <AlertDescription>{message}</AlertDescription>
-        </Alert>
-      ) : null}
+              : "Disabled"
+          }
+        />
+        <AuthConfigRow label="Flow" value="PKCE (recommended for Next.js)" />
+      </AuthConfigList>
+      {error ? <AuthErrorAlert message={error} /> : null}
+      {message ? <AuthSuccessAlert message={message} /> : null}
       <div className="flex flex-wrap gap-2">
-        <Button
-          disabled={loading !== null}
-          onClick={() => handleSignOut("local")}
+        <AuthPendingButton
+          disabled={loading !== null && loading !== "local"}
+          onClick={() => void handleSignOut("local")}
+          pending={loading === "local"}
+          pendingLabel="Signing out…"
           type="button"
           variant="secondary"
         >
-          {loading === "local" ? "Signing out…" : "Sign out this device"}
-        </Button>
-        <Button
-          disabled={loading !== null}
-          onClick={() => handleSignOut("global")}
+          Sign out this device
+        </AuthPendingButton>
+        <AuthPendingButton
+          disabled={loading !== null && loading !== "global"}
+          onClick={() => void handleSignOut("global")}
+          pending={loading === "global"}
+          pendingLabel="Signing out…"
           type="button"
           variant="quiet"
         >
-          {loading === "global" ? "Signing out…" : "Sign out all devices"}
-        </Button>
+          Sign out all devices
+        </AuthPendingButton>
       </div>
-    </section>
+    </AuthSection>
   );
 };

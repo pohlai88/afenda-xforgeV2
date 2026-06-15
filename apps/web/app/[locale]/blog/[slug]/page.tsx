@@ -1,10 +1,10 @@
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { blog } from "@repo/cms";
-import { getPreviewReaderOptions } from "@repo/cms/reader-options";
-import { buildLocaleSlugParams } from "@repo/cms/static-params";
 import { Body } from "@repo/cms/components/body";
 import { Image } from "@repo/cms/components/image";
 import { TableOfContents } from "@repo/cms/components/toc";
+import { getPreviewReaderOptions } from "@repo/cms/reader-options";
+import { buildLocaleSlugParams } from "@repo/cms/static-params";
 import { JsonLd } from "@repo/seo/json-ld";
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";

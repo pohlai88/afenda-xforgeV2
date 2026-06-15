@@ -1,6 +1,6 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
+  Badge,
+  Button,
   Drawer,
   DrawerContent,
   DrawerDescription,
@@ -8,13 +8,14 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@repo/design-system/components/afenda-ui/drawer";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { mobileViewportParameters } from "../../.storybook/essentials";
 
 const meta = {
   title: "Afenda UI/Drawer",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: Drawer,
   parameters: {
     ...mobileViewportParameters,

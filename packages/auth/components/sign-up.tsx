@@ -1,37 +1,40 @@
 "use client";
 
 import {
-  Alert,
-  AlertDescription,
-  Button,
+  cn,
   Field,
   FieldError,
   FieldLabel,
   Input,
-  cn,
   recipe,
 } from "@repo/design-system/design-system";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import {
+  type AuthFieldErrors,
   fromSupabaseError,
   parseAuthFormFields,
-  type AuthFieldErrors,
 } from "../auth-result";
 import { PENDING_CONFIRMATION_EMAIL_KEY } from "../auth-ui-settings";
-import { buildEmailConfirmRedirect } from "../email-redirect";
-import { completeAuthNavigation } from "../client-navigation";
 import { createClient } from "../client";
+import { completeAuthNavigation } from "../client-navigation";
 import { useAuthUiConfig } from "../context/auth-ui-config";
+import { buildEmailConfirmRedirect } from "../redirects";
 import { createSignUpSchema } from "../schemas";
 import {
   AlternativeAuthMethods,
   SignUpDisabledNotice,
 } from "./alternative-auth-methods";
+import { AnonymousSignInButton } from "./anonymous-sign-in-button";
+import { AuthCaptcha, useCaptchaOptions } from "./auth-captcha";
+import { AuthErrorAlert } from "./auth-feedback";
 import { AuthLegalLine } from "./auth-legal-line";
+import { AuthPendingButton } from "./auth-pending-button";
+import { authLinkClass } from "./auth-section";
 import { PasswordField } from "./password-field";
-import { PasswordSecurityTips } from "./password-security-tips";
+import { PhoneAuthPanel } from "./phone-auth-panel";
+import { SsoSignInPanel } from "./sso-sign-in-panel";
 
 const nameFieldId = "sign-up-name";
 const emailFieldId = "sign-up-email";
@@ -48,12 +51,15 @@ const focusField = (field: keyof AuthFieldErrors) => {
 };
 
 export const SignUp = () => {
+  const formErrorId = useId();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaOptions = useCaptchaOptions(captchaToken);
   const router = useRouter();
   const supabase = createClient();
   const { settings, passwordPolicy } = useAuthUiConfig();
@@ -74,7 +80,11 @@ export const SignUp = () => {
     setFormError(null);
     setFieldErrors({});
 
-    const validated = parseAuthFormFields(signUpSchema, { email, password, name });
+    const validated = parseAuthFormFields(signUpSchema, {
+      email,
+      password,
+      name,
+    });
 
     if (!validated.ok) {
       setFieldErrors(validated.fieldErrors);
@@ -89,6 +99,12 @@ export const SignUp = () => {
       return;
     }
 
+    if (settings.security.captchaEnabled && !captchaToken) {
+      setFormError("Complete the CAPTCHA before creating an account.");
+      setLoading(false);
+      return;
+    }
+
     const emailRedirectTo = buildEmailConfirmRedirect("/");
 
     const { error: signUpError } = await supabase.auth.signUp({
@@ -97,6 +113,7 @@ export const SignUp = () => {
       options: {
         data: { name: validated.data.name },
         emailRedirectTo,
+        ...captchaOptions,
       },
     });
 
@@ -120,7 +137,9 @@ export const SignUp = () => {
       return;
     }
 
-    router.push("/sign-up-success");
+    router.push(
+      `/sign-up-success?email=${encodeURIComponent(validated.data.email)}`
+    );
   };
 
   if (settings.disableSignup) {
@@ -129,7 +148,7 @@ export const SignUp = () => {
         <SignUpDisabledNotice />
         <p className={cn("text-center", recipe("captionText"))}>
           Already have an account?{" "}
-          <Link className="underline underline-offset-4" href="/sign-in">
+          <Link className={authLinkClass} href="/sign-in">
             Sign in
           </Link>
         </p>
@@ -138,17 +157,16 @@ export const SignUp = () => {
   }
 
   return (
-    <form
-      className={cn("flex flex-col", recipe("sectionGap"))}
-      noValidate
-      onSubmit={handleSignUp}
-    >
+    <div className={cn("flex flex-col", recipe("sectionGap"))}>
       <AlternativeAuthMethods mode="sign-up" onError={setFormError} />
-      {formError && Object.keys(fieldErrors).length === 0 ? (
-        <Alert tone="critical">
-          <AlertDescription>{formError}</AlertDescription>
-        </Alert>
-      ) : null}
+      <form
+        className={cn("flex flex-col", recipe("sectionGap"))}
+        noValidate
+        onSubmit={handleSignUp}
+      >
+        {formError && Object.keys(fieldErrors).length === 0 ? (
+          <AuthErrorAlert id={formErrorId} message={formError} />
+        ) : null}
       <Field>
         <FieldLabel htmlFor={nameFieldId}>Name</FieldLabel>
         <Input
@@ -171,7 +189,9 @@ export const SignUp = () => {
           value={name}
         />
         {fieldErrors.name ? (
-          <FieldError id={`${nameFieldId}-error`}>{fieldErrors.name}</FieldError>
+          <FieldError id={`${nameFieldId}-error`}>
+            {fieldErrors.name}
+          </FieldError>
         ) : null}
       </Field>
       <Field>
@@ -196,7 +216,9 @@ export const SignUp = () => {
           value={email}
         />
         {fieldErrors.email ? (
-          <FieldError id={`${emailFieldId}-error`}>{fieldErrors.email}</FieldError>
+          <FieldError id={`${emailFieldId}-error`}>
+            {fieldErrors.email}
+          </FieldError>
         ) : null}
       </Field>
       <Field>
@@ -227,28 +249,40 @@ export const SignUp = () => {
             {fieldErrors.password}
           </FieldError>
         ) : null}
-        <PasswordSecurityTips />
       </Field>
-      <Button
+      {settings.security.captchaEnabled ? (
+        <AuthCaptcha onTokenChange={setCaptchaToken} />
+      ) : null}
+      <AuthPendingButton
         className="w-full"
-        disabled={loading}
+        pending={loading}
+        pendingLabel="Creating account…"
         type="submit"
         variant="primary"
       >
-        {loading ? "Creating account…" : "Create account"}
-      </Button>
-      {!settings.mailerAutoconfirm ? (
-        <p className={cn("text-center text-text-secondary", recipe("captionText"))}>
+        Create account
+      </AuthPendingButton>
+      {settings.mailerAutoconfirm ? null : (
+        <p
+          className={cn(
+            "text-center text-text-secondary",
+            recipe("captionText")
+          )}
+        >
           We will email a verification link to confirm your account.
         </p>
-      ) : null}
+      )}
       <AuthLegalLine />
+      </form>
       <p className={cn("text-center", recipe("captionText"))}>
         Already have an account?{" "}
-        <Link className="underline underline-offset-4" href="/sign-in">
+        <Link className={authLinkClass} href="/sign-in">
           Sign in
         </Link>
       </p>
-    </form>
+      <SsoSignInPanel onError={setFormError} />
+      <PhoneAuthPanel mode="sign-up" onError={setFormError} />
+      <AnonymousSignInButton onError={setFormError} />
+    </div>
   );
 };

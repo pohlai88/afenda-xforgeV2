@@ -19,21 +19,21 @@ import {
   parseWebhookEventTypes,
   WEBHOOK_TEST_EVENT,
 } from "../../types";
+import { WEBHOOK_SECRET_ROTATION_GRACE_MS } from "../constants";
 import {
   formatSigningSecretForDisplay,
   generateWebhookSecret,
 } from "../secrets";
 import {
+  CUSTOMER_ENDPOINT_KIND,
+  FIRST_PARTY_ENDPOINT_KIND,
+} from "./endpoint-kinds";
+import {
   ENDPOINT_CLIENT_ERROR_STRIKE_LIMIT,
   getEndpointTransientCooldownMs,
   type WebhookFailureClass,
 } from "./retry";
-import {
-  CUSTOMER_ENDPOINT_KIND,
-  FIRST_PARTY_ENDPOINT_KIND,
-} from "./endpoint-kinds";
 import { validateWebhookUrl } from "./url-validation";
-import { WEBHOOK_SECRET_ROTATION_GRACE_MS } from "../constants";
 
 const ENDPOINT_DISABLED_FAR_FUTURE = new Date("2099-01-01T00:00:00.000Z");
 
@@ -74,7 +74,7 @@ const toPublicEndpoint = (
   lastDeliveryStatus: isWebhookDeliveryStatus(lastDeliveryStatus)
     ? lastDeliveryStatus
     : null,
-  lastDeliveryError: lastDeliveryError,
+  lastDeliveryError,
   recentFailures: row.recentFailures,
   disabledUntil: row.disabledUntil,
   isAutoDisabled:
@@ -122,10 +122,13 @@ export const recordEndpointDeliveryFailure = async (
   endpointKind: string = CUSTOMER_ENDPOINT_KIND
 ): Promise<void> => {
   if (endpointKind === FIRST_PARTY_ENDPOINT_KIND) {
-    console.warn("[webhooks] first-party delivery failure (health not penalized)", {
-      endpointId,
-      failureClass,
-    });
+    console.warn(
+      "[webhooks] first-party delivery failure (health not penalized)",
+      {
+        endpointId,
+        failureClass,
+      }
+    );
     return;
   }
 
@@ -263,7 +266,9 @@ export const updateWebhookEndpoint = async (input: {
   const normalizedUrl = input.url
     ? validateWebhookUrl(input.url.trim()).toString()
     : undefined;
-  const events = input.events ? parseWebhookEventTypes(input.events) : undefined;
+  const events = input.events
+    ? parseWebhookEventTypes(input.events)
+    : undefined;
 
   const [row] = await database
     .update(webhookEndpoint)

@@ -19,12 +19,7 @@ export const getPreviewReaderOptions = (
   if (
     searchParams.preview === "draft" &&
     searchParams.token &&
-    verifyPreviewToken(
-      searchParams.token,
-      collection,
-      normalizedLocale,
-      slug
-    )
+    verifyPreviewToken(searchParams.token, collection, normalizedLocale, slug)
   ) {
     return { includeDrafts: true, locale: normalizedLocale };
   }

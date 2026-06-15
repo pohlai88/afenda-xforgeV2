@@ -1,5 +1,5 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
 import {
+  Badge,
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
@@ -7,11 +7,12 @@ import {
   ContextMenuSeparator,
   ContextMenuShortcut,
   ContextMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/context-menu";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/ContextMenu",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: ContextMenu,
   parameters: {
     layout: "centered",

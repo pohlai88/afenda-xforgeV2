@@ -104,7 +104,7 @@ export const DocumentEditor = ({
       setPreviewFeedback(null);
       const result = await createPreviewLink(collection, locale, slug);
 
-      if (!result.ok || !result.data.url) {
+      if (!(result.ok && result.data.url)) {
         setError(result.ok ? "Preview token unavailable" : result.error);
         return;
       }
@@ -123,7 +123,7 @@ export const DocumentEditor = ({
       setPreviewFeedback(null);
       const result = await createPreviewLink(collection, locale, slug);
 
-      if (!result.ok || !result.data.url) {
+      if (!(result.ok && result.data.url)) {
         setError(result.ok ? "Preview token unavailable" : result.error);
         return;
       }

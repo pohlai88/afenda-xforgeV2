@@ -1,3 +1,16 @@
+export {
+  type CollectionName,
+  cmsCollectionNames,
+  cmsCollectionSchema,
+  collections,
+  getCollectionFrontmatterFields,
+  getDefaultFrontmatter,
+  isCmsCollection,
+} from "./collections";
+
+export type { ReaderOptions } from "./collections/types";
+export type { SiteSettings } from "./settings";
+export { getSiteSettings } from "./settings";
 export type {
   ContentBody,
   ContentImage,
@@ -8,20 +21,6 @@ export type {
   TocItem,
 } from "./types";
 
-export type { ReaderOptions } from "./collections/types";
-export {
-  collections,
-  cmsCollectionNames,
-  cmsCollectionSchema,
-  getCollectionFrontmatterFields,
-  getDefaultFrontmatter,
-  isCmsCollection,
-  type CollectionName,
-} from "./collections";
-export type { SiteSettings } from "./settings";
-export { getSiteSettings } from "./settings";
-
-import type { LegalPost, LegalPostMeta, Post, PostMeta } from "./types";
 import type { ReaderOptions } from "./collections/types";
 import {
   getBlogPost,
@@ -31,17 +30,18 @@ import {
   getLegalPosts,
   getLegalPostsMeta,
 } from "./loader";
+import type { LegalPost, LegalPostMeta, Post, PostMeta } from "./types";
 
 export interface BlogReader {
-  getPosts(options?: ReaderOptions): Promise<PostMeta[]>;
-  getPost(slug: string, options?: ReaderOptions): Promise<Post | null>;
   getLatestPost(options?: ReaderOptions): Promise<Post | null>;
+  getPost(slug: string, options?: ReaderOptions): Promise<Post | null>;
+  getPosts(options?: ReaderOptions): Promise<PostMeta[]>;
 }
 
 export interface LegalReader {
-  getPostsMeta(options?: ReaderOptions): Promise<LegalPostMeta[]>;
-  getPosts(options?: ReaderOptions): Promise<LegalPost[]>;
   getPost(slug: string, options?: ReaderOptions): Promise<LegalPost | null>;
+  getPosts(options?: ReaderOptions): Promise<LegalPost[]>;
+  getPostsMeta(options?: ReaderOptions): Promise<LegalPostMeta[]>;
 }
 
 export const blog = {

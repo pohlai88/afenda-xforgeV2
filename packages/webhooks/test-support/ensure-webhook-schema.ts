@@ -52,7 +52,7 @@ export const ensureWebhookOutboxSchema = async (): Promise<void> => {
     "secretPrevious"
   );
 
-  if (!hasResponseBody || !hasSecretPrevious) {
+  if (!(hasResponseBody && hasSecretPrevious)) {
     const migrationSql = readFileSync(
       path.join(migrationsDir, migrationFiles[1]!),
       "utf8"
@@ -70,7 +70,7 @@ export const ensureWebhookOutboxSchema = async (): Promise<void> => {
   );
   const hasKind = await columnExists("webhook_endpoints", "kind");
 
-  if (!hasRecentFailures || !hasDisabledUntil || !hasKind) {
+  if (!(hasRecentFailures && hasDisabledUntil && hasKind)) {
     const migrationSql = readFileSync(
       path.join(migrationsDir, migrationFiles[2]!),
       "utf8"

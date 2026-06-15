@@ -28,7 +28,7 @@ export const SubscriberDocsPanel = () => (
       </ul>
       <p className="font-medium">Signed content</p>
       <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs">
-        {`{webhook-id}.{webhook-timestamp}.{raw_body}`}
+        {"{webhook-id}.{webhook-timestamp}.{raw_body}"}
       </pre>
       <p className="font-medium">Payload shape</p>
       <pre className="overflow-x-auto rounded-md bg-muted p-3 text-xs">

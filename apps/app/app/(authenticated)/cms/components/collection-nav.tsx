@@ -1,7 +1,7 @@
 import { DEFAULT_LOCALE } from "@repo/cms/locale";
-import { collectionLabels, type CmsCollectionName } from "@repo/cms/writer";
-import Link from "next/link";
+import { type CmsCollectionName, collectionLabels } from "@repo/cms/writer";
 import { cn } from "@repo/design-system/lib/utils";
+import Link from "next/link";
 
 const collections = Object.keys(collectionLabels) as CmsCollectionName[];
 

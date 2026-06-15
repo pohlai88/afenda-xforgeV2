@@ -36,18 +36,6 @@ export const afendaButtonSizeArgType = {
   options: ["default", "sm", "lg", "icon", "icon-sm", "icon-lg"],
 };
 
-/** shadcn/ui button variant options. */
-export const uiButtonVariantArgType = {
-  control: "select" as const,
-  options: ["default", "secondary", "outline", "ghost", "destructive", "link"],
-};
-
-/** shadcn/ui button size options. */
-export const uiButtonSizeArgType = {
-  control: "select" as const,
-  options: ["default", "sm", "lg", "icon"],
-};
-
 export const afendaButtonArgTypes = {
   children: { control: "text" as const },
   variant: afendaButtonVariantArgType,

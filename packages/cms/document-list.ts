@@ -14,7 +14,9 @@ export type CmsDocumentListItem = {
   date?: string;
 };
 
-export const blogMetaToListItem = (document: PostMeta): CmsDocumentListItem => ({
+export const blogMetaToListItem = (
+  document: PostMeta
+): CmsDocumentListItem => ({
   slug: document._slug,
   title: document._title,
   status: document.status,

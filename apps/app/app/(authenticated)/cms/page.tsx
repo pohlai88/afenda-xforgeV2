@@ -1,14 +1,14 @@
-import { collectionLabels, type CmsCollectionName } from "@repo/cms/writer";
-import Link from "next/link";
-import { getCollectionSummaries } from "@/app/actions/cms/documents";
+import { type CmsCollectionName, collectionLabels } from "@repo/cms/writer";
 import {
+  Badge,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/design-system/components/afenda-ui/card";
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
+} from "@repo/design-system/design-system";
+import Link from "next/link";
+import { getCollectionSummaries } from "@/app/actions/cms/documents";
 
 const CmsDashboardPage = async () => {
   const result = await getCollectionSummaries();

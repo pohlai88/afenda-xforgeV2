@@ -1,5 +1,5 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
 import {
+  Badge,
   Table,
   TableBody,
   TableCaption,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { layoutStoryParameters } from "../../.storybook/essentials";
@@ -15,7 +15,7 @@ import { layoutStoryParameters } from "../../.storybook/essentials";
 const meta = {
   title: "Afenda UI/Table",
   component: Table,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     ...layoutStoryParameters,
     layout: "fullscreen",

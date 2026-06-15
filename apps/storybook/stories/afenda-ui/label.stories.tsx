@@ -1,11 +1,10 @@
-import { Input } from "@repo/design-system/components/afenda-ui/input"
-import { Label } from "@repo/design-system/components/afenda-ui/label"
-import type { Meta, StoryObj } from "@storybook/react"
+import { Input, Label } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Label",
   component: Label,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -19,18 +18,20 @@ const meta = {
     children: "Operator email",
     htmlFor: "afenda-label-email",
   },
-} satisfies Meta<typeof Label>
+} satisfies Meta<typeof Label>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => (
     <div className="min-h-[500px] bg-surface-canvas p-6 text-[13px] text-text-primary">
       <section className="mx-auto grid max-w-4xl gap-5 rounded-xl border border-border-default bg-surface-raised p-5 shadow-panel">
         <div className="border-border-subtle border-b pb-3">
-          <h3 className="font-semibold text-[15px]">Operator identity fields</h3>
+          <h3 className="font-semibold text-[15px]">
+            Operator identity fields
+          </h3>
           <p className="text-text-secondary text-xs">
             Labels stay compact while keeping controls explicitly named.
           </p>
@@ -48,7 +49,7 @@ export const Default: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const WithHint: Story = {
   args: {
@@ -67,10 +68,11 @@ export const WithHint: Story = {
           <Label {...args} />
           <Input id="afenda-label-email-hint" placeholder="ops@afenda.local" />
           <p className="text-text-secondary text-xs">
-            Used for sign-in, payroll escalation, and audit notification routing.
+            Used for sign-in, payroll escalation, and audit notification
+            routing.
           </p>
         </div>
       </section>
     </div>
   ),
-}
+};

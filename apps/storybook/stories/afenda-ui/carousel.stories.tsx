@@ -1,19 +1,19 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
-import { Card, CardContent } from "@repo/design-system/components/afenda-ui/card"
 import {
+  Badge,
+  Card,
+  CardContent,
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@repo/design-system/components/afenda-ui/carousel"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Carousel",
   component: Carousel,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {
@@ -23,23 +23,23 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof Carousel>
+} satisfies Meta<typeof Carousel>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 const snapshots = [
   ["SLA pressure", "4 requests breach within two hours", "warning"],
   ["Payroll lock", "Northwind Trading remains locked", "critical"],
   ["Audit export", "236 events ready for review", "info"],
-] as const
+] as const;
 
 export const InsightSnapshots: Story = {
   render: () => (
     <section className="w-[620px] rounded-[var(--card-radius)] border border-border-default bg-surface-raised p-4 shadow-panel">
       <div className="mb-4 grid gap-1">
-        <h2 className="text-[14px] font-semibold text-text-primary">
+        <h2 className="font-semibold text-[14px] text-text-primary">
           Operational snapshots
         </h2>
         <p className="text-[12px] text-text-secondary">
@@ -52,11 +52,7 @@ export const InsightSnapshots: Story = {
             <CarouselItem key={title}>
               <Card>
                 <CardContent className="grid h-36 content-center gap-3">
-                  <Badge
-                    className="w-fit"
-                    tone={tone}
-                    variant="outline"
-                  >
+                  <Badge className="w-fit" tone={tone} variant="outline">
                     {title}
                   </Badge>
                   <p className="text-[13px] text-text-secondary">
@@ -72,4 +68,4 @@ export const InsightSnapshots: Story = {
       </Carousel>
     </section>
   ),
-}
+};

@@ -1,14 +1,16 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Box } from "@repo/design-system/components/afenda-ui/box";
-import { Grid } from "@repo/design-system/components/afenda-ui/grid";
-import { MetricText } from "@repo/design-system/components/afenda-ui/metric-text";
-import { Text } from "@repo/design-system/components/afenda-ui/text";
+import {
+  Badge,
+  Box,
+  Grid,
+  MetricText,
+  Text,
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Grid",
   component: Grid,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {

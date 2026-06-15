@@ -284,13 +284,18 @@ function buildSupabaseDatabaseUrls(merged) {
 
   const poolerHost = stripQuotes(merged.get("SUPABASE_DB_POOLER_HOST") ?? "");
   if (!poolerHost) {
-    if (!merged.get("DATABASE_URL") || isEmptyValue(merged.get("DATABASE_URL") ?? "")) {
+    if (
+      !merged.get("DATABASE_URL") ||
+      isEmptyValue(merged.get("DATABASE_URL") ?? "")
+    ) {
       merged.set("DATABASE_URL", directUrl);
     }
     return;
   }
 
-  const poolerMode = stripQuotes(merged.get("SUPABASE_DB_POOLER_MODE") ?? "session");
+  const poolerMode = stripQuotes(
+    merged.get("SUPABASE_DB_POOLER_MODE") ?? "session"
+  );
   if (poolerMode === "transaction") {
     merged.set(
       "DATABASE_URL",

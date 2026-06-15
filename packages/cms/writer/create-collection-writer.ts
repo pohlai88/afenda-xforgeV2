@@ -7,14 +7,8 @@ import { clearCompileCache } from "../compiler/mdx";
 import { getContentSource } from "../loader/resolve-source";
 import { normalizeLocale } from "../locale";
 import type { ContentStatus } from "../schemas";
-import {
-  deleteGitHubDocument,
-  writeGitHubDocument,
-} from "./github-commit";
-import {
-  deleteLocalDocument,
-  writeLocalDocument,
-} from "./local-storage";
+import { deleteGitHubDocument, writeGitHubDocument } from "./github-commit";
+import { deleteLocalDocument, writeLocalDocument } from "./local-storage";
 import { serializeDocument } from "./serialize-document";
 import { isValidSlug, slugifyTitle } from "./slug";
 import type {
@@ -81,22 +75,14 @@ export const createCollectionWriter = <
 
     if (
       input.slug?.trim() &&
-      (await getContentSource().documentExists(
-        config.name,
-        locale,
-        candidate
-      ))
+      (await getContentSource().documentExists(config.name, locale, candidate))
     ) {
       return candidate;
     }
 
     if (
       !input.slug &&
-      (await getContentSource().documentExists(
-        config.name,
-        locale,
-        candidate
-      ))
+      (await getContentSource().documentExists(config.name, locale, candidate))
     ) {
       return {
         ok: false,
@@ -204,7 +190,9 @@ export const createCollectionWriter = <
           ok: false,
           code: getWriteMode() === "github" ? "github" : "io",
           message:
-            error instanceof Error ? error.message : "Failed to delete document",
+            error instanceof Error
+              ? error.message
+              : "Failed to delete document",
         };
       }
     },

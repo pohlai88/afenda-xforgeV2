@@ -18,17 +18,53 @@ const configPath = path.join(root, ".env.config");
 const secretPath = path.join(root, ".env.secret");
 const jsonOutput = process.argv.includes("--json");
 
+function resolveSigningSystem(activeKeys) {
+  if (
+    activeKeys.some(
+      (key) => key.algorithm === "ES256" || key.algorithm === "RS256"
+    )
+  ) {
+    return "asymmetric";
+  }
+
+  if (activeKeys.every((key) => key.algorithm === "HS256")) {
+    return "legacy_hs256_only";
+  }
+
+  return "unknown";
+}
+
+function formatEnabledState(value) {
+  if (value === null) {
+    return "unknown";
+  }
+
+  return value ? "yes" : "no";
+}
+
 function detectClientKeyMode(key) {
-  if (!key) return "missing";
-  if (key.startsWith("sb_publishable_")) return "publishable";
-  if (key.startsWith("eyJ")) return "legacy_anon_jwt";
+  if (!key) {
+    return "missing";
+  }
+  if (key.startsWith("sb_publishable_")) {
+    return "publishable";
+  }
+  if (key.startsWith("eyJ")) {
+    return "legacy_anon_jwt";
+  }
   return "unknown";
 }
 
 function detectServerKeyMode(key) {
-  if (!key) return "missing";
-  if (key.startsWith("sb_secret_")) return "secret";
-  if (key.startsWith("eyJ")) return "legacy_service_role_jwt";
+  if (!key) {
+    return "missing";
+  }
+  if (key.startsWith("sb_secret_")) {
+    return "secret";
+  }
+  if (key.startsWith("eyJ")) {
+    return "legacy_service_role_jwt";
+  }
   return "unknown";
 }
 
@@ -165,18 +201,15 @@ async function main() {
     server: detectServerKeyMode(serverKey),
   };
 
-  const signingSystem = activeKeys.some(
-    (key) => key.algorithm === "ES256" || key.algorithm === "RS256"
-  )
-    ? "asymmetric"
-    : activeKeys.every((key) => key.algorithm === "HS256")
-      ? "legacy_hs256_only"
-      : "unknown";
+  const signingSystem = resolveSigningSystem(activeKeys);
 
   let legacyAnonKeyEnabled = null;
 
   if (projectRef && accessToken) {
-    legacyAnonKeyEnabled = await fetchLegacyAnonEnabled(projectRef, accessToken);
+    legacyAnonKeyEnabled = await fetchLegacyAnonEnabled(
+      projectRef,
+      accessToken
+    );
   }
 
   const recommendations = [];
@@ -194,7 +227,9 @@ async function main() {
   }
 
   if (apiKeys.client === "legacy_anon_jwt") {
-    recommendations.push("Migrate client env to NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY.");
+    recommendations.push(
+      "Migrate client env to NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY."
+    );
   }
 
   if (apiKeys.server === "legacy_service_role_jwt") {
@@ -241,9 +276,7 @@ async function main() {
   console.log(`\nClient key: ${report.apiKeys.clientLabel}`);
   console.log(`Server key: ${report.apiKeys.serverLabel}`);
   console.log(
-    `Legacy anon enabled: ${
-      legacyAnonKeyEnabled === null ? "unknown" : legacyAnonKeyEnabled ? "yes" : "no"
-    }`
+    `Legacy anon enabled: ${formatEnabledState(legacyAnonKeyEnabled)}`
   );
 
   if (recommendations.length > 0) {

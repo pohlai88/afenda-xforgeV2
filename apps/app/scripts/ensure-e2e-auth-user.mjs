@@ -1,5 +1,5 @@
-import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { loadE2eEnv } from "../e2e/helpers/load-env.mjs";
 
 const appDir = path.dirname(fileURLToPath(import.meta.url));
@@ -17,7 +17,7 @@ const password =
   process.env.E2E_ORG_ADMIN_PASSWORD ??
   "123qweasdzxc!@#";
 
-if (!url || !key) {
+if (!(url && key)) {
   console.error("Missing Supabase env");
   process.exit(1);
 }
@@ -38,19 +38,22 @@ const existing = listBody.users?.find((user) => user.email === email);
 let userId = existing?.id;
 
 if (existing) {
-  const updateResponse = await fetch(`${url}/auth/v1/admin/users/${existing.id}`, {
-    method: "PUT",
-    headers: adminHeaders,
-    body: JSON.stringify({
-      password,
-      email_confirm: true,
-      user_metadata: {
-        name: "E2E Playwright",
-        activeOrganizationId:
-          existing.user_metadata?.activeOrganizationId ?? undefined,
-      },
-    }),
-  });
+  const updateResponse = await fetch(
+    `${url}/auth/v1/admin/users/${existing.id}`,
+    {
+      method: "PUT",
+      headers: adminHeaders,
+      body: JSON.stringify({
+        password,
+        email_confirm: true,
+        user_metadata: {
+          name: "E2E Playwright",
+          activeOrganizationId:
+            existing.user_metadata?.activeOrganizationId ?? undefined,
+        },
+      }),
+    }
+  );
 
   console.log("update", updateResponse.status, await updateResponse.text());
 } else {
@@ -98,17 +101,20 @@ if (!activeOrganizationId) {
     const organizationId = memberships[0]?.organizationId;
 
     if (organizationId) {
-      const metadataResponse = await fetch(`${url}/auth/v1/admin/users/${userId}`, {
-        method: "PUT",
-        headers: adminHeaders,
-        body: JSON.stringify({
-          user_metadata: {
-            ...(userBody.user_metadata ?? {}),
-            name: "E2E Playwright",
-            activeOrganizationId: organizationId,
-          },
-        }),
-      });
+      const metadataResponse = await fetch(
+        `${url}/auth/v1/admin/users/${userId}`,
+        {
+          method: "PUT",
+          headers: adminHeaders,
+          body: JSON.stringify({
+            user_metadata: {
+              ...(userBody.user_metadata ?? {}),
+              name: "E2E Playwright",
+              activeOrganizationId: organizationId,
+            },
+          }),
+        }
+      );
 
       console.log(
         "metadata",
@@ -116,7 +122,9 @@ if (!activeOrganizationId) {
         await metadataResponse.text()
       );
     } else {
-      console.warn("E2E user has no organization membership to sync metadata from");
+      console.warn(
+        "E2E user has no organization membership to sync metadata from"
+      );
     }
   } else {
     console.warn(

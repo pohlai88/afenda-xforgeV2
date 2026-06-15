@@ -1,6 +1,7 @@
 # Supabase CLI — auth config as code for afenda-Xforge.
-# Remote source of truth: `pnpm supabase:auth-config`
-# Apply local changes: `pnpm exec supabase config push`
+# Remote snapshot: `pnpm supabase:auth-config:json > supabase/auth.remote.snapshot.json`
+# Hosted-only fields (IP forwarding, HIBP, sessions): `supabase/auth.hosted.toml` + `pnpm supabase:apply-*`
+# CLI push (supported keys): `pnpm exec supabase config push`
 
 [auth]
 enabled = true
@@ -14,40 +15,26 @@ additional_redirect_urls = [
   "http://localhost:3000/update-password",
 ]
 # General auth — sync to hosted project: pnpm supabase:apply-general-auth-config
-# - Allow new users to sign up (enable_signup)
-# - Confirm email before first sign-in ([auth.email] enable_confirmations)
-# - Manual identity linking (enable_manual_linking)
 enable_signup = true
 enable_manual_linking = true
-# Secret-key Auth calls: forward end-user IP for rate limits (Vercel/proxy). Push: pnpm supabase:apply-rate-limits
-sb_forwarded_for_enabled = true
-# Access token (JWT) lifetime — Supabase recommends 3600s (1 hour).
+minimum_password_length = 8
+password_requirements = "lower_upper_letters_digits_symbols"
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
 refresh_token_reuse_interval = 10
 
 [auth.sessions]
-# 0s = no fixed maximum session lifetime (time-box disabled).
 timebox = "0s"
-# Terminate sessions not refreshed within this window (enforced on next refresh).
 inactivity_timeout = "24h"
-# Keep only the most recently active session per user.
-single_per_user = true
 
 [auth.email]
 enable_signup = true
 enable_confirmations = true
-# Require recent sign-in or email nonce before password change (24h window).
-# Maps to security_update_password_require_reauthentication on hosted projects.
 secure_password_change = true
-# Per-user min seconds between auth emails (maps to smtp_max_frequency on hosted).
 max_frequency = "30s"
 otp_length = 6
 otp_expiry = 3600
 
-# Custom SMTP (production) — push with pnpm supabase:apply-smtp-config
-# Credentials: SUPABASE_SMTP_* in .env.secret (see .env.config comments).
-# Without custom SMTP, Auth only delivers to org team addresses (email_address_not_authorized).
 [auth.email.smtp]
 enabled = true
 host = "smtp.zoho.com"
@@ -58,8 +45,6 @@ admin_email = "no-reply@nexuscanon.com"
 sender_name = "afenda-Xforge"
 
 [auth.rate_limit]
-# Customizable limits — push with pnpm supabase:apply-rate-limits
-# email_sent requires custom SMTP (pnpm supabase:apply-smtp-config).
 email_sent = 500
 sms_sent = 30
 anonymous_users = 30
@@ -68,66 +53,53 @@ sign_in_sign_ups = 60
 token_verifications = 60
 web3 = 30
 
+# Email HTML bodies live in supabase/templates/*.html — push with pnpm supabase:apply-email-templates
+
 [auth.email.template.magic_link]
-# Sync to hosted: pnpm supabase:apply-email-templates
-# PKCE links hit /auth/confirm — see apps/app/app/auth/confirm/route.ts
-subject = "Your Afenda sign-in link"
-content_path = "./supabase/templates/magic_link.html"
+subject = "Sign in to Afenda"
 
 [auth.email.template.confirmation]
-subject = "Confirm your Afenda email"
-content_path = "./supabase/templates/confirmation.html"
+subject = "Confirm your Afenda account"
 
 [auth.email.template.recovery]
 subject = "Reset your Afenda password"
-content_path = "./supabase/templates/recovery.html"
 
 [auth.email.template.invite]
-subject = "You've been invited to Afenda"
-content_path = "./supabase/templates/invite.html"
+subject = "You're invited to Afenda"
 
 [auth.email.template.reauthentication]
-subject = "{{ .Token }} is your Afenda verification code"
-content_path = "./supabase/templates/reauthentication.html"
+subject = "Your Afenda verification code: {{ .Token }}"
 
 [auth.email.template.email_change]
-subject = "Confirm your new Afenda email address"
-content_path = "./supabase/templates/email_change.html"
+subject = "Confirm your new email address"
 
 [auth.email.notification.password_changed]
 enabled = true
-subject = "Your Afenda password was changed"
-content_path = "./templates/password_changed_notification.html"
+subject = "Afenda security notice: password changed"
 
 [auth.email.notification.email_changed]
 enabled = true
-subject = "Your Afenda email address was changed"
-content_path = "./templates/email_changed_notification.html"
+subject = "Afenda security notice: email address changed"
 
 [auth.email.notification.phone_changed]
 enabled = true
-subject = "Your Afenda phone number was changed"
-content_path = "./templates/phone_changed_notification.html"
+subject = "Afenda security notice: phone number changed"
 
 [auth.email.notification.identity_linked]
 enabled = true
-subject = "A sign-in method was linked to your Afenda account"
-content_path = "./templates/identity_linked_notification.html"
+subject = "Afenda security notice: sign-in method linked"
 
 [auth.email.notification.identity_unlinked]
 enabled = true
-subject = "A sign-in method was removed from your Afenda account"
-content_path = "./templates/identity_unlinked_notification.html"
+subject = "Afenda security notice: sign-in method removed"
 
 [auth.email.notification.mfa_factor_enrolled]
 enabled = true
-subject = "A verification method was added to your Afenda account"
-content_path = "./templates/mfa_factor_enrolled_notification.html"
+subject = "Afenda security notice: verification method added"
 
 [auth.email.notification.mfa_factor_unenrolled]
 enabled = true
-subject = "A verification method was removed from your Afenda account"
-content_path = "./templates/mfa_factor_unenrolled_notification.html"
+subject = "Afenda security notice: verification method removed"
 
 [auth.external.google]
 enabled = true
@@ -137,25 +109,12 @@ secret = "env(GOOGLE_CLIENT_SECRET)"
 [auth.external.anonymous_users]
 enabled = false
 
-[auth.password]
-# Minimum 8 — Supabase recommends 8+; strongest charset preset below.
-min_length = 8
-required_characters = "lower_upper_letters_digits_symbols"
-# HaveIBeenPwned leaked-password check (Pro plan+ on hosted).
-hibp_enabled = true
-# Require current password on change — pushed via pnpm supabase:apply-password-auth-config.
-require_current_password_on_change = true
-
 [auth.passkey]
 enabled = true
 
 [auth.webauthn]
-# RP ID is stable — changing it invalidates all enrolled passkeys.
 rp_display_name = "afenda-xforge"
 rp_id = "nexuscanon.com"
-# Production origins (pushed to hosted project via pnpm supabase:apply-passkey-config).
-# Local dev against hosted Supabase cannot use passkeys on localhost with this RP ID —
-# use preview/production, or `supabase start` with rp_id = "localhost" for local stack.
 rp_origins = [
   "https://www.nexuscanon.com",
   "https://nexuscanon.com",
@@ -163,13 +122,11 @@ rp_origins = [
 
 [auth.mfa]
 max_enrolled_factors = 10
-# Built-in TOTP MFA — no auth hook required (hooks below are optional Enterprise add-ons).
-totp_enroll_enabled = true
-totp_verify_enabled = true
 
-# Custom access token hook (Free/Pro) — DB-backed org id/role in app_metadata; trims JWT.
-# Apply function: migration 0015+0016. Enable remote: pnpm supabase:apply-auth-hooks -- --hook=custom_access_token
-# Enterprise MFA/password verification hooks live in migrations only — not in config.toml (402 on push).
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
+
 [auth.hook.custom_access_token]
 enabled = true
 uri = "pg-functions://postgres/public/hook_custom_access_token"

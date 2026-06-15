@@ -1,10 +1,10 @@
-import { Checkbox } from "@repo/design-system/components/afenda-ui/checkbox";
 import {
+  Checkbox,
   Field,
   FieldError,
   FieldHint,
   FieldLabel,
-} from "@repo/design-system/components/afenda-ui/field";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { ComponentProps } from "react";
 import { useState } from "react";
@@ -34,7 +34,7 @@ type CheckboxStoryArgs = ComponentProps<typeof Checkbox> & {
 const meta = {
   title: "Afenda UI/Checkbox",
   component: Checkbox,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -221,7 +221,7 @@ export const Invalid: Story = {
 export const Interactive: Story = {
   parameters: interactionStoryParameters,
   render: InteractiveAfendaCheckboxPlayground,
-  tags: ["interaction"],
+  tags: ["interaction", "afenda-ui", "primitive"],
   play: async ({ canvas, userEvent }) => {
     const checkbox = canvas.getByRole("checkbox", {
       name: requireApprovalName,

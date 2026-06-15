@@ -75,7 +75,7 @@ mcp.mcpServers.supabase = supabaseMcp;
 
 fs.writeFileSync(globalMcpPath, `${JSON.stringify(mcp, null, 2)}\n`);
 
-console.log(`Configured supabase MCP in global ~/.cursor/mcp.json`);
+console.log("Configured supabase MCP in global ~/.cursor/mcp.json");
 console.log(`  project_ref: ${projectRef}`);
 console.log(
   accessToken

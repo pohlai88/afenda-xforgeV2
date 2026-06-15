@@ -1,6 +1,6 @@
+import type { CmsDocumentRevisionAction } from "@repo/database/schema";
 import type { CollectionName } from "../collections";
 import type { ContentStatus } from "../schemas";
-import type { CmsDocumentRevisionAction } from "@repo/database/schema";
 
 export type MirrorDocumentInput = {
   collection: CollectionName;

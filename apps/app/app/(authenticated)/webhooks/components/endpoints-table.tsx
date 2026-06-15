@@ -1,16 +1,16 @@
 "use client";
 
-import type { WebhookEndpointPublic } from "@repo/webhooks";
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
+  Badge,
+  Button,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
+} from "@repo/design-system/design-system";
+import type { WebhookEndpointPublic } from "@repo/webhooks";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import {

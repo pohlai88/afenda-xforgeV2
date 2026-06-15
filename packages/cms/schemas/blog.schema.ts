@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { authorSchema, baseFrontmatterSchema, imageSchema } from "./shared.schema";
+import {
+  authorSchema,
+  baseFrontmatterSchema,
+  imageSchema,
+} from "./shared.schema";
 
 export const blogFrontmatterSchema = baseFrontmatterSchema.extend({
   date: z.string().min(1),

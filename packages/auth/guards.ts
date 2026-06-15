@@ -2,7 +2,7 @@ import "server-only";
 
 import { authSuccess, mapAuthError } from "./auth-result";
 import { requireEditor, requireOwner } from "./cms";
-import { auth, requireAuth, requireOrg } from "./server";
+import { requireAuth, requireOrg } from "./server";
 import type { AuthActionResult, AuthenticatedContext } from "./types";
 
 export const withAuth = async <TData>(
@@ -16,9 +16,7 @@ export const withAuth = async <TData>(
 };
 
 export const withOrg = async <TData>(
-  handler: (
-    context: AuthenticatedContext & { orgId: string }
-  ) => Promise<TData>
+  handler: (context: AuthenticatedContext & { orgId: string }) => Promise<TData>
 ): Promise<AuthActionResult<TData>> => {
   try {
     return authSuccess(await handler(await requireOrg()));
@@ -49,22 +47,6 @@ export const withOwner = async <TData>(
 ): Promise<AuthActionResult<TData>> => {
   try {
     return authSuccess(await handler(await requireOwner()));
-  } catch (error) {
-    return mapAuthError(error);
-  }
-};
-
-export const getOptionalAuth = async (): Promise<
-  AuthActionResult<AuthenticatedContext | null>
-> => {
-  try {
-    const context = await auth();
-
-    if (context.userId === null) {
-      return authSuccess(null);
-    }
-
-    return authSuccess(context);
   } catch (error) {
     return mapAuthError(error);
   }

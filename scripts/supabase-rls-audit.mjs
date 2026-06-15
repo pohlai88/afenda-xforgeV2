@@ -9,8 +9,8 @@
  */
 
 import fs from "node:fs";
-import path from "node:path";
 import { createRequire } from "node:module";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -160,7 +160,9 @@ async function main() {
       );
     }
 
-    const anonTableGrants = clientGrants.rows.filter((row) => row.grantee === "anon");
+    const anonTableGrants = clientGrants.rows.filter(
+      (row) => row.grantee === "anon"
+    );
     if (anonTableGrants.length > 0) {
       recommendations.push(
         `Revoke anon table grants (${anonTableGrants.length}) — RLS default model uses authenticated + explicit grants only.`
@@ -202,9 +204,10 @@ async function main() {
       orgRlsHelpersInstalled: orgHelpers.rows.map((row) => row.proname),
       hookTablesWithoutPolicies: noPolicy
         .filter((row) =>
-          ["mfa_failed_verification_attempts", "password_failed_verification_attempts"].includes(
-            row.table_name
-          )
+          [
+            "mfa_failed_verification_attempts",
+            "password_failed_verification_attempts",
+          ].includes(row.table_name)
         )
         .map((row) => `${row.schema_name}.${row.table_name}`),
       recommendations,

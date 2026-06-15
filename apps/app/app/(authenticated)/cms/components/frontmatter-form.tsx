@@ -3,19 +3,19 @@
 import { getCollectionFrontmatterFields } from "@repo/cms/collections";
 import type { ContentStatus } from "@repo/cms/schemas";
 import type { CmsCollectionName } from "@repo/cms/writer";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import { Label } from "@repo/design-system/components/afenda-ui/label";
 import {
+  Button,
+  Input,
+  Label,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/design-system/components/afenda-ui/select";
-import { Textarea } from "@repo/design-system/components/afenda-ui/textarea";
-import { uploadCmsAsset } from "@/app/actions/cms/media";
+  Textarea,
+} from "@repo/design-system/design-system";
 import { useRef, useTransition } from "react";
+import { uploadCmsAsset } from "@/app/actions/cms/media";
 
 type FrontmatterFormProperties = {
   collection: CmsCollectionName;

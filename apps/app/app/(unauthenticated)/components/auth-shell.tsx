@@ -6,17 +6,21 @@ type AuthShellProps = {
   readonly children: ReactNode;
 };
 
+/**
+ * Centered-card auth chrome: brand → form card (360–400px via layout) → trust line.
+ */
 export const AuthShell = ({ children }: AuthShellProps) => (
   <div className={cn("flex w-full flex-col", recipe("sectionGap"))}>
     <AuthBrand />
-    <div
+    <section
+      aria-label="Authentication"
       className={cn(
-        "rounded-[10px] border border-border-default bg-surface-primary p-6 shadow-[0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_rgb(0_0_0/0.04)]",
-        recipe("sectionGap")
+        "flex flex-col py-6 px-[var(--card-padding)]",
+        recipe("sectionGap", "panelSurface")
       )}
     >
       {children}
-    </div>
+    </section>
     <AuthTrustFooter />
   </div>
 );

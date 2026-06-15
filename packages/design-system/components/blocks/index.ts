@@ -19,6 +19,15 @@ export {
   RiskEvidencePanel,
 } from "./advanced";
 export type {
+  AppShellAuditDockPlacement,
+  AppShellSidebarConfig,
+  AppShellSiteContainerConfig,
+  AppShellSiteContainerGeometry,
+  AppShellSiteContainerMode,
+  AuthenticatedAppShellBlockProps,
+} from "./app-shell";
+export { AuthenticatedAppShellBlock } from "./app-shell";
+export type {
   AfendaBlockRecipeContract,
   AfendaBlockRecipeEntry,
   AfendaBlockRecipeKey,

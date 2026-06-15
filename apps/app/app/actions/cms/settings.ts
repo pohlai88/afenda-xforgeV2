@@ -6,21 +6,16 @@ import {
   buildCmsSettingsUpdatedEvent,
   CMS_EVENT_SETTINGS_UPDATED,
 } from "@repo/cms/events";
-import {
-  CMS_CACHE_TAG_ALL,
-  CMS_SETTINGS_TAG,
-} from "@repo/cms/revalidate";
+import { CMS_CACHE_TAG_ALL, CMS_SETTINGS_TAG } from "@repo/cms/revalidate";
+import { siteSettingsSchema } from "@repo/cms/schemas";
+import type { SiteSettings } from "@repo/cms/settings";
 import {
   readSiteSettings,
-  saveSiteSettings,
   type SettingsSaveResult,
+  saveSiteSettings,
 } from "@repo/cms/writer";
-import type { SiteSettings } from "@repo/cms/settings";
-import { siteSettingsSchema } from "@repo/cms/schemas";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { emitOrgEvent } from "@/lib/emit-org-event";
-
-export type { SiteSettings };
 
 export const getSettings = async (): Promise<AuthActionResult<SiteSettings>> =>
   withEditor(async () => readSiteSettings());

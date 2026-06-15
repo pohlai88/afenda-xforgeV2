@@ -1,7 +1,7 @@
-import { z } from "zod";
 import languine from "@repo/internationalization/languine.json" with {
   type: "json",
 };
+import { z } from "zod";
 import type { CollectionName } from "./collections";
 
 export const DEFAULT_LOCALE = languine.locale.source;
@@ -48,4 +48,5 @@ export const publicPreviewPath = (
 
 export const parseCmsRouteLocale = (
   localeParam: string
-): CmsLocale | undefined => (isValidLocale(localeParam) ? localeParam : undefined);
+): CmsLocale | undefined =>
+  isValidLocale(localeParam) ? localeParam : undefined;

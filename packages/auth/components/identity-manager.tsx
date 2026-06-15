@@ -1,15 +1,20 @@
 "use client";
 
 import {
-  Alert,
-  AlertDescription,
   Button,
   cn,
   recipe,
 } from "@repo/design-system/design-system";
+import { AuthConfigNotice, AuthErrorAlert, AuthSuccessAlert } from "./auth-feedback";
+import { AuthPendingButton } from "./auth-pending-button";
+import {
+  AuthLoadingState,
+  AuthSection,
+  AuthSectionHeader,
+} from "./auth-section";
 import type { UserIdentity } from "@supabase/supabase-js";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { fromSupabaseError } from "../auth-result";
 import { createClient } from "../client";
 import { useAuthUiConfig } from "../context/auth-ui-config";
@@ -21,7 +26,7 @@ import {
   getLinkableOAuthProviders,
   isSsoIdentity,
 } from "../identities";
-import { buildAuthCallbackRedirect } from "../oauth-redirect";
+import { buildAuthCallbackRedirect } from "../redirects";
 import { GoogleIcon } from "./auth-icons";
 
 export const IdentityManager = () => {
@@ -29,6 +34,8 @@ export const IdentityManager = () => {
   const supabase = createClient();
   const router = useRouter();
   const searchParams = useSearchParams();
+  const titleId = useId();
+  const linkedHandled = useRef(false);
   const [identities, setIdentities] = useState<UserIdentity[]>([]);
   const [loading, setLoading] = useState(true);
   const [action, setAction] = useState<"link" | "unlink" | null>(null);
@@ -42,7 +49,8 @@ export const IdentityManager = () => {
     const { data, error: listError } = await supabase.auth.getUserIdentities();
 
     if (listError) {
-      setError(listError.message);
+      const failure = fromSupabaseError(listError);
+      setError(failure?.error ?? "Could not load linked sign-in methods.");
       setIdentities([]);
       setLoading(false);
       return;
@@ -57,13 +65,19 @@ export const IdentityManager = () => {
   }, [loadIdentities]);
 
   useEffect(() => {
+    if (linkedHandled.current) {
+      return;
+    }
+
     const linked = searchParams.get("linked");
 
     if (linked === "google") {
+      linkedHandled.current = true;
       setMessage("Google account linked successfully.");
       router.replace("/account/security");
+      void loadIdentities();
     }
-  }, [router, searchParams]);
+  }, [loadIdentities, router, searchParams]);
 
   const linkableProviders = getLinkableOAuthProviders(identities, {
     google: settings.google,
@@ -85,7 +99,9 @@ export const IdentityManager = () => {
     const { error: linkError } = await supabase.auth.linkIdentity({
       provider: "google",
       options: {
-        redirectTo: buildAuthCallbackRedirect("/account/security?linked=google"),
+        redirectTo: buildAuthCallbackRedirect(
+          "/account/security?linked=google"
+        ),
       },
     });
 
@@ -128,74 +144,75 @@ export const IdentityManager = () => {
   };
 
   return (
-    <section className={cn("flex flex-col", recipe("sectionGap"))}>
-      <div className="flex flex-col gap-1">
-        <h2 className="font-medium text-text-primary">Linked sign-in methods</h2>
-        <p className={recipe("captionText")}>
-          Supabase automatically links providers that share a verified email
-          address. Manual linking lets you attach a provider with a different
-          email while signed in.
-        </p>
-      </div>
-      {!settings.security.manualLinkingEnabled ? (
-        <Alert tone="critical">
-          <AlertDescription>
-            Manual identity linking is disabled in Supabase. Run{" "}
-            <code className="text-xs">pnpm supabase:apply-identity-linking-config</code>{" "}
-            or enable it under Authentication → Providers.
-          </AlertDescription>
-        </Alert>
-      ) : null}
-      {!settings.mailerAutoconfirm ? (
+    <AuthSection aria-busy={loading} aria-labelledby={titleId}>
+      <AuthSectionHeader
+        description="Supabase automatically links providers that share a verified email address. Manual linking lets you attach a provider with a different email while signed in."
+        title="Linked sign-in methods"
+        titleId={titleId}
+      />
+      {settings.security.manualLinkingEnabled ? null : (
+        <AuthConfigNotice>
+          Manual identity linking is disabled in Supabase. Run{" "}
+          <code className="text-xs">
+            pnpm supabase:apply-identity-linking-config
+          </code>{" "}
+          or enable it under Authentication → Providers.
+        </AuthConfigNotice>
+      )}
+      {settings.mailerAutoconfirm ? null : (
         <p className={recipe("captionText")}>
           Automatic linking requires a verified email — unconfirmed identities
           are removed when a matching verified account is found.
         </p>
-      ) : null}
+      )}
       {settings.google && !hasGoogleIdentity ? (
         <div className="flex flex-col gap-3 rounded-[var(--xforge-radius-md)] border border-border-default px-4 py-3">
           <div className="flex flex-col gap-1">
             <h3 className={recipe("bodyMediumText")}>Google account</h3>
             <p className={recipe("captionText")}>
               Link Google to sign in with one click on this device. Automatic
-              linking still applies when Google and email share a verified address.
+              linking still applies when Google and email share a verified
+              address.
             </p>
           </div>
           {canLinkGoogle ? (
-            <Button
+            <AuthPendingButton
               className="w-fit"
-              disabled={action !== null}
+              disabled={action !== null && action !== "link"}
+              leading={<GoogleIcon className="size-4" />}
               onClick={handleLinkGoogle}
+              pending={action === "link"}
+              pendingLabel="Redirecting to Google…"
               type="button"
               variant="secondary"
             >
-              <GoogleIcon className="size-4" />
-              {action === "link" ? "Redirecting to Google…" : "Link Google account"}
-            </Button>
-          ) : !settings.security.manualLinkingEnabled ? (
+              Link Google account
+            </AuthPendingButton>
+          ) : settings.security.manualLinkingEnabled ? (
             <p className={recipe("captionText")}>
-              Manual linking is disabled — Google will link automatically when the
-              email matches a verified address on sign-in.
+              Google is already linked or unavailable for this account.
             </p>
           ) : (
             <p className={recipe("captionText")}>
-              Google is already linked or unavailable for this account.
+              Manual linking is disabled — Google will link automatically when
+              the email matches a verified address on sign-in.
             </p>
           )}
         </div>
       ) : null}
-      {error ? (
-        <Alert tone="critical">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+      {error && !loading ? (
+        <AuthErrorAlert
+          message={error}
+          onRetry={
+            identities.length === 0 && action === null
+              ? () => void loadIdentities()
+              : undefined
+          }
+        />
       ) : null}
-      {message ? (
-        <Alert tone="positive">
-          <AlertDescription>{message}</AlertDescription>
-        </Alert>
-      ) : null}
+      {message ? <AuthSuccessAlert message={message} /> : null}
       {loading ? (
-        <p className={recipe("captionText")}>Loading identities…</p>
+        <AuthLoadingState label="Loading identities…" />
       ) : identities.length === 0 ? (
         <p className={recipe("captionText")}>
           No identities found. Sign out and back in if this looks wrong.
@@ -216,10 +233,14 @@ export const IdentityManager = () => {
                     {getIdentityProviderLabel(identity.provider)}
                   </p>
                   {email ? (
-                    <p className={cn("truncate", recipe("captionText"))}>{email}</p>
+                    <p className={cn("truncate", recipe("captionText"))}>
+                      {email}
+                    </p>
                   ) : null}
                   {lastUsed ? (
-                    <p className={recipe("captionText")}>Last used {lastUsed}</p>
+                    <p className={recipe("captionText")}>
+                      Last used {lastUsed}
+                    </p>
                   ) : null}
                 </div>
                 {canUnlink && !isSsoIdentity(identity) ? (
@@ -243,6 +264,6 @@ export const IdentityManager = () => {
           Link another provider before unlinking your only sign-in method.
         </p>
       ) : null}
-    </section>
+    </AuthSection>
   );
 };

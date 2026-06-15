@@ -1,11 +1,8 @@
 "use server";
 
-import { getOrganizationMembers } from "@repo/auth/organizations";
-import {
-  getUserAvatarUrl,
-  getUserDisplayName,
-} from "@repo/auth/metadata";
 import { withOrg } from "@repo/auth/guards";
+import { getUserAvatarUrl, getUserDisplayName } from "@repo/auth/metadata";
+import { getOrganizationMembers } from "@repo/auth/organizations";
 import { createAdminClient } from "@repo/auth/server";
 import type { AuthActionResult } from "@repo/auth/types";
 
@@ -51,9 +48,7 @@ export const getUsers = async (
 
       const user = userResponse.user;
       const name =
-        getUserDisplayName(user.user_metadata) ??
-        user.email ??
-        "Unknown user";
+        getUserDisplayName(user.user_metadata) ?? user.email ?? "Unknown user";
       const picture = getUserAvatarUrl(user.user_metadata) ?? "";
 
       users.push({

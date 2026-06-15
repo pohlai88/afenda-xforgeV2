@@ -39,7 +39,7 @@ export const getAuthUiSettings = async () => {
   const projectRef = getProjectRef();
   const accessToken = getManagementAccessToken();
 
-  if (!supabaseUrl || !publishableKey) {
+  if (!(supabaseUrl && publishableKey)) {
     return defaultAuthUiSettings();
   }
 
@@ -49,7 +49,7 @@ export const getAuthUiSettings = async () => {
       publishableKey
     );
 
-    if (!accessToken || !projectRef) {
+    if (!(accessToken && projectRef)) {
       return mergeAuthUiSettings(publicSettings, null);
     }
 

@@ -40,9 +40,7 @@ function parseWebauthnFromConfig() {
   const rpId =
     text.match(/^\s*rp_id\s*=\s*"([^"]+)"/m)?.[1] ?? "nexuscanon.com";
 
-  const originsBlock = text.match(
-    /^\s*rp_origins\s*=\s*\[([\s\S]*?)\]/m
-  )?.[1];
+  const originsBlock = text.match(/^\s*rp_origins\s*=\s*\[([\s\S]*?)\]/m)?.[1];
 
   const origins = originsBlock
     ? [...originsBlock.matchAll(/"([^"]+)"/g)].map((match) => match[1])

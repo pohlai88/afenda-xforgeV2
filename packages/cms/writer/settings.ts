@@ -1,8 +1,8 @@
 import "server-only";
 
 import {
-  siteSettingsSchema,
   type SiteSettings,
+  siteSettingsSchema,
 } from "../schemas/settings.schema";
 import { readSettingsRaw, writeSettingsRaw } from "../settings-io";
 

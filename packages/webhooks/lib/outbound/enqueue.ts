@@ -9,6 +9,7 @@ import type {
   WebhookEventType,
 } from "../../types";
 import { WEBHOOK_TEST_EVENT } from "../../types";
+import { CMS_WEBHOOK_EVENTS } from "../registry/events";
 import {
   buildWebhookPayload,
   emptyEnqueueResult,
@@ -20,7 +21,6 @@ import {
   isCmsOutboundEvent,
   isFirstPartyWebConfigured,
 } from "./first-party";
-import { CMS_WEBHOOK_EVENTS } from "../registry/events";
 
 const listMatchingEndpoints = async (
   organizationId: string,
@@ -125,11 +125,9 @@ export const enqueueTestWebhook = async (
 
   const deliveryId = newDeliveryId();
   const eventId = newEventId();
-  const payload = buildWebhookPayload(
-    WEBHOOK_TEST_EVENT,
-    organizationId,
-    { message: "Webhook test event" }
-  );
+  const payload = buildWebhookPayload(WEBHOOK_TEST_EVENT, organizationId, {
+    message: "Webhook test event",
+  });
   const now = new Date();
 
   await database.insert(webhookDelivery).values({

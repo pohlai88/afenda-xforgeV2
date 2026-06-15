@@ -16,6 +16,8 @@ export const keys = () =>
       NEXT_PUBLIC_SUPABASE_URL: z.string().url().optional(),
       NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1).optional(),
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1).optional(),
+      NEXT_PUBLIC_CAPTCHA_SITE_KEY: z.string().min(1).optional(),
+      NEXT_PUBLIC_SSO_HINT_DOMAINS: z.string().optional(),
     },
     runtimeEnv: {
       SUPABASE_SECRET_KEY: process.env.SUPABASE_SECRET_KEY,
@@ -28,6 +30,8 @@ export const keys = () =>
         process.env.SUPABASE_ANON_PUBLIC,
       NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
         process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+      NEXT_PUBLIC_CAPTCHA_SITE_KEY: process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY,
+      NEXT_PUBLIC_SSO_HINT_DOMAINS: process.env.NEXT_PUBLIC_SSO_HINT_DOMAINS,
     },
   });
 
@@ -44,11 +48,25 @@ export const getSupabasePublishableKey = () => {
   );
 };
 
-/** @deprecated Use `getSupabasePublishableKey` — legacy alias for anon/publishable key resolution. */
-export const getSupabaseAnonKey = getSupabasePublishableKey;
-
 export const getSupabaseUrl = () =>
   keys().NEXT_PUBLIC_SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+
+export const getCaptchaSiteKey = () =>
+  keys().NEXT_PUBLIC_CAPTCHA_SITE_KEY ??
+  process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY ??
+  "";
+
+export const getSsoHintDomains = () => {
+  const raw =
+    keys().NEXT_PUBLIC_SSO_HINT_DOMAINS ??
+    process.env.NEXT_PUBLIC_SSO_HINT_DOMAINS ??
+    "";
+
+  return raw
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+};
 
 /** Server-only admin key — prefers `SUPABASE_SECRET_KEY`, falls back to legacy service role. */
 export const getSupabaseSecretKey = () => {

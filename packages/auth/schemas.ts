@@ -1,6 +1,5 @@
 import { z } from "zod";
 import type { PasswordPolicy } from "./auth-ui-settings";
-import { resolvePasswordPolicy } from "./auth-ui-settings";
 
 export const createPasswordSchema = (policy: PasswordPolicy) =>
   z.string().superRefine((value, context) => {
@@ -31,6 +30,9 @@ export const forgotPasswordSchema = z.object({
   email: z.email("Enter a valid email address"),
 });
 
+/** Same shape as forgot-password; named for resend-confirmation intent. */
+export const resendConfirmationSchema = forgotPasswordSchema;
+
 export const createEmailOtpVerifySchema = (length: number) =>
   z.object({
     email: z.email("Enter a valid email address"),
@@ -54,9 +56,7 @@ export const createUpdatePasswordSchema = (
       ? z.string().min(1, "Enter your current password")
       : z.string().optional(),
     nonce: options.requireReauthenticationNonce
-      ? z
-          .string()
-          .min(1, "Enter the confirmation code from your email")
+      ? z.string().min(1, "Enter the confirmation code from your email")
       : z.string().optional(),
     password: createPasswordSchema(policy),
     confirmPassword: createPasswordSchema(policy),
@@ -74,32 +74,3 @@ export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type UpdatePasswordInput = z.infer<
   ReturnType<typeof createUpdatePasswordSchema>
 >;
-
-/** @deprecated Use createSignInSchema() */
-export const signInSchema = createSignInSchema();
-
-/** @deprecated Use createSignUpSchema(resolvePasswordPolicy(config)) */
-export const signUpSchema = createSignUpSchema(
-  resolvePasswordPolicy({
-    minLength: 6,
-    requiredCharacters: null,
-    requireLowercase: false,
-    requireUppercase: false,
-    requireDigits: false,
-    requireSymbols: false,
-    blockLeakedPasswords: false,
-  })
-);
-
-/** @deprecated Use createUpdatePasswordSchema(resolvePasswordPolicy(config)) */
-export const updatePasswordSchema = createUpdatePasswordSchema(
-  resolvePasswordPolicy({
-    minLength: 6,
-    requiredCharacters: null,
-    requireLowercase: false,
-    requireUppercase: false,
-    requireDigits: false,
-    requireSymbols: false,
-    blockLeakedPasswords: false,
-  })
-);

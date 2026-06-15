@@ -1,9 +1,9 @@
-import Link from "next/link";
-import { notFound } from "next/navigation";
 import { fetchDocumentListItems } from "@repo/cms/document-list";
 import { parseCmsRouteLocale } from "@repo/cms/locale";
 import { isCmsCollection } from "@repo/cms/writer";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Button } from "@repo/design-system/design-system";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 import { DocumentList } from "../../components/document-list";
 import { DocumentSearch } from "../../components/document-search";
 import { LocaleNav } from "../../components/locale-nav";
@@ -18,7 +18,7 @@ const CollectionLocalePage = async ({
   const { collection, locale: localeParam } = await params;
   const locale = parseCmsRouteLocale(localeParam);
 
-  if (!isCmsCollection(collection) || !locale) {
+  if (!(isCmsCollection(collection) && locale)) {
     notFound();
   }
 

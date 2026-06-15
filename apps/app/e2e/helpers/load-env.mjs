@@ -21,7 +21,9 @@ export const loadEnvFile = (envPath) => {
   }
 
   for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
-    const match = line.match(/^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=(.*)$/);
+    const match = line.match(
+      /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=(.*)$/
+    );
     if (!match || process.env[match[1]]) {
       continue;
     }
@@ -45,9 +47,7 @@ export const loadE2eEnv = () => {
 };
 
 const resolveSupabaseUrl = () =>
-  process.env.NEXT_PUBLIC_SUPABASE_URL ??
-  process.env.SUPABASE_API_URL ??
-  "";
+  process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_API_URL ?? "";
 
 const resolveServiceRoleKey = () =>
   process.env.SUPABASE_SECRET_KEY ??

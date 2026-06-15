@@ -1,4 +1,4 @@
-import { z } from "zod";
+import type { z } from "zod";
 import { baseFrontmatterSchema } from "./shared.schema";
 
 export const legalFrontmatterSchema = baseFrontmatterSchema;

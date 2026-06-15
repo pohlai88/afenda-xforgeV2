@@ -5,9 +5,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@repo/design-system/components/afenda-ui/breadcrumb";
-import { Separator } from "@repo/design-system/components/afenda-ui/separator";
-import { SidebarTrigger } from "@repo/design-system/components/afenda-ui/sidebar";
+  Separator,
+  SidebarTrigger,
+} from "@repo/design-system/design-system";
 import { Fragment, type ReactNode } from "react";
 
 interface HeaderProps {

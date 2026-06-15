@@ -1,8 +1,5 @@
-import { useForm } from "react-hook-form"
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Button } from "@repo/design-system/components/afenda-ui/button"
 import {
+  Button,
   Form,
   FormControl,
   FormDescription,
@@ -10,8 +7,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@repo/design-system/components/afenda-ui/form"
-import { Input } from "@repo/design-system/components/afenda-ui/input"
+  Input,
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import { useForm } from "react-hook-form";
 
 const meta = {
   title: "Afenda UI/Form",
@@ -24,13 +23,13 @@ const meta = {
     FormDescription,
     FormMessage,
   },
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof FormItem>
+} satisfies Meta<typeof FormItem>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => {
@@ -40,7 +39,7 @@ export const Default: Story = {
         employeeId: "TH-PAY-01842",
         approver: "payroll.lead@northwind.local",
       },
-    })
+    });
 
     return (
       <div className="min-h-[560px] bg-surface-canvas p-6 text-[13px] text-text-primary">
@@ -86,7 +85,9 @@ export const Default: Story = {
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
-                      <FormDescription>Matches the payroll ledger.</FormDescription>
+                      <FormDescription>
+                        Matches the payroll ledger.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -100,7 +101,9 @@ export const Default: Story = {
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
-                      <FormDescription>Required above THB 50,000.</FormDescription>
+                      <FormDescription>
+                        Required above THB 50,000.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -116,6 +119,6 @@ export const Default: Story = {
           </Form>
         </section>
       </div>
-    )
+    );
   },
-}
+};

@@ -86,6 +86,8 @@ export type AuthUiSettings = {
   email: boolean;
   google: boolean;
   passkeys: boolean;
+  phone: boolean;
+  saml: boolean;
   anonymous: boolean;
   disableSignup: boolean;
   mailerAutoconfirm: boolean;
@@ -110,6 +112,7 @@ export type SupabaseAuthSettingsResponse = {
   disable_signup?: boolean;
   mailer_autoconfirm?: boolean;
   passkeys_enabled?: boolean;
+  saml_enabled?: boolean;
 };
 
 export type SupabaseManagementAuthConfig = {
@@ -156,21 +159,22 @@ export type SupabaseManagementAuthConfig = {
 const LOWER_SET = "abcdefghijklmnopqrstuvwxyz";
 const UPPER_SET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const DIGIT_SET = "0123456789";
+const SYMBOL_SET = "!@#$%^&*()_+-=[]{};':\"|<>?,./`~";
 
 const describeCharacterSet = (characterSet: string): string => {
   if (characterSet === LOWER_SET) {
-    return "One lowercase letter";
+    return "Lowercase";
   }
 
   if (characterSet === UPPER_SET) {
-    return "One uppercase letter";
+    return "Uppercase";
   }
 
   if (characterSet === DIGIT_SET) {
-    return "One number";
+    return "Digits";
   }
 
-  return "One symbol";
+  return "Symbol";
 };
 
 const includesFromSet = (password: string, characterSet: string) =>
@@ -198,7 +202,10 @@ export const parsePasswordRequiredCharacters = (
     requireDigits: sets.includes(DIGIT_SET),
     requireSymbols: sets.some(
       (set) =>
-        set !== LOWER_SET && set !== UPPER_SET && set !== DIGIT_SET && set.length > 0
+        set !== LOWER_SET &&
+        set !== UPPER_SET &&
+        set !== DIGIT_SET &&
+        set.length > 0
     ),
   };
 };
@@ -242,7 +249,7 @@ export const resolvePasswordPolicy = (
 export const defaultPasswordPolicyConfig = (): PasswordPolicyConfig =>
   buildPasswordPolicyConfig({
     minLength: 8,
-    requiredCharacters: `${LOWER_SET}:${UPPER_SET}:${DIGIT_SET}`,
+    requiredCharacters: `${LOWER_SET}:${UPPER_SET}:${DIGIT_SET}:${SYMBOL_SET}`,
     blockLeakedPasswords: false,
   });
 
@@ -250,6 +257,8 @@ export const defaultAuthUiSettings = (): AuthUiSettings => ({
   email: true,
   google: false,
   passkeys: false,
+  phone: false,
+  saml: false,
   anonymous: false,
   disableSignup: false,
   mailerAutoconfirm: false,
@@ -382,7 +391,10 @@ export const mergeAuthUiSettings = (
   return {
     email: external.email ?? defaults.email,
     google: external.google ?? defaults.google,
-    passkeys: publicSettings.passkeys_enabled ?? m.passkey_enabled ?? defaults.passkeys,
+    passkeys:
+      publicSettings.passkeys_enabled ?? m.passkey_enabled ?? defaults.passkeys,
+    phone: external.phone ?? defaults.phone,
+    saml: publicSettings.saml_enabled ?? defaults.saml,
     anonymous:
       external.anonymous_users ??
       m.external_anonymous_users_enabled ??
@@ -402,11 +414,16 @@ export const mergeAuthUiSettings = (
       rpOrigins: parseOrigins(m.webauthn_rp_origins),
     },
     mfa: {
-      maxEnrolledFactors: m.mfa_max_enrolled_factors ?? defaults.mfa.maxEnrolledFactors,
-      totpEnrollEnabled: m.mfa_totp_enroll_enabled ?? defaults.mfa.totpEnrollEnabled,
-      totpVerifyEnabled: m.mfa_totp_verify_enabled ?? defaults.mfa.totpVerifyEnabled,
-      phoneEnrollEnabled: m.mfa_phone_enroll_enabled ?? defaults.mfa.phoneEnrollEnabled,
-      phoneVerifyEnabled: m.mfa_phone_verify_enabled ?? defaults.mfa.phoneVerifyEnabled,
+      maxEnrolledFactors:
+        m.mfa_max_enrolled_factors ?? defaults.mfa.maxEnrolledFactors,
+      totpEnrollEnabled:
+        m.mfa_totp_enroll_enabled ?? defaults.mfa.totpEnrollEnabled,
+      totpVerifyEnabled:
+        m.mfa_totp_verify_enabled ?? defaults.mfa.totpVerifyEnabled,
+      phoneEnrollEnabled:
+        m.mfa_phone_enroll_enabled ?? defaults.mfa.phoneEnrollEnabled,
+      phoneVerifyEnabled:
+        m.mfa_phone_verify_enabled ?? defaults.mfa.phoneVerifyEnabled,
     },
     otp: {
       length: m.mailer_otp_length ?? defaults.otp.length,
@@ -417,7 +434,8 @@ export const mergeAuthUiSettings = (
       uriAllowList: parseAllowList(m.uri_allow_list),
     },
     security: {
-      captchaEnabled: m.security_captcha_enabled ?? defaults.security.captchaEnabled,
+      captchaEnabled:
+        m.security_captcha_enabled ?? defaults.security.captchaEnabled,
       captchaProvider: m.security_captcha_provider ?? null,
       requireCurrentPasswordOnChange:
         defaults.security.requireCurrentPasswordOnChange ||
@@ -430,15 +448,21 @@ export const mergeAuthUiSettings = (
     },
     sessions: buildSessionSettings(management),
     rateLimits: {
-      emailSentPerHour: m.rate_limit_email_sent ?? defaults.rateLimits.emailSentPerHour,
+      emailSentPerHour:
+        m.rate_limit_email_sent ?? defaults.rateLimits.emailSentPerHour,
       otpPerInterval: m.rate_limit_otp ?? defaults.rateLimits.otpPerInterval,
-      verifyPerInterval: m.rate_limit_verify ?? defaults.rateLimits.verifyPerInterval,
+      verifyPerInterval:
+        m.rate_limit_verify ?? defaults.rateLimits.verifyPerInterval,
       tokenRefreshPerInterval:
-        m.rate_limit_token_refresh ?? defaults.rateLimits.tokenRefreshPerInterval,
-      smsSentPerHour: m.rate_limit_sms_sent ?? defaults.rateLimits.smsSentPerHour,
+        m.rate_limit_token_refresh ??
+        defaults.rateLimits.tokenRefreshPerInterval,
+      smsSentPerHour:
+        m.rate_limit_sms_sent ?? defaults.rateLimits.smsSentPerHour,
       anonymousUsersPerHour:
-        m.rate_limit_anonymous_users ?? defaults.rateLimits.anonymousUsersPerHour,
-      otpResendSeconds: m.smtp_max_frequency ?? defaults.rateLimits.otpResendSeconds,
+        m.rate_limit_anonymous_users ??
+        defaults.rateLimits.anonymousUsersPerHour,
+      otpResendSeconds:
+        m.smtp_max_frequency ?? defaults.rateLimits.otpResendSeconds,
       sbForwardedForEnabled:
         m.security_sb_forwarded_for_enabled ??
         defaults.rateLimits.sbForwardedForEnabled,
@@ -480,13 +504,14 @@ export const fetchAuthUiSettings = async (
   }
 };
 
-export const PENDING_CONFIRMATION_EMAIL_KEY = "afenda:pending-confirmation-email";
+export const PENDING_CONFIRMATION_EMAIL_KEY =
+  "afenda:pending-confirmation-email";
 
 export const isPasskeyOriginSupported = (
   passkey: AuthPasskeySettings,
   origin = typeof window === "undefined" ? null : window.location.origin
 ) => {
-  if (!passkey.enabled || !origin) {
+  if (!(passkey.enabled && origin)) {
     return true;
   }
 

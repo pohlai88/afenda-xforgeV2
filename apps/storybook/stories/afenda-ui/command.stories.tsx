@@ -1,6 +1,6 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
+  Badge,
+  Button,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -9,7 +9,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from "@repo/design-system/components/afenda-ui/command";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { ChevronRightIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
@@ -17,7 +17,7 @@ import { useState } from "react";
 const meta = {
   title: "Afenda UI/Command",
   component: CommandDialog,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {

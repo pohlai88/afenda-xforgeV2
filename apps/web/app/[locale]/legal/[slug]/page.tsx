@@ -1,9 +1,9 @@
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { legal } from "@repo/cms";
-import { getPreviewReaderOptions } from "@repo/cms/reader-options";
-import { buildLocaleSlugParams } from "@repo/cms/static-params";
 import { Body } from "@repo/cms/components/body";
 import { TableOfContents } from "@repo/cms/components/toc";
+import { getPreviewReaderOptions } from "@repo/cms/reader-options";
+import { buildLocaleSlugParams } from "@repo/cms/static-params";
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
 import Link from "next/link";

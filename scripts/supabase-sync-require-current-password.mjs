@@ -9,6 +9,10 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import {
+  hostedSection,
+  readHostedConfigText,
+} from "./supabase-auth-hosted-config.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const envPath = path.join(root, ".env");
@@ -34,9 +38,10 @@ function parseToken(filePath, key) {
 }
 
 function readDesiredValue() {
-  const configText = fs.readFileSync(configPath, "utf8");
-  const passwordBlock =
-    /\[auth\.password\]\s*\n([\s\S]*?)(?=\n\[)/m.exec(configText)?.[1] ?? "";
+  const passwordBlock = hostedSection(
+    readHostedConfigText(),
+    "[auth_hosted.password]"
+  );
   const match = passwordBlock.match(
     /^\s*require_current_password_on_change\s*=\s*(true|false)/m
   );
@@ -97,7 +102,7 @@ async function main() {
   const accessToken = parseToken(secretPath, "SUPABASE_ACCESS_TOKEN");
   const desired = readDesiredValue();
 
-  if (!projectRef || !accessToken) {
+  if (!(projectRef && accessToken)) {
     console.error("Missing SUPABASE_PROJECT_ID or SUPABASE_ACCESS_TOKEN");
     process.exit(1);
   }
@@ -136,10 +141,16 @@ async function main() {
     });
   }
 
-  console.log("After PATCH response:", JSON.stringify(summarize(after), null, 2));
+  console.log(
+    "After PATCH response:",
+    JSON.stringify(summarize(after), null, 2)
+  );
 
   const confirmed = await fetchAuthConfig(projectRef, accessToken);
-  console.log("After GET verify:", JSON.stringify(summarize(confirmed), null, 2));
+  console.log(
+    "After GET verify:",
+    JSON.stringify(summarize(confirmed), null, 2)
+  );
 
   if (confirmed.security_update_password_require_current_password !== desired) {
     console.error(

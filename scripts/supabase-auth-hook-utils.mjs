@@ -83,7 +83,9 @@ function extractHookSection(configText, hookName) {
   return tailPattern.exec(configText.replace(/\r\n/g, "\n"))?.[1] ?? "";
 }
 
-export function parseAuthHooksFromConfig(configText = fs.readFileSync(configPath, "utf8")) {
+export function parseAuthHooksFromConfig(
+  configText = fs.readFileSync(configPath, "utf8")
+) {
   const payload = {};
 
   for (const [hookName, fields] of Object.entries(AUTH_HOOK_API_FIELDS)) {

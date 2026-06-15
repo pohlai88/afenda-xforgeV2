@@ -4,15 +4,14 @@ import { database } from "@repo/database";
 import { webhookDelivery, webhookEndpoint } from "@repo/database/schema";
 import { and, asc, eq, inArray, lte, or, sql } from "drizzle-orm";
 import { keys } from "../../keys";
-import { signStandardWebhookHeader } from "../signing";
 import { truncateResponseBody } from "../response-body";
+import { signStandardWebhookHeader } from "../signing";
 import { tryClaimDelivery } from "./claim";
 import {
   isEndpointDeliverable,
   recordEndpointDeliveryFailure,
   recordEndpointDeliverySuccess,
 } from "./endpoints";
-import { FIRST_PARTY_ENDPOINT_KIND } from "./endpoint-kinds";
 import {
   classifyHttpFailure,
   getNextAttemptAt,
@@ -90,7 +89,7 @@ const listDeliveryRowsByIds = async (
   return rows.filter(({ endpoint }) => isEndpointDeliverable(endpoint, now));
 };
 
-const WEBHOOK_CRON_LOCK_KEY = 424242;
+const WEBHOOK_CRON_LOCK_KEY = 424_242;
 
 const tryAcquireCronLock = async (): Promise<boolean> => {
   const result = await database.execute<{ pg_try_advisory_lock: boolean }>(

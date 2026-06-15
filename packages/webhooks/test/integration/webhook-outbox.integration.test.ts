@@ -9,6 +9,10 @@ import { organization, webhookDelivery } from "@repo/database/schema";
 import { and, eq } from "drizzle-orm";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import {
+  processPendingDeliveries,
+  processWebhookDeliveries,
+} from "../../lib/outbound/dispatcher";
+import {
   createWebhookEndpoint,
   listWebhookDeliveries,
   replayWebhookDelivery,
@@ -17,10 +21,6 @@ import {
   updateWebhookEndpoint,
 } from "../../lib/outbound/endpoints";
 import { enqueueWebhookEvent } from "../../lib/outbound/enqueue";
-import {
-  processPendingDeliveries,
-  processWebhookDeliveries,
-} from "../../lib/outbound/dispatcher";
 import { verifyStandardWebhook } from "../../lib/verify";
 import { setIntegrationFetchHandler } from "../../test-support/setup-integration-fetch";
 
@@ -30,9 +30,7 @@ type CapturedWebhookRequest = {
   body: string;
 };
 
-const hasDatabase = Boolean(
-  process.env.DATABASE_URL ?? process.env.DIRECT_URL
-);
+const hasDatabase = Boolean(process.env.DATABASE_URL ?? process.env.DIRECT_URL);
 
 describe.skipIf(!hasDatabase)("webhook outbox integration", () => {
   const organizationId = createId();
@@ -74,7 +72,9 @@ describe.skipIf(!hasDatabase)("webhook outbox integration", () => {
   });
 
   afterAll(async () => {
-    await database.delete(organization).where(eq(organization.id, organizationId));
+    await database
+      .delete(organization)
+      .where(eq(organization.id, organizationId));
   });
 
   it("delivers signed cms.document.published after enqueue", async () => {
@@ -277,7 +277,9 @@ describe.skipIf(!hasDatabase)("webhook outbox integration", () => {
   it("replays failed deliveries and cron delivers them", async () => {
     capturedRequests.length = 0;
 
-    setIntegrationFetchHandler(async () => new Response("down", { status: 503 }));
+    setIntegrationFetchHandler(
+      async () => new Response("down", { status: 503 })
+    );
 
     const enqueueResult = await enqueueWebhookEvent(
       organizationId,

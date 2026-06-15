@@ -1,6 +1,4 @@
-import { Toaster } from "@repo/design-system/components/afenda-ui/sonner";
-import { TooltipProvider } from "@repo/design-system/components/afenda-ui/tooltip";
-import { ThemeProvider } from "@repo/design-system/providers/theme";
+import { DesignSystemProvider } from "@repo/design-system/design-system";
 import { withThemeByClassName } from "@storybook/addon-themes";
 import type { Decorator, Preview } from "@storybook/react";
 
@@ -60,20 +58,17 @@ const withAfendaShell: Decorator = (Story, context) => {
   );
 
   return (
-    <ThemeProvider>
-      <TooltipProvider>
-        <div
-          className="bg-background text-text-primary"
-          data-afenda-story-layout={layout}
-          data-density={density}
-        >
-          <div className={getAfendaStoryLayoutClass(layout, context.viewMode)}>
-            <Story />
-          </div>
+    <DesignSystemProvider>
+      <div
+        className="bg-background text-text-primary"
+        data-afenda-story-layout={layout}
+        data-density={density}
+      >
+        <div className={getAfendaStoryLayoutClass(layout, context.viewMode)}>
+          <Story />
         </div>
-        <Toaster />
-      </TooltipProvider>
-    </ThemeProvider>
+      </div>
+    </DesignSystemProvider>
   );
 };
 

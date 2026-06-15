@@ -75,7 +75,7 @@ export const verifyPreviewToken = (
 
   const [payload, signature] = token.split(".");
 
-  if (!payload || !signature) {
+  if (!(payload && signature)) {
     return false;
   }
 

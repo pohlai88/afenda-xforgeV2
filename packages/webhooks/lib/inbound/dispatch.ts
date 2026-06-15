@@ -3,10 +3,10 @@ import "server-only";
 import type { InboundProvider } from "../registry/events";
 import { dispatchInboundEvent } from "./registry";
 import {
-  toInboundStripeEvent,
-  verifyStripeWebhook,
   type StripeWebhookEvent,
   type StripeWebhookVerifier,
+  toInboundStripeEvent,
+  verifyStripeWebhook,
 } from "./stripe";
 import type { InboundWebhookResult } from "./types";
 

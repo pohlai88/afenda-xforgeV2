@@ -3,15 +3,9 @@ import { join, relative } from "node:path";
 
 const root = process.cwd();
 const restrictedImportPattern =
-  /@repo\/design-system\/components\/ui(?:\/|["'])/;
+  /@repo\/design-system\/components\/(?:ui|afenda-ui|blocks|mode-toggle)(?:\/|["'])/;
 
-const designSystemRoot = normalize(
-  join(root, "packages", "design-system")
-);
-const primitiveReadinessStory = normalize(
-  join(root, "apps", "storybook", "stories", "primitive-readiness.stories.tsx")
-);
-
+const designSystemRoot = normalize(join(root, "packages", "design-system"));
 const scanRoots = [join(root, "apps"), join(root, "packages")];
 const errors = [];
 
@@ -26,10 +20,6 @@ for (const file of walk(scanRoots)) {
     continue;
   }
 
-  if (isPrimitiveStorybookStory(normalized)) {
-    continue;
-  }
-
   const source = readFileSync(file, "utf8");
   if (!restrictedImportPattern.test(source)) {
     continue;
@@ -39,7 +29,7 @@ for (const file of walk(scanRoots)) {
   for (const [index, line] of lines.entries()) {
     if (restrictedImportPattern.test(line)) {
       errors.push(
-        `${relative(root, file)}:${index + 1} imports components/ui — use components/afenda-ui or components/blocks instead.`
+        `${relative(root, file)}:${index + 1} deep-imports design-system implementation modules — use @repo/design-system/design-system instead.`
       );
     }
   }
@@ -51,10 +41,6 @@ if (errors.length) {
 }
 
 console.log("Design system import boundary checks passed.");
-
-function isPrimitiveStorybookStory(filePath) {
-  return filePath === primitiveReadinessStory;
-}
 
 function normalize(value) {
   return value.replace(/\\/g, "/").toLowerCase();

@@ -1,18 +1,18 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
 import {
+  type ComponentScorecard,
+  type ComponentScorecardStatus,
+  componentScorecards,
+} from "@repo/design-system/contracts/component-scorecards";
+import {
+  Badge,
+  blockRecipe,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
-import { blockRecipe } from "@repo/design-system/components/blocks";
-import {
-  type ComponentScorecard,
-  type ComponentScorecardStatus,
-  componentScorecards,
-} from "@repo/design-system/contracts/component-scorecards";
+} from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Meta, StoryObj } from "@storybook/react";
 

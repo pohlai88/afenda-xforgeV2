@@ -1,12 +1,11 @@
-import { EyeIcon } from "lucide-react"
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Toggle } from "@repo/design-system/components/afenda-ui/toggle"
+import { Toggle } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import { EyeIcon } from "lucide-react";
 
 const meta = {
   title: "Afenda UI/Toggle",
   component: Toggle,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {
@@ -16,17 +15,17 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof Toggle>
+} satisfies Meta<typeof Toggle>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const ToolbarControl: Story = {
   render: () => (
     <div className="flex w-[420px] items-center justify-between rounded-[var(--card-radius)] border border-border-default bg-surface-raised p-3 shadow-panel">
       <div className="grid gap-1">
-        <span className="text-[13px] font-medium text-text-primary">
+        <span className="font-medium text-[13px] text-text-primary">
           Audit columns
         </span>
         <span className="text-[12px] text-text-secondary">
@@ -39,4 +38,4 @@ export const ToolbarControl: Story = {
       </Toggle>
     </div>
   ),
-}
+};

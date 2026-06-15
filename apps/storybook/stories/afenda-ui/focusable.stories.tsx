@@ -1,13 +1,10 @@
-import { Box } from "@repo/design-system/components/afenda-ui/box";
-import { Focusable } from "@repo/design-system/components/afenda-ui/focusable";
-import { Stack } from "@repo/design-system/components/afenda-ui/stack";
-import { Text } from "@repo/design-system/components/afenda-ui/text";
+import { Box, Focusable, Stack, Text } from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Focusable",
   component: Focusable,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {

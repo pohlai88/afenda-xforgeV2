@@ -9,8 +9,8 @@
  */
 
 import fs from "node:fs";
-import path from "node:path";
 import { createRequire } from "node:module";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -49,7 +49,11 @@ function readEnvValue(key) {
 }
 
 const SENSITIVE_MUTATION_COLUMNS = {
-  "next_forge.webhook_endpoints": ["secret", "secretPrevious", "secretPreviousExpiresAt"],
+  "next_forge.webhook_endpoints": [
+    "secret",
+    "secretPrevious",
+    "secretPreviousExpiresAt",
+  ],
   "public.profiles": ["email", "id", "created_at", "updated_at"],
   "next_forge.organization_members": ["role", "organizationId", "userId"],
 };

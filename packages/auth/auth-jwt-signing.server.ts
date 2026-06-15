@@ -1,12 +1,12 @@
 import "server-only";
 
+import { getSupabaseJwksUrl } from "./access-token-claims";
 import {
   detectClientKeyMode,
   detectServerKeyMode,
   type JwtSigningKeyInfo,
   type JwtSigningReport,
 } from "./auth-jwt-signing.shared";
-import { getSupabaseJwksUrl } from "./access-token-claims";
 import {
   getSupabasePublishableKey,
   getSupabaseSecretKey,
@@ -42,7 +42,9 @@ const inferSigningSystem = (
     return "legacy_hs256_only";
   }
 
-  if (keys.some((key) => key.algorithm === "ES256" || key.algorithm === "RS256")) {
+  if (
+    keys.some((key) => key.algorithm === "ES256" || key.algorithm === "RS256")
+  ) {
     return "asymmetric";
   }
 
@@ -71,7 +73,7 @@ const fetchLegacyAnonKeyEnabled = async (): Promise<boolean | null> => {
   const projectRef = keys().SUPABASE_PROJECT_ID;
   const accessToken = keys().SUPABASE_ACCESS_TOKEN;
 
-  if (!projectRef || !accessToken) {
+  if (!(projectRef && accessToken)) {
     return null;
   }
 

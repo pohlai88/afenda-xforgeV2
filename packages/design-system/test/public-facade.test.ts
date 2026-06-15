@@ -2,12 +2,57 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import * as facade from "../design-system";
+import {
+  AdvancedDataTable,
+  ApprovalControlCenter,
+  ApprovalQueueBlock,
+  AuditEvidenceWorkspace,
+  AuthenticatedAppShellBlock,
+  afendaBlockRecipe,
+  afendaRecipe,
+  BatchPostingReview,
+  Box,
+  Button,
+  blockRecipe,
+  CommandSearchBlock,
+  cn,
+  createMetadataDiagnosticsCollector,
+  createMetadataDiagnosticsDispatcher,
+  DesignSystemProvider,
+  EmptyPanel,
+  Field,
+  FilterBar,
+  Focusable,
+  FormSection,
+  Grid,
+  Inline,
+  Input,
+  MetadataPageRenderer,
+  MetricText,
+  ModeToggle,
+  metadataBlockSchema,
+  metadataPageSchema,
+  OperationalDashboardShell,
+  PageHeader,
+  PolicyLockManager,
+  RecordEditorBlock,
+  RiskEvidencePanel,
+  recipe,
+  resolveMetadataBinding,
+  Select,
+  Stack,
+  StatsStrip,
+  Table,
+  TenantOperationsWorkspace,
+  Text,
+} from "../design-system";
+
+const wildcardExportPattern = /export\s+\*\s+from\s+["']/;
 
 describe("public design-system facade", () => {
   it("keeps the documented stable runtime exports available", () => {
     for (const exportName of stableRuntimeExports) {
-      expect(facade[exportName], exportName).toBeDefined();
+      expect(stableRuntimeExportValues[exportName], exportName).toBeDefined();
     }
   });
 
@@ -17,12 +62,59 @@ describe("public design-system facade", () => {
       "utf8"
     );
 
-    expect(source).not.toMatch(/export\s+\*\s+from\s+["']/);
+    expect(source).not.toMatch(wildcardExportPattern);
   });
 });
 
+const stableRuntimeExportValues = {
+  AdvancedDataTable,
+  afendaBlockRecipe,
+  afendaRecipe,
+  ApprovalControlCenter,
+  ApprovalQueueBlock,
+  AuthenticatedAppShellBlock,
+  AuditEvidenceWorkspace,
+  BatchPostingReview,
+  blockRecipe,
+  Box,
+  Button,
+  cn,
+  CommandSearchBlock,
+  createMetadataDiagnosticsCollector,
+  createMetadataDiagnosticsDispatcher,
+  DesignSystemProvider,
+  EmptyPanel,
+  Field,
+  FilterBar,
+  Focusable,
+  FormSection,
+  Grid,
+  Inline,
+  Input,
+  MetadataPageRenderer,
+  metadataBlockSchema,
+  metadataPageSchema,
+  MetricText,
+  ModeToggle,
+  OperationalDashboardShell,
+  PageHeader,
+  PolicyLockManager,
+  recipe,
+  RecordEditorBlock,
+  resolveMetadataBinding,
+  RiskEvidencePanel,
+  Select,
+  Stack,
+  StatsStrip,
+  Table,
+  TenantOperationsWorkspace,
+  Text,
+} as const;
+
 const stableRuntimeExports = [
   "cn",
+  "DesignSystemProvider",
+  "ModeToggle",
   "recipe",
   "afendaRecipe",
   "blockRecipe",
@@ -47,6 +139,7 @@ const stableRuntimeExports = [
   "AdvancedDataTable",
   "CommandSearchBlock",
   "ApprovalQueueBlock",
+  "AuthenticatedAppShellBlock",
   "RiskEvidencePanel",
   "RecordEditorBlock",
   "OperationalDashboardShell",
@@ -61,4 +154,4 @@ const stableRuntimeExports = [
   "createMetadataDiagnosticsCollector",
   "createMetadataDiagnosticsDispatcher",
   "resolveMetadataBinding",
-] as const satisfies readonly (keyof typeof facade)[];
+] as const satisfies readonly (keyof typeof stableRuntimeExportValues)[];

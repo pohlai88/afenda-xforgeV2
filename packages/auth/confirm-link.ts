@@ -1,9 +1,7 @@
 import "server-only";
 
-import {
-  APP_AUTH_ERROR_CODES,
-  getAuthErrorKey,
-} from "./auth-form-messages";
+import { APP_AUTH_ERROR_CODES, getAuthErrorKey } from "./auth-form-messages";
+import { resolveSafeRedirectPath } from "./safe-redirect";
 import { createClient } from "./server";
 import type {
   AuthOtpType,
@@ -13,11 +11,10 @@ import type {
 import { AUTH_OTP_TYPES } from "./types";
 
 export const isAuthOtpType = (value: string | null): value is AuthOtpType =>
-  value !== null &&
-  (AUTH_OTP_TYPES as readonly string[]).includes(value);
+  value !== null && (AUTH_OTP_TYPES as readonly string[]).includes(value);
 
 export const resolveSafeRedirect = (next: string | null): string =>
-  next?.startsWith("/") ? next : "/";
+  resolveSafeRedirectPath(next);
 
 export const confirmAuthLink = async (
   params: ConfirmAuthLinkParams

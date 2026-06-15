@@ -1,12 +1,24 @@
 import "server-only";
 
-import { blogCollection, collections, legalCollection } from "../collections";
+import {
+  blogCollection,
+  type collections,
+  legalCollection,
+} from "../collections";
 import { DEFAULT_LOCALE } from "../locale";
 import type { BlogFrontmatter } from "../schemas/blog.schema";
 import type { LegalFrontmatter } from "../schemas/legal.schema";
 import { createCollectionWriter } from "./create-collection-writer";
 import type { DeleteResult, SaveResult } from "./types";
 
+export {
+  createCollectionWriter,
+  readRawDocument,
+} from "./create-collection-writer";
+export { serializeDocument } from "./serialize-document";
+export type { SettingsSaveResult } from "./settings";
+export { readSiteSettings, saveSiteSettings } from "./settings";
+export { isValidSlug, slugifyTitle } from "./slug";
 export type {
   CollectionWriter,
   DeleteResult,
@@ -15,15 +27,7 @@ export type {
   SaveResult,
   WriterConfig,
 } from "./types";
-export {
-  createCollectionWriter,
-  readRawDocument,
-} from "./create-collection-writer";
-export { slugifyTitle, isValidSlug } from "./slug";
-export { serializeDocument } from "./serialize-document";
 export { getWriteMode } from "./write-mode";
-export { readSiteSettings, saveSiteSettings } from "./settings";
-export type { SettingsSaveResult } from "./settings";
 
 const blogWriter = createCollectionWriter({
   name: "blog",
@@ -42,7 +46,6 @@ export const cmsWriters = {
   legal: legalWriter,
 } as const;
 
-export { cmsReaders } from "../loader";
 export {
   cmsCollectionNames,
   cmsCollectionSchema,
@@ -50,6 +53,7 @@ export {
   getDefaultFrontmatter,
   isCmsCollection,
 } from "../collections";
+export { cmsReaders } from "../loader";
 
 export const collectionLabels: Record<keyof typeof collections, string> = {
   blog: "Blog",
@@ -95,5 +99,4 @@ export const deleteCmsDocument = async (
   collection: CmsCollectionName,
   slug: string,
   locale: string = DEFAULT_LOCALE
-): Promise<DeleteResult> =>
-  cmsWriters[collection].delete(slug, locale);
+): Promise<DeleteResult> => cmsWriters[collection].delete(slug, locale);

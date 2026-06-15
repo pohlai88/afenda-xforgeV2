@@ -1,20 +1,20 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
-import type { Meta, StoryObj } from "@storybook/react"
+import { Badge } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 import {
   CheckIcon,
   InfoIcon,
   ShieldAlertIcon,
   ShieldCheckIcon,
   XCircleIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-import { afendaBadgeArgTypes } from "../../.storybook/args"
-import { matrixStoryParameters } from "../../.storybook/essentials"
+import { afendaBadgeArgTypes } from "../../.storybook/args";
+import { matrixStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
   title: "Afenda UI/Badge",
   component: Badge,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   argTypes: afendaBadgeArgTypes,
   parameters: {
     layout: "fullscreen",
@@ -28,13 +28,13 @@ const meta = {
   args: {
     children: "Ready",
   },
-} satisfies Meta<typeof Badge>
+} satisfies Meta<typeof Badge>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
-export const Neutral: Story = {}
+export const Neutral: Story = {};
 
 export const Info: Story = {
   args: {
@@ -46,7 +46,7 @@ export const Info: Story = {
       </>
     ),
   },
-}
+};
 
 export const Success: Story = {
   args: {
@@ -58,7 +58,7 @@ export const Success: Story = {
       </>
     ),
   },
-}
+};
 
 export const Warning: Story = {
   args: {
@@ -71,7 +71,7 @@ export const Warning: Story = {
       </>
     ),
   },
-}
+};
 
 export const Danger: Story = {
   args: {
@@ -84,7 +84,7 @@ export const Danger: Story = {
       </>
     ),
   },
-}
+};
 
 export const Outline: Story = {
   args: {
@@ -92,7 +92,7 @@ export const Outline: Story = {
     tone: "neutral",
     children: "Read only",
   },
-}
+};
 
 export const Solid: Story = {
   args: {
@@ -100,7 +100,7 @@ export const Solid: Story = {
     variant: "solid",
     children: "Escalated",
   },
-}
+};
 
 export const StateMatrix: Story = {
   parameters: matrixStoryParameters,
@@ -109,10 +109,10 @@ export const StateMatrix: Story = {
       <div className="mx-auto max-w-4xl rounded-lg border border-border-default bg-surface-raised p-4">
         <div className="mb-3 flex items-center justify-between">
           <div>
-            <p className="text-[12px] font-medium uppercase tracking-wide text-text-primary">
+            <p className="font-medium text-[12px] text-text-primary uppercase tracking-wide">
               Queue states
             </p>
-            <h3 className="text-[15px] font-semibold text-text-primary">
+            <h3 className="font-semibold text-[15px] text-text-primary">
               Tenant workflow badges
             </h3>
           </div>
@@ -127,10 +127,10 @@ export const StateMatrix: Story = {
             ["FBH-2219", "Privileged access", "Blocked", "critical"],
           ].map(([tenant, workflow, state, tone]) => (
             <div
-              key={tenant}
               className="grid grid-cols-[100px_1fr_auto] items-center gap-3 rounded-md bg-surface px-3 py-2"
+              key={tenant}
             >
-              <span className="tabular-nums text-text-primary">{tenant}</span>
+              <span className="text-text-primary tabular-nums">{tenant}</span>
               <span className="text-text-primary">{workflow}</span>
               <Badge
                 tone={
@@ -151,4 +151,4 @@ export const StateMatrix: Story = {
       </div>
     </div>
   ),
-}
+};

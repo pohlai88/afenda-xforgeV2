@@ -1,16 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Skeleton } from "@repo/design-system/components/afenda-ui/skeleton"
+import { Skeleton } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Skeleton",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: Skeleton,
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof Skeleton>
+} satisfies Meta<typeof Skeleton>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -26,8 +26,8 @@ export const Default: Story = {
         <div className="grid gap-2">
           {[0, 1, 2, 3].map((row) => (
             <div
-              key={row}
               className="grid grid-cols-[120px_1fr_90px_80px] items-center gap-3 rounded-md bg-surface-muted px-3 py-2"
+              key={row}
             >
               <Skeleton className="h-4 w-20" />
               <Skeleton className="h-4 w-full" />
@@ -39,4 +39,4 @@ export const Default: Story = {
       </div>
     </div>
   ),
-}
+};

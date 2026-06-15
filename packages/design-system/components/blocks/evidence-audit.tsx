@@ -1,6 +1,4 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Progress } from "@repo/design-system/components/afenda-ui/progress";
+import { Badge, Button, Progress } from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import {
   CheckCircle2Icon,

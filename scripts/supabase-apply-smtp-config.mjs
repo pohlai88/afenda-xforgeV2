@@ -86,7 +86,8 @@ function parseSmtpFromConfig() {
   const smtpSection = section(text, "[auth.email.smtp]");
   const rateSection = section(text, "[auth.rate_limit]");
 
-  const host = readEnvValue("SUPABASE_SMTP_HOST") || readString(smtpSection, "host");
+  const host =
+    readEnvValue("SUPABASE_SMTP_HOST") || readString(smtpSection, "host");
   const portRaw =
     readEnvValue("SUPABASE_SMTP_PORT") || readString(smtpSection, "port");
   const user =
@@ -104,8 +105,7 @@ function parseSmtpFromConfig() {
     readEnvValue("NEXT_PUBLIC_APP_NAME") ||
     "Afenda";
 
-  const smtpMaxFrequency =
-    readEnvValue("SUPABASE_SMTP_MAX_FREQUENCY") || "60";
+  const smtpMaxFrequency = readEnvValue("SUPABASE_SMTP_MAX_FREQUENCY") || "60";
 
   const rateLimitEmailSent =
     readEnvValue("AUTH_RATE_LIMIT_EMAIL_SENT") ||
@@ -173,9 +173,15 @@ async function main() {
   }
 
   const missing = [];
-  if (!parsed.host) missing.push("SUPABASE_SMTP_HOST or [auth.email.smtp] host");
-  if (!parsed.port) missing.push("SUPABASE_SMTP_PORT or [auth.email.smtp] port");
-  if (!parsed.user) missing.push("SUPABASE_SMTP_USER or [auth.email.smtp] user");
+  if (!parsed.host) {
+    missing.push("SUPABASE_SMTP_HOST or [auth.email.smtp] host");
+  }
+  if (!parsed.port) {
+    missing.push("SUPABASE_SMTP_PORT or [auth.email.smtp] port");
+  }
+  if (!parsed.user) {
+    missing.push("SUPABASE_SMTP_USER or [auth.email.smtp] user");
+  }
   if (!parsed.pass) {
     missing.push(
       "SUPABASE_SMTP_PASSWORD in .env.secret (Zoho app password for SMTP)"

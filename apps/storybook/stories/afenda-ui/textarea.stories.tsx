@@ -4,22 +4,23 @@ import {
   FieldHint,
   FieldLabel,
   FieldRequired,
-} from "@repo/design-system/components/afenda-ui/field"
-import { Textarea } from "@repo/design-system/components/afenda-ui/textarea"
-import type { Meta, StoryObj } from "@storybook/react"
+  Textarea,
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { matrixStoryParameters } from "../../.storybook/essentials"
+import { matrixStoryParameters } from "../../.storybook/essentials";
 
 const storyShell =
-  "min-h-[560px] bg-surface-canvas p-6 text-[13px] text-text-primary"
+  "min-h-[560px] bg-surface-canvas p-6 text-[13px] text-text-primary";
 const panel =
-  "mx-auto grid max-w-5xl gap-5 rounded-xl border border-border-default bg-surface-raised p-5 shadow-panel"
-const header = "flex items-center justify-between border-border-subtle border-b pb-3"
+  "mx-auto grid max-w-5xl gap-5 rounded-xl border border-border-default bg-surface-raised p-5 shadow-panel";
+const header =
+  "flex items-center justify-between border-border-subtle border-b pb-3";
 
 const meta = {
   title: "Afenda UI/Textarea",
   component: Textarea,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -33,11 +34,11 @@ const meta = {
     placeholder: "Summarize the audit finding...",
     rows: 4,
   },
-} satisfies Meta<typeof Textarea>
+} satisfies Meta<typeof Textarea>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => (
@@ -68,7 +69,7 @@ export const Default: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const Invalid: Story = {
   render: (args) => (
@@ -76,7 +77,9 @@ export const Invalid: Story = {
       <section className={panel}>
         <div className={header}>
           <div>
-            <h3 className="font-semibold text-[15px]">Evidence rejection reason</h3>
+            <h3 className="font-semibold text-[15px]">
+              Evidence rejection reason
+            </h3>
             <p className="text-text-secondary text-xs">
               Error copy appears below the textarea and remains specific.
             </p>
@@ -102,7 +105,7 @@ export const Invalid: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const ReadOnly: Story = {
   render: (args) => (
@@ -115,7 +118,9 @@ export const ReadOnly: Story = {
               System-controlled text remains readable but not editable.
             </p>
           </div>
-          <span className="text-text-secondary text-xs">Source: Payroll API</span>
+          <span className="text-text-secondary text-xs">
+            Source: Payroll API
+          </span>
         </div>
         <Field>
           <FieldLabel htmlFor="afenda-notes-readonly">System memo</FieldLabel>
@@ -130,7 +135,7 @@ export const ReadOnly: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const DensityMatrix: Story = {
   parameters: matrixStoryParameters,
@@ -139,7 +144,9 @@ export const DensityMatrix: Story = {
       <section className={panel}>
         <div className={header}>
           <div>
-            <h3 className="font-semibold text-[15px]">Textarea density matrix</h3>
+            <h3 className="font-semibold text-[15px]">
+              Textarea density matrix
+            </h3>
             <p className="text-text-secondary text-xs">
               Compact defaults support repeated operator workflows.
             </p>
@@ -167,7 +174,9 @@ export const DensityMatrix: Story = {
             />
           </Field>
           <Field>
-            <FieldLabel htmlFor="textarea-density-spacious">Spacious</FieldLabel>
+            <FieldLabel htmlFor="textarea-density-spacious">
+              Spacious
+            </FieldLabel>
             <Textarea
               density="spacious"
               id="textarea-density-spacious"
@@ -179,4 +188,4 @@ export const DensityMatrix: Story = {
       </section>
     </div>
   ),
-}
+};

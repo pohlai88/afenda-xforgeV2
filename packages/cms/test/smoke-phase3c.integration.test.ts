@@ -1,18 +1,13 @@
 import { createId } from "@paralleldrive/cuid2";
 import { database } from "@repo/database";
-import {
-  cmsDocument,
-  cmsDocumentRevision,
-} from "@repo/database/schema";
+import { cmsDocument, cmsDocumentRevision } from "@repo/database/schema";
 import { and, eq } from "drizzle-orm";
 import { afterAll, describe, expect, it } from "vitest";
 import { deleteDocumentMirror } from "../sync/delete-mirror";
 import { searchDocumentMirror } from "../sync/search-mirror";
 import { upsertDocumentMirror } from "../sync/upsert-mirror";
 
-const hasDatabase = Boolean(
-  process.env.DATABASE_URL ?? process.env.DIRECT_URL
-);
+const hasDatabase = Boolean(process.env.DATABASE_URL ?? process.env.DIRECT_URL);
 
 const smokeSlug = `phase3c-smoke-${createId()}`;
 const smokeToken = `xforgeftstoken${createId().replace(/-/g, "")}`;

@@ -1,6 +1,6 @@
+import { blog, legal } from "@repo/cms";
 import { cmsLocales, localePathPrefix } from "@repo/cms/locale";
 import type { MetadataRoute } from "next";
-import { blog, legal } from "@repo/cms";
 import { env } from "@/env";
 
 const protocol = env.VERCEL_PROJECT_PRODUCTION_URL?.startsWith("https")
@@ -18,7 +18,8 @@ const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
 
   for (const locale of cmsLocales) {
     const prefix = localePathPrefix(locale);
-    const localeBase = prefix === "" ? baseUrl.href : new URL(prefix, baseUrl).href;
+    const localeBase =
+      prefix === "" ? baseUrl.href : new URL(prefix, baseUrl).href;
 
     const [blogs, legals] = await Promise.all([
       blog.getPosts({ locale }),

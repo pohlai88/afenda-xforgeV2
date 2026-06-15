@@ -1,22 +1,22 @@
-import { Input } from "@repo/design-system/components/afenda-ui/input"
-import type { Meta, StoryObj } from "@storybook/react"
+import { Input } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { booleanControl } from "../../.storybook/args"
-import { matrixStoryParameters } from "../../.storybook/essentials"
+import { booleanControl } from "../../.storybook/args";
+import { matrixStoryParameters } from "../../.storybook/essentials";
 
 const storyShell =
-  "min-h-[520px] bg-surface-canvas p-6 text-[13px] text-text-primary"
+  "min-h-[520px] bg-surface-canvas p-6 text-[13px] text-text-primary";
 const panel =
-  "mx-auto grid max-w-5xl gap-5 rounded-xl border border-border-default bg-surface-raised p-5 shadow-panel"
+  "mx-auto grid max-w-5xl gap-5 rounded-xl border border-border-default bg-surface-raised p-5 shadow-panel";
 const sectionHeader =
-  "flex items-center justify-between border-border-subtle border-b pb-3"
-const labelText = "font-medium text-text-primary text-[13px]"
-const hintText = "text-text-secondary text-xs"
+  "flex items-center justify-between border-border-subtle border-b pb-3";
+const labelText = "font-medium text-text-primary text-[13px]";
+const hintText = "text-text-secondary text-xs";
 
 const meta = {
   title: "Afenda UI/Input",
   component: Input,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -33,11 +33,11 @@ const meta = {
   argTypes: {
     disabled: booleanControl,
   },
-} satisfies Meta<typeof Input>
+} satisfies Meta<typeof Input>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: (args) => (
@@ -45,7 +45,9 @@ export const Default: Story = {
       <section className={panel}>
         <div className={sectionHeader}>
           <div>
-            <h3 className="font-semibold text-[15px]">Tenant operator intake</h3>
+            <h3 className="font-semibold text-[15px]">
+              Tenant operator intake
+            </h3>
             <p className={hintText}>Workspace: Northwind APAC · audit owner</p>
           </div>
           <span className="rounded-md border border-border-default bg-surface-muted px-2 py-1 font-mono text-text-secondary text-xs">
@@ -56,7 +58,9 @@ export const Default: Story = {
           <label className="grid gap-1.5" htmlFor="afenda-email">
             <span className={labelText}>Operator email</span>
             <Input {...args} id="afenda-email" />
-            <span className={hintText}>Used for audit routing and sign-in.</span>
+            <span className={hintText}>
+              Used for audit routing and sign-in.
+            </span>
           </label>
           <label className="grid gap-1.5" htmlFor="afenda-payroll-id">
             <span className={labelText}>Payroll employee ID</span>
@@ -76,7 +80,7 @@ export const Default: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const WithLabel: Story = {
   render: (args) => (
@@ -85,7 +89,9 @@ export const WithLabel: Story = {
         <div className={sectionHeader}>
           <div>
             <h3 className="font-semibold text-[15px]">Notification routing</h3>
-            <p className={hintText}>Escalation fields shown in operator context.</p>
+            <p className={hintText}>
+              Escalation fields shown in operator context.
+            </p>
           </div>
           <span className="text-status-success text-xs">Policy synced</span>
         </div>
@@ -99,7 +105,7 @@ export const WithLabel: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const Invalid: Story = {
   args: {
@@ -112,8 +118,12 @@ export const Invalid: Story = {
       <section className={panel}>
         <div className={sectionHeader}>
           <div>
-            <h3 className="font-semibold text-[15px]">Audit evidence contact</h3>
-            <p className={hintText}>Inline errors stay next to the affected field.</p>
+            <h3 className="font-semibold text-[15px]">
+              Audit evidence contact
+            </h3>
+            <p className={hintText}>
+              Inline errors stay next to the affected field.
+            </p>
           </div>
           <span className="text-status-danger text-xs">1 field blocked</span>
         </div>
@@ -127,7 +137,7 @@ export const Invalid: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const Disabled: Story = {
   args: {
@@ -139,8 +149,12 @@ export const Disabled: Story = {
       <section className={panel}>
         <div className={sectionHeader}>
           <div>
-            <h3 className="font-semibold text-[15px]">Policy controlled field</h3>
-            <p className={hintText}>Disabled controls include visible rationale.</p>
+            <h3 className="font-semibold text-[15px]">
+              Policy controlled field
+            </h3>
+            <p className={hintText}>
+              Disabled controls include visible rationale.
+            </p>
           </div>
           <span className="text-text-secondary text-xs">Owner: Compliance</span>
         </div>
@@ -154,7 +168,7 @@ export const Disabled: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const StateMatrix: Story = {
   parameters: matrixStoryParameters,
@@ -164,9 +178,13 @@ export const StateMatrix: Story = {
         <div className={sectionHeader}>
           <div>
             <h3 className="font-semibold text-[15px]">Input state matrix</h3>
-            <p className={hintText}>States shown inside an operator record editor.</p>
+            <p className={hintText}>
+              States shown inside an operator record editor.
+            </p>
           </div>
-          <span className="font-mono text-text-secondary text-xs">Tenant NX-44</span>
+          <span className="font-mono text-text-secondary text-xs">
+            Tenant NX-44
+          </span>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="grid gap-1.5" htmlFor="matrix-default-email">
@@ -206,4 +224,4 @@ export const StateMatrix: Story = {
       </section>
     </div>
   ),
-}
+};

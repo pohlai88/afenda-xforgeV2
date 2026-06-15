@@ -2,16 +2,16 @@ import "server-only";
 
 import { readFile, writeFile } from "node:fs/promises";
 import {
-  decodeGitHubBase64Content,
-  getGitHubFileSha,
-} from "./github/file-metadata";
-import {
   getGitHubConfig,
   githubHeaders,
   settingsContentPath,
 } from "./github/config";
-import { getReadMode } from "./loader/read-mode";
+import {
+  decodeGitHubBase64Content,
+  getGitHubFileSha,
+} from "./github/file-metadata";
 import { settingsFilePath } from "./loader/paths";
+import { getReadMode } from "./loader/read-mode";
 import { getWriteMode } from "./writer/write-mode";
 
 interface GitHubFileResponse {
@@ -74,13 +74,17 @@ const writeSettingsToGitHub = async (
 
   if (!response.ok) {
     const errorBody = await response.text();
-    throw new Error(`GitHub settings write failed: ${response.status} ${errorBody}`);
+    throw new Error(
+      `GitHub settings write failed: ${response.status} ${errorBody}`
+    );
   }
 
   return { path };
 };
 
-const writeSettingsLocally = async (content: string): Promise<{ path: string }> => {
+const writeSettingsLocally = async (
+  content: string
+): Promise<{ path: string }> => {
   const filePath = settingsFilePath();
   await writeFile(filePath, content, "utf8");
   return { path: filePath };

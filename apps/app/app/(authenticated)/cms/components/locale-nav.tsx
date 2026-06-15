@@ -1,6 +1,6 @@
 import { cmsLocales } from "@repo/cms/locale";
-import Link from "next/link";
 import { cn } from "@repo/design-system/lib/utils";
+import Link from "next/link";
 
 type LocaleNavProperties = {
   collection: string;

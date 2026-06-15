@@ -42,7 +42,9 @@ test.describe("Email authentication UI", () => {
     await expect(page.getByText(/At least \d+ characters/i)).toBeVisible();
   });
 
-  test("validates password policy before calling Supabase", async ({ page }) => {
+  test("validates password policy before calling Supabase", async ({
+    page,
+  }) => {
     await page.goto("/sign-up");
     await page.getByLabel("Name").fill("Policy Test");
     await page.getByLabel("Email").fill("policy-test@xforge.local");
@@ -62,7 +64,9 @@ test.describe("Email authentication UI", () => {
     await expect(
       page.getByRole("button", { name: "Send sign-in link" })
     ).toBeVisible();
-    await expect(page.getByRole("button", { name: "Use password instead" })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Use password instead" })
+    ).toBeVisible();
   });
 
   test("magic link request shows check-your-email confirmation", async ({
@@ -91,7 +95,9 @@ test.describe("Email authentication UI", () => {
   test("sign-up-success exposes resend confirmation", async ({ page }) => {
     await page.goto("/sign-up-success");
 
-    await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Check your email" })
+    ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Resend confirmation email" })
     ).toBeVisible();
@@ -120,7 +126,9 @@ test.describe("Email authentication (Supabase integration)", () => {
       await page.getByRole("button", { name: "Create account" }).click();
 
       await expect(page).toHaveURL(/\/sign-up-success$/);
-      await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
+      await expect(
+        page.getByRole("heading", { name: "Check your email" })
+      ).toBeVisible();
       await expect(page.getByLabel("Email")).toHaveValue(email);
     } finally {
       await deleteUserByEmail(email);
@@ -195,7 +203,9 @@ test.describe("Email authentication (Supabase integration)", () => {
     await page.goto(confirmUrl);
 
     await expect(page).toHaveURL(/\/update-password$/);
-    await expect(page.getByRole("heading", { name: "Update password" })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Update password" })
+    ).toBeVisible();
   });
 
   test("resend confirmation succeeds for an unconfirmed signup", async ({
@@ -209,7 +219,9 @@ test.describe("Email authentication (Supabase integration)", () => {
 
       await page.goto("/sign-up-success");
       await page.getByLabel("Email").fill(email);
-      await page.getByRole("button", { name: "Resend confirmation email" }).click();
+      await page
+        .getByRole("button", { name: "Resend confirmation email" })
+        .click();
 
       await expect(page.getByText("Email sent")).toBeVisible();
       await expect(

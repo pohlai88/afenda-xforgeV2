@@ -1,21 +1,21 @@
 "use client";
 
 import {
-  WEBHOOK_DELIVERY_STATUSES,
-  type WebhookDeliveryRecord,
-  type WebhookDeliveryStatus,
-  type WebhookEndpointPublic,
-} from "@repo/webhooks";
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import {
+  Badge,
+  Button,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
+} from "@repo/design-system/design-system";
+import {
+  WEBHOOK_DELIVERY_STATUSES,
+  type WebhookDeliveryRecord,
+  type WebhookDeliveryStatus,
+  type WebhookEndpointPublic,
+} from "@repo/webhooks";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { replayDelivery } from "@/app/actions/webhooks/endpoints";
@@ -106,12 +106,12 @@ export const DeliveriesTable = ({
             }
             value={statusFilter}
           >
-          <option value="all">All</option>
-          {WEBHOOK_DELIVERY_STATUSES.map((status) => (
-            <option key={status} value={status}>
-              {status}
-            </option>
-          ))}
+            <option value="all">All</option>
+            {WEBHOOK_DELIVERY_STATUSES.map((status) => (
+              <option key={status} value={status}>
+                {status}
+              </option>
+            ))}
           </select>
         </div>
         <div className="flex items-center gap-2">

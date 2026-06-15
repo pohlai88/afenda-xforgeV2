@@ -1,14 +1,14 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Calendar } from "@repo/design-system/components/afenda-ui/calendar";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import { Label } from "@repo/design-system/components/afenda-ui/label";
 import {
+  Button,
+  Calendar,
+  Input,
+  Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@repo/design-system/components/afenda-ui/popover";
+} from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Dictionary } from "@repo/internationalization";
 import { format } from "date-fns";

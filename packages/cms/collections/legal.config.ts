@@ -1,6 +1,6 @@
 import {
-  legalFrontmatterSchema,
   type LegalFrontmatter,
+  legalFrontmatterSchema,
 } from "../schemas/legal.schema";
 import type { LegalPost, LegalPostMeta } from "../types";
 import type { CollectionConfig, FrontmatterField } from "./types";

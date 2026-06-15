@@ -9,6 +9,10 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import {
+  hostedSection,
+  readHostedConfigText,
+} from "./supabase-auth-hosted-config.mjs";
 
 const root = path.resolve(import.meta.dirname, "..");
 const envPath = path.join(root, ".env");
@@ -50,7 +54,9 @@ function extractSection(configText, sectionName) {
 }
 
 function readBool(section, key) {
-  const match = section.match(new RegExp(`^\\s*${key}\\s*=\\s*(true|false)`, "m"));
+  const match = section.match(
+    new RegExp(`^\\s*${key}\\s*=\\s*(true|false)`, "m")
+  );
   return match?.[1] === "true";
 }
 
@@ -72,7 +78,9 @@ function resolvePasswordCharacters(value) {
 }
 
 function readInt(section, key) {
-  const value = section.match(new RegExp(`^\\s*${key}\\s*=\\s*(\\d+)`, "m"))?.[1];
+  const value = section.match(
+    new RegExp(`^\\s*${key}\\s*=\\s*(\\d+)`, "m")
+  )?.[1];
   return value ? Number(value) : undefined;
 }
 
@@ -80,10 +88,14 @@ function parseAuthSection(configText) {
   const normalized = configText.replace(/\r\n/g, "\n");
   const authBlock = extractSection(normalized, "auth");
   const emailBlock = extractSection(normalized, "auth.email");
-  const passwordBlock = extractSection(normalized, "auth.password");
+  const hostedPasswordBlock = hostedSection(
+    readHostedConfigText(),
+    "[auth_hosted.password]"
+  );
 
   const redirectBlock =
-    authBlock.match(/additional_redirect_urls\s*=\s*\[([\s\S]*?)\]/m)?.[1] ?? "";
+    authBlock.match(/additional_redirect_urls\s*=\s*\[([\s\S]*?)\]/m)?.[1] ??
+    "";
   const redirectUrls = [...redirectBlock.matchAll(/"([^"]+)"/g)].map(
     (match) => match[1]
   );
@@ -93,7 +105,7 @@ function parseAuthSection(configText) {
   const enableConfirmations = readBool(emailBlock, "enable_confirmations");
   const securePasswordChange = readBool(emailBlock, "secure_password_change");
   const requireCurrentPassword = readBool(
-    passwordBlock,
+    hostedPasswordBlock,
     "require_current_password_on_change"
   );
 
@@ -103,11 +115,11 @@ function parseAuthSection(configText) {
     disable_signup: enableSignup === false,
     external_email_enabled: emailSignup !== false,
     mailer_autoconfirm: enableConfirmations === false,
-    password_min_length: readInt(passwordBlock, "min_length"),
+    password_min_length: readInt(authBlock, "minimum_password_length"),
     password_required_characters: resolvePasswordCharacters(
-      readString(passwordBlock, "required_characters")
+      readString(authBlock, "password_requirements")
     ),
-    password_hibp_enabled: readBool(passwordBlock, "hibp_enabled"),
+    password_hibp_enabled: readBool(hostedPasswordBlock, "hibp_enabled"),
     security_update_password_require_reauthentication: securePasswordChange,
     security_update_password_require_current_password: requireCurrentPassword,
   };
@@ -133,7 +145,9 @@ async function main() {
   const payload = parseAuthSection(configText);
 
   if (!payload.uri_allow_list) {
-    console.error("uri_allow_list is empty — check supabase/config.toml additional_redirect_urls");
+    console.error(
+      "uri_allow_list is empty — check supabase/config.toml additional_redirect_urls"
+    );
     process.exit(1);
   }
 

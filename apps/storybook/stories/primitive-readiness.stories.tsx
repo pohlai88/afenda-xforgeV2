@@ -2,11 +2,9 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@repo/design-system/components/afenda-ui/alert";
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Checkbox } from "@repo/design-system/components/afenda-ui/checkbox";
-import {
+  Badge,
+  Button,
+  Checkbox,
   Command,
   CommandEmpty,
   CommandGroup,
@@ -14,8 +12,6 @@ import {
   CommandItem,
   CommandList,
   CommandShortcut,
-} from "@repo/design-system/components/afenda-ui/command";
-import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -24,16 +20,12 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@repo/design-system/components/afenda-ui/dialog";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
-import {
   Field,
   FieldContent,
   FieldDescription,
@@ -41,35 +33,27 @@ import {
   FieldGroup,
   FieldLabel,
   FieldTitle,
-} from "@repo/design-system/components/afenda-ui/field";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import {
+  Input,
   RadioGroup,
   RadioGroupItem,
-} from "@repo/design-system/components/afenda-ui/radio-group";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/design-system/components/afenda-ui/select";
-import { Switch } from "@repo/design-system/components/afenda-ui/switch";
-import {
+  Switch,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
-import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@repo/design-system/components/afenda-ui/tabs";
-import { Textarea } from "@repo/design-system/components/afenda-ui/textarea";
+  Textarea,
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { CheckCircle2Icon, ShieldCheckIcon } from "lucide-react";
 
@@ -328,9 +312,9 @@ function PrimitiveReadiness() {
 }
 
 const meta = {
-  title: "governance/Primitive Readiness",
+  title: "Governance/Primitive Readiness",
   component: PrimitiveReadiness,
-  tags: ["autodocs"],
+  tags: ["autodocs", "internal", "primitive", "visual-audit"],
   parameters: {
     ...layoutStoryParameters,
     layout: "centered",

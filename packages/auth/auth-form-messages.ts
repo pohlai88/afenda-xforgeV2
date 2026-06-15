@@ -21,11 +21,13 @@ export const AUTH_ERROR_CODE_MESSAGES: Record<string, string> = {
   user_already_exists:
     "An account with this email already exists. Sign in instead.",
   email_exists: "An account with this email already exists. Sign in instead.",
-  weak_password: "Choose a stronger password that meets the requirements below.",
+  weak_password:
+    "Choose a stronger password that meets the requirements below.",
   over_request_rate_limit: "Too many attempts. Wait a minute and try again.",
   over_email_send_rate_limit:
     "Too many emails sent. Wait a minute and try again.",
-  over_sms_send_rate_limit: "Too many SMS messages sent. Wait a minute and try again.",
+  over_sms_send_rate_limit:
+    "Too many SMS messages sent. Wait a minute and try again.",
   otp_expired: "This link is invalid or has expired. Request a new one.",
   otp_disabled: "Email codes are not enabled for this project.",
   signup_disabled: "New account registration is currently closed.",
@@ -52,8 +54,7 @@ export const AUTH_ERROR_CODE_MESSAGES: Record<string, string> = {
     "SAML sign-in expired. Start again from your organization's portal.",
   saml_relay_state_not_found:
     "SAML sign-in could not be completed. Start again from your organization's portal.",
-  user_sso_managed:
-    "SAML SSO accounts cannot be linked to other identities.",
+  user_sso_managed: "SAML SSO accounts cannot be linked to other identities.",
   session_expired: "Your session expired. Sign in again.",
   session_not_found: "Your session expired. Sign in again.",
   refresh_token_not_found: "Your session expired. Sign in again.",
@@ -71,7 +72,8 @@ export const AUTH_ERROR_CODE_MESSAGES: Record<string, string> = {
   anonymous_provider_disabled:
     "Anonymous sign-in is not enabled for this project.",
   captcha_failed: "Captcha verification failed. Try again.",
-  same_password: "Choose a new password that is different from your current one.",
+  same_password:
+    "Choose a new password that is different from your current one.",
   reauthentication_needed: "Confirm your identity before continuing.",
   reauthentication_not_valid: "Confirmation failed. Try again.",
   reauth_nonce_missing: "Confirmation failed. Try again.",
@@ -79,7 +81,8 @@ export const AUTH_ERROR_CODE_MESSAGES: Record<string, string> = {
   mfa_verification_failed: "Verification code is incorrect. Try again.",
   mfa_verification_rejected: "Verification was rejected. Try again.",
   mfa_factor_not_found: "That verification method was not found.",
-  mfa_factor_name_conflict: "You already have a verification method with that name.",
+  mfa_factor_name_conflict:
+    "You already have a verification method with that name.",
   too_many_enrolled_mfa_factors:
     "You have reached the maximum number of verification methods.",
   mfa_ip_address_mismatch:
@@ -119,13 +122,12 @@ export const AUTH_CLIENT_ERROR_NAME_MESSAGES: Record<string, string> = {
     "Sign-in could not be completed. Try again from the same browser.",
   AuthPKCEGrantCodeExchangeError:
     "Sign-in could not be completed. Try again from the same browser.",
-  AuthInvalidTokenResponseError:
-    "Sign-in could not be completed. Try again.",
-  AuthImplicitGrantRedirectError:
-    "Sign-in could not be completed. Try again.",
+  AuthInvalidTokenResponseError: "Sign-in could not be completed. Try again.",
+  AuthImplicitGrantRedirectError: "Sign-in could not be completed. Try again.",
   AuthInvalidJwtError: "Your session is invalid. Sign in again.",
   AuthRefreshDiscardedError: "Your session expired. Sign in again.",
-  AuthRetryableFetchError: "Network error. Check your connection and try again.",
+  AuthRetryableFetchError:
+    "Network error. Check your connection and try again.",
 };
 
 const WEAK_PASSWORD_REASON_MESSAGES: Record<string, string> = {
@@ -143,87 +145,91 @@ const HTTP_STATUS_MESSAGES: Record<number, string> = {
 };
 
 /** Legacy fallback when only a message string is available (e.g. old redirects). */
-const AUTH_ERROR_MESSAGE_PATTERNS: Array<{ pattern: RegExp; message: string }> = [
-  {
-    pattern: /invalid login credentials/i,
-    message: "Email or password is incorrect.",
-  },
-  {
-    pattern: /email not confirmed/i,
-    message:
-      "Confirm your email before signing in. Check your inbox or request a new link from sign-up.",
-  },
-  {
-    pattern: /user already registered/i,
-    message: "An account with this email already exists. Sign in instead.",
-  },
-  {
-    pattern: /password should be at least/i,
-    message: "Choose a stronger password that meets the requirements below.",
-  },
-  {
-    pattern: /email rate limit|too many requests|after \d+ seconds/i,
-    message: "Too many attempts. Wait a minute and try again.",
-  },
-  {
-    pattern: /invalid or has expired|otp_expired|token.*expired/i,
-    message: "This link is invalid or has expired. Request a new one.",
-  },
-  {
-    pattern: /signup is disabled/i,
-    message: "New account registration is currently closed.",
-  },
-  {
-    pattern: /passkey_disabled/i,
-    message: "Passkey sign-in is not enabled for this project.",
-  },
-  {
-    pattern: /too_many_passkeys/i,
-    message: "You have reached the maximum number of passkeys for this account.",
-  },
-  {
-    pattern: /webauthn_credential_exists/i,
-    message: "This passkey is already registered to your account.",
-  },
-  {
-    pattern: /webauthn_credential_not_found/i,
-    message: "That passkey is not registered. Try another or sign in with email.",
-  },
-  {
-    pattern: /webauthn_challenge_not_found|webauthn_challenge_expired/i,
-    message: "The passkey prompt expired. Try again.",
-  },
-  {
-    pattern: /webauthn_verification_failed/i,
-    message: "Passkey verification failed. Try again or use another sign-in method.",
-  },
-  {
-    pattern: /not allowed|not supported|publickey/i,
-    message: "Passkeys are not supported in this browser or origin.",
-  },
-  {
-    pattern: /manual linking.*disabled|manual_linking/i,
-    message:
-      "Manual identity linking is disabled. Enable it in Supabase Authentication settings.",
-  },
-  {
-    pattern: /identity.*already linked|already linked to/i,
-    message: "That sign-in method is already linked to your account.",
-  },
-  {
-    pattern: /at least 2 identities|cannot unlink.*only/i,
-    message: "Link another sign-in method before unlinking this one.",
-  },
-  {
-    pattern: /saml|sso.*link/i,
-    message: "SAML SSO accounts cannot be linked to other identities.",
-  },
-  {
-    pattern: /obfuscated/i,
-    message:
-      "If you already have an account with this email, sign in instead. Verification emails are not sent to prevent account enumeration.",
-  },
-];
+const AUTH_ERROR_MESSAGE_PATTERNS: Array<{ pattern: RegExp; message: string }> =
+  [
+    {
+      pattern: /invalid login credentials/i,
+      message: "Email or password is incorrect.",
+    },
+    {
+      pattern: /email not confirmed/i,
+      message:
+        "Confirm your email before signing in. Check your inbox or request a new link from sign-up.",
+    },
+    {
+      pattern: /user already registered/i,
+      message: "An account with this email already exists. Sign in instead.",
+    },
+    {
+      pattern: /password should be at least/i,
+      message: "Choose a stronger password that meets the requirements below.",
+    },
+    {
+      pattern: /email rate limit|too many requests|after \d+ seconds/i,
+      message: "Too many attempts. Wait a minute and try again.",
+    },
+    {
+      pattern: /invalid or has expired|otp_expired|token.*expired/i,
+      message: "This link is invalid or has expired. Request a new one.",
+    },
+    {
+      pattern: /signup is disabled/i,
+      message: "New account registration is currently closed.",
+    },
+    {
+      pattern: /passkey_disabled/i,
+      message: "Passkey sign-in is not enabled for this project.",
+    },
+    {
+      pattern: /too_many_passkeys/i,
+      message:
+        "You have reached the maximum number of passkeys for this account.",
+    },
+    {
+      pattern: /webauthn_credential_exists/i,
+      message: "This passkey is already registered to your account.",
+    },
+    {
+      pattern: /webauthn_credential_not_found/i,
+      message:
+        "That passkey is not registered. Try another or sign in with email.",
+    },
+    {
+      pattern: /webauthn_challenge_not_found|webauthn_challenge_expired/i,
+      message: "The passkey prompt expired. Try again.",
+    },
+    {
+      pattern: /webauthn_verification_failed/i,
+      message:
+        "Passkey verification failed. Try again or use another sign-in method.",
+    },
+    {
+      pattern: /not allowed|not supported|publickey/i,
+      message: "Passkeys are not supported in this browser or origin.",
+    },
+    {
+      pattern: /manual linking.*disabled|manual_linking/i,
+      message:
+        "Manual identity linking is disabled. Enable it in Supabase Authentication settings.",
+    },
+    {
+      pattern: /identity.*already linked|already linked to/i,
+      message: "That sign-in method is already linked to your account.",
+    },
+    {
+      pattern: /at least 2 identities|cannot unlink.*only/i,
+      message: "Link another sign-in method before unlinking this one.",
+    },
+    {
+      pattern: /saml|sso.*link/i,
+      message: "SAML SSO accounts cannot be linked to other identities.",
+    },
+    {
+      pattern: /obfuscated/i,
+      message:
+        "If you already have an account with this email, sign in instead. Verification emails are not sent to prevent account enumeration.",
+    },
+  ];
 
 const DEFAULT_AUTH_ERROR_MESSAGE = "Something went wrong. Try again.";
 

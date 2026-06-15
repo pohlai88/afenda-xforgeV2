@@ -1,10 +1,12 @@
-import { beforeAll, afterEach, beforeEach, expect, test, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, expect, test, vi } from "vitest";
 
 const db = vi.hoisted(() => {
-  const { createRequire } = require("node:module") as typeof import("node:module");
+  const { createRequire } =
+    require("node:module") as typeof import("node:module");
   const req = createRequire(import.meta.url);
-  const { createInsertDeleteDatabaseMock } =
-    req("../../../test-support/mock-database.ts") as typeof import("../../../test-support/mock-database.ts");
+  const { createInsertDeleteDatabaseMock } = req(
+    "../../../test-support/mock-database.ts"
+  ) as typeof import("../../../test-support/mock-database.ts");
   return createInsertDeleteDatabaseMock(vi.fn);
 });
 

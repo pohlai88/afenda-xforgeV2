@@ -1,5 +1,4 @@
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
+import { Button, Input } from "@repo/design-system/design-system";
 import { ArrowRightIcon, SearchIcon } from "lucide-react";
 
 export const Search = () => (

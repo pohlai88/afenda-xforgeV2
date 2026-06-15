@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Button } from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { ColumnDef } from "@tanstack/react-table";
 import {

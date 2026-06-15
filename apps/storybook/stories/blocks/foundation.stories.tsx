@@ -1,26 +1,22 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
+  Badge,
+  Button,
+  EmptyPanel,
   Field,
   FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@repo/design-system/components/afenda-ui/field";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import {
+  FilterBar,
+  FormSection,
+  Input,
+  PageHeader,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/design-system/components/afenda-ui/select";
-import {
-  EmptyPanel,
-  FilterBar,
-  FormSection,
-  PageHeader,
   StatsStrip,
-} from "@repo/design-system/components/blocks";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   AlertTriangleIcon,

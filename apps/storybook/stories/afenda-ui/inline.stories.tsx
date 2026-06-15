@@ -1,13 +1,10 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Box } from "@repo/design-system/components/afenda-ui/box";
-import { Inline } from "@repo/design-system/components/afenda-ui/inline";
-import { Text } from "@repo/design-system/components/afenda-ui/text";
+import { Badge, Box, Inline, Text } from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Inline",
   component: Inline,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {

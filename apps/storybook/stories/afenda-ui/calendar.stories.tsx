@@ -1,16 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Calendar } from "@repo/design-system/components/afenda-ui/calendar"
+import { Calendar } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/Calendar",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: Calendar,
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof Calendar>
+} satisfies Meta<typeof Calendar>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -20,10 +20,13 @@ export const Default: Story = {
           <div>
             <h3 className="font-semibold text-[15px]">Audit close calendar</h3>
             <p className="text-text-secondary text-xs">
-              Date picking appears beside operational deadlines and queue metadata.
+              Date picking appears beside operational deadlines and queue
+              metadata.
             </p>
           </div>
-          <span className="font-mono text-text-secondary text-xs">Q2 close</span>
+          <span className="font-mono text-text-secondary text-xs">
+            Q2 close
+          </span>
         </div>
         <div className="grid gap-5 lg:grid-cols-[auto_1fr]">
           <div className="rounded-lg border border-border-subtle bg-surface-muted p-2">
@@ -53,4 +56,4 @@ export const Default: Story = {
       </section>
     </div>
   ),
-}
+};

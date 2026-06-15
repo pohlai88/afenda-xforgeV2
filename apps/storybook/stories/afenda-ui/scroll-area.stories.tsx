@@ -1,12 +1,10 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
-import { ScrollArea } from "@repo/design-system/components/afenda-ui/scroll-area"
+import { Badge, ScrollArea } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/ScrollArea",
   component: ScrollArea,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {
@@ -16,23 +14,23 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof ScrollArea>
+} satisfies Meta<typeof ScrollArea>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 const records = Array.from({ length: 18 }, (_, index) => ({
   event: `Audit event ${String(index + 1).padStart(2, "0")}`,
   actor: index % 3 === 0 ? "Jordan Lee" : "Ops Admin",
-}))
+}));
 
 export const AuditStream: Story = {
   render: () => (
     <section className="w-[460px] rounded-[var(--card-radius)] border border-border-default bg-surface-raised p-4 shadow-panel">
       <div className="mb-3 flex items-start justify-between gap-3">
         <div className="grid gap-1">
-          <h2 className="text-[14px] font-semibold text-text-primary">
+          <h2 className="font-semibold text-[14px] text-text-primary">
             Audit stream
           </h2>
           <p className="text-[12px] text-text-secondary">
@@ -50,7 +48,9 @@ export const AuditStream: Story = {
               className="rounded-[var(--xforge-radius-sm)] px-2 py-1.5 text-[13px]"
               key={record.event}
             >
-              <div className="font-medium text-text-primary">{record.event}</div>
+              <div className="font-medium text-text-primary">
+                {record.event}
+              </div>
               <div className="text-[12px] text-text-secondary">
                 Updated by {record.actor}
               </div>
@@ -60,4 +60,4 @@ export const AuditStream: Story = {
       </ScrollArea>
     </section>
   ),
-}
+};

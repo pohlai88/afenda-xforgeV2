@@ -1,8 +1,5 @@
-import { FileTextIcon, ShieldCheckIcon, TimerIcon } from "lucide-react"
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
 import {
+  Badge,
   Item,
   ItemActions,
   ItemContent,
@@ -11,10 +8,13 @@ import {
   ItemMedia,
   ItemSeparator,
   ItemTitle,
-} from "@repo/design-system/components/afenda-ui/item"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import { FileTextIcon, ShieldCheckIcon, TimerIcon } from "lucide-react";
 
 const meta = {
   title: "Afenda UI/Item",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: Item,
   subcomponents: {
     ItemActions,
@@ -26,11 +26,11 @@ const meta = {
     ItemTitle,
   },
   parameters: { layout: "fullscreen" },
-} satisfies Meta<typeof Item>
+} satisfies Meta<typeof Item>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -38,10 +38,10 @@ export const Default: Story = {
       <div className="mx-auto max-w-4xl rounded-lg border border-border-default bg-surface-raised p-4">
         <div className="mb-3 flex items-center justify-between">
           <div>
-            <p className="text-[12px] font-medium uppercase tracking-wide text-text-secondary">
+            <p className="font-medium text-[12px] text-text-secondary uppercase tracking-wide">
               Review packet
             </p>
-            <h3 className="text-[15px] font-semibold text-text-primary">
+            <h3 className="font-semibold text-[15px] text-text-primary">
               Required evidence
             </h3>
           </div>
@@ -49,9 +49,27 @@ export const Default: Story = {
         </div>
         <ItemGroup className="overflow-hidden rounded-md border border-border-default bg-surface">
           {[
-            [FileTextIcon, "Payroll evidence", "Generated report with operator, approval chain, and lock status.", "Ready", "positive"],
-            [ShieldCheckIcon, "Access attestation", "Seven privileged users verified against tenant policy.", "Reviewed", "neutral"],
-            [TimerIcon, "SLA exception", "Warehouse shift B overtime variance expires in 12 minutes.", "Pending", "warning"],
+            [
+              FileTextIcon,
+              "Payroll evidence",
+              "Generated report with operator, approval chain, and lock status.",
+              "Ready",
+              "positive",
+            ],
+            [
+              ShieldCheckIcon,
+              "Access attestation",
+              "Seven privileged users verified against tenant policy.",
+              "Reviewed",
+              "neutral",
+            ],
+            [
+              TimerIcon,
+              "SLA exception",
+              "Warehouse shift B overtime variance expires in 12 minutes.",
+              "Pending",
+              "warning",
+            ],
           ].map(([Icon, title, description, state, tone], index) => (
             <div key={title as string}>
               <Item>
@@ -78,4 +96,4 @@ export const Default: Story = {
       </div>
     </div>
   ),
-}
+};

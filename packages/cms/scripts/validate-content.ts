@@ -8,9 +8,7 @@ const main = async (): Promise<void> => {
     process.exit(0);
   }
 
-  console.error(
-    `CMS validation failed (${result.errors.length} error(s)):\n`
-  );
+  console.error(`CMS validation failed (${result.errors.length} error(s)):\n`);
 
   for (const error of result.errors) {
     console.error(`- ${error.file}\n  ${error.message}`);

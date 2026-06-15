@@ -1,6 +1,3 @@
-import { FileTextIcon, HomeIcon } from "lucide-react"
-import type { Meta, StoryObj } from "@storybook/react"
-
 import {
   Sidebar,
   SidebarContent,
@@ -12,26 +9,29 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-} from "@repo/design-system/components/afenda-ui/sidebar"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import { FileTextIcon, HomeIcon } from "lucide-react";
 
-import { layoutStoryParameters } from "../../.storybook/essentials"
+import { layoutStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
   title: "Afenda UI/Sidebar",
+  tags: ["autodocs", "afenda-ui", "primitive"],
   component: Sidebar,
   parameters: { ...layoutStoryParameters, layout: "fullscreen" },
-} satisfies Meta<typeof Sidebar>
+} satisfies Meta<typeof Sidebar>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
     <SidebarProvider className="min-h-[420px]">
-      <Sidebar collapsible="none" className="border-r border-border-default">
+      <Sidebar className="border-border-default border-r" collapsible="none">
         <SidebarHeader>
-          <div className="px-2 py-1 text-[13px] font-medium text-text-primary">
+          <div className="px-2 py-1 font-medium text-[13px] text-text-primary">
             Afenda Ops
           </div>
         </SidebarHeader>
@@ -62,4 +62,4 @@ export const Default: Story = {
       </main>
     </SidebarProvider>
   ),
-}
+};

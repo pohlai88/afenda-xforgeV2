@@ -1,15 +1,7 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Checkbox } from "@repo/design-system/components/afenda-ui/checkbox";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
-import {
+  Badge,
+  Button,
+  Checkbox,
   DataTableShell,
   EmptyPanel,
   FilterBar,
@@ -18,7 +10,13 @@ import {
   RuntimeStateBlock,
   SaveStateStrip,
   StatsStrip,
-} from "@repo/design-system/components/blocks";
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   AlertTriangleIcon,

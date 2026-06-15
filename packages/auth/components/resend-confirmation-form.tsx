@@ -1,48 +1,53 @@
 "use client";
 
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-  Button,
+  cn,
   Field,
   FieldError,
+  FieldHint,
   FieldLabel,
   Input,
-  cn,
   recipe,
 } from "@repo/design-system/design-system";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { fromSupabaseError } from "../auth-result";
+import { useState } from "react";
+import { fromSupabaseError, parseAuthFormFields } from "../auth-result";
 import { PENDING_CONFIRMATION_EMAIL_KEY } from "../auth-ui-settings";
-import { buildEmailConfirmRedirect } from "../email-redirect";
 import { createClient } from "../client";
+import { buildEmailConfirmRedirect } from "../redirects";
+import { resendConfirmationSchema } from "../schemas";
+import { AuthSuccessAlert } from "./auth-feedback";
+import { AuthPendingButton } from "./auth-pending-button";
+import { authLinkClass } from "./auth-section";
+
+const emailFieldId = "resend-confirmation-email";
+const emailErrorId = "resend-confirmation-email-error";
+const emailHintId = "resend-confirmation-email-hint";
 
 type ResendConfirmationFormProperties = {
-  initialEmail?: string;
+  readonly initialEmail?: string;
+};
+
+const readStoredEmail = (propEmail: string) => {
+  if (propEmail) {
+    return propEmail;
+  }
+
+  if (typeof sessionStorage === "undefined") {
+    return "";
+  }
+
+  return sessionStorage.getItem(PENDING_CONFIRMATION_EMAIL_KEY) ?? "";
 };
 
 export const ResendConfirmationForm = ({
   initialEmail = "",
 }: ResendConfirmationFormProperties) => {
-  const [email, setEmail] = useState(initialEmail);
+  const [email, setEmail] = useState(() => readStoredEmail(initialEmail));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const supabase = createClient();
-
-  useEffect(() => {
-    if (initialEmail) {
-      return;
-    }
-
-    const storedEmail = sessionStorage.getItem(PENDING_CONFIRMATION_EMAIL_KEY);
-
-    if (storedEmail) {
-      setEmail(storedEmail);
-    }
-  }, [initialEmail]);
 
   const handleResend = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -50,12 +55,12 @@ export const ResendConfirmationForm = ({
     setError(null);
     setSuccess(false);
 
-    const trimmedEmail = email.trim();
+    const validated = parseAuthFormFields(resendConfirmationSchema, { email });
 
-    if (!trimmedEmail) {
-      setError("Enter the email address you used to sign up.");
+    if (!validated.ok) {
+      setError(validated.fieldErrors.email ?? validated.formError ?? null);
       setLoading(false);
-      document.getElementById("resend-confirmation-email")?.focus();
+      document.getElementById(emailFieldId)?.focus();
       return;
     }
 
@@ -63,7 +68,7 @@ export const ResendConfirmationForm = ({
 
     const { error: resendError } = await supabase.auth.resend({
       type: "signup",
-      email: trimmedEmail,
+      email: validated.data.email,
       options: { emailRedirectTo },
     });
 
@@ -72,6 +77,7 @@ export const ResendConfirmationForm = ({
     if (failure) {
       setError(failure.error);
       setLoading(false);
+      document.getElementById(emailFieldId)?.focus();
       return;
     }
 
@@ -81,13 +87,10 @@ export const ResendConfirmationForm = ({
 
   if (success) {
     return (
-      <Alert role="status" tone="positive">
-        <AlertTitle>Email sent</AlertTitle>
-        <AlertDescription className={recipe("captionText")}>
-          If an account exists for that address, a new confirmation link is on
-          its way.
-        </AlertDescription>
-      </Alert>
+      <AuthSuccessAlert
+        message="If an account exists for that address, a new confirmation link is on its way."
+        title="Email sent"
+      />
     );
   }
 
@@ -98,14 +101,14 @@ export const ResendConfirmationForm = ({
       onSubmit={handleResend}
     >
       <Field>
-        <FieldLabel htmlFor="resend-confirmation-email">Email</FieldLabel>
+        <FieldLabel htmlFor={emailFieldId}>Email</FieldLabel>
         <Input
           aria-describedby={
-            error ? "resend-confirmation-email-error" : undefined
+            error ? `${emailErrorId} ${emailHintId}` : emailHintId
           }
           aria-invalid={error ? true : undefined}
           autoComplete="email"
-          id="resend-confirmation-email"
+          id={emailFieldId}
           name="email"
           onChange={(event) => {
             setEmail(event.target.value);
@@ -118,20 +121,22 @@ export const ResendConfirmationForm = ({
           type="email"
           value={email}
         />
-        {error ? (
-          <FieldError id="resend-confirmation-email-error">{error}</FieldError>
-        ) : null}
+        <FieldHint id={emailHintId}>
+          Enter the address you used to sign up.
+        </FieldHint>
+        {error ? <FieldError id={emailErrorId}>{error}</FieldError> : null}
       </Field>
-      <Button
+      <AuthPendingButton
         className="w-full"
-        disabled={loading}
+        pending={loading}
+        pendingLabel="Sending…"
         type="submit"
-        variant="secondary"
+        variant="primary"
       >
-        {loading ? "Sending…" : "Resend confirmation email"}
-      </Button>
+        Resend confirmation email
+      </AuthPendingButton>
       <p className={cn("text-center", recipe("captionText"))}>
-        <Link className="underline underline-offset-4" href="/sign-in">
+        <Link className={authLinkClass} href="/sign-in">
           Back to sign in
         </Link>
       </p>

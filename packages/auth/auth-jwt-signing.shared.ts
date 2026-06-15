@@ -32,7 +32,9 @@ export const describeJwtAlgorithm = (algorithm: string): string => {
   }
 };
 
-export const describeClientKeyMode = (mode: JwtApiKeyMode["client"]): string => {
+export const describeClientKeyMode = (
+  mode: JwtApiKeyMode["client"]
+): string => {
   switch (mode) {
     case "publishable":
       return "Publishable (`sb_publishable_…`)";
@@ -45,7 +47,9 @@ export const describeClientKeyMode = (mode: JwtApiKeyMode["client"]): string => 
   }
 };
 
-export const describeServerKeyMode = (mode: JwtApiKeyMode["server"]): string => {
+export const describeServerKeyMode = (
+  mode: JwtApiKeyMode["server"]
+): string => {
   switch (mode) {
     case "secret":
       return "Secret (`sb_secret_…`)";

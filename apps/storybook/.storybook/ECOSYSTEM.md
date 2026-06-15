@@ -19,7 +19,8 @@ Design-system workshop at `apps/storybook` (port **6006**). Component stories li
 pnpm --filter storybook dev          # local workshop (6006)
 pnpm --filter storybook build        # static export (MCP addon omitted)
 pnpm --filter storybook clean        # storybook-static, caches, a11y-reports
-pnpm --filter storybook check           # typecheck + static build (prebuild clears output)
+pnpm --filter storybook check           # typecheck + hygiene + static build (prebuild clears output)
+pnpm --filter storybook hygiene         # story structure, titles, and import gates
 pnpm --filter storybook typecheck
 pnpm --filter storybook test-storybook:interaction   # narrow play lane
 ```
@@ -70,7 +71,7 @@ Storybook no longer depends on `next` or `@storybook/nextjs`. The only Next-spec
 | Preview decorators + theme toolbar | `preview.decorators.tsx` |
 | Essentials parameters | `preview.parameters.ts` |
 | Autodocs (`tags: ['autodocs']`) | `preview.tsx` default tag (SB10 — not `main.ts` docs.autodocs) |
-| CSF3 stories | `stories/**/*.stories.tsx` |
+| CSF3 stories | Explicit dirs in `main.ts` (`afenda-ui/`, `blocks/`, allowlisted root) |
 | MDX docs page | `stories/Introduction.mdx` |
 | a11y addon + test-runner | `.storybook/test-runner.ts` |
 | Chromatic | `chromatic.config.json` |

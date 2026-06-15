@@ -1,5 +1,4 @@
-import { Label } from "@repo/design-system/components/afenda-ui/label";
-import { Switch } from "@repo/design-system/components/afenda-ui/switch";
+import { Label, Switch } from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { ComponentProps } from "react";
 import { useState } from "react";
@@ -38,7 +37,7 @@ function PlaygroundSwitch() {
 const meta = {
   title: "Afenda UI/Switch",
   component: Switch,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -120,7 +119,7 @@ export const Playground: Story = {
     ...interactionStoryParameters,
   },
   render: PlaygroundSwitch,
-  tags: ["interaction"],
+  tags: ["interaction", "afenda-ui", "primitive"],
   play: async ({ canvas, userEvent }) => {
     const toggle = canvas.getByRole("switch", {
       name: approvalNotificationsName,

@@ -1,9 +1,7 @@
 "use client";
 
+import { Button, Input, Label } from "@repo/design-system/design-system";
 import { CMS_WEBHOOK_EVENTS, type CmsWebhookEventType } from "@repo/webhooks";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import { Label } from "@repo/design-system/components/afenda-ui/label";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { createEndpoint } from "@/app/actions/webhooks/endpoints";
@@ -51,7 +49,10 @@ export const CreateEndpointForm = () => {
   };
 
   return (
-    <form className="flex flex-col gap-4 rounded-lg border p-4" onSubmit={handleSubmit}>
+    <form
+      className="flex flex-col gap-4 rounded-lg border p-4"
+      onSubmit={handleSubmit}
+    >
       <div>
         <h3 className="font-medium text-sm">Add endpoint</h3>
         <p className="text-muted-foreground text-xs">

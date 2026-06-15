@@ -4,8 +4,6 @@ import {
   FieldHint,
   FieldLabel,
   FieldRequired,
-} from "@repo/design-system/components/afenda-ui/field"
-import {
   Select,
   SelectContent,
   SelectGroup,
@@ -14,23 +12,27 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "@repo/design-system/components/afenda-ui/select"
-import type { Meta, StoryObj } from "@storybook/react"
-import { expect, screen, waitFor } from "storybook/test"
+} from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
+import { expect, screen, waitFor } from "storybook/test";
 
 import {
   interactionStoryParameters,
   matrixStoryParameters,
-} from "../../.storybook/essentials"
+} from "../../.storybook/essentials";
 
-const shell = "min-h-[560px] bg-surface-canvas p-6 text-[13px] text-text-primary"
+const shell =
+  "min-h-[560px] bg-surface-canvas p-6 text-[13px] text-text-primary";
 const panel =
-  "mx-auto grid max-w-5xl gap-5 rounded-xl border border-border-default bg-surface-raised p-5 shadow-panel"
+  "mx-auto grid max-w-5xl gap-5 rounded-xl border border-border-default bg-surface-raised p-5 shadow-panel";
+const TENANT_COMBOBOX_NAME = /tenant/i;
+const NORTHWIND_TEXT = /northwind/i;
+const CONTOSO_OPTION_NAME = /contoso/i;
 
 const meta = {
   title: "Afenda UI/Select",
   component: Select,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "fullscreen",
     docs: {
@@ -40,11 +42,11 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof Select>
+} satisfies Meta<typeof Select>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
@@ -80,8 +82,12 @@ export const Default: Story = {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="jun-offcycle">June off-cycle batch</SelectItem>
-                <SelectItem value="jun-regular">June regular payroll</SelectItem>
+                <SelectItem value="jun-offcycle">
+                  June off-cycle batch
+                </SelectItem>
+                <SelectItem value="jun-regular">
+                  June regular payroll
+                </SelectItem>
                 <SelectItem value="may-close">May close corrections</SelectItem>
               </SelectContent>
             </Select>
@@ -91,7 +97,7 @@ export const Default: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const Grouped: Story = {
   render: () => (
@@ -128,7 +134,7 @@ export const Grouped: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const Invalid: Story = {
   render: () => (
@@ -168,7 +174,7 @@ export const Invalid: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const StateMatrix: Story = {
   parameters: matrixStoryParameters,
@@ -220,10 +226,10 @@ export const StateMatrix: Story = {
       </section>
     </div>
   ),
-}
+};
 
 export const Interactive: Story = {
-  tags: ["interaction"],
+  tags: ["interaction", "afenda-ui", "primitive"],
   parameters: interactionStoryParameters,
   render: () => (
     <div className={shell}>
@@ -244,12 +250,18 @@ export const Interactive: Story = {
     </div>
   ),
   play: async ({ canvas, userEvent }) => {
-    const trigger = canvas.getByRole("combobox", { name: /tenant/i });
-    await expect(trigger).toHaveTextContent(/northwind/i);
+    const trigger = canvas.getByRole("combobox", {
+      name: TENANT_COMBOBOX_NAME,
+    });
+    await expect(trigger).toHaveTextContent(NORTHWIND_TEXT);
 
     await userEvent.click(trigger);
-    await userEvent.click(screen.getByRole("option", { name: /contoso/i }));
-    await waitFor(() => expect(trigger).toHaveAttribute("aria-expanded", "false"));
-    await expect(trigger).toHaveTextContent(/contoso/i);
+    await userEvent.click(
+      screen.getByRole("option", { name: CONTOSO_OPTION_NAME })
+    );
+    await waitFor(() =>
+      expect(trigger).toHaveAttribute("aria-expanded", "false")
+    );
+    await expect(trigger).toHaveTextContent(CONTOSO_OPTION_NAME);
   },
-}
+};

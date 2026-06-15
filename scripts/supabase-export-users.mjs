@@ -106,7 +106,7 @@ async function main() {
     parseToken(path.join(root, ".env.local"), "SUPABASE_SECRET_KEY") ||
     parseToken(path.join(root, ".env.local"), "SUPABASE_SERVICE_ROLE_KEY");
 
-  if (!url || !secretKey) {
+  if (!(url && secretKey)) {
     console.error(
       "Need NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SECRET_KEY (or service role key)."
     );

@@ -1,13 +1,15 @@
-import { Box } from "@repo/design-system/components/afenda-ui/box";
-import { MetricText } from "@repo/design-system/components/afenda-ui/metric-text";
-import { Stack } from "@repo/design-system/components/afenda-ui/stack";
-import { Text } from "@repo/design-system/components/afenda-ui/text";
+import {
+  Box,
+  MetricText,
+  Stack,
+  Text,
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Afenda UI/MetricText",
   component: MetricText,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {

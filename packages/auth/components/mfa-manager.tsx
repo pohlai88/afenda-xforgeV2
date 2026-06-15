@@ -1,19 +1,25 @@
 "use client";
 
 import {
-  Alert,
-  AlertDescription,
   Button,
+  cn,
   Field,
+  FieldHint,
   FieldLabel,
   Input,
-  cn,
   recipe,
 } from "@repo/design-system/design-system";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { fromSupabaseError } from "../auth-result";
 import { createClient } from "../client";
 import { useAuthUiConfig } from "../context/auth-ui-config";
+import { AuthConfigNotice, AuthErrorAlert, AuthSuccessAlert } from "./auth-feedback";
+import { AuthPendingButton } from "./auth-pending-button";
+import {
+  AuthLoadingState,
+  AuthSection,
+  AuthSectionHeader,
+} from "./auth-section";
 
 type MfaFactor = {
   id: string;
@@ -25,10 +31,14 @@ type MfaFactor = {
 export const MfaManager = () => {
   const { settings } = useAuthUiConfig();
   const supabase = createClient();
+  const titleId = useId();
+  const verifyFieldId = useId();
   const [factors, setFactors] = useState<MfaFactor[]>([]);
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
   const [verifyCode, setVerifyCode] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [enrollMode, setEnrollMode] = useState<"totp" | "phone" | null>(null);
   const [factorId, setFactorId] = useState<string | null>(null);
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -41,7 +51,8 @@ export const MfaManager = () => {
     const { data, error: listError } = await supabase.auth.mfa.listFactors();
 
     if (listError) {
-      setError(listError.message);
+      const failure = fromSupabaseError(listError);
+      setError(failure?.error ?? "Could not load MFA factors.");
       setFactors([]);
       setLoading(false);
       return;
@@ -55,13 +66,42 @@ export const MfaManager = () => {
     void loadFactors();
   }, [loadFactors]);
 
-  const startEnrollment = async () => {
+  const startEnrollment = async (mode: "totp" | "phone") => {
     setEnrolling(true);
     setError(null);
     setMessage(null);
     setVerifyCode("");
     setQrCode(null);
     setFactorId(null);
+    setEnrollMode(mode);
+
+    if (mode === "phone") {
+      const trimmed = phoneNumber.trim();
+
+      if (!trimmed) {
+        setError("Enter your phone number in E.164 format (e.g. +15551234567).");
+        setEnrolling(false);
+        return;
+      }
+
+      const { data, error: enrollError } = await supabase.auth.mfa.enroll({
+        factorType: "phone",
+        friendlyName: "Phone",
+        phone: trimmed,
+      });
+
+      const failure = fromSupabaseError(enrollError);
+
+      if (failure) {
+        setError(failure.error);
+        setEnrolling(false);
+        return;
+      }
+
+      setFactorId(data?.id ?? null);
+      setEnrolling(false);
+      return;
+    }
 
     const { data, error: enrollError } = await supabase.auth.mfa.enroll({
       factorType: "totp",
@@ -95,7 +135,8 @@ export const MfaManager = () => {
       await supabase.auth.mfa.challenge({ factorId });
 
     if (challengeError) {
-      setError(challengeError.message);
+      const failure = fromSupabaseError(challengeError);
+      setError(failure?.error ?? "Could not start MFA verification.");
       setEnrolling(false);
       return;
     }
@@ -114,10 +155,13 @@ export const MfaManager = () => {
       return;
     }
 
-    setMessage("Authenticator app added.");
+    setMessage(
+      enrollMode === "phone" ? "Phone factor added." : "Authenticator app added."
+    );
     setFactorId(null);
     setQrCode(null);
     setVerifyCode("");
+    setEnrollMode(null);
     setEnrolling(false);
     await loadFactors();
   };
@@ -139,42 +183,64 @@ export const MfaManager = () => {
     await loadFactors();
   };
 
-  if (!settings.mfa.totpEnrollEnabled && !settings.mfa.totpVerifyEnabled) {
+  if (
+    !(
+      settings.mfa.totpEnrollEnabled ||
+      settings.mfa.totpVerifyEnabled ||
+      settings.mfa.phoneEnrollEnabled ||
+      settings.mfa.phoneVerifyEnabled
+    )
+  ) {
     return null;
   }
 
+  const showTotpActions = settings.mfa.totpEnrollEnabled || settings.mfa.totpVerifyEnabled;
+  const showPhoneActions = settings.mfa.phoneEnrollEnabled || settings.mfa.phoneVerifyEnabled;
+
   return (
-    <section className={cn("flex flex-col", recipe("sectionGap"))}>
-      <div className="flex flex-col gap-1">
-        <h2 className="font-medium text-text-primary">Multi-factor authentication</h2>
-        <p className={recipe("captionText")}>
-          Add an authenticator app for a second sign-in step.
-        </p>
-      </div>
+    <AuthSection aria-busy={loading} aria-labelledby={titleId}>
+      <AuthSectionHeader
+        description="Add an authenticator app or phone number for a second sign-in step."
+        title="Multi-factor authentication"
+        titleId={titleId}
+      />
 
-      {!settings.mfa.totpEnrollEnabled ? (
-        <Alert tone="critical">
-          <AlertDescription>
-            TOTP enrollment is disabled in Supabase. Verification is enabled, but
-            new authenticator apps cannot be added until enrollment is turned on in
-            the Supabase dashboard.
-          </AlertDescription>
-        </Alert>
+      {settings.mfa.totpEnrollEnabled || settings.mfa.phoneEnrollEnabled ? null : (
+        <AuthConfigNotice>
+          MFA enrollment is disabled in Supabase. Verification may still be required
+          for existing factors, but new methods cannot be added until enrollment is
+          turned on in the Supabase dashboard.
+        </AuthConfigNotice>
+      )}
+
+      {settings.mfa.totpEnrollEnabled ? null : showTotpActions ? (
+        <AuthConfigNotice>
+          TOTP enrollment is disabled in Supabase. Existing authenticator apps can
+          still verify sign-in when verify is enabled.
+        </AuthConfigNotice>
       ) : null}
 
-      {error ? (
-        <Alert tone="critical">
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+      {settings.mfa.phoneEnrollEnabled ? null : showPhoneActions ? (
+        <AuthConfigNotice>
+          Phone MFA enrollment is disabled in Supabase. Enable phone auth and SMS
+          in the dashboard to add phone factors.
+        </AuthConfigNotice>
       ) : null}
-      {message ? (
-        <Alert tone="positive">
-          <AlertDescription>{message}</AlertDescription>
-        </Alert>
+
+      {error && !loading ? (
+        <AuthErrorAlert
+          message={error}
+          onRetry={
+            factors.length === 0 && !enrolling && !factorId
+              ? () => void loadFactors()
+              : undefined
+          }
+        />
       ) : null}
+      {message ? <AuthSuccessAlert message={message} /> : null}
 
       {loading ? (
-        <p className={recipe("captionText")}>Loading factors…</p>
+        <AuthLoadingState label="Loading factors…" />
       ) : factors.length === 0 ? (
         <p className={recipe("captionText")}>No MFA factors enrolled yet.</p>
       ) : (
@@ -191,7 +257,11 @@ export const MfaManager = () => {
                 <p className={recipe("captionText")}>{factor.status}</p>
               </div>
               <Button
-                disabled={!settings.mfa.totpEnrollEnabled}
+                disabled={
+                  factor.factor_type === "totp"
+                    ? !settings.mfa.totpEnrollEnabled
+                    : !settings.mfa.phoneEnrollEnabled
+                }
                 onClick={() => removeFactor(factor.id)}
                 size="sm"
                 type="button"
@@ -204,30 +274,72 @@ export const MfaManager = () => {
         </ul>
       )}
 
-      {settings.mfa.totpEnrollEnabled && !factorId ? (
-        <Button
+      {settings.mfa.totpEnrollEnabled && !factorId && enrollMode !== "phone" ? (
+        <AuthPendingButton
           className="w-fit"
-          disabled={enrolling}
-          onClick={startEnrollment}
+          onClick={() => startEnrollment("totp")}
+          pending={enrolling && enrollMode === "totp"}
+          pendingLabel="Starting…"
           type="button"
           variant="secondary"
         >
-          {enrolling ? "Starting…" : "Add authenticator app"}
-        </Button>
+          Add authenticator app
+        </AuthPendingButton>
       ) : null}
 
-      {factorId && qrCode ? (
-        <form className={cn("flex flex-col", recipe("sectionGap"))} onSubmit={verifyEnrollment}>
-          <div
-            className="mx-auto rounded-[var(--xforge-radius-md)] border border-border-default bg-white p-3"
-            // biome-ignore lint/security/noDangerouslySetInnerHtml: Supabase returns SVG QR markup
-            dangerouslySetInnerHTML={{ __html: qrCode }}
-          />
+      {settings.mfa.phoneEnrollEnabled && !factorId && enrollMode !== "totp" ? (
+        <div className={cn("flex flex-col", recipe("sectionGap"))}>
           <Field>
-            <FieldLabel htmlFor="mfa-verify-code">Verification code</FieldLabel>
+            <FieldLabel htmlFor={`${titleId}-phone`}>Phone number</FieldLabel>
             <Input
+              autoComplete="tel"
+              id={`${titleId}-phone`}
+              inputMode="tel"
+              onChange={(event) => setPhoneNumber(event.target.value)}
+              placeholder="+15551234567"
+              type="tel"
+              value={phoneNumber}
+            />
+            <FieldHint>Use international format including country code.</FieldHint>
+          </Field>
+          <AuthPendingButton
+            className="w-fit"
+            onClick={() => startEnrollment("phone")}
+            pending={enrolling && enrollMode === "phone"}
+            pendingLabel="Sending code…"
+            type="button"
+            variant="secondary"
+          >
+            Add phone factor
+          </AuthPendingButton>
+        </div>
+      ) : null}
+
+      {factorId && (qrCode || enrollMode === "phone") ? (
+        <form
+          className={cn("flex flex-col", recipe("sectionGap"))}
+          noValidate
+          onSubmit={verifyEnrollment}
+        >
+          {qrCode ? (
+            <div
+              className="mx-auto rounded-[var(--xforge-radius-md)] border border-border-default bg-white p-3"
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: Supabase returns SVG QR markup
+              dangerouslySetInnerHTML={{ __html: qrCode }}
+            />
+          ) : (
+            <p className={recipe("captionText")}>
+              Enter the SMS code sent to {phoneNumber.trim() || "your phone"}.
+            </p>
+          )}
+          <Field>
+            <FieldLabel htmlFor={verifyFieldId}>
+              {enrollMode === "phone" ? "SMS verification code" : "Verification code"}
+            </FieldLabel>
+            <Input
+              aria-describedby={`${verifyFieldId}-hint`}
               autoComplete="one-time-code"
-              id="mfa-verify-code"
+              id={verifyFieldId}
               inputMode="numeric"
               maxLength={settings.otp.length}
               onChange={(event) => setVerifyCode(event.target.value)}
@@ -235,12 +347,21 @@ export const MfaManager = () => {
               required
               value={verifyCode}
             />
+            <FieldHint id={`${verifyFieldId}-hint`}>
+              Enter the code from your authenticator app.
+            </FieldHint>
           </Field>
-          <Button className="w-fit" disabled={enrolling} type="submit" variant="primary">
-            {enrolling ? "Verifying…" : "Verify and enable"}
-          </Button>
+          <AuthPendingButton
+            className="w-fit"
+            pending={enrolling}
+            pendingLabel="Verifying…"
+            type="submit"
+            variant="primary"
+          >
+            Verify and enable
+          </AuthPendingButton>
         </form>
       ) : null}
-    </section>
+    </AuthSection>
   );
 };

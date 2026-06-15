@@ -2,14 +2,14 @@
 
 export {
   CMS_EVENT_PUBLISHED,
-  CMS_EVENT_UNPUBLISHED,
   CMS_EVENT_SETTINGS_UPDATED,
+  CMS_EVENT_UNPUBLISHED,
 } from "@repo/cms/events";
 
 import {
   CMS_EVENT_PUBLISHED,
-  CMS_EVENT_UNPUBLISHED,
   CMS_EVENT_SETTINGS_UPDATED,
+  CMS_EVENT_UNPUBLISHED,
 } from "@repo/cms/events";
 
 export const WEBHOOK_TEST_EVENT = "webhook.test";
@@ -40,7 +40,8 @@ export const INBOUND_STRIPE_EVENT_TYPES = [
   STRIPE_EVENT_SUBSCRIPTION_SCHEDULE_CANCELED,
 ] as const;
 
-export type InboundStripeEventType = (typeof INBOUND_STRIPE_EVENT_TYPES)[number];
+export type InboundStripeEventType =
+  (typeof INBOUND_STRIPE_EVENT_TYPES)[number];
 
 export const INBOUND_PROVIDERS = ["stripe", "auth"] as const;
 export type InboundProvider = (typeof INBOUND_PROVIDERS)[number];

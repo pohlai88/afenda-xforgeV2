@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { formatSigningSecretForDisplay, generateWebhookSecret } from "../lib/secrets";
+import {
+  formatSigningSecretForDisplay,
+  generateWebhookSecret,
+} from "../lib/secrets";
 import { signStandardWebhook } from "../lib/signing";
 import { verifyStandardWebhook } from "../lib/verify";
 

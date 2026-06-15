@@ -1,12 +1,11 @@
 "use client";
 
 import {
+  FieldLabel,
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-  FieldLabel,
-  cn,
 } from "@repo/design-system/design-system";
 import { useId, useState } from "react";
 import type { PasswordPolicy } from "../auth-ui-settings";
@@ -49,7 +48,12 @@ export const PasswordField = ({
   const toggleLabel = visible ? "Hide password" : "Show password";
   const showChecklist = focused || value.length > 0;
   const requirementIds =
-    showRequirements && policy ? [requirementsId] : [];
+    showRequirements && policy
+      ? [
+          requirementsId,
+          ...(showChecklist ? [`${requirementsId}-checklist`] : []),
+        ]
+      : [];
   const mergedDescribedBy = [describedBy, ...requirementIds]
     .filter(Boolean)
     .join(" ");
@@ -88,7 +92,7 @@ export const PasswordField = ({
         </InputGroupAddon>
       </InputGroup>
       {showRequirements && policy ? (
-        <div className={cn("mt-2")}>
+        <div className="mt-2">
           <PasswordRequirements
             describedById={requirementsId}
             password={value}

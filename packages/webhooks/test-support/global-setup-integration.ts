@@ -10,6 +10,8 @@ export default async function globalSetup(): Promise<void> {
     return;
   }
 
-  const { ensureWebhookOutboxSchema } = await import("./ensure-webhook-schema.ts");
+  const { ensureWebhookOutboxSchema } = await import(
+    "./ensure-webhook-schema.ts"
+  );
   await ensureWebhookOutboxSchema();
 }

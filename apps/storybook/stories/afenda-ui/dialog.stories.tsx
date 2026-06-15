@@ -1,6 +1,6 @@
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
+  Badge,
+  Button,
   Dialog,
   DialogClose,
   DialogContent,
@@ -9,17 +9,20 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@repo/design-system/components/afenda-ui/dialog";
+} from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { ChevronRightIcon, CircleAlertIcon } from "lucide-react";
 import { expect, screen } from "storybook/test";
 
 import { interactionStoryParameters } from "../../.storybook/essentials";
 
+const REVIEW_REQUEST_NAME = /review request/i;
+const REVIEW_PAYROLL_EXPORT_ACCESS_TEXT = /review payroll export access/i;
+
 const meta = {
   title: "Afenda UI/Dialog",
   component: Dialog,
-  tags: ["autodocs"],
+  tags: ["autodocs", "afenda-ui", "primitive"],
   parameters: {
     layout: "centered",
     docs: {
@@ -173,7 +176,7 @@ export const Interactive: Story = {
     layout: "centered",
     ...interactionStoryParameters,
   },
-  tags: ["interaction"],
+  tags: ["interaction", "afenda-ui", "primitive"],
   render: () => (
     <Dialog>
       <DialogTrigger asChild>
@@ -197,13 +200,13 @@ export const Interactive: Story = {
   ),
   play: async ({ canvas, userEvent }) => {
     await userEvent.click(
-      canvas.getByRole("button", { name: /review request/i })
+      canvas.getByRole("button", { name: REVIEW_REQUEST_NAME })
     );
 
     const dialog = screen.getByRole("dialog");
     await expect(dialog).toBeVisible();
     await expect(
-      screen.getByText(/review payroll export access/i)
+      screen.getByText(REVIEW_PAYROLL_EXPORT_ACCESS_TEXT)
     ).toBeInTheDocument();
   },
 };

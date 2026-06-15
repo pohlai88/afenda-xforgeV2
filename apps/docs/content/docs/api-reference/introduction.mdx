@@ -1,0 +1,33 @@
+---
+title: Introduction
+description: Example section for showcasing API endpoints
+---
+
+<Callout type="info">
+  If you are not building API reference documentation, you can remove the
+  `api-reference` folder and its entry in `content/docs/meta.json`.
+</Callout>
+
+## Welcome
+
+Document API endpoints with MDX pages under `content/docs/api-reference/`. You can describe request/response shapes, authentication, and examples in markdown and code blocks.
+
+The starter includes example endpoints for a fictional Plant Store API. The OpenAPI spec from the Mintlify starter is kept at `api-reference/openapi.json` for reference.
+
+## Authentication
+
+Example bearer token authentication:
+
+```json
+"security": [
+  {
+    "bearerAuth": []
+  }
+]
+```
+
+Requests should include:
+
+```http
+Authorization: Bearer YOUR_API_TOKEN
+```

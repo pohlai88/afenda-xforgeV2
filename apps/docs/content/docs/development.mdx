@@ -1,0 +1,55 @@
+---
+title: Development
+description: Preview documentation changes locally
+---
+
+<Callout type="info">
+  **Prerequisite:** Node.js 18.10.0 or higher.
+</Callout>
+
+## Local development
+
+From the repository root:
+
+```bash title="Terminal"
+pnpm --filter docs dev
+```
+
+The documentation site runs at [http://localhost:3004](http://localhost:3004) and redirects to `/docs`.
+
+### Custom port
+
+The docs app uses port **3004** by default (see `apps/docs/package.json`). To change it, update the `dev` and `start` scripts.
+
+## Build
+
+Verify production output locally:
+
+```bash title="Terminal"
+pnpm --filter docs build
+pnpm --filter docs start
+```
+
+## Content source
+
+Fumadocs MDX reads files from `content/docs/`. Configuration lives in:
+
+- `source.config.ts` — content collections
+- `lib/source.ts` — page tree and routing
+- `lib/layout.shared.tsx` — nav title and links
+
+Running `next dev` or `next build` generates the `.source` folder used by `collections/server`.
+
+## Troubleshooting
+
+### Styles look broken in the monorepo
+
+Ensure Tailwind scans Fumadocs UI packages. This project imports Fumadocs styles in `app/global.css`. If you merge Tailwind config across packages, include `fumadocs-ui` in your content paths.
+
+### Page missing from sidebar
+
+Add the file name (without extension) to a `meta.json` in the same folder or a parent folder.
+
+### Search not working
+
+Search is served from `app/api/search/route.ts` and powered by Orama. Run the app with `next dev` or `next build` so the content index is generated.

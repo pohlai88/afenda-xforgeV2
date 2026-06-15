@@ -1,0 +1,50 @@
+---
+title: Quickstart
+description: Start building documentation in under 5 minutes
+---
+
+## Setup your development environment
+
+Learn how to edit docs locally and preview changes before deploying.
+
+### Edit and preview
+
+1. From the monorepo root, install dependencies if you have not already:
+
+```bash title="Terminal"
+pnpm install
+```
+
+2. Start the docs app:
+
+```bash title="Terminal"
+pnpm --filter docs dev
+```
+
+3. Open [http://localhost:3004/docs](http://localhost:3004/docs) in your browser.
+
+### Add a page
+
+Create a new MDX file under `content/docs/`. Every page needs a `title` in frontmatter:
+
+```mdx title="content/docs/my-page.mdx"
+---
+title: My Page
+description: A short summary for search and metadata
+---
+
+## Hello
+
+Your content here.
+```
+
+Add the page slug to the nearest `meta.json` file so it appears in the sidebar.
+
+## Update your docs
+
+Add content with MDX syntax and Fumadocs components such as `Callout` and `Tabs`.
+
+- [Markdown syntax](/docs/essentials/markdown)
+- [Code blocks](/docs/essentials/code)
+- [Navigation](/docs/essentials/navigation)
+- [Reusable snippets](/docs/essentials/reusable-snippets)

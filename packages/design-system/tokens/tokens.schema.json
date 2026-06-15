@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "color",
+    "radius",
+    "spacing",
+    "layout",
+    "typography",
+    "shadow",
+    "motion",
+    "zIndex",
+    "primitive",
+    "semantic",
+    "component",
+    "contrast"
+  ],
+  "properties": {
+    "color": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^#[0-9a-fA-F]{6}$"
+      }
+    },
+    "radius": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "spacing": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "layout": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "shadow": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "motion": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "zIndex": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "typography": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["fontFamily", "fontSize", "fontWeight", "lineHeight"],
+        "properties": {
+          "fontFamily": { "type": "string" },
+          "fontSize": { "type": "string" },
+          "fontWeight": { "type": "string" },
+          "lineHeight": { "type": "string" }
+        }
+      }
+    },
+    "primitive": {
+      "type": "object",
+      "required": [
+        "color",
+        "radius",
+        "spacing",
+        "typography",
+        "shadow",
+        "motion",
+        "zIndex"
+      ]
+    },
+    "semantic": {
+      "type": "object",
+      "required": ["color", "shadow", "motion"]
+    },
+    "component": {
+      "type": "object"
+    },
+    "contrast": {
+      "type": "object",
+      "required": ["method", "pairs"],
+      "properties": {
+        "method": { "type": "string" },
+        "pairs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "foreground",
+              "background",
+              "minWcag",
+              "minApca"
+            ],
+            "properties": {
+              "name": { "type": "string" },
+              "foreground": { "type": "string" },
+              "background": { "type": "string" },
+              "minWcag": { "type": "number" },
+              "minApca": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

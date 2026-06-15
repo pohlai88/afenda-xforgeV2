@@ -1,0 +1,45 @@
+---
+title: Navigation
+description: Organize pages with meta.json and the content folder structure
+---
+
+The sidebar is generated from your `content/docs` file tree. Use `meta.json` in each folder to control order and grouping.
+
+## meta.json
+
+Example for a folder of component docs:
+
+```json title="content/docs/components/meta.json"
+{
+  "title": "Components",
+  "pages": ["index", "button", "..."]
+}
+```
+
+- `title` — optional folder label in the sidebar
+- `pages` — slugs (file names without extension) in display order
+- `"..."` — include remaining pages not listed explicitly
+
+## Root navigation
+
+The root `content/docs/meta.json` defines top-level sections:
+
+```json title="content/docs/meta.json"
+{
+  "pages": ["index", "quickstart", "development", "essentials", "api-reference"]
+}
+```
+
+## Folders
+
+Put MDX files in folders to create URL segments. For example, `content/docs/guides/setup.mdx` is served at `/docs/guides/setup`.
+
+<Callout type="warn">
+  Avoid naming a top-level folder `api` in Next.js apps — it conflicts with App Router API routes. Use names like `api-reference` instead.
+</Callout>
+
+## Hidden pages
+
+Pages not listed in `meta.json` may still be reachable by URL and search depending on your configuration. Prefer explicit `meta.json` entries for anything that should appear in the sidebar.
+
+See the [Pages Organization guide](https://fumadocs.dev/docs/ui/page-conventions) for separators, external links, and more.

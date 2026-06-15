@@ -1,0 +1,8 @@
+
+# clerk configuration (can include secrets)
+/.clerk/
+.vercel
+
+# Playwright
+/e2e/node_modules/
+/output/playwright/

@@ -1,0 +1,60 @@
+---
+description: Design system — shadcn/ui primitives, tokens, shared components
+globs: packages/design-system/**/*.tsx,packages/design-system/**/*.ts,packages/design-system/**/*.css
+alwaysApply: false
+---
+
+# Design System (`@repo/design-system`)
+
+Shared shadcn/ui component library. Apps import primitives — do not fork one-off copies in `apps/app`. App usage: `frontend-app.mdc`.
+
+## Package boundaries
+
+| Export | Use for |
+|--------|---------|
+| `@repo/design-system` | `DesignSystemProvider`, theme provider |
+| `@repo/design-system/components/ui/*` | Button, Input, Sidebar, etc. |
+| `@repo/design-system/lib/utils` | `cn()` helper |
+| `@repo/design-system/styles/globals.css` | Design tokens and Tailwind theme |
+
+## Implementation rules
+
+- Add components via shadcn CLI: `npx shadcn@latest add [component] -c packages/design-system`
+- Update all components: `pnpm bump-ui`
+- Use semantic tokens (`bg-primary`, `text-muted-foreground`) — not ad-hoc hex in components
+- Primitives under `components/ui/` are **protected** — hook asks before edits (`agent-discipline.mdc`)
+
+## App wiring pattern
+
+```tsx
+import { Button } from '@repo/design-system/components/ui/button'
+import { cn } from '@repo/design-system/lib/utils'
+
+export function ActionBar({ className }: { className?: string }) {
+  return (
+    <div className={cn('flex gap-2', className)}>
+      <Button>Save</Button>
+    </div>
+  )
+}
+```
+
+Keep app-specific layout in `apps/app` — extend design-system only when the pattern is reusable.
+
+## Anti-patterns
+
+```tsx
+// ❌ Copy-paste Button into apps/app for a one-off variant
+// ❌ Hard-coded colors bypassing tokens
+<button className="bg-[#3b82f6]">Save</button>
+
+// ✅ Compose from design-system primitives + Tailwind tokens
+<Button variant="default">Save</Button>
+```
+
+## Verification
+
+```bash
+pnpm --filter @repo/design-system typecheck
+pnpm --filter storybook typecheck   # when stories cover changed components
+```

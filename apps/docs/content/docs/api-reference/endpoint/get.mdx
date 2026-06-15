@@ -1,0 +1,28 @@
+---
+title: Get Plants
+description: List all plants
+---
+
+## GET /plants
+
+Returns a list of plants.
+
+### Response
+
+```json title="200 OK"
+{
+  "plants": [
+    {
+      "id": "1",
+      "name": "Fern"
+    }
+  ]
+}
+```
+
+### Example
+
+```bash title="curl"
+curl -H "Authorization: Bearer YOUR_API_TOKEN" \
+  https://api.example.com/plants
+```

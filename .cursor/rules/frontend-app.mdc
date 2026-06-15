@@ -1,0 +1,74 @@
+---
+description: next-forge app UI — Next.js RSC, apps/app layers, MCP verification
+globs: apps/app/**/*.tsx
+alwaysApply: false
+---
+
+# Frontend App (`apps/app`)
+
+TypeScript only. Layers: `agent-discipline.mdc`. Storybook: `frontend-storybook.mdc`. Design system: `frontend-design-system.mdc`. Client perf: `react-performance.mdc`. Backend: `backend-execution.mdc`.
+
+## Next.js — MCP, not memory
+
+1. `nextjs-docs://llms-index` → `nextjs_docs` (`/docs/app/guides/ai-agents`)
+2. MCP `init` with `project_path: apps/app`
+3. Dev server up → `nextjs_index` → `nextjs_call` `get_errors` before claiming UI work is done
+
+## Where app UI lives
+
+| Path | Use for |
+|------|---------|
+| `apps/app/app/` | Pages, layouts, route segments |
+| `apps/app/app/(authenticated)/components/` | Authenticated shell wiring |
+| `apps/app/app/actions/` | Server Actions |
+
+Visual/polish → app wiring or Storybook first. Design-system primitives require human approval.
+
+## Server vs Client Components
+
+Default **Server Components**. `'use client'` only for state, events, hooks, or browser APIs.
+
+- Push client boundary to the **smallest** interactive leaf
+- Server `children` into Client wrappers; thin Client providers in layout
+- **`params` and `searchParams` are `Promise`** — `await` in Server Components (Next.js 16)
+
+```tsx
+export default async function Page(props: PageProps<'/items/[id]'>) {
+  const { id } = await props.params
+  const item = await getItem(id)
+  return <ItemActions item={item} />
+}
+```
+
+Runtime/uncached data → `<Suspense>`. Cache: MCP `/docs/app/getting-started/caching`.
+
+## Styling & imports
+
+- Tailwind + `cn()` from `@repo/design-system/lib/utils`
+- Primitives: `@repo/design-system/components/ui/*`
+- Provider: `@repo/design-system` (`DesignSystemProvider`)
+- Web UI MUST rules: `web-interface-interactions.mdc`, `web-interface-accessibility.mdc`
+- Server-only logic: `@repo/*` packages with `server-only` — never import from client components
+- `next/link`, `next/image` with explicit sizes
+
+## Anti-patterns
+
+```tsx
+// ❌ Whole layout client for one button
+'use client'
+export default function DashboardLayout({ children }) { /* ... */ }
+
+// ❌ Sync params
+const { id } = params
+
+// ✅ Await params; minimal client boundary
+const { id } = await props.params
+```
+
+## Verification
+
+```bash
+pnpm --filter app typecheck
+pnpm --filter app test
+pnpm check
+```

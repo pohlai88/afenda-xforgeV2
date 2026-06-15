@@ -1,0 +1,70 @@
+---
+title: Code Blocks
+description: Display inline code and code blocks
+---
+
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+
+## Basic
+
+### Inline Code
+
+To denote a `word` or `phrase` as code, enclose it in backticks.
+
+```
+To denote a `word` or `phrase` as code, enclose it in backticks.
+```
+
+### Code Block
+
+Use fenced code blocks with a language identifier for syntax highlighting. In Fumadocs, add an optional title with `title="..."`:
+
+```java title="HelloWorld.java"
+class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+
+````md
+```java title="HelloWorld.java"
+class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+````
+
+## Highlighting lines
+
+Highlight a line with an inline comment:
+
+```ts
+console.log("Highlighted"); // [!code highlight]
+```
+
+Highlight a word:
+
+```ts
+console.log("Highlighted"); // [!code word:Highlighted]
+```
+
+## Code groups
+
+Use the `Tabs` component for multiple related snippets:
+
+<Tabs items={["pnpm", "npm"]}>
+
+```bash title="tab="pnpm""
+pnpm --filter docs dev
+```
+
+```bash title="tab="npm""
+npm run dev --workspace=docs
+```
+
+</Tabs>
+
+See [Fumadocs Markdown](https://fumadocs.dev/docs/ui/markdown) for Twoslash and more options.

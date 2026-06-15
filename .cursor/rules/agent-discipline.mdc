@@ -1,0 +1,42 @@
+---
+description: Agent discipline — answer first, smallest layer, MCP docs before Next.js code
+alwaysApply: true
+---
+
+# Agent Discipline
+
+Governance: `project-general.mdc`, repo root `AGENTS.md`. Multi-file workflow: `agent-multi-file.mdc`.
+
+## Answer before you build
+
+- Yes/no and advice → **direct answer in text first**, then code if needed
+- Do not skip straight to implementation
+- Do not refactor unrelated files while "helping"
+
+## Next.js — docs before code
+
+Training data is stale (Next.js `/docs/app/guides/ai-agents`). Before writing or changing `apps/app` behavior:
+
+1. `nextjs-docs://llms-index` → `nextjs_docs` for the exact API
+2. Do not guess App Router, cache, or Server Action behavior from memory
+3. Runtime verification: `nextjs-mcp-quality.mdc` (stop hook runs `typecheck` when `apps/app` changes)
+
+## Smallest layer (visual / UX)
+
+| Order | Layer | Path |
+|-------|-------|------|
+| 1 | App wiring | `apps/app/` — `frontend-app.mdc` |
+| 2 | Storybook | `apps/storybook/` — `frontend-storybook.mdc` |
+| 3 | Design system | `packages/design-system/` — `frontend-design-system.mdc` — **ask before editing `components/ui/`** |
+
+A layout or polish request is not permission to refactor shared primitives, tokens, or defaults.
+
+## Do not repeat
+
+- Changing shadcn primitives in `packages/design-system/components/ui/` for an app-only polish pass
+- Editing `globals.css` token values to match one Storybook story
+- `git restore` / `git checkout --` / `git clean` on untracked WIP unless explicitly asked
+
+## When scope is wrong
+
+Stop. Explain which layer fits. Ask: *"This requires changing `<file>` in the design system. Approve?"*

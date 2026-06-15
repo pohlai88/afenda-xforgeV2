@@ -1,0 +1,11 @@
+{
+  "title": "Essentials",
+  "pages": [
+    "markdown",
+    "code",
+    "images",
+    "settings",
+    "navigation",
+    "reusable-snippets"
+  ]
+}

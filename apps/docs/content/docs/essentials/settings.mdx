@@ -1,0 +1,60 @@
+---
+title: Global Settings
+description: Theme, layout, and appearance options for Fumadocs
+---
+
+Fumadocs is configured in code rather than a single JSON file.
+
+## Layout and navigation
+
+Shared layout options live in `lib/layout.shared.tsx`:
+
+```tsx title="lib/layout.shared.tsx"
+import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+
+export function baseOptions(): BaseLayoutProps {
+  return {
+    nav: {
+      title: "Starter Kit",
+    },
+    links: [
+      {
+        text: "Support",
+        url: "mailto:support@example.com",
+      },
+    ],
+  };
+}
+```
+
+Docs pages use `DocsLayout` in `app/docs/layout.tsx` with the page tree from `lib/source.ts`.
+
+## Theme (CSS variables)
+
+Customize colors and layout width in `app/global.css`:
+
+```css title="app/global.css"
+:root {
+  /* hsl values without the hsl() wrapper */
+  --background: 0 0% 100%;
+  --fd-layout-width: 1400px;
+}
+
+.dark {
+  --background: 240 10% 4%;
+}
+```
+
+## Tailwind presets
+
+Fumadocs provides optional presets via `fumadocs-ui/tailwind-plugin` if you use a Tailwind config file. This app uses Tailwind CSS v4 with `@import 'fumadocs-ui/css/neutral.css'` and `preset.css`.
+
+## Search
+
+Full-text search is configured in `app/api/search/route.ts` using Orama via `createFromSource`.
+
+## Favicon and static assets
+
+Place files under `public/` (for example `public/favicon.svg` and `public/logo/`).
+
+See [Fumadocs theming](https://fumadocs.dev/docs/ui/theme) for presets and layout customization.

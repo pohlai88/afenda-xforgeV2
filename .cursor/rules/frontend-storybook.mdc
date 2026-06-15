@@ -1,0 +1,38 @@
+---
+description: Storybook — previews, decorators, visual gates; not design-system refactors
+globs: apps/storybook/**/*.tsx,apps/storybook/**/*.ts,apps/storybook/**/*.mdx
+alwaysApply: false
+---
+
+# Frontend Storybook (`apps/storybook`)
+
+Visual workshop for `@repo/design-system`. App wiring: `frontend-app.mdc`. Layers: `agent-discipline.mdc`.
+
+## Scope (stay here for visual work)
+
+- Component previews and design-system galleries
+- Theme/decorator tweaks for story context — not production route changes
+- Story-specific mocks and parameters
+
+Do **not** refactor `packages/design-system/components/ui/**` for Storybook contrast or polish. Fix preview decorators, parameters, or story layout instead.
+
+## Story conventions
+
+- CSF3 stories; co-locate decorators when a story needs shell chrome
+- Semantic design tokens in story `className` — no ad-hoc hex or raw pixel hacks
+- Import components from `@repo/design-system` — do not duplicate primitives in stories
+
+## Anti-patterns
+
+- Changing shadcn primitive defaults to match a story experiment
+- Copy-pasting design-system component source into stories
+- Editing `globals.css` tokens for one story's contrast
+
+## Verification
+
+```bash
+pnpm --filter storybook typecheck
+pnpm --filter storybook build    # before large story additions
+```
+
+Dev: `pnpm --filter storybook dev` (port 6006).

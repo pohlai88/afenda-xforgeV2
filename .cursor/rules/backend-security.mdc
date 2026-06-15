@@ -1,0 +1,57 @@
+---
+description: Backend security — validation, authz, server-only boundaries
+globs: apps/app/**/{route,actions}.ts,apps/api/**/*.ts,packages/**/*.ts
+alwaysApply: false
+---
+
+# Backend Security (next-forge)
+
+MCP: `/docs/app/guides/data-security`. Pipeline rules: `backend-execution.mdc`.
+
+## Who enforces what
+
+| Check | Enforced in |
+|-------|-------------|
+| Authentication | `@repo/auth/server` (Clerk) in Server Actions and route handlers |
+| Input validation | Zod schemas in package `keys.ts` or action-level parsing |
+| Server-only secrets | `import 'server-only'` in `@repo/*` server modules |
+| Client input trust | Never — validate all inputs server-side |
+
+When calling `@repo/*` server exports, **do not bypass auth** in the page or layout only — Server Actions are direct POST targets.
+
+## Entry-point rules
+
+- Zod schemas for env vars in each package's `keys.ts`
+- Authorize the **specific resource**, not just session presence
+- Return minimal DTOs — never raw rows, secrets, or internal tokens
+- Webhooks: verify signature/token before processing
+
+## Server-only boundaries
+
+```typescript
+import 'server-only' // packages/*/server.ts, database, auth, payments
+```
+
+DB clients and env secrets stay in server-only modules. Client components import client-safe exports only.
+
+## Route Handlers and webhooks
+
+Handlers must: verify signature or token, validate body (Zod), enforce auth scope, then delegate to `@repo/*` packages.
+
+## Anti-patterns
+
+```typescript
+// ❌ Client-controlled privilege
+if (formData.get('isAdmin') === 'true') { /* ... */ }
+
+// ❌ Secrets in NEXT_PUBLIC_
+const key = process.env.NEXT_PUBLIC_STRIPE_SECRET
+
+// ✅ Auth in server action + @repo package
+const { orgId } = await auth()
+if (!orgId) throw new Error('Unauthorized')
+```
+
+## Auditing
+
+Use `@repo/observability` (Sentry) for error tracking. Do not log secrets or PII in client-visible errors.

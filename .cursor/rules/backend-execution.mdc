@@ -1,0 +1,76 @@
+---
+description: next-forge backend — Server Actions, route handlers, @repo packages
+globs: apps/app/**/{route,actions}.ts,apps/api/**/*.ts,packages/**/*.ts
+alwaysApply: false
+---
+
+# Backend Development (next-forge)
+
+TypeScript only. Governance: `skills/next-forge/references/architecture.md`, `AGENTS.md`. Security: `backend-security.mdc`.
+
+## Next.js docs — MCP, not memory
+
+`nextjs-docs://llms-index` → `nextjs_docs`. Dev server: `nextjs_index` → `nextjs_call`. See `nextjs-mcp-quality.mdc`.
+
+## Execution layers
+
+| Layer | Path | Responsibility |
+|-------|------|----------------|
+| Domain packages | `packages/*` | Auth, database, payments, etc. — `server-only` exports |
+| Server Actions | `apps/app/app/actions/` | In-app mutations; auth via `@repo/auth/server` |
+| Route Handlers | `apps/app/app/api/`, `apps/api/` | Webhooks, external HTTP, cron |
+| Server Components | `apps/app/app/` | Data fetch, layout — default pattern |
+
+```typescript
+'use server'
+
+import { auth } from '@repo/auth/server'
+
+export async function searchUsers(query: string) {
+  const { orgId } = await auth()
+  if (!orgId) throw new Error('Not logged in')
+  // delegate to @repo/* packages
+}
+```
+
+## Server Actions vs Route Handlers
+
+- **Server Actions** — in-app mutations and forms (`'use server'`)
+- **Route Handlers** — webhooks, external HTTP; never colocate `route.ts` with `page.tsx`
+- Business logic lives in `@repo/*` packages — actions stay thin
+
+## Cache invalidation
+
+| API | Where | When |
+|-----|-------|------|
+| `updateTag` | Server Actions only | User must see their write immediately |
+| `revalidateTag` | Actions or Route Handlers | Stale-while-revalidate OK |
+| `revalidatePath` | Actions or Route Handlers | Route-wide refresh; prefer tags |
+| `refresh()` | Server Actions | Client router UI only |
+
+Tagged reads: `cacheTag` inside `"use cache"` helpers with `cacheLife`. MCP path: `/docs/app/getting-started/revalidating`.
+
+## Anti-patterns
+
+```typescript
+// ❌ DB client imported in client component
+'use client'
+import { database } from '@repo/database'
+
+// ❌ Cache before mutation succeeds
+revalidatePath('/items')
+await createItem(body)
+
+// ✅ Server-only package + cache after success
+const item = await createItem(body)
+revalidatePath('/items')
+```
+
+## Verification
+
+```bash
+pnpm --filter <package> typecheck
+pnpm --filter <package> test
+pnpm --filter app typecheck
+pnpm boundaries
+```

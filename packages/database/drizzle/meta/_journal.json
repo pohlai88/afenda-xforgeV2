@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1718452800000,
+      "tag": "0000_next_forge_baseline",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1718539200000,
+      "tag": "0001_pages_and_rls",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1718625600000,
+      "tag": "0002_auth_db_hardening",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1718712000000,
+      "tag": "0003_bootstrap_existing_users_and_seed_pages",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1718798400000,
+      "tag": "0004_expose_next_forge_postgrest",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1718884800000,
+      "tag": "0005_bootstrap_on_email_confirmed",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1718971200000,
+      "tag": "0006_tighten_permissive_rls",
+      "breakpoints": true
+    }
+  ]
+}

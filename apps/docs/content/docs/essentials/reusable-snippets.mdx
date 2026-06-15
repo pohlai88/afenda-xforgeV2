@@ -1,0 +1,77 @@
+---
+title: Reusable Snippets
+description: Reusable MDX content to keep documentation in sync
+---
+
+import SnippetIntro from "../../snippets/snippet-intro.mdx";
+
+<SnippetIntro />
+
+## Creating a reusable snippet
+
+Create a snippet file under `content/snippets/` (or any path outside the routed docs tree) and import it into your pages.
+
+### Default export
+
+1. Add content to your snippet file:
+
+```mdx title="content/snippets/my-snippet.mdx"
+Hello world! This is content I want to reuse. My keyword of the day is {word}.
+```
+
+2. Import the snippet in a docs page:
+
+```mdx title="content/docs/example.mdx"
+---
+title: Example
+---
+
+import MySnippet from "../../snippets/my-snippet.mdx";
+
+## Header
+
+<MySnippet word="bananas" />
+```
+
+### Reusable variables
+
+Export values from a snippet file:
+
+```mdx title="content/snippets/custom-variables.mdx"
+export const myName = "my name";
+
+export const myObject = { fruit: "strawberries" };
+```
+
+Import them in your page:
+
+```mdx
+import { myName, myObject } from "../../snippets/custom-variables.mdx";
+
+Hello, my name is {myName} and I like {myObject.fruit}.
+```
+
+### Reusable components
+
+Export a component from a snippet file:
+
+```mdx title="content/snippets/custom-component.mdx"
+export const MyComponent = ({ title }) => (
+  <div>
+    <h1>{title}</h1>
+    <p>... snippet content ...</p>
+  </div>
+);
+```
+
+<Callout type="warn">
+  MDX does not compile inside the body of an arrow function. Use HTML syntax or a default export when you need full MDX inside a component.
+</Callout>
+
+Use it in a page:
+
+```mdx
+import { MyComponent } from "../../snippets/custom-component.mdx";
+
+<MyComponent title="Custom title" />
+```

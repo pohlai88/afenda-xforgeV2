@@ -1,0 +1,80 @@
+{
+  "name": "next-forge",
+  "version": "6.0.2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vercel/next-forge.git"
+  },
+  "publishConfig": {
+    "provenance": true,
+    "access": "public"
+  },
+  "bin": {
+    "next-forge": "dist/index.js"
+  },
+  "files": [
+    "dist/index.js"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "check": "ultracite check",
+    "fix": "ultracite fix",
+    "test": "turbo test",
+    "analyze": "turbo analyze",
+    "translate": "turbo translate",
+    "boundaries": "turbo boundaries",
+    "env:sync": "node scripts/sync-env.mjs sync",
+    "env:consolidate": "node scripts/sync-env.mjs consolidate",
+    "env:doctor": "node scripts/sync-env.mjs doctor",
+    "design-system:check-drift": "node scripts/check-design-system-drift.mjs",
+    "design-system:primitive-readiness": "node scripts/check-primitive-readiness.mjs",
+    "ui-craft:detect": "node scripts/check-ui-craft.mjs",
+    "ui-craft:detect:raw": "pnpm dlx ui-craft-detect packages/design-system apps/storybook/stories",
+    "design-system:stabilize": "pnpm design-system:check-drift && pnpm design-system:primitive-readiness && pnpm ui-craft:detect && pnpm --filter @repo/design-system typecheck && pnpm --filter storybook typecheck",
+    "mcp:configure": "node scripts/configure-github-mcp.mjs && node scripts/configure-supabase-mcp.mjs",
+    "mcp:configure:supabase": "node scripts/configure-supabase-mcp.mjs",
+    "bump-deps": "pnpm dlx npm-check-updates --deep -u && pnpm install",
+    "bump-ui": "pnpm dlx shadcn@latest add --all --overwrite -c packages/design-system",
+    "studio:toolbar": "node scripts/run-shadcn-studio-toolbar.mjs storybook",
+    "studio:toolbar:app": "node scripts/run-shadcn-studio-toolbar.mjs app",
+    "studio:toolbar:web": "node scripts/run-shadcn-studio-toolbar.mjs web",
+    "migrate": "cd packages/database && pnpm exec drizzle-kit migrate",
+    "migrate:deploy": "cd packages/database && pnpm exec drizzle-kit migrate",
+    "db:generate": "cd packages/database && pnpm exec drizzle-kit generate",
+    "db:pull": "cd packages/database && pnpm exec drizzle-kit pull",
+    "db:push": "cd packages/database && pnpm exec drizzle-kit push",
+    "clean": "git clean -xdf node_modules",
+    "release": "npm publish"
+  },
+  "devDependencies": {
+    "@auto-it/first-time-contributor": "^11.3.6",
+    "@biomejs/biome": "2.4.6",
+    "@repo/typescript-config": "workspace:*",
+    "@turbo/gen": "^2.8.14",
+    "@types/node": "^25.3.5",
+    "tsup": "^8.5.1",
+    "turbo": "^2.8.14",
+    "typescript": "^5.9.3",
+    "ultracite": "7.2.5",
+    "cross-env": "^7.0.3",
+    "vitest": "^4.0.18"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "pnpm@10.33.4",
+  "pnpm": {
+    "overrides": {
+      "parse5": "^7.2.1",
+      "react": "19.2.4",
+      "react-dom": "19.2.4"
+    }
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.1.0",
+    "commander": "^14.0.3",
+    "nypm": "^0.6.5"
+  },
+  "type": "module"
+}

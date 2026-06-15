@@ -1,0 +1,12 @@
+{
+  "stories": [
+    {
+      "storyId": "afenda-ui-select--interactive",
+      "title": "Afenda UI/Select",
+      "name": "Interactive",
+      "violations": [
+        "aria-hidden-focus"
+      ]
+    }
+  ]
+}

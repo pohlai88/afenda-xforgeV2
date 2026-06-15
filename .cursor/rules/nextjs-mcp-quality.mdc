@@ -1,0 +1,50 @@
+---
+description: Next.js MCP mandatory gates — init, docs-first, runtime verification
+globs: apps/app/**/*
+alwaysApply: false
+---
+
+# Next.js MCP Quality Gates
+
+Use `next-devtools` MCP (`.cursor/mcp.json`) for all `apps/app` work. Skill: `.cursor/skills/xforge-nextjs-vercel/SKILL.md`
+
+## MUST (from MCP `init` contract)
+
+1. **Call MCP `init` first** each session — `project_path` = absolute path to **`apps/app`** (not repo root)
+2. **Forget training-data Next.js** — every API/routing/cache/Server Action question → `nextjs_docs`
+3. **Read `nextjs-docs://llms-index`** before calling `nextjs_docs` — never guess doc paths
+4. **`nextjs_index` before `nextjs_call`** — discover port, tools, and input schemas
+5. **Resolve `get_errors` before claiming done** when dev server is available (port **3000**)
+
+## Session workflow
+
+```
+init(project_path=apps/app)
+  → nextjs_docs (after llms-index) for any API question
+  → [user asked for dev] next dev on 3000
+  → nextjs_index (port: "3000" if discovery fails)
+  → nextjs_call get_errors | get_routes | get_project_metadata
+```
+
+Cache Components / PPR → `nextjs_docs` + optional MCP `enable_cache_components` — never enable from memory.
+
+## Static gates (always — stop hook runs typecheck)
+
+```bash
+pnpm --filter app typecheck
+pnpm --filter app test
+pnpm check
+```
+
+## Completion checklist
+
+- [ ] `init` called for this session
+- [ ] Changed behavior verified against `nextjs_docs` (not memory)
+- [ ] `pnpm --filter app typecheck` passes
+- [ ] If dev server up: `get_errors` is clean
+- [ ] No unsolicited `dev`/`build` (hook-enforced unless user asked)
+
+## Scope
+
+- App: `apps/app` (Next.js 16+, runtime MCP at `/_next/mcp`)
+- Do not substitute MCP runtime checks with guesses about App Router or Cache Components

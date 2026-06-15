@@ -1,0 +1,19 @@
+{
+  "toolbarPort": 3200,
+  "defaultTarget": "storybook",
+  "shadcnCwd": "packages/design-system",
+  "targets": {
+    "storybook": {
+      "appPort": 6006,
+      "label": "Design system (Storybook)"
+    },
+    "app": {
+      "appPort": 3000,
+      "label": "Main app"
+    },
+    "web": {
+      "appPort": 3001,
+      "label": "Marketing site"
+    }
+  }
+}

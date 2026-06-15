@@ -1,0 +1,553 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@source "../**/*.{ts,tsx}";
+
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --xforge-color-canvas: #f7f6f1;
+  --xforge-color-raised: #ffffff;
+  --xforge-color-surface: #efeee9;
+  --xforge-color-ink: #151515;
+  --xforge-color-muted: #5d655f;
+  --xforge-color-line: #d9d6cd;
+  --xforge-color-brand-primary: #324038;
+  --xforge-color-brand-dark: #243029;
+  --xforge-color-brand-soft: #55655b;
+  --xforge-color-bark: #795953;
+  --xforge-color-doe: #e8b793;
+  --xforge-color-pink: #f0dccb;
+  --xforge-color-info: #3b6e8f;
+  --xforge-color-warning: #c58d2e;
+  --xforge-color-warning-foreground: #94620f;
+  --xforge-color-danger: #b14e48;
+  --xforge-color-success: #2f7656;
+  --xforge-color-focus: var(--xforge-color-brand-primary);
+  --xforge-color-overlay: #151515;
+  --xforge-radius-sm: 6px;
+  --xforge-radius-md: 8px;
+  --xforge-radius-lg: 12px;
+  --xforge-radius-xl: 16px;
+  --xforge-space-1: 4px;
+  --xforge-space-2: 8px;
+  --xforge-space-3: 12px;
+  --xforge-space-4: 14px;
+  --xforge-space-5: 16px;
+  --xforge-space-6: 18px;
+  --xforge-space-7: 22px;
+  --xforge-space-8: 28px;
+  --xforge-space-9: 36px;
+  --xforge-layout-sidebar: 248px;
+  --xforge-layout-audit-rail: 324px;
+  --xforge-z-base: 0;
+  --xforge-z-raised: 1;
+  --xforge-z-dropdown: 10;
+  --xforge-z-sticky: 20;
+  --xforge-z-modal-backdrop: 30;
+  --xforge-z-modal: 40;
+  --xforge-z-toast: 50;
+  --xforge-z-tooltip: 60;
+  --xforge-duration-instant: 80ms;
+  --xforge-duration-fast: 150ms;
+  --xforge-duration-normal: 250ms;
+  --xforge-duration-slow: 400ms;
+  --xforge-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --xforge-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --xforge-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --xforge-motion-hover:
+    color var(--xforge-duration-fast) var(--xforge-ease-out),
+    background-color var(--xforge-duration-fast) var(--xforge-ease-out),
+    border-color var(--xforge-duration-fast) var(--xforge-ease-out);
+  --xforge-motion-panel-in:
+    opacity var(--xforge-duration-normal) var(--xforge-ease-out),
+    transform var(--xforge-duration-normal) var(--xforge-ease-out);
+  --xforge-motion-panel-out:
+    opacity var(--xforge-duration-fast) var(--xforge-ease-in),
+    transform var(--xforge-duration-fast) var(--xforge-ease-in);
+  --xforge-shadow-sm: 0 1px 2px rgb(21 21 21 / 8%);
+  --xforge-shadow-panel:
+    0 1px 2px rgb(21 21 21 / 8%), 0 8px 24px rgb(21 21 21 / 6%);
+  --xforge-shadow-popover: 0 18px 48px rgb(21 21 21 / 16%);
+  --xforge-shadow-dark-panel:
+    0 1px 2px rgb(4 7 6 / 42%), 0 12px 32px rgb(4 7 6 / 28%);
+  --xforge-shadow-dark-popover: 0 22px 54px rgb(4 7 6 / 42%);
+  --xforge-font-title-size: 30px;
+  --xforge-font-title-weight: 600;
+  --xforge-font-title-line-height: 36px;
+  --xforge-font-body-size: 13px;
+  --xforge-font-body-weight: 400;
+  --xforge-font-body-line-height: 20px;
+  --xforge-font-label-size: 11px;
+  --xforge-font-label-weight: 600;
+  --xforge-font-label-line-height: 13px;
+  --xforge-font-metric-size: 28px;
+  --xforge-font-metric-weight: 600;
+  --xforge-font-metric-line-height: 34px;
+  --xforge-font-caption-size: 12px;
+  --xforge-font-caption-weight: 500;
+  --xforge-font-caption-line-height: 16px;
+  --xforge-font-family-sans:
+    "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --xforge-font-family-mono:
+    "Geist Mono", "Geist Mono Fallback", ui-monospace, "SFMono-Regular", Menlo,
+    Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --background: var(--xforge-color-canvas);
+  --foreground: var(--xforge-color-ink);
+  --surface-canvas: var(--xforge-color-canvas);
+  --surface-raised: var(--xforge-color-raised);
+  --surface-muted: var(--xforge-color-surface);
+  --surface-hover: color-mix(
+    in oklab,
+    var(--surface-muted) 45%,
+    transparent
+  );
+  --surface-active: color-mix(
+    in oklab,
+    var(--surface-muted) 70%,
+    transparent
+  );
+  --surface-overlay: var(--xforge-color-raised);
+  --surface-inverse: var(--xforge-color-ink);
+  --text-primary: var(--xforge-color-ink);
+  --text-secondary: var(--xforge-color-muted);
+  --text-tertiary: color-mix(in oklab, var(--xforge-color-muted) 72%, white);
+  --text-inverse: var(--xforge-color-raised);
+  --text-link: var(--xforge-color-info);
+  --brand-primary: var(--xforge-color-brand-primary);
+  --brand-dark: var(--xforge-color-brand-dark);
+  --brand-soft: var(--xforge-color-brand-soft);
+  --warm-bark: var(--xforge-color-bark);
+  --warm-doe: var(--xforge-color-doe);
+  --warm-pink: var(--xforge-color-pink);
+  --status-info: var(--xforge-color-info);
+  --status-warning: var(--xforge-color-warning-foreground);
+  --status-danger: var(--xforge-color-danger);
+  --status-success: var(--xforge-color-success);
+  --border-subtle: color-mix(
+    in oklab,
+    var(--xforge-color-line) 62%,
+    transparent
+  );
+  --border-default: var(--xforge-color-line);
+  --border-hover: color-mix(
+    in oklab,
+    var(--xforge-color-line) 82%,
+    var(--xforge-color-ink)
+  );
+  --border-strong: color-mix(
+    in oklab,
+    var(--xforge-color-line) 74%,
+    var(--xforge-color-ink)
+  );
+  --border-focus: var(--xforge-color-focus);
+  --border-active: var(--border-focus);
+  --card: var(--xforge-color-raised);
+  --card-foreground: var(--xforge-color-ink);
+  --popover: var(--xforge-color-raised);
+  --popover-foreground: var(--xforge-color-ink);
+  --primary: var(--xforge-color-brand-primary);
+  --primary-foreground: var(--xforge-color-raised);
+  --secondary: var(--xforge-color-surface);
+  --secondary-foreground: var(--xforge-color-ink);
+  --muted: var(--xforge-color-surface);
+  --muted-foreground: var(--xforge-color-muted);
+  --accent: var(--xforge-color-surface);
+  --accent-foreground: var(--xforge-color-ink);
+  --destructive: var(--xforge-color-danger);
+  --destructive-foreground: var(--xforge-color-raised);
+  --success: var(--xforge-color-success);
+  --success-foreground: var(--xforge-color-raised);
+  --success-muted: #e6f1eb;
+  --info: var(--xforge-color-info);
+  --info-foreground: var(--xforge-color-raised);
+  --info-muted: #e5eff4;
+  --warning: var(--xforge-color-warning);
+  --warning-foreground: var(--xforge-color-ink);
+  --warning-muted: #f7eddc;
+  --danger: var(--xforge-color-danger);
+  --danger-foreground: var(--xforge-color-raised);
+  --danger-muted: #f4e5e3;
+  --surface: var(--xforge-color-raised);
+  --overlay: rgb(21 21 21 / 58%);
+  --elevation-raised: var(--xforge-shadow-panel);
+  --elevation-overlay: var(--xforge-shadow-popover);
+  --button-radius: var(--xforge-radius-md);
+  --button-height: 36px;
+  --button-padding-x: var(--xforge-space-4);
+  --card-radius: var(--xforge-radius-lg);
+  --card-padding: var(--xforge-space-5);
+  --pill-radius: var(--xforge-radius-sm);
+  --modal-radius: var(--xforge-radius-xl);
+  --border: var(--xforge-color-line);
+  --input: var(--xforge-color-line);
+  --ring: var(--xforge-color-focus);
+  --ring-offset: var(--xforge-color-raised);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: var(--xforge-radius-md);
+  --sidebar: var(--xforge-color-raised);
+  --sidebar-foreground: var(--xforge-color-ink);
+  --sidebar-primary: var(--xforge-color-brand-primary);
+  --sidebar-primary-foreground: var(--xforge-color-raised);
+  --sidebar-accent: var(--xforge-color-surface);
+  --sidebar-accent-foreground: var(--xforge-color-ink);
+  --sidebar-border: var(--xforge-color-line);
+  --sidebar-ring: var(--xforge-color-focus);
+
+  --font-weight-bold: 700;
+}
+
+.dark {
+  --xforge-color-canvas: #111513;
+  --xforge-color-raised: #171d1a;
+  --xforge-color-surface: #232720;
+  --xforge-color-ink: #f2f0e8;
+  --xforge-color-muted: #bdb8ac;
+  --xforge-color-line: #3b3f37;
+  --xforge-color-brand-primary: #a8baad;
+  --xforge-color-brand-dark: #dce0d7;
+  --xforge-color-brand-soft: #8fa095;
+  --xforge-color-bark: #c9a19b;
+  --xforge-color-doe: #eac5aa;
+  --xforge-color-pink: #eed8cb;
+  --xforge-color-info: #8bb9d3;
+  --xforge-color-warning: #e1b35c;
+  --xforge-color-warning-foreground: #e1b35c;
+  --xforge-color-danger: #f49e99;
+  --xforge-color-success: #8bc6a6;
+  --xforge-color-focus: var(--xforge-color-brand-primary);
+  --xforge-color-overlay: #040706;
+  --xforge-shadow-sm: 0 1px 2px rgb(4 7 6 / 42%);
+  --xforge-shadow-panel:
+    0 1px 2px rgb(4 7 6 / 42%), 0 12px 32px rgb(4 7 6 / 28%);
+  --xforge-shadow-popover: 0 22px 54px rgb(4 7 6 / 42%);
+
+  --background: var(--xforge-color-canvas);
+  --foreground: var(--xforge-color-ink);
+  --surface-canvas: var(--xforge-color-canvas);
+  --surface-raised: var(--xforge-color-raised);
+  --surface-muted: var(--xforge-color-surface);
+  --surface-hover: color-mix(
+    in oklab,
+    var(--surface-muted) 45%,
+    transparent
+  );
+  --surface-active: color-mix(
+    in oklab,
+    var(--surface-muted) 70%,
+    transparent
+  );
+  --surface-overlay: var(--xforge-color-raised);
+  --surface-inverse: var(--xforge-color-ink);
+  --text-primary: var(--xforge-color-ink);
+  --text-secondary: var(--xforge-color-muted);
+  --text-tertiary: color-mix(in oklab, var(--xforge-color-muted) 68%, black);
+  --text-inverse: var(--xforge-color-canvas);
+  --text-link: var(--xforge-color-info);
+  --brand-primary: var(--xforge-color-brand-primary);
+  --brand-dark: var(--xforge-color-brand-dark);
+  --brand-soft: var(--xforge-color-brand-soft);
+  --warm-bark: var(--xforge-color-bark);
+  --warm-doe: var(--xforge-color-doe);
+  --warm-pink: var(--xforge-color-pink);
+  --status-info: var(--xforge-color-info);
+  --status-warning: var(--xforge-color-warning-foreground);
+  --status-danger: var(--xforge-color-danger);
+  --status-success: var(--xforge-color-success);
+  --border-subtle: color-mix(
+    in oklab,
+    var(--xforge-color-line) 62%,
+    transparent
+  );
+  --border-default: var(--xforge-color-line);
+  --border-hover: color-mix(in oklab, var(--xforge-color-line) 82%, white);
+  --border-strong: color-mix(in oklab, var(--xforge-color-line) 78%, white);
+  --border-focus: var(--xforge-color-focus);
+  --border-active: var(--border-focus);
+  --card: var(--xforge-color-raised);
+  --card-foreground: var(--xforge-color-ink);
+  --popover: var(--xforge-color-raised);
+  --popover-foreground: var(--xforge-color-ink);
+  --primary: var(--xforge-color-brand-primary);
+  --primary-foreground: var(--xforge-color-canvas);
+  --secondary: var(--xforge-color-surface);
+  --secondary-foreground: var(--xforge-color-ink);
+  --muted: var(--xforge-color-surface);
+  --muted-foreground: var(--xforge-color-muted);
+  --accent: var(--xforge-color-surface);
+  --accent-foreground: var(--xforge-color-ink);
+  --destructive: var(--xforge-color-danger);
+  --destructive-foreground: var(--xforge-color-canvas);
+  --success: var(--xforge-color-success);
+  --success-foreground: var(--xforge-color-canvas);
+  --success-muted: #173429;
+  --info: var(--xforge-color-info);
+  --info-foreground: var(--xforge-color-canvas);
+  --info-muted: #1b2b47;
+  --warning: var(--xforge-color-warning);
+  --warning-foreground: var(--xforge-color-canvas);
+  --warning-muted: #3d2c16;
+  --danger: var(--xforge-color-danger);
+  --danger-foreground: var(--xforge-color-canvas);
+  --danger-muted: #421f21;
+  --surface: var(--xforge-color-raised);
+  --overlay: rgb(4 7 6 / 72%);
+  --elevation-raised:
+    inset 0 1px 0 rgb(255 255 255 / 6%), 0 1px 2px rgb(5 8 7 / 42%);
+  --elevation-overlay:
+    inset 0 1px 0 rgb(255 255 255 / 8%), 0 22px 54px rgb(5 8 7 / 42%);
+  --border: var(--xforge-color-line);
+  --input: var(--xforge-color-line);
+  --ring: var(--xforge-color-focus);
+  --ring-offset: var(--xforge-color-canvas);
+  --chart-1: oklch(0.72 0.12 160);
+  --chart-2: oklch(0.73 0.12 250);
+  --chart-3: oklch(0.75 0.13 75);
+  --chart-4: oklch(0.72 0.12 25);
+  --chart-5: oklch(0.72 0.12 300);
+  --sidebar: var(--xforge-color-raised);
+  --sidebar-foreground: var(--xforge-color-ink);
+  --sidebar-primary: var(--xforge-color-brand-primary);
+  --sidebar-primary-foreground: var(--xforge-color-canvas);
+  --sidebar-accent: var(--xforge-color-surface);
+  --sidebar-accent-foreground: var(--xforge-color-ink);
+  --sidebar-border: var(--xforge-color-line);
+  --sidebar-ring: var(--xforge-color-focus);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:
+    "Geist Mono", "Geist Mono Fallback", ui-monospace, "SFMono-Regular", Menlo,
+    Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --color-surface-canvas: var(--surface-canvas);
+  --color-surface-inverse: var(--surface-inverse);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-active: var(--surface-active);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-inverse: var(--text-inverse);
+  --color-text-link: var(--text-link);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-dark: var(--brand-dark);
+  --color-brand-soft: var(--brand-soft);
+  --color-warm-bark: var(--warm-bark);
+  --color-warm-doe: var(--warm-doe);
+  --color-warm-pink: var(--warm-pink);
+  --color-status-info: var(--status-info);
+  --color-status-warning: var(--status-warning);
+  --color-status-danger: var(--status-danger);
+  --color-status-success: var(--status-success);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+  --color-border-hover: var(--border-hover);
+  --color-border-strong: var(--border-strong);
+  --color-border-focus: var(--border-focus);
+  --color-border-active: var(--border-active);
+  --color-ring-offset: var(--ring-offset);
+  --color-overlay: var(--overlay);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-raised: var(--surface-raised);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-danger-muted: var(--danger-muted);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-muted: var(--warning-muted);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-muted: var(--info-muted);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-muted: var(--success-muted);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-success: var(--success);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: var(--xforge-radius-xl);
+  --shadow-sm: var(--xforge-shadow-sm);
+  --shadow-panel: var(--xforge-shadow-panel);
+  --shadow-popover: var(--xforge-shadow-popover);
+  --shadow-raised: var(--elevation-raised);
+  --shadow-overlay: var(--elevation-overlay);
+  --ease-xforge-out: var(--xforge-ease-out);
+  --ease-xforge-in: var(--xforge-ease-in);
+  --ease-xforge-in-out: var(--xforge-ease-in-out);
+  --animate-panel-in: panel-in var(--xforge-duration-normal)
+    var(--xforge-ease-out);
+  --animate-panel-out: panel-out var(--xforge-duration-fast)
+    var(--xforge-ease-in);
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes panel-out {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(2px);
+    }
+  }
+}
+
+/* This layer is added by shadcn/ui */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  :focus-visible {
+    @apply outline-none ring-[3px] ring-ring/50;
+  }
+  body {
+    color-scheme: light;
+    @apply bg-background text-foreground;
+  }
+}
+
+/* This layer is by next-forge */
+@layer base {
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    @apply border-border;
+  }
+  * {
+    @apply min-w-0;
+  }
+  html {
+    text-rendering: optimizelegibility;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply min-h-[100dvh];
+  }
+  input::placeholder,
+  textarea::placeholder {
+    @apply text-muted-foreground;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::after,
+  ::before {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+/* Typography plugin */
+@utility prose {
+  --tw-prose-body: var(--color-foreground);
+  --tw-prose-headings: var(--color-foreground);
+  --tw-prose-lead: var(--color-muted-foreground);
+  --tw-prose-links: var(--color-primary);
+  --tw-prose-bold: var(--color-foreground);
+  --tw-prose-counters: var(--color-foreground);
+  --tw-prose-bullets: var(--color-muted-foreground);
+  --tw-prose-hr: var(--color-muted-foreground);
+  --tw-prose-quotes: var(--color-muted-foreground);
+  --tw-prose-quote-borders: var(--color-border);
+  --tw-prose-captions: var(--color-muted-foreground);
+  --tw-prose-code: var(--color-foreground);
+  --tw-prose-pre-code: var(--color-foreground);
+  --tw-prose-pre-bg: var(--color-background);
+  --tw-prose-th-borders: var(--color-border);
+  --tw-prose-td-borders: var(--color-border);
+  --tw-prose-invert-body: var(--color-foreground);
+  --tw-prose-invert-headings: var(--color-foreground);
+  --tw-prose-invert-lead: var(--color-muted-foreground);
+  --tw-prose-invert-links: var(--color-primary);
+  --tw-prose-invert-bold: var(--color-foreground);
+  --tw-prose-invert-counters: var(--color-foreground);
+  --tw-prose-invert-bullets: var(--color-foreground);
+  --tw-prose-invert-hr: var(--color-muted-foreground);
+  --tw-prose-invert-quotes: var(--color-muted-foreground);
+  --tw-prose-invert-quote-borders: var(--color-border);
+  --tw-prose-invert-captions: var(--color-muted-foreground);
+  --tw-prose-invert-code: var(--color-foreground);
+  --tw-prose-invert-pre-code: var(--color-foreground);
+  --tw-prose-invert-pre-bg: var(--color-background);
+  --tw-prose-invert-th-borders: var(--color-border);
+  --tw-prose-invert-td-borders: var(--color-border);
+}

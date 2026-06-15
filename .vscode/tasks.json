@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Shadcn Studio: Storybook dev server",
+      "type": "shell",
+      "command": "pnpm --filter storybook dev",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "shadcn-studio"
+      }
+    },
+    {
+      "label": "Shadcn Studio: Toolbar (Storybook)",
+      "type": "shell",
+      "command": "pnpm studio:toolbar",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "shadcn-studio"
+      }
+    },
+    {
+      "label": "Shadcn Studio: Toolbar (App)",
+      "type": "shell",
+      "command": "pnpm studio:toolbar:app",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "shadcn-studio"
+      }
+    }
+  ]
+}

@@ -147,11 +147,17 @@ NEXT_PUBLIC_KNOCK_FEED_CHANNEL_ID="..."
 LIVEBLOCKS_SECRET="sk_..."
 ```
 
-### Webhooks (Svix)
+### Webhooks (outbound)
+
+Optional tuning in `apps/app` / `apps/api`:
 
 ```bash
-SVIX_TOKEN="..."
+WEBHOOK_DELIVERY_TIMEOUT_MS="10000"
+WEBHOOK_SIGNATURE_TOLERANCE_SEC="300"
+WEBHOOK_DELIVERY_RETENTION_DAYS="90"
 ```
+
+CMS publish enqueues to org `webhook_endpoints`; `apps/api/cron/webhooks-deliver` delivers with retries.
 
 ### Internationalization (Languine)
 

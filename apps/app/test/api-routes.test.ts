@@ -1,18 +1,16 @@
 import { beforeEach, expect, test, vi } from "vitest";
 
 const exchangeCodeForSession = vi.hoisted(() => vi.fn());
-const currentUser = vi.hoisted(() => vi.fn());
-const auth = vi.hoisted(() => vi.fn());
+const getAuthSession = vi.hoisted(() => vi.fn());
 const authenticate = vi.hoisted(() => vi.fn());
 
 vi.mock("@repo/auth/server", () => ({
-  auth,
   createClient: vi.fn(async () => ({
     auth: {
       exchangeCodeForSession,
     },
   })),
-  currentUser,
+  getAuthSession,
 }));
 
 vi.mock("@repo/collaboration/auth", () => ({
@@ -61,8 +59,7 @@ test("Auth callback rejects external next redirects", async () => {
 });
 
 test("Collaboration auth returns envelope for unauthorized requests", async () => {
-  currentUser.mockResolvedValue(null);
-  auth.mockResolvedValue({ orgId: null, userId: null });
+  getAuthSession.mockResolvedValue(null);
   const { POST } = await import("../app/api/collaboration/auth/route");
 
   const response = await POST(

@@ -43,6 +43,7 @@
     "migrate": "cd packages/database && pnpm exec drizzle-kit migrate",
     "migrate:deploy": "cd packages/database && pnpm exec drizzle-kit migrate",
     "cms:validate": "pnpm --filter @repo/cms validate",
+    "cms:sync": "pnpm --filter @repo/cms sync",
     "db:generate": "cd packages/database && pnpm exec drizzle-kit generate",
     "db:pull": "cd packages/database && pnpm exec drizzle-kit pull",
     "db:push": "cd packages/database && pnpm exec drizzle-kit push",

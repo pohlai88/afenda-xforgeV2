@@ -2,7 +2,10 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Plugin, UserConfig } from "vite";
 
-import { stripUseClientDirective, stripUseClientEsbuildPlugin } from "./vite-plugins/strip-use-client.ts";
+import {
+  stripUseClientDirective,
+  stripUseClientEsbuildPlugin,
+} from "./vite-plugins/strip-use-client.ts";
 
 const storybookDir = dirname(fileURLToPath(import.meta.url));
 const storybookAppDir = join(storybookDir, "..");

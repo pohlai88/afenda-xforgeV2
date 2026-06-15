@@ -34,8 +34,13 @@ import {
   type DeleteResult,
   type SaveResult,
 } from "@repo/cms/writer";
-import { webhooks } from "@repo/webhooks";
-import { keys as webhookKeys } from "@repo/webhooks/keys";
+import {
+  deleteDocumentMirror,
+  searchDocumentMirror,
+  upsertDocumentMirror,
+  type CmsSearchHit,
+} from "@repo/cms/sync";
+import { enqueueWebhookEvent } from "@repo/webhooks/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { env } from "@/env";
@@ -95,18 +100,84 @@ const notifyPublicContentChange = async (
   });
 };
 
-const emitCmsWebhook = async (
+const enqueueCmsWebhook = async (
+  organizationId: string,
   eventType: typeof CMS_EVENT_PUBLISHED | typeof CMS_EVENT_UNPUBLISHED,
   payload: CmsDocumentEventInput
 ) => {
-  if (!webhookKeys().SVIX_TOKEN) {
-    return;
+  try {
+    await enqueueWebhookEvent(
+      organizationId,
+      eventType,
+      buildCmsDocumentEvent(payload)
+    );
+  } catch (error) {
+    console.error(`[cms] Webhook enqueue ${eventType} failed:`, error);
+  }
+};
+
+const parsePublishedAt = (
+  frontmatter: Record<string, unknown>
+): Date | null => {
+  const value = frontmatter.date;
+
+  if (typeof value !== "string") {
+    return null;
   }
 
+  const parsed = new Date(value);
+
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+};
+
+const syncDocumentMirror = async (
+  collection: CmsCollectionName,
+  locale: CmsLocale,
+  slug: string,
+  frontmatter: Record<string, unknown>,
+  body: string,
+  revisionAction: "published" | "updated" | "unpublished"
+) => {
   try {
-    await webhooks.send(eventType, buildCmsDocumentEvent(payload));
+    const status = isPublishedStatus(frontmatter) ? "published" : "draft";
+
+    await upsertDocumentMirror({
+      collection,
+      slug,
+      locale,
+      title: String(frontmatter.title ?? slug),
+      description:
+        typeof frontmatter.description === "string"
+          ? frontmatter.description
+          : null,
+      status,
+      frontmatter,
+      bodyMdx: body,
+      publishedAt: status === "published" ? parsePublishedAt(frontmatter) : null,
+      revisionAction,
+    });
   } catch (error) {
-    console.error(`[cms] Webhook ${eventType} failed:`, error);
+    console.error("[cms] Mirror upsert failed:", error);
+  }
+};
+
+const removeDocumentMirror = async (
+  collection: CmsCollectionName,
+  locale: CmsLocale,
+  slug: string,
+  title: string,
+  status: string
+) => {
+  try {
+    await deleteDocumentMirror({
+      collection,
+      slug,
+      locale,
+      title,
+      status,
+    });
+  } catch (error) {
+    console.error("[cms] Mirror delete failed:", error);
   }
 };
 
@@ -151,7 +222,7 @@ export const getDocument = async (
 export const saveDocument = async (
   input: z.infer<typeof saveDocumentSchema>
 ): Promise<AuthActionResult<SaveResult>> =>
-  withEditor(async () => {
+  withEditor(async ({ orgId }) => {
     const parsed = saveDocumentSchema.parse(input);
 
     if (!isCmsCollection(parsed.collection)) {
@@ -170,10 +241,19 @@ export const saveDocument = async (
     if (result.ok) {
       revalidateCmsPaths(parsed.collection, locale, result.slug);
 
+      await syncDocumentMirror(
+        parsed.collection,
+        locale,
+        result.slug,
+        parsed.frontmatter,
+        parsed.body,
+        isPublishedStatus(parsed.frontmatter) ? "published" : "updated"
+      );
+
       if (isPublishedStatus(parsed.frontmatter)) {
         await Promise.all([
           notifyPublicContentChange(parsed.collection, locale, result.slug),
-          emitCmsWebhook(CMS_EVENT_PUBLISHED, {
+          enqueueCmsWebhook(orgId, CMS_EVENT_PUBLISHED, {
             collection: parsed.collection,
             locale,
             slug: result.slug,
@@ -196,7 +276,7 @@ export const deleteDocument = async (
   locale: string,
   slug: string
 ): Promise<AuthActionResult<DeleteResult>> =>
-  withEditor(async () => {
+  withEditor(async ({ orgId }) => {
     if (!isCmsCollection(collection)) {
       throw new Error("Unknown collection");
     }
@@ -210,10 +290,18 @@ export const deleteDocument = async (
     if (result.ok) {
       revalidateCmsPaths(collection, normalizedLocale, slug);
 
+      await removeDocumentMirror(
+        collection,
+        normalizedLocale,
+        slug,
+        String(raw?.frontmatter.title ?? slug),
+        wasPublished ? "published" : "draft"
+      );
+
       if (wasPublished) {
         await Promise.all([
           notifyPublicContentChange(collection, normalizedLocale, slug),
-          emitCmsWebhook(CMS_EVENT_UNPUBLISHED, {
+          enqueueCmsWebhook(orgId, CMS_EVENT_UNPUBLISHED, {
             collection,
             locale: normalizedLocale,
             slug,
@@ -253,6 +341,24 @@ export const createPreviewLink = async (
     const url = new URL(relativePath, env.NEXT_PUBLIC_WEB_URL).toString();
 
     return { token, url };
+  });
+
+export const searchDocuments = async (
+  collection: string,
+  locale: string,
+  query: string
+): Promise<AuthActionResult<CmsSearchHit[]>> =>
+  withEditor(async () => {
+    if (!isCmsCollection(collection)) {
+      throw new Error("Unknown collection");
+    }
+
+    return searchDocumentMirror({
+      query,
+      collection,
+      locale: normalizeLocale(locale),
+      limit: 25,
+    });
   });
 
 export const getCollectionSummaries = async (): Promise<

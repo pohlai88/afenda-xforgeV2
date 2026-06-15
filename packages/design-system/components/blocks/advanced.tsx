@@ -104,6 +104,7 @@ type AdvancedDataTableProps<TData extends object> =
     readonly description?: ReactNode;
     readonly emptyMessage?: ReactNode;
     readonly getRowId?: (row: TData, index: number) => string;
+    readonly getRowSelectionLabel?: (row: TData) => string;
     readonly initialPageSize?: number;
     readonly isLoading?: boolean;
     readonly searchPlaceholder?: string;
@@ -119,6 +120,7 @@ function AdvancedDataTable<TData extends object>({
   description,
   emptyMessage = "No records match the current view.",
   getRowId,
+  getRowSelectionLabel = getDefaultRowSelectionLabel,
   initialPageSize = 10,
   isLoading = false,
   searchPlaceholder = "Search table...",
@@ -151,7 +153,7 @@ function AdvancedDataTable<TData extends object>({
         ),
         cell: ({ row }) => (
           <Checkbox
-            aria-label="Select row"
+            aria-label={getRowSelectionLabel(row.original)}
             checked={row.getIsSelected()}
             disabled={!row.getCanSelect()}
             onCheckedChange={(value) => row.toggleSelected(Boolean(value))}
@@ -160,7 +162,7 @@ function AdvancedDataTable<TData extends object>({
       },
       ...columns,
     ],
-    [columns]
+    [columns, getRowSelectionLabel]
   );
   const tableData = useMemo(() => [...data], [data]);
 
@@ -406,10 +408,13 @@ function AdvancedTableHeaderContent<TData extends object>({
   }
 
   return (
-    <button
-      className="inline-flex items-center gap-1 text-left outline-none hover:text-text-primary focus-visible:text-text-primary"
+    <Button
+      aria-label={`Sort by ${header.column.id}`}
+      className="h-auto justify-start gap-1 px-0 py-0 text-left font-inherit text-inherit hover:text-text-primary focus-visible:text-text-primary"
       onClick={header.column.getToggleSortingHandler()}
+      size="sm"
       type="button"
+      variant="quiet"
     >
       {content}
       <ChevronDownIcon
@@ -420,7 +425,7 @@ function AdvancedTableHeaderContent<TData extends object>({
           !header.column.getIsSorted() && "opacity-35"
         )}
       />
-    </button>
+    </Button>
   );
 }
 
@@ -590,6 +595,7 @@ function ApprovalQueueBlock({ rows, ...props }: ApprovalQueueBlockProps) {
       data={rows}
       description="Review evidence, SLA pressure, and tenant boundaries before approval."
       getRowId={(row) => row.approvalId}
+      getRowSelectionLabel={(row) => `Select approval ${row.approvalId}`}
       searchPlaceholder="Search approval, tenant, assignee..."
       title="Approval queue"
       {...props}
@@ -678,7 +684,11 @@ function RiskEvidencePanel({
               {progress.value}%
             </span>
           </div>
-          <Progress tone={progress.tone ?? "warning"} value={progress.value} />
+          <Progress
+            aria-label={`${progress.label} progress`}
+            tone={progress.tone ?? "warning"}
+            value={progress.value}
+          />
         </div>
       ) : null}
       <Separator />
@@ -843,18 +853,20 @@ function OperationalDashboardShell({
           </div>
           <nav aria-label="Operational navigation" className="grid gap-1">
             {nav.map((item) => (
-              <button
+              <Button
                 aria-current={item.active ? "page" : undefined}
                 className={cn(
-                  "inline-flex h-8 items-center gap-2 rounded-[var(--xforge-radius-sm)] px-2 text-left text-text-secondary outline-none hover:bg-surface-hover hover:text-text-primary focus-visible:ring-2 focus-visible:ring-ring",
+                  "h-8 justify-start gap-2 px-2 text-left text-text-secondary hover:bg-surface-hover hover:text-text-primary",
                   item.active && "bg-brand-primary/10 text-brand-primary"
                 )}
                 key={item.label}
+                size="sm"
                 type="button"
+                variant="quiet"
               >
                 {item.icon}
                 <span className="truncate">{item.label}</span>
-              </button>
+              </Button>
             ))}
           </nav>
         </aside>
@@ -890,6 +902,17 @@ function OperationalDashboardShell({
       </div>
     </section>
   );
+}
+
+function getDefaultRowSelectionLabel<TData extends object>(row: TData) {
+  if (
+    "id" in row &&
+    (typeof row.id === "string" || typeof row.id === "number")
+  ) {
+    return `Select row ${row.id}`;
+  }
+
+  return "Select row";
 }
 
 function StatusDot({ tone }: { readonly tone: BlockTone }) {

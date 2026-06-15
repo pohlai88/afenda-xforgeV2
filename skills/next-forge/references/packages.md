@@ -231,13 +231,23 @@ const dict = await getDictionary(locale);
 - **Local testing**: Stripe CLI auto-forwards to localhost
 
 ### Outbound
-**Provider**: Svix
+**Provider:** Internal outbox (`webhook_endpoints` + `webhook_deliveries`)
 
-**Key exports**:
-- `webhooks.send(eventType, data)` — send a webhook event
-- `webhooks.getAppPortal()` — get embeddable webhook management portal URL
+**Key exports:**
+- `@repo/webhooks` — `verifyStandardWebhook`, types, signing helpers (isomorphic)
+- `@repo/webhooks/server` — enqueue, dispatch, endpoint CRUD, rotation, replay, retention
 
-Uses organization ID as the Svix app UID (stateless design).
+| Server export | Purpose |
+| ------------- | ------- |
+| `enqueueWebhookEvent(orgId, eventType, data)` | Fan-out to matching endpoints |
+| `processPendingDeliveries(limit)` | Cron worker delivery + retries |
+| `createWebhookEndpoint` / `listWebhookEndpoints` / `updateWebhookEndpoint` / `deleteWebhookEndpoint` | Endpoint management |
+| `rotateWebhookEndpointSecret` | 24h grace dual-signature rotation |
+| `replayWebhookDelivery` | Re-queue failed deliveries |
+| `listWebhookDeliveries` | Audit history (filters: endpoint, status, cursor) |
+| `pruneOldWebhookDeliveries` | Retention cron cleanup |
+
+CMS publish enqueues events; `apps/api/cron/webhooks-deliver` delivers with Standard Webhooks v1 signing (`webhook-id`, `webhook-timestamp`, `webhook-signature`). Subscriber guide: `packages/webhooks/README.md`.
 
 ## Cron Jobs (`@repo/cron`)
 
@@ -252,16 +262,6 @@ Uses organization ID as the Svix app UID (stateless design).
 ```
 
 Cron routes must use the `GET` HTTP method. Test locally via direct HTTP GET.
-
-## Notifications (`@repo/notifications`)
-
-**Provider**: Knock
-
-**Key exports**:
-- `notifications.workflows.trigger(workflowKey, { recipients, data })` — trigger a notification
-- `<NotificationsTrigger>` — renders in-app notification feed
-
-**Channels**: In-app, email, SMS, push, and chat — configured via Knock workflows.
 
 ## Collaboration (`@repo/collaboration`)
 

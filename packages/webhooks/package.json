@@ -2,19 +2,30 @@
   "name": "@repo/webhooks",
   "version": "0.0.0",
   "private": true,
+  "exports": {
+    ".": "./index.ts",
+    "./server": "./server.ts",
+    "./keys": "./keys.ts"
+  },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "test": "vitest run --config vitest.config.mts",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@repo/auth": "workspace:*",
+    "@paralleldrive/cuid2": "^3.3.0",
+    "@repo/cms": "workspace:*",
+    "@repo/database": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.10",
+    "drizzle-orm": "^0.45.1",
     "server-only": "^0.0.1",
-    "svix": "^1.86.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "typescript": "^5.9.3"
+    "dotenv": "^17.2.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }

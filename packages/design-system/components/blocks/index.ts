@@ -73,6 +73,14 @@ export {
   PolicyExceptionSummary,
   RowEvidencePanel,
 } from "./evidence-audit";
+export {
+  approvalControlCenterDataSources,
+  approvalControlCenterMetadata,
+  auditEvidenceReviewDataSources,
+  auditEvidenceReviewMetadata,
+  tenantConfigurationDataSources,
+  tenantConfigurationMetadata,
+} from "./fixtures";
 export type {
   ActiveFilter,
   BlockAction,
@@ -108,6 +116,15 @@ export type {
   MetadataPageRendererProps,
 } from "./metadata-page-renderer";
 export { MetadataPageRenderer } from "./metadata-page-renderer";
+export type {
+  MetadataActionSurface,
+  MetadataBlockBaseProps,
+  MetadataBlockRenderContext,
+} from "./metadata-renderer-core";
+export {
+  createMetadataBlockRenderContext,
+  resolveMetadataBlockActions,
+} from "./metadata-renderer-core";
 export type {
   MetadataBlock,
   MetadataBlockAction,

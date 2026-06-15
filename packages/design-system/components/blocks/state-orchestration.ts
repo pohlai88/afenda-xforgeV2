@@ -153,7 +153,11 @@ function resolveStateSignal(input: BlockStateInput): StateSignal {
     return "forbidden";
   }
 
-  if (input.error || input.saveState === "error" || input.runtimeState === "error") {
+  if (
+    input.error ||
+    input.saveState === "error" ||
+    input.runtimeState === "error"
+  ) {
     return "error";
   }
 
@@ -161,7 +165,11 @@ function resolveStateSignal(input: BlockStateInput): StateSignal {
     return "conflict";
   }
 
-  if (input.isLoading || input.saveState === "saving" || input.runtimeState === "loading") {
+  if (
+    input.isLoading ||
+    input.saveState === "saving" ||
+    input.runtimeState === "loading"
+  ) {
     return "loading";
   }
 

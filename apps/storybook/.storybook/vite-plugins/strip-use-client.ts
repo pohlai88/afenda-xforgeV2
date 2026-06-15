@@ -1,7 +1,9 @@
 import { readFileSync } from "node:fs";
 import type { Plugin } from "vite";
 
+const USE_CLIENT_PRESENT = /\buse client\b/;
 const USE_CLIENT_DIRECTIVE = /^["']use client["'];?\s*/gm;
+const ESBUILD_ALL_FILES_FILTER = /.*/;
 
 const CLIENT_BOUNDARY_PATHS = [
   "node_modules",
@@ -9,12 +11,28 @@ const CLIENT_BOUNDARY_PATHS = [
   "\\packages\\design-system\\",
 ] as const;
 
+interface EsbuildOnLoadArgs {
+  readonly path: string;
+}
+
+interface EsbuildOnLoadResult {
+  readonly contents: string;
+  readonly loader: "js";
+}
+
+interface EsbuildPluginBuild {
+  onLoad(
+    options: { readonly filter: RegExp },
+    callback: (args: EsbuildOnLoadArgs) => EsbuildOnLoadResult | null
+  ): void;
+}
+
 export function shouldStripClientBoundaryPath(id: string) {
   return CLIENT_BOUNDARY_PATHS.some((pathSegment) => id.includes(pathSegment));
 }
 
 export function stripUseClientFromSource(code: string) {
-  if (!/\buse client\b/.test(code)) {
+  if (!USE_CLIENT_PRESENT.test(code)) {
     return null;
   }
 
@@ -28,8 +46,8 @@ export function stripUseClientFromSource(code: string) {
 export function stripUseClientEsbuildPlugin() {
   return {
     name: "afenda-storybook:strip-use-client-esbuild",
-    setup(build: { onLoad: Function }) {
-      build.onLoad({ filter: /.*/ }, (args: { path: string }) => {
+    setup(build: EsbuildPluginBuild) {
+      build.onLoad({ filter: ESBUILD_ALL_FILES_FILTER }, (args) => {
         if (!shouldStripClientBoundaryPath(args.path)) {
           return null;
         }

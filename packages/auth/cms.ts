@@ -15,6 +15,10 @@ export const CMS_EDITOR_ROLES = ["owner", "editor"] as const;
 
 export type CmsEditorRole = (typeof CMS_EDITOR_ROLES)[number];
 
+export const CMS_OWNER_ROLES = ["owner"] as const;
+
+export type CmsOwnerRole = (typeof CMS_OWNER_ROLES)[number];
+
 export const getOrganizationRole = async (
   userId: string,
   orgId: string
@@ -46,6 +50,9 @@ export const getOrganizationRole = async (
 export const canEditCms = (role: OrganizationRole | null): role is CmsEditorRole =>
   role !== null && CMS_EDITOR_ROLES.includes(role as CmsEditorRole);
 
+export const canOwnOrg = (role: OrganizationRole | null): role is CmsOwnerRole =>
+  role === "owner";
+
 export const requireEditor = async (): Promise<
   AuthenticatedContext & { orgId: string; role: CmsEditorRole }
 > => {
@@ -53,6 +60,19 @@ export const requireEditor = async (): Promise<
   const role = await getOrganizationRole(context.userId, context.orgId);
 
   if (!canEditCms(role)) {
+    throw new InsufficientRoleError();
+  }
+
+  return { ...context, role };
+};
+
+export const requireOwner = async (): Promise<
+  AuthenticatedContext & { orgId: string; role: CmsOwnerRole }
+> => {
+  const context = await requireOrg();
+  const role = await getOrganizationRole(context.userId, context.orgId);
+
+  if (!canOwnOrg(role)) {
     throw new InsufficientRoleError();
   }
 

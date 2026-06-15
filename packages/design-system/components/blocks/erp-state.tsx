@@ -173,7 +173,12 @@ function SaveStateStrip({
             ) : null}
           </p>
           {saveState === "saving" ? (
-            <Progress className="mt-1 h-1" tone="brand" value={64} />
+            <Progress
+              aria-label="Save progress"
+              className="mt-1 h-1"
+              tone="brand"
+              value={64}
+            />
           ) : null}
         </div>
       </div>
@@ -266,7 +271,11 @@ function SlaRiskEscalationPanel({
           ) : null}
         </div>
         {typeof progress === "number" ? (
-          <Progress tone={blockToneToProgressTone[tone]} value={progress} />
+          <Progress
+            aria-label="SLA elapsed"
+            tone={blockToneToProgressTone[tone]}
+            value={progress}
+          />
         ) : null}
       </div>
 

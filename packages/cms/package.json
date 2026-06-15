@@ -18,17 +18,22 @@
     "./events": "./events.ts",
     "./reader-options": "./reader-options.ts",
     "./document-list": "./document-list.ts",
-    "./static-params": "./static-params.ts"
+    "./static-params": "./static-params.ts",
+    "./sync": "./sync/index.ts"
   },
   "scripts": {
     "dev": "node -e \"console.log('@repo/cms uses git-backed MDX; no dev server required.')\"",
     "build": "node -e \"console.log('@repo/cms build skipped (file-based content)')\"",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
-    "validate": "tsx scripts/validate-content.ts"
+    "validate": "tsx scripts/validate-content.ts",
+    "sync": "tsx --tsconfig tsconfig.scripts.json scripts/sync-content.ts"
   },
   "dependencies": {
+    "@paralleldrive/cuid2": "^3.3.0",
+    "@repo/database": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.10",
+    "drizzle-orm": "^0.45.1",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
     "mdx-bundler": "^10.1.1",
@@ -43,6 +48,7 @@
     "@types/node": "25.3.5",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
+    "dotenv": "^17.2.3",
     "next": "16.1.6",
     "tsx": "^4.20.3",
     "typescript": "^5.9.3"

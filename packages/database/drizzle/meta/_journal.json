@@ -50,6 +50,27 @@
       "when": 1718971200000,
       "tag": "0006_tighten_permissive_rls",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1719057600000,
+      "tag": "0007_webhook_outbox",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1719144000000,
+      "tag": "0008_cms_mirror",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1719230400000,
+      "tag": "0009_webhook_ops",
+      "breakpoints": true
     }
   ]
 }

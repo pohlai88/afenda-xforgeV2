@@ -16,11 +16,13 @@
     "@repo/analytics": "workspace:*",
     "@repo/api": "workspace:*",
     "@repo/auth": "workspace:*",
+    "@repo/cms": "workspace:*",
     "@repo/database": "workspace:*",
     "@repo/design-system": "workspace:*",
     "@repo/next-config": "workspace:*",
     "@repo/observability": "workspace:*",
     "@repo/payments": "workspace:*",
+    "@repo/webhooks": "workspace:*",
     "@sentry/nextjs": "^10.42.0",
     "@t3-oss/env-nextjs": "^0.13.10",
     "drizzle-orm": "^0.45.2",
@@ -29,7 +31,6 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "require-in-the-middle": "8.0.1",
-    "svix": "^1.86.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {

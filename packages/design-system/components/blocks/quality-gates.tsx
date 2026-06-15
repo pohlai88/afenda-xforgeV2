@@ -146,7 +146,11 @@ function QualityGatesBlock({
               {completedCount}/{gates.length}
             </span>
           </div>
-          <Progress tone={progressTone(gates)} value={resolvedProgress} />
+          <Progress
+            aria-label="Quality gate completion"
+            tone={progressTone(gates)}
+            value={resolvedProgress}
+          />
         </div>
 
         {gates.length ? (

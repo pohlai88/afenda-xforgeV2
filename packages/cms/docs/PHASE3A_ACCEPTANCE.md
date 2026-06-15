@@ -7,7 +7,7 @@
 
 | Gate | Result |
 |------|--------|
-| `pnpm --filter @repo/cms validate` | Pass (3 MDX files) |
+| `pnpm --filter @repo/cms validate` | Pass (4 MDX files) |
 | `pnpm --filter @repo/cms typecheck` | Pass |
 | `pnpm --filter app typecheck` | Pass |
 | `pnpm --filter web typecheck` | Pass |

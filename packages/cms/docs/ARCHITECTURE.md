@@ -101,8 +101,8 @@ Scoring: **0** missing, **1** partial, **2** meets need, **3** exceeds / better 
 | FR-11 | **GitHub commit mode** for production edits | P2 | 2 ✅ |
 | FR-15 | **Live publish** on `apps/web` without app redeploy | P2 | 2 ✅ |
 | FR-12 | **Locale**-scoped collections | P2 | 3A ✅ |
-| FR-13 | Optional **Postgres mirror** for search/analytics | P3 | 3 |
-| FR-14 | Webhook on publish (Svix / internal) | P3 | 3B ✅ |
+| FR-13 | Optional **Postgres mirror** for search/analytics | P3 | 3C ✅ |
+| FR-14 | Webhook on publish (internal outbox) | P3 | 3B ✅ |
 
 ### 5.2 Non-functional requirements
 
@@ -377,8 +377,10 @@ CREATE INDEX cms_documents_collection_status_idx
 ### Phase 3B — Publish webhooks (✅ shipped)
 
 - [x] `@repo/cms/events` typed payloads
-- [x] `cms.document.published` / `cms.document.unpublished` via Svix
-- [x] Graceful degradation when `SVIX_TOKEN` unset
+- [x] `cms.document.published` / `cms.document.unpublished` enqueued on publish/delete
+- [x] Org-scoped `webhook_endpoints` + `webhook_deliveries` outbox in Postgres
+- [x] Async worker at `apps/api/cron/webhooks-deliver` (retries with backoff)
+- [x] First-party `/webhooks` endpoint management + delivery audit UI
 
 #### Webhook event payloads
 
@@ -387,26 +389,31 @@ CREATE INDEX cms_documents_collection_status_idx
 | `cms.document.published` | Studio save with `status: published` |
 | `cms.document.unpublished` | Delete of a previously published document |
 
-Payload shape (Zod-validated in `@repo/cms/events`):
+Outbound payload (event id in `webhook-id` header):
 
 ```json
 {
-  "collection": "blog",
-  "locale": "es",
-  "slug": "bienvenido-a-xforge",
-  "title": "Bienvenido a XForge",
-  "status": "published",
-  "publishedAt": "2026-06-01"
+  "type": "cms.document.published",
+  "timestamp": "2026-06-15T08:00:00Z",
+  "organizationId": "org_…",
+  "data": {
+    "collection": "blog",
+    "locale": "es",
+    "slug": "bienvenido-a-xforge",
+    "title": "Bienvenido a XForge",
+    "status": "published",
+    "publishedAt": "2026-06-01"
+  }
 }
 ```
 
-`locale` uses the same codes as `cmsLocales` (`en`, `es`, `de`, `zh`, `fr`, `pt`). `publishedAt` is optional and mirrors blog `date` when present.
+Signing: Standard Webhooks v1 — `webhook-id`, `webhook-timestamp`, `webhook-signature` (`v1,{base64}` HMAC-SHA256 of `{id}.{timestamp}.{body}`). Verify with `verifyStandardWebhook` from `@repo/webhooks`.
 
-### Phase 3C — Scale (only if needed)
+### Phase 3C — Scale (✅ shipped)
 
-- [ ] Postgres mirror + FTS search
-- [ ] i18n collections (`content/blog/en/`, `content/blog/ja/`) — superseded by 3A layout
-- [ ] Audit log table
+- [x] Postgres mirror + FTS search (`cms_documents.search_vector`)
+- [x] i18n collections (`content/blog/en/`, `content/blog/ja/`) — superseded by 3A layout
+- [x] Audit log table (`cms_document_revisions`)
 
 ---
 

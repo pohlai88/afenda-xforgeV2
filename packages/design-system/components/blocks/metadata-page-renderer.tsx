@@ -7,14 +7,20 @@ import {
   TableRow,
 } from "@repo/design-system/components/afenda-ui/table";
 import { cn } from "@repo/design-system/lib/utils";
+import type { ReactNode } from "react";
 import { blockRecipe } from "./block-recipes";
+import { type BlockRegistry, getBlockRegistryEntry } from "./block-registry";
 import { RuntimeStateBlock } from "./erp-state";
-import type { BlockAction } from "./foundation";
 import { EmptyPanel, FilterBar, PageHeader, StatsStrip } from "./foundation";
+import type { MetadataBlockRenderContext } from "./metadata-renderer-core";
+import {
+  createMetadataBlockRenderContext,
+  resolveMetadataBlockActions,
+} from "./metadata-renderer-core";
 import type {
   MetadataBlock,
-  MetadataBlockAction,
   MetadataBlockByType,
+  MetadataBlockType,
   MetadataDataBinding,
   MetadataPage,
   MetadataScalar,
@@ -22,15 +28,12 @@ import type {
 } from "./metadata-schema";
 import { metadataPageSchema } from "./metadata-schema";
 import { BulkActionBar, DataTableShell } from "./operator";
-import { orchestrateBlockState } from "./state-orchestration";
 
 type MetadataDataSources = Record<string, unknown>;
-type MetadataActionSurface = "primary" | "bulk";
-
-interface MetadataActionContext {
-  readonly blockId: string;
-  readonly blockType: MetadataBlock["type"];
-  readonly surface: MetadataActionSurface;
+interface MetadataDataTableProps {
+  readonly block: MetadataBlockByType<"dataTable">;
+  readonly dataSources: MetadataDataSources;
+  readonly renderContext: MetadataBlockRenderContext;
 }
 
 interface MetadataPageRendererProps {
@@ -38,6 +41,27 @@ interface MetadataPageRendererProps {
   readonly dataSources?: MetadataDataSources;
   readonly page: MetadataPage | unknown;
 }
+
+interface MetadataBlockRendererProps<TType extends MetadataBlockType> {
+  readonly block: MetadataBlockByType<TType>;
+  readonly dataSources: MetadataDataSources;
+  readonly renderContext: MetadataBlockRenderContext;
+}
+
+type MetadataBlockRendererMap = {
+  readonly [TType in MetadataBlockType]: {
+    readonly registry: BlockRegistry[TType];
+    readonly render: (props: MetadataBlockRendererProps<TType>) => ReactNode;
+  };
+};
+
+type BindingResolution =
+  | { readonly ok: true; readonly value: unknown }
+  | {
+      readonly binding: MetadataDataBinding;
+      readonly error: string;
+      readonly ok: false;
+    };
 
 function MetadataPageRenderer({
   className,
@@ -81,121 +105,258 @@ function MetadataBlockRenderer({
   readonly block: MetadataBlock;
   readonly dataSources: MetadataDataSources;
 }) {
+  const bindingDiagnostic = getRequiredBindingDiagnostic(block, dataSources);
+
+  if (bindingDiagnostic) {
+    return (
+      <InvalidMetadataBlock
+        blockId={block.blockId}
+        description={bindingDiagnostic}
+        title="Missing required binding"
+      />
+    );
+  }
+
+  const renderContext = createMetadataBlockRenderContext(block);
+
+  return renderRegisteredMetadataBlock(block, dataSources, renderContext);
+}
+
+const metadataBlockRenderers = {
+  bulkActionBar: {
+    registry: getBlockRegistryEntry("bulkActionBar"),
+    render: renderBulkActionBarBlock,
+  },
+  dataTable: {
+    registry: getBlockRegistryEntry("dataTable"),
+    render: renderDataTableBlock,
+  },
+  emptyPanel: {
+    registry: getBlockRegistryEntry("emptyPanel"),
+    render: renderEmptyPanelBlock,
+  },
+  filterBar: {
+    registry: getBlockRegistryEntry("filterBar"),
+    render: renderFilterBarBlock,
+  },
+  pageHeader: {
+    registry: getBlockRegistryEntry("pageHeader"),
+    render: renderPageHeaderBlock,
+  },
+  runtimeState: {
+    registry: getBlockRegistryEntry("runtimeState"),
+    render: renderRuntimeStateBlock,
+  },
+  statsStrip: {
+    registry: getBlockRegistryEntry("statsStrip"),
+    render: renderStatsStripBlock,
+  },
+} satisfies MetadataBlockRendererMap;
+
+function renderRegisteredMetadataBlock(
+  block: MetadataBlock,
+  dataSources: MetadataDataSources,
+  renderContext: MetadataBlockRenderContext
+) {
   switch (block.type) {
     case "bulkActionBar":
-      return (
-        <BulkActionBar
-          {...toBaseProps(block)}
-          actions={toBlockActions(
-            block.actions,
-            actionContext(block, "primary")
-          )}
-          clearLabel={block.clearLabel}
-          label={resolveMetadataText(block.label, dataSources)}
-          selectedCount={
-            toNumberValue(
-              resolveMetadataValue(block.selectedCount, dataSources)
-            ) ?? 0
-          }
-        />
-      );
+      return metadataBlockRenderers.bulkActionBar.render({
+        block,
+        dataSources,
+        renderContext,
+      });
     case "dataTable":
-      return <MetadataDataTable block={block} dataSources={dataSources} />;
-    case "emptyPanel": {
-      return (
-        <EmptyPanel
-          {...toBaseProps(block)}
-          actions={toBlockActions(
-            block.actions,
-            actionContext(block, "primary")
-          )}
-          description={resolveMetadataText(block.description, dataSources)}
-          title={resolveMetadataText(block.title, dataSources) ?? ""}
-        />
-      );
-    }
-    case "filterBar": {
-      return (
-        <FilterBar
-          {...toBaseProps(block)}
-          actions={toBlockActions(
-            block.actions,
-            actionContext(block, "primary")
-          )}
-          activeFilters={resolveActiveFilters(
-            block.activeFilters,
-            block.filtersBinding,
-            dataSources
-          )}
-          resultCount={resolveMetadataText(block.resultCount, dataSources)}
-          searchLabel={block.searchLabel}
-          searchPlaceholder={block.searchPlaceholder}
-          searchValue={toStringValue(
-            resolveBindingValue(block.searchValueBinding, dataSources)
-          )}
-        />
-      );
-    }
-    case "pageHeader": {
-      return (
-        <PageHeader
-          {...toBaseProps(block)}
-          actions={toBlockActions(
-            block.actions,
-            actionContext(block, "primary")
-          )}
-          description={resolveMetadataText(block.description, dataSources)}
-          eyebrow={resolveMetadataText(block.eyebrow, dataSources)}
-          meta={block.meta?.map((item) => ({
-            id: item.id,
-            label: resolveMetadataText(item.label, dataSources),
-          }))}
-          status={block.status}
-          title={resolveMetadataText(block.title, dataSources) ?? ""}
-        />
-      );
-    }
-    case "runtimeState": {
-      return (
-        <RuntimeStateBlock
-          {...toBaseProps(block)}
-          actions={toBlockActions(
-            block.actions,
-            actionContext(block, "primary")
-          )}
-          description={resolveMetadataText(block.description, dataSources)}
-          state={block.state}
-          title={resolveMetadataText(block.title, dataSources) ?? ""}
-        />
-      );
-    }
-    case "statsStrip": {
-      return (
-        <StatsStrip
-          {...toBaseProps(block)}
-          columns={block.columns}
-          metrics={block.metrics.map((metric) => ({
-            description: resolveMetadataText(metric.description, dataSources),
-            id: metric.id,
-            label: resolveMetadataText(metric.label, dataSources),
-            tone: metric.tone,
-            value: resolveMetadataText(metric.value, dataSources),
-          }))}
-        />
-      );
-    }
+      return metadataBlockRenderers.dataTable.render({
+        block,
+        dataSources,
+        renderContext,
+      });
+    case "emptyPanel":
+      return metadataBlockRenderers.emptyPanel.render({
+        block,
+        dataSources,
+        renderContext,
+      });
+    case "filterBar":
+      return metadataBlockRenderers.filterBar.render({
+        block,
+        dataSources,
+        renderContext,
+      });
+    case "pageHeader":
+      return metadataBlockRenderers.pageHeader.render({
+        block,
+        dataSources,
+        renderContext,
+      });
+    case "runtimeState":
+      return metadataBlockRenderers.runtimeState.render({
+        block,
+        dataSources,
+        renderContext,
+      });
+    case "statsStrip":
+      return metadataBlockRenderers.statsStrip.render({
+        block,
+        dataSources,
+        renderContext,
+      });
     default:
       return assertNever(block);
   }
 }
 
-function MetadataDataTable({
+function renderBulkActionBarBlock({
   block,
   dataSources,
-}: {
-  readonly block: MetadataBlockByType<"dataTable">;
-  readonly dataSources: MetadataDataSources;
-}) {
+  renderContext,
+}: MetadataBlockRendererProps<"bulkActionBar">) {
+  return (
+    <BulkActionBar
+      {...renderContext.baseProps}
+      actions={resolveMetadataBlockActions(
+        block.actions,
+        renderContext,
+        "primary"
+      )}
+      clearLabel={block.clearLabel}
+      label={resolveMetadataText(block.label, dataSources)}
+      selectedCount={
+        toNumberValue(resolveMetadataValue(block.selectedCount, dataSources)) ??
+        0
+      }
+    />
+  );
+}
+
+function renderDataTableBlock({
+  block,
+  dataSources,
+  renderContext,
+}: MetadataBlockRendererProps<"dataTable">) {
+  return (
+    <MetadataDataTable
+      block={block}
+      dataSources={dataSources}
+      renderContext={renderContext}
+    />
+  );
+}
+
+function renderEmptyPanelBlock({
+  block,
+  dataSources,
+  renderContext,
+}: MetadataBlockRendererProps<"emptyPanel">) {
+  return (
+    <EmptyPanel
+      {...renderContext.baseProps}
+      actions={resolveMetadataBlockActions(
+        block.actions,
+        renderContext,
+        "primary"
+      )}
+      description={resolveMetadataText(block.description, dataSources)}
+      title={resolveMetadataText(block.title, dataSources) ?? ""}
+    />
+  );
+}
+
+function renderFilterBarBlock({
+  block,
+  dataSources,
+  renderContext,
+}: MetadataBlockRendererProps<"filterBar">) {
+  return (
+    <FilterBar
+      {...renderContext.baseProps}
+      actions={resolveMetadataBlockActions(
+        block.actions,
+        renderContext,
+        "primary"
+      )}
+      activeFilters={resolveActiveFilters(
+        block.activeFilters,
+        block.filtersBinding,
+        dataSources
+      )}
+      resultCount={resolveMetadataText(block.resultCount, dataSources)}
+      searchLabel={block.searchLabel}
+      searchPlaceholder={block.searchPlaceholder}
+      searchValue={toStringValue(
+        resolveBindingValue(block.searchValueBinding, dataSources)
+      )}
+    />
+  );
+}
+
+function renderPageHeaderBlock({
+  block,
+  dataSources,
+  renderContext,
+}: MetadataBlockRendererProps<"pageHeader">) {
+  return (
+    <PageHeader
+      {...renderContext.baseProps}
+      actions={resolveMetadataBlockActions(
+        block.actions,
+        renderContext,
+        "primary"
+      )}
+      description={resolveMetadataText(block.description, dataSources)}
+      eyebrow={resolveMetadataText(block.eyebrow, dataSources)}
+      meta={block.meta?.map((item) => ({
+        id: item.id,
+        label: resolveMetadataText(item.label, dataSources),
+      }))}
+      status={block.status}
+      title={resolveMetadataText(block.title, dataSources) ?? ""}
+    />
+  );
+}
+
+function renderRuntimeStateBlock({
+  block,
+  dataSources,
+  renderContext,
+}: MetadataBlockRendererProps<"runtimeState">) {
+  return (
+    <RuntimeStateBlock
+      {...renderContext.baseProps}
+      actions={resolveMetadataBlockActions(
+        block.actions,
+        renderContext,
+        "primary"
+      )}
+      description={resolveMetadataText(block.description, dataSources)}
+      state={block.state}
+      title={resolveMetadataText(block.title, dataSources) ?? ""}
+    />
+  );
+}
+
+function renderStatsStripBlock({
+  block,
+  dataSources,
+  renderContext,
+}: MetadataBlockRendererProps<"statsStrip">) {
+  return (
+    <StatsStrip
+      {...renderContext.baseProps}
+      columns={block.columns}
+      metrics={block.metrics.map((metric) => ({
+        description: resolveMetadataText(metric.description, dataSources),
+        id: metric.id,
+        label: resolveMetadataText(metric.label, dataSources),
+        tone: metric.tone,
+        value: resolveMetadataText(metric.value, dataSources),
+      }))}
+    />
+  );
+}
+
+function MetadataDataTable(props: MetadataDataTableProps) {
+  const { block, dataSources, renderContext } = props;
   const rows = resolveTableRows(block.data, dataSources);
   const selectedCount = toNumberValue(
     resolveMetadataValue(block.selectedCount, dataSources)
@@ -213,14 +374,19 @@ function MetadataDataTable({
 
   return (
     <DataTableShell
-      {...toBaseProps(block)}
-      actions={toBlockActions(block.actions, actionContext(block, "primary"))}
+      {...renderContext.baseProps}
+      actions={resolveMetadataBlockActions(
+        block.actions,
+        renderContext,
+        "primary"
+      )}
       bulkActions={
         block.bulkActions ? (
           <BulkActionBar
-            actions={toBlockActions(
+            actions={resolveMetadataBlockActions(
               block.bulkActions,
-              actionContext(block, "bulk")
+              renderContext,
+              "bulk"
             )}
             selectedCount={selectedCount ?? 0}
           />
@@ -311,18 +477,35 @@ function resolveBindingValue(
   binding: MetadataDataBinding | undefined,
   dataSources: MetadataDataSources
 ) {
+  const resolution = resolveBinding(binding, dataSources);
+
+  return resolution.ok ? resolution.value : undefined;
+}
+
+function resolveBinding(
+  binding: MetadataDataBinding | undefined,
+  dataSources: MetadataDataSources
+): BindingResolution {
   if (!binding) {
-    return undefined;
+    return { ok: true, value: undefined };
   }
 
   const source = dataSources[binding.source];
   const resolved = readPath(source, binding.path);
 
   if (resolved === undefined && "fallback" in binding) {
-    return binding.fallback;
+    return { ok: true, value: binding.fallback };
   }
 
-  return resolved;
+  if (resolved === undefined && binding.required) {
+    return {
+      binding,
+      error: `Required binding "${binding.source}:${binding.path}" did not resolve.`,
+      ok: false,
+    };
+  }
+
+  return { ok: true, value: resolved };
 }
 
 function resolveMetadataValue(
@@ -372,92 +555,6 @@ function resolveActiveFilters(
   }
 
   return resolved.filter(isActiveFilterMetadata);
-}
-
-function toBaseProps(block: MetadataBlock) {
-  const orchestrated = block.orchestration
-    ? orchestrateBlockState(block.orchestration)
-    : undefined;
-
-  return {
-    blockId: block.blockId,
-    density: block.density,
-    intent: block.intent,
-    state: block.state ?? orchestrated?.state,
-    tone: block.tone ?? orchestrated?.tone,
-  };
-}
-
-function actionContext(
-  block: MetadataBlock,
-  surface: MetadataActionSurface
-): MetadataActionContext {
-  return {
-    blockId: block.blockId,
-    blockType: block.type,
-    surface,
-  };
-}
-
-function toBlockActions(
-  actions: readonly MetadataBlockAction[] | undefined,
-  context: MetadataActionContext
-): readonly BlockAction[] | undefined {
-  return actions?.map((action) => normalizeGovernedAction(action, context));
-}
-
-function normalizeGovernedAction(
-  action: MetadataBlockAction,
-  context: MetadataActionContext
-): BlockAction {
-  const actionKey = action.actionId ?? action.key;
-  const disabledReason = getGovernedActionDisabledReason(action);
-  const reason = disabledReason ?? action.reason ?? defaultActionReason(action);
-
-  return {
-    "aria-label": action["aria-label"],
-    auditEvent:
-      action.auditEvent ??
-      `${context.blockType}.${context.surface}.${actionKey}`,
-    auditScope: action.auditScope ?? context.blockId,
-    capability:
-      action.capability ??
-      `${context.blockType}:${context.surface}:${actionKey}`,
-    confirmationLabel: action.confirmationLabel,
-    destructive: action.destructive,
-    disabled: action.disabled || Boolean(disabledReason),
-    href: action.href,
-    key: action.key,
-    label: action.label,
-    permission:
-      action.permission ??
-      `blocks.${context.blockType}.${context.surface}.${actionKey}`,
-    reason,
-    roles: action.roles,
-    variant: action.variant,
-  };
-}
-
-function getGovernedActionDisabledReason(action: MetadataBlockAction) {
-  if (action.disabled) {
-    return action.reason ?? "Action disabled by page metadata.";
-  }
-
-  if (action.destructive && !action.confirmationLabel) {
-    return "Destructive action requires a confirmation label.";
-  }
-
-  if (action.destructive && !action.auditEvent) {
-    return "Destructive action requires an explicit audit event.";
-  }
-
-  return undefined;
-}
-
-function defaultActionReason(action: MetadataBlockAction) {
-  return action.destructive
-    ? "Requires confirmation and audit logging."
-    : "Available for the current metadata scope.";
 }
 
 function getRowKey(row: Record<string, unknown>, index: number) {
@@ -543,6 +640,50 @@ function InvalidMetadataBlock({
       tone="warning"
     />
   );
+}
+
+function getRequiredBindingDiagnostic(
+  block: MetadataBlock,
+  dataSources: MetadataDataSources
+) {
+  const missingBinding = findMissingRequiredBinding(block, dataSources);
+
+  return missingBinding?.error;
+}
+
+function findMissingRequiredBinding(
+  value: unknown,
+  dataSources: MetadataDataSources
+): (BindingResolution & { readonly ok: false }) | undefined {
+  if (isMetadataDataBinding(value)) {
+    const resolution = resolveBinding(value, dataSources);
+
+    return resolution.ok ? undefined : resolution;
+  }
+
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const issue = findMissingRequiredBinding(item, dataSources);
+
+      if (issue) {
+        return issue;
+      }
+    }
+
+    return undefined;
+  }
+
+  if (isRecord(value)) {
+    for (const item of Object.values(value)) {
+      const issue = findMissingRequiredBinding(item, dataSources);
+
+      if (issue) {
+        return issue;
+      }
+    }
+  }
+
+  return undefined;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

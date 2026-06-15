@@ -1,5 +1,7 @@
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { legal } from "@repo/cms";
+import { getPreviewReaderOptions } from "@repo/cms/reader-options";
+import { buildLocaleSlugParams } from "@repo/cms/static-params";
 import { Body } from "@repo/cms/components/body";
 import { TableOfContents } from "@repo/cms/components/toc";
 import { createMetadata } from "@repo/seo/metadata";
@@ -10,15 +12,25 @@ import { Sidebar } from "@/components/sidebar";
 
 interface LegalPageProperties {
   readonly params: Promise<{
+    locale: string;
     slug: string;
+  }>;
+  readonly searchParams: Promise<{
+    preview?: string;
+    token?: string;
   }>;
 }
 
 export const generateMetadata = async ({
   params,
+  searchParams,
 }: LegalPageProperties): Promise<Metadata> => {
-  const { slug } = await params;
-  const post = await legal.getPost(slug);
+  const { locale, slug } = await params;
+  const query = await searchParams;
+  const post = await legal.getPost(
+    slug,
+    getPreviewReaderOptions("legal", locale, slug, query)
+  );
 
   if (!post) {
     return {};
@@ -30,15 +42,21 @@ export const generateMetadata = async ({
   });
 };
 
-export const generateStaticParams = async (): Promise<{ slug: string }[]> => {
-  const posts = await legal.getPostsMeta();
+export const generateStaticParams = (): Promise<
+  { locale: string; slug: string }[]
+> =>
+  buildLocaleSlugParams(async (locale) => {
+    const posts = await legal.getPostsMeta({ locale });
+    return posts.map((post) => post._slug);
+  });
 
-  return posts.map(({ _slug }) => ({ slug: _slug }));
-};
-
-const LegalPage = async ({ params }: LegalPageProperties) => {
-  const { slug } = await params;
-  const page = await legal.getPost(slug);
+const LegalPage = async ({ params, searchParams }: LegalPageProperties) => {
+  const { locale, slug } = await params;
+  const query = await searchParams;
+  const page = await legal.getPost(
+    slug,
+    getPreviewReaderOptions("legal", locale, slug, query)
+  );
 
   if (!page) {
     notFound();

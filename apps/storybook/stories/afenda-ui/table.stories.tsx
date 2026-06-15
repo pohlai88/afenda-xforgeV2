@@ -1,6 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react"
-
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
+import { Badge } from "@repo/design-system/components/afenda-ui/badge";
 import {
   Table,
   TableBody,
@@ -9,9 +7,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table"
+} from "@repo/design-system/components/afenda-ui/table";
+import type { Meta, StoryObj } from "@storybook/react";
 
-import { layoutStoryParameters } from "../../.storybook/essentials"
+import { layoutStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
   title: "Afenda UI/Table",
@@ -27,11 +26,11 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof Table>
+} satisfies Meta<typeof Table>;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 const rows = [
   {
@@ -61,18 +60,43 @@ const rows = [
     sla: "Breached",
     updated: "08:59",
   },
-]
+];
+
+const statusToneClassName: Record<string, string> = {
+  Active: "bg-success",
+  Critical: "bg-danger",
+  High: "bg-warning",
+  Locked: "bg-danger",
+  Medium: "bg-warning",
+  Pending: "bg-warning",
+  Success: "bg-success",
+  Warning: "bg-warning",
+};
+
+function DotStatus({ label }: { readonly label: string }) {
+  return (
+    <span className="inline-flex min-w-0 items-center gap-1.5 text-[12px] text-text-primary leading-5">
+      <span
+        aria-hidden="true"
+        className={`size-1.5 shrink-0 rounded-full ${
+          statusToneClassName[label] ?? "bg-text-tertiary"
+        }`}
+      />
+      <span className="truncate">{label}</span>
+    </span>
+  );
+}
 
 export const Default: Story = {
   render: () => (
-    <div className="min-h-screen bg-surface p-6">
-      <div className="mx-auto grid max-w-5xl gap-3 rounded-lg border border-border-default bg-surface-raised p-4 shadow-xs">
+    <div className="min-h-screen bg-surface p-4">
+      <div className="mx-auto grid w-[min(100%,64rem)] gap-3 rounded-[var(--card-radius)] border border-border-default bg-surface-raised p-3">
         <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-[12px] font-medium uppercase tracking-wide text-text-primary">
+          <div className="min-w-0">
+            <p className="font-medium text-[12px] text-text-secondary leading-4">
               Tenant control
             </p>
-            <h3 className="text-[15px] font-semibold text-text-primary">
+            <h3 className="font-semibold text-[15px] text-text-primary">
               Live workspace risk register
             </h3>
           </div>
@@ -84,20 +108,26 @@ export const Default: Story = {
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[120px] text-text-primary">Tenant ID</TableHead>
+              <TableHead className="w-[120px] text-text-primary">
+                Tenant ID
+              </TableHead>
               <TableHead className="text-text-primary">Workspace</TableHead>
               <TableHead className="text-text-primary">Owner</TableHead>
               <TableHead className="text-text-primary">Status</TableHead>
               <TableHead className="text-text-primary">Risk</TableHead>
-              <TableHead className="text-right text-text-primary">SLA left</TableHead>
-              <TableHead className="text-right text-text-primary">Updated</TableHead>
+              <TableHead className="text-right text-text-primary">
+                SLA left
+              </TableHead>
+              <TableHead className="text-right text-text-primary">
+                Updated
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {rows.map((row, index) => (
               <TableRow
-                key={row.tenant}
                 data-state={index === 1 ? "selected" : undefined}
+                key={row.tenant}
               >
                 <TableCell className="font-medium tabular-nums">
                   {row.tenant}
@@ -105,24 +135,15 @@ export const Default: Story = {
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.owner}</TableCell>
                 <TableCell>
-                  <Badge
-                    tone={
-                      row.status === "Active"
-                        ? "positive"
-                        : row.status === "Pending"
-                          ? "warning"
-                          : "critical"
-                    }
-                    variant="solid"
-                  >
-                    {row.status}
-                  </Badge>
+                  <DotStatus label={row.status} />
                 </TableCell>
-                <TableCell>{row.risk}</TableCell>
-                <TableCell className="text-right tabular-nums text-text-primary">
+                <TableCell>
+                  <DotStatus label={row.risk} />
+                </TableCell>
+                <TableCell className="text-right text-text-primary tabular-nums">
                   {row.sla}
                 </TableCell>
-                <TableCell className="text-right tabular-nums text-text-primary">
+                <TableCell className="text-right text-text-primary tabular-nums">
                   {row.updated}
                 </TableCell>
               </TableRow>
@@ -132,57 +153,71 @@ export const Default: Story = {
       </div>
     </div>
   ),
-}
+};
 
 export const DenseAudit: Story = {
   render: () => (
-    <div className="min-h-screen bg-surface p-6">
-      <div className="mx-auto max-w-5xl rounded-lg border border-border-default bg-surface p-3">
+    <div className="min-h-screen bg-surface p-4">
+      <div className="mx-auto w-[min(100%,64rem)] rounded-[var(--card-radius)] border border-border-default bg-surface p-2">
         <Table variant="plain">
           <TableCaption className="text-text-primary">
             Immutable audit trail for payroll close operations.
           </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[150px] text-text-primary">Event</TableHead>
+              <TableHead className="w-[150px] text-text-primary">
+                Event
+              </TableHead>
               <TableHead className="text-text-primary">Actor</TableHead>
               <TableHead className="text-text-primary">Tenant</TableHead>
               <TableHead className="text-text-primary">Resource</TableHead>
               <TableHead className="text-text-primary">Outcome</TableHead>
-              <TableHead className="text-right text-text-primary">Time</TableHead>
+              <TableHead className="text-right text-text-primary">
+                Time
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {[
-              ["Approval granted", "Jordan Lee", "NWT-1042", "Expense policy", "Success", "09:41"],
-              ["Role changed", "Maya Chen", "CTR-8831", "Payroll export", "Warning", "09:38"],
-              ["Access revoked", "Omar Ali", "FBH-2219", "Tenant admin", "Critical", "09:12"],
+              [
+                "Approval granted",
+                "Jordan Lee",
+                "NWT-1042",
+                "Expense policy",
+                "Success",
+                "09:41",
+              ],
+              [
+                "Role changed",
+                "Maya Chen",
+                "CTR-8831",
+                "Payroll export",
+                "Warning",
+                "09:38",
+              ],
+              [
+                "Access revoked",
+                "Omar Ali",
+                "FBH-2219",
+                "Tenant admin",
+                "Critical",
+                "09:12",
+              ],
             ].map(([event, user, tenant, resource, outcome, time], index) => (
               <TableRow
-                key={`${event}-${time}`}
                 data-state={index === 0 ? "selected" : undefined}
+                key={`${event}-${time}`}
               >
                 <TableCell className="font-medium">{event}</TableCell>
                 <TableCell>{user}</TableCell>
-                <TableCell className="tabular-nums text-text-primary">
+                <TableCell className="font-mono text-text-primary tabular-nums">
                   {tenant}
                 </TableCell>
                 <TableCell>{resource}</TableCell>
                 <TableCell>
-                  <Badge
-                    tone={
-                      outcome === "Success"
-                        ? "positive"
-                        : outcome === "Warning"
-                          ? "warning"
-                          : "critical"
-                    }
-                    variant="solid"
-                  >
-                    {outcome}
-                  </Badge>
+                  <DotStatus label={outcome} />
                 </TableCell>
-                <TableCell className="text-right tabular-nums text-text-primary">
+                <TableCell className="text-right text-text-primary tabular-nums">
                   {time}
                 </TableCell>
               </TableRow>
@@ -192,4 +227,4 @@ export const DenseAudit: Story = {
       </div>
     </div>
   ),
-}
+};

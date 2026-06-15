@@ -6,6 +6,7 @@ import { CheckCircle2Icon, CircleIcon, XIcon } from "lucide-react";
 import type { ComponentProps, MouseEventHandler, ReactNode } from "react";
 import { blockRecipe } from "./block-recipes";
 import type { BlockAction, BlockBaseProps, BlockTone } from "./foundation";
+import { BlockActions } from "./foundation";
 
 type OperatorTone = BlockTone;
 
@@ -502,7 +503,6 @@ const toneTextClassName: Record<OperatorTone, string> = {
   critical: "text-danger",
   info: "text-info",
   neutral: "text-text-secondary",
-  positive: "text-success",
   success: "text-success",
   warning: "text-warning",
 };
@@ -511,90 +511,9 @@ const toneDotClassName: Record<OperatorTone, string> = {
   critical: "bg-danger",
   info: "bg-info",
   neutral: "bg-text-tertiary",
-  positive: "bg-success",
   success: "bg-success",
   warning: "bg-warning",
 };
-
-function BlockActions({
-  actions,
-}: {
-  readonly actions?: readonly BlockAction[] | ReactNode;
-}) {
-  if (!actions) {
-    return null;
-  }
-
-  if (isBlockActionArray(actions)) {
-    return (
-      <div className={blockRecipe("blockToolbar")}>
-        {actions.map((action) => (
-          <BlockActionButton action={action} key={action.key ?? action.label} />
-        ))}
-      </div>
-    );
-  }
-
-  return <div className={blockRecipe("blockToolbar")}>{actions}</div>;
-}
-
-function isBlockActionArray(
-  actions: readonly BlockAction[] | ReactNode
-): actions is readonly BlockAction[] {
-  return (
-    Array.isArray(actions) &&
-    actions.every(
-      (action) =>
-        action &&
-        typeof action === "object" &&
-        "label" in action &&
-        typeof action.label === "string"
-    )
-  );
-}
-
-function BlockActionButton({ action }: { readonly action: BlockAction }) {
-  const content = (
-    <>
-      {action.icon}
-      {action.label}
-    </>
-  );
-
-  if (action.href) {
-    return (
-      <Button
-        aria-disabled={action.disabled}
-        aria-label={action["aria-label"]}
-        asChild
-        data-capability={action.capability}
-        data-permission={action.permission}
-        data-reason={action.reason}
-        size="sm"
-        title={action.reason}
-        variant={action.variant ?? "secondary"}
-      >
-        <a href={action.href}>{content}</a>
-      </Button>
-    );
-  }
-
-  return (
-    <Button
-      aria-label={action["aria-label"]}
-      data-capability={action.capability}
-      data-permission={action.permission}
-      data-reason={action.reason}
-      disabled={action.disabled}
-      onClick={action.onClick}
-      size="sm"
-      title={action.reason}
-      variant={action.variant ?? "secondary"}
-    >
-      {content}
-    </Button>
-  );
-}
 
 const blockDensityClassName = {
   compact: blockRecipe("blockCompact"),
@@ -609,7 +528,6 @@ const blockToneToBadgeTone: Record<
   critical: "critical",
   info: "info",
   neutral: "neutral",
-  positive: "positive",
   success: "positive",
   warning: "warning",
 };

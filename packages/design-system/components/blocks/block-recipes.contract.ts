@@ -1,6 +1,6 @@
-import { z } from "zod"
+import { z } from "zod";
 
-import { afendaBlockRecipe } from "./block-recipes"
+import { afendaBlockRecipe } from "./block-recipes";
 
 const afendaBlockRecipeOwnerSchema = z.enum([
   "shell",
@@ -11,15 +11,15 @@ const afendaBlockRecipeOwnerSchema = z.enum([
   "metric",
   "empty",
   "density",
-])
+]);
 
 const afendaBlockRecipeKindSchema = z.enum([
   "composition",
   "layout",
   "typography",
-])
+]);
 
-const afendaBlockRecipeScopeSchema = z.enum(["block", "block-family"])
+const afendaBlockRecipeScopeSchema = z.enum(["block", "block-family"]);
 
 const afendaBlockRecipeEntrySchema = z.object({
   owner: afendaBlockRecipeOwnerSchema,
@@ -27,14 +27,14 @@ const afendaBlockRecipeEntrySchema = z.object({
   scope: afendaBlockRecipeScopeSchema,
   description: z.string().min(1),
   className: z.string().min(1),
-})
+});
 
 const afendaBlockRecipeContractSchema = z.record(
   z.string(),
   afendaBlockRecipeEntrySchema
-)
+);
 
-afendaBlockRecipeContractSchema.parse(afendaBlockRecipe)
+afendaBlockRecipeContractSchema.parse(afendaBlockRecipe);
 
 export {
   afendaBlockRecipeContractSchema,
@@ -42,4 +42,4 @@ export {
   afendaBlockRecipeKindSchema,
   afendaBlockRecipeOwnerSchema,
   afendaBlockRecipeScopeSchema,
-}
+};

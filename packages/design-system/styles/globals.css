@@ -64,8 +64,8 @@
     opacity var(--xforge-duration-normal) var(--xforge-ease-out),
     transform var(--xforge-duration-normal) var(--xforge-ease-out);
   --xforge-motion-panel-out:
-    opacity var(--xforge-duration-fast) var(--xforge-ease-in),
-    transform var(--xforge-duration-fast) var(--xforge-ease-in);
+    opacity var(--xforge-duration-fast) var(--xforge-ease-out),
+    transform var(--xforge-duration-fast) var(--xforge-ease-out);
   --xforge-shadow-sm: 0 1px 2px rgb(21 21 21 / 8%);
   --xforge-shadow-panel:
     0 1px 2px rgb(21 21 21 / 8%), 0 8px 24px rgb(21 21 21 / 6%);
@@ -99,16 +99,8 @@
   --surface-canvas: var(--xforge-color-canvas);
   --surface-raised: var(--xforge-color-raised);
   --surface-muted: var(--xforge-color-surface);
-  --surface-hover: color-mix(
-    in oklab,
-    var(--surface-muted) 45%,
-    transparent
-  );
-  --surface-active: color-mix(
-    in oklab,
-    var(--surface-muted) 70%,
-    transparent
-  );
+  --surface-hover: color-mix(in oklab, var(--surface-muted) 45%, transparent);
+  --surface-active: color-mix(in oklab, var(--surface-muted) 70%, transparent);
   --surface-overlay: var(--xforge-color-raised);
   --surface-inverse: var(--xforge-color-ink);
   --text-primary: var(--xforge-color-ink);
@@ -233,16 +225,8 @@
   --surface-canvas: var(--xforge-color-canvas);
   --surface-raised: var(--xforge-color-raised);
   --surface-muted: var(--xforge-color-surface);
-  --surface-hover: color-mix(
-    in oklab,
-    var(--surface-muted) 45%,
-    transparent
-  );
-  --surface-active: color-mix(
-    in oklab,
-    var(--surface-muted) 70%,
-    transparent
-  );
+  --surface-hover: color-mix(in oklab, var(--surface-muted) 45%, transparent);
+  --surface-active: color-mix(in oklab, var(--surface-muted) 70%, transparent);
   --surface-overlay: var(--xforge-color-raised);
   --surface-inverse: var(--xforge-color-ink);
   --text-primary: var(--xforge-color-ink);
@@ -416,7 +400,7 @@
   --animate-panel-in: panel-in var(--xforge-duration-normal)
     var(--xforge-ease-out);
   --animate-panel-out: panel-out var(--xforge-duration-fast)
-    var(--xforge-ease-in);
+    var(--xforge-ease-out);
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
 

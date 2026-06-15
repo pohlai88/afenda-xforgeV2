@@ -1,3 +1,5 @@
+import type { ContentStatus } from "./schemas";
+
 export type ContentImage = {
   url: string;
   width: number;
@@ -31,6 +33,7 @@ export type ContentBody = {
 export type PostMeta = {
   _slug: string;
   _title: string;
+  status: ContentStatus;
   date: string;
   description: string;
   image: ContentImage;
@@ -45,6 +48,7 @@ export type Post = PostMeta & {
 export type LegalPostMeta = {
   _slug: string;
   _title: string;
+  status: ContentStatus;
   description: string;
 };
 

@@ -9,6 +9,8 @@ export type {
 } from "./types";
 
 export type { BlogReader, LegalReader } from "./readers";
+export type { ReaderOptions } from "./collections/types";
+export { collections } from "./collections";
 
 import {
   getBlogPost,

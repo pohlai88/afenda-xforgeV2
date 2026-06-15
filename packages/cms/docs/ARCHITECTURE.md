@@ -29,7 +29,7 @@ Keystatic was chosen as the single reference OSS CMS because it matches our targ
 | Reader API | `createReader()` + collections | We mirror with `blog.getPost()` |
 | Schema | `keystatic.config.ts` fields API | We use Zod per collection |
 | Formats | Markdoc + MDX | We use MDX + frontmatter |
-| GitHub mode | OAuth + commits via API | Planned Phase 2 |
+| GitHub mode | OAuth + commits via API | Shipped — read + write via Contents API |
 | Cloud | Keystatic Cloud (optional) | We use Supabase only when needed |
 
 **References:** [Keystatic docs](https://keystatic.com/docs), [Next.js installation](https://keystatic.com/docs/installation-next-js), [Reader API](https://keystatic.com/docs/reader-api).
@@ -46,20 +46,19 @@ Scoring: **0** missing, **1** partial, **2** meets need, **3** exceeds / better 
 | No runtime CMS token | 2 | 2 | 2 | Parity vs BaseHub |
 | Typed Reader API | 2 | 2 | 3 | Zod + inferred types |
 | Collection registry | 2 | 1 | 2 | Refactor loader → registry |
-| Admin UI | 3 | 0 | 2 | Phase 2 `apps/studio` |
-| Draft / publish | 1 | 0 | 2 | Frontmatter `status` |
-| Image pipeline | 2 | 1 | 2 | Supabase Storage Phase 2 |
-| i18n collections | 1 | 0 | 2 | `content/{locale}/` |
-| GitHub write mode | 2 | 0 | 2 | Server actions + GitHub API |
+| Admin UI | 3 | 2 | 2 | `apps/app/cms` studio |
+| Draft / publish | 1 | 2 | 2 | Frontmatter `status` + ISR |
+| Image pipeline | 2 | 2 | 2 | Vercel Blob via `@repo/storage` |
+| i18n collections | 1 | 2 | 2 | `content/{collection}/{locale}/` |
+| GitHub write mode | 2 | 2 | 2 | Writer + GitHub Contents API |
+| GitHub read mode | 2 | 2 | 2 | Runtime reader in production |
+| Live publish (no redeploy) | 2 | 2 | 2 | `unstable_cache` + on-demand revalidation |
 | DB fallback | 0 | 0 | 1 | Optional Supabase Phase 3 |
 | Monorepo isolation | 1 | 3 | 3 | Dedicated `@repo/cms` package |
-| Zero extra deploy | 2 | 2 | 2 | Runs inside Next.js |
-| MDX + code highlight | 2 | 2 | 2 | mdx-bundler + rehype-pretty-code |
-| TOC + reading time | 1 | 2 | 2 | We compute locally |
-| CI content validation | 1 | 1 | 3 | `cms:validate` script |
-| Auth integration | 1 | 0 | 2 | Reuse `@repo/auth` in studio |
+| Zero extra deploy | 2 | 2 | 2 | ISR; no app redeploy for content |
+| Auth integration | 1 | 2 | 2 | `@repo/auth` editor guard in studio |
 
-**Summary:** XForge CMS **matches Keystatic on storage and reader patterns**, **leads on monorepo packaging and compile-time validation**, and **lags on admin UI and GitHub write mode** (planned Phase 2).
+**Summary:** XForge CMS **matches Keystatic** on git-backed storage, GitHub mode, and live publish via ISR. **Leads** on monorepo packaging and Zod validation.
 
 ---
 
@@ -97,18 +96,19 @@ Scoring: **0** missing, **1** partial, **2** meets need, **3** exceeds / better 
 | FR-06 | Expose typed **Reader API** (`blog`, `legal`) | P0 | 1 ✅ |
 | FR-07 | Support **draft** vs **published** filtering | P1 | 1.5 |
 | FR-08 | Generic **collection registry** (no duplicated loaders) | P1 | 1.5 |
-| FR-09 | **Admin UI** for non-developers | P2 | 2 |
-| FR-10 | **Image upload** to Supabase Storage | P2 | 2 |
-| FR-11 | **GitHub commit mode** for production edits | P2 | 2 |
-| FR-12 | **Locale**-scoped collections | P2 | 2 |
+| FR-09 | **Admin UI** for non-developers | P2 | 2 ✅ |
+| FR-10 | **Image upload** to Vercel Blob | P2 | 2 ✅ |
+| FR-11 | **GitHub commit mode** for production edits | P2 | 2 ✅ |
+| FR-15 | **Live publish** on `apps/web` without app redeploy | P2 | 2 ✅ |
+| FR-12 | **Locale**-scoped collections | P2 | 3A ✅ |
 | FR-13 | Optional **Postgres mirror** for search/analytics | P3 | 3 |
-| FR-14 | Webhook on publish (Svix / internal) | P3 | 3 |
+| FR-14 | Webhook on publish (Svix / internal) | P3 | 3B ✅ |
 
 ### 5.2 Non-functional requirements
 
 | ID | Requirement | Target |
 |----|-------------|--------|
-| NFR-01 | No external CMS API at runtime (Phase 1) | 100% file reads |
+| NFR-01 | No external CMS vendor at runtime | Git + optional GitHub API read in prod |
 | NFR-02 | Typecheck consumer apps without CMS secrets | No env vars required |
 | NFR-03 | Cold read latency (single post) | < 50ms dev, cached prod |
 | NFR-04 | CI validates all MDX files | `pnpm cms:validate` in < 10s |
@@ -157,39 +157,52 @@ flowchart TB
 **Frontend:** `apps/web` marketing site.  
 **UI:** Public pages only; no admin.
 
-### 6.2 Phase 2 — Studio + assets
+### 6.2 Phase 2 — Studio + live propagation
 
 ```mermaid
 flowchart TB
-  subgraph studio ["apps/studio (admin UI)"]
-    UI[React admin /keystatic-like]
+  subgraph studio ["apps/app/cms"]
+    UI[Editor UI]
     SA[Server Actions]
   end
 
-  subgraph auth ["@repo/auth + Supabase Auth"]
+  subgraph auth ["@repo/auth"]
     SESS[Session / org roles]
   end
 
-  subgraph storage [Supabase]
-    R2[(Storage bucket cms-assets)]
+  subgraph storage ["@repo/storage"]
+    Blob[Vercel Blob assets]
   end
 
   subgraph cms_pkg ["@repo/cms"]
-    WRITER[writer.ts]
+    WRITER[writer/]
+    READER[loader/ + cached reads]
+    GITHUB[GitHub Contents API]
     CONTENT[(content/ git)]
+  end
+
+  subgraph web ["apps/web"]
+    PAGES[blog / legal pages]
+    REVALIDATE["/api/revalidate"]
   end
 
   UI --> SA
   SA --> SESS
   SA --> WRITER
-  SA --> R2
-  WRITER --> CONTENT
+  SA --> Blob
+  WRITER --> GITHUB
+  GITHUB --> CONTENT
+  SA -->|notifyWebContentChanged| REVALIDATE
+  REVALIDATE --> PAGES
+  READER --> GITHUB
+  READER --> CONTENT
+  PAGES --> READER
 ```
 
-**Database:** Supabase Storage for images; content still in git.  
-**Backend:** Next.js Server Actions in `apps/studio` or route `apps/web/app/admin/cms`.  
-**Frontend:** Admin UI (shadcn from `@repo/design-system`).  
-**Optional:** GitHub App commits on save (Keystatic GitHub mode equivalent).
+**Database:** None for CMS content. Assets in Vercel Blob.  
+**Backend:** Server Actions in `apps/app`; GitHub Contents API for prod read/write.  
+**Frontend:** Admin at `apps/app/(authenticated)/cms`; public at `apps/web`.  
+**Live updates:** `unstable_cache` tags + `POST /api/revalidate` on publish (no app redeploy).
 
 ### 6.3 Phase 3 — Optional DB mirror (search / workflows)
 
@@ -211,16 +224,16 @@ Use only when git-only search or approval workflows become insufficient.
 | Layer | Phase 1 (now) | Phase 2 | Phase 3 |
 |-------|-----------------|---------|---------|
 | **Frontend (public)** | Next.js 16 App Router (`apps/web`) | Same | Same |
-| **Frontend (admin)** | — | Next.js (`apps/studio`) | Same |
-| **UI components** | `@repo/design-system` | Same + form builders | Same |
-| **CMS core** | `@repo/cms` TypeScript | + `writer`, `collections` | + `sync` |
+| **Frontend (admin)** | — | `apps/app/cms` | Same |
+| **UI components** | `@repo/design-system` | Same + Monaco editor | Same |
+| **CMS core** | `@repo/cms` TypeScript | + `writer`, GitHub read, ISR | + `sync` |
 | **Validation** | Zod 4 | Same | Same |
 | **MDX** | mdx-bundler, rehype-slug, rehype-pretty-code | Same | Same |
 | **Parsing** | gray-matter | Same | Same |
 | **Backend runtime** | Next.js Server Components / RSC | + Server Actions | + Edge cron |
 | **Auth** | — | Supabase Auth (`@repo/auth`) | Same |
-| **Database** | None | Supabase Storage (assets) | Postgres `cms_*` tables |
-| **Cache** | Next.js `cache()` / build-time SSG | Same | + Redis optional |
+| **Database** | None | Vercel Blob (assets) | Postgres `cms_*` tables |
+| **Cache** | Build-time SSG | `unstable_cache` + on-demand revalidation | + Redis optional |
 | **CI** | turbo typecheck | + `cms:validate` | + sync checks |
 
 ---
@@ -333,28 +346,66 @@ CREATE INDEX cms_documents_collection_status_idx
 - [x] Render components (`Body`, `TableOfContents`, `Image`)
 - [x] `apps/web` integration (blog, legal, sitemap, footer, hero)
 
-### Phase 1.5 — Engine hardening
+### Phase 1.5 — Engine hardening (✅ shipped)
 
-- [ ] `collections.ts` registry (remove blog/legal loader duplication)
-- [ ] `status: draft | published` + filter in list endpoints
-- [ ] `cache.ts` — memoize compile by content hash
-- [ ] `scripts/validate-content.mjs` — CI gate
-- [ ] `cms:validate` npm script
+- [x] `collections.ts` registry (remove blog/legal loader duplication)
+- [x] `status: draft | published` + filter in list endpoints
+- [x] `cache.ts` — memoize compile by content hash
+- [x] `scripts/validate-content.ts` — CI gate
+- [x] `cms:validate` npm script
 
-### Phase 2 — Studio (Keystatic parity target)
+### Phase 2 — Studio + live propagation (✅ shipped)
 
-- [ ] `apps/studio` or `/admin/cms` routes
-- [ ] Collection browser + MDX editor (CodeMirror / MDXEditor)
-- [ ] Supabase Storage uploads → frontmatter URL
-- [ ] Auth: `@repo/auth` requireOrg + editor role
-- [ ] GitHub commit on publish (optional)
-- [ ] Preview URL (`?preview=draft`)
+- [x] `apps/app/(authenticated)/cms` admin routes
+- [x] Collection browser + MDX editor (Monaco)
+- [x] Vercel Blob uploads → frontmatter URL
+- [x] Auth: `@repo/auth` `requireEditor` + org role (`owner` | `editor`)
+- [x] GitHub commit on publish (`CMS_WRITE_MODE=github`)
+- [x] Preview URL (`?preview=draft` + signed token) and in-app preview
+- [x] GitHub runtime reader (`CMS_READ_MODE` / auto when write mode is `github`)
+- [x] Tagged `unstable_cache` on collection reads
+- [x] `apps/web` `POST /api/revalidate` + publish hook from `apps/app`
 
-### Phase 3 — Scale (only if needed)
+### Phase 3A — Locale collections (✅ shipped)
+
+- [x] `content/{collection}/{locale}/{slug}.mdx` layout
+- [x] `ReaderOptions.locale` + `en` fallback on `getPost`
+- [x] Locale-aware cache tags and targeted revalidation
+- [x] Studio routes `/cms/{collection}/{locale}`
+- [x] `apps/web` locale-threaded CMS reads
+
+### Phase 3B — Publish webhooks (✅ shipped)
+
+- [x] `@repo/cms/events` typed payloads
+- [x] `cms.document.published` / `cms.document.unpublished` via Svix
+- [x] Graceful degradation when `SVIX_TOKEN` unset
+
+#### Webhook event payloads
+
+| Event | Trigger |
+| ----- | ------- |
+| `cms.document.published` | Studio save with `status: published` |
+| `cms.document.unpublished` | Delete of a previously published document |
+
+Payload shape (Zod-validated in `@repo/cms/events`):
+
+```json
+{
+  "collection": "blog",
+  "locale": "es",
+  "slug": "bienvenido-a-xforge",
+  "title": "Bienvenido a XForge",
+  "status": "published",
+  "publishedAt": "2026-06-01"
+}
+```
+
+`locale` uses the same codes as `cmsLocales` (`en`, `es`, `de`, `zh`, `fr`, `pt`). `publishedAt` is optional and mirrors blog `date` when present.
+
+### Phase 3C — Scale (only if needed)
 
 - [ ] Postgres mirror + FTS search
-- [ ] Publish webhooks via `@repo/webhooks`
-- [ ] i18n collections (`content/blog/en/`, `content/blog/ja/`)
+- [ ] i18n collections (`content/blog/en/`, `content/blog/ja/`) — superseded by 3A layout
 - [ ] Audit log table
 
 ---

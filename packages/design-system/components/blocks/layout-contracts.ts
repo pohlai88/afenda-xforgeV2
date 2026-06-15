@@ -6,21 +6,31 @@ type AfendaBlockFamily =
   | "audit-trail-panel"
   | "stats-strip"
   | "empty-panel"
-  | "form-section"
+  | "form-section";
 
-type AfendaBlockLayoutContract = {
-  readonly purpose: string
-  readonly anatomy: readonly string[]
-  readonly requiredRecipes: readonly string[]
-  readonly allowedPrimitiveFamilies: readonly string[]
-  readonly notes: readonly string[]
+interface AfendaBlockLayoutContract {
+  readonly allowedPrimitiveFamilies: readonly string[];
+  readonly anatomy: readonly string[];
+  readonly notes: readonly string[];
+  readonly purpose: string;
+  readonly requiredRecipes: readonly string[];
 }
 
 const afendaBlockLayoutContracts = {
   "page-header": {
     purpose: "Orient the operator to the current workspace, record, or module.",
-    anatomy: ["blockShell", "blockHeader", "blockHeaderContent", "blockToolbar"],
-    requiredRecipes: ["blockShell", "blockHeader", "blockTitle", "blockDescription"],
+    anatomy: [
+      "blockShell",
+      "blockHeader",
+      "blockHeaderContent",
+      "blockToolbar",
+    ],
+    requiredRecipes: [
+      "blockShell",
+      "blockHeader",
+      "blockTitle",
+      "blockDescription",
+    ],
     allowedPrimitiveFamilies: ["button", "badge", "breadcrumb", "tabs"],
     notes: [
       "Do not own page max-width.",
@@ -38,17 +48,31 @@ const afendaBlockLayoutContracts = {
     ],
   },
   "data-table-shell": {
-    purpose: "Wrap evidence tables with title, controls, table, and pagination.",
-    anatomy: ["blockPanel", "blockHeader", "blockToolbar", "table", "pagination"],
+    purpose:
+      "Wrap evidence tables with title, controls, table, and pagination.",
+    anatomy: [
+      "blockPanel",
+      "blockHeader",
+      "blockToolbar",
+      "table",
+      "pagination",
+    ],
     requiredRecipes: ["blockPanel", "blockHeader", "blockToolbar"],
-    allowedPrimitiveFamilies: ["table", "button", "checkbox", "badge", "pagination"],
+    allowedPrimitiveFamilies: [
+      "table",
+      "button",
+      "checkbox",
+      "badge",
+      "pagination",
+    ],
     notes: [
       "Table owns rows and cells; shell owns context and controls.",
       "Bulk action state must be explicit and reversible.",
     ],
   },
   "entity-summary-panel": {
-    purpose: "Summarize one record, tenant, employee, invoice, or workflow object.",
+    purpose:
+      "Summarize one record, tenant, employee, invoice, or workflow object.",
     anatomy: ["blockPanel", "blockHeader", "blockSection", "blockMetric"],
     requiredRecipes: ["blockPanel", "blockHeader", "blockSection"],
     allowedPrimitiveFamilies: ["badge", "item", "separator", "button"],
@@ -58,7 +82,8 @@ const afendaBlockLayoutContracts = {
     ],
   },
   "audit-trail-panel": {
-    purpose: "Present irreversible history, evidence, and operator accountability.",
+    purpose:
+      "Present irreversible history, evidence, and operator accountability.",
     anatomy: ["blockPanel", "blockHeader", "blockSection"],
     requiredRecipes: ["blockPanel", "blockHeader", "blockSectionDivider"],
     allowedPrimitiveFamilies: ["table", "item", "badge", "separator"],
@@ -68,7 +93,8 @@ const afendaBlockLayoutContracts = {
     ],
   },
   "stats-strip": {
-    purpose: "Expose compact operational pressure, counts, SLA, and exceptions.",
+    purpose:
+      "Expose compact operational pressure, counts, SLA, and exceptions.",
     anatomy: ["blockShell", "blockSection", "blockMetric", "blockMetricLabel"],
     requiredRecipes: ["blockShell", "blockMetric", "blockMetricLabel"],
     allowedPrimitiveFamilies: ["badge", "progress", "separator"],
@@ -88,16 +114,23 @@ const afendaBlockLayoutContracts = {
     ],
   },
   "form-section": {
-    purpose: "Group related fields with label, hint, error, and audit-safe rhythm.",
+    purpose:
+      "Group related fields with label, hint, error, and audit-safe rhythm.",
     anatomy: ["blockPanel", "blockHeader", "blockSection"],
     requiredRecipes: ["blockPanel", "blockHeader", "blockSection"],
-    allowedPrimitiveFamilies: ["field", "input", "textarea", "select", "checkbox"],
+    allowedPrimitiveFamilies: [
+      "field",
+      "input",
+      "textarea",
+      "select",
+      "checkbox",
+    ],
     notes: [
       "Field owns label-control-hint-error grammar.",
       "Form section owns grouping and hierarchy only.",
     ],
   },
-} as const satisfies Record<AfendaBlockFamily, AfendaBlockLayoutContract>
+} as const satisfies Record<AfendaBlockFamily, AfendaBlockLayoutContract>;
 
-export { afendaBlockLayoutContracts }
-export type { AfendaBlockFamily, AfendaBlockLayoutContract }
+export { afendaBlockLayoutContracts };
+export type { AfendaBlockFamily, AfendaBlockLayoutContract };

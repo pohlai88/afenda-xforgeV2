@@ -1,4 +1,4 @@
-import type { Parameters } from "@storybook/react"
+import type { Parameters } from "@storybook/react";
 
 /** Disable canvas dev tools that clash with matrix / audit stories. */
 export const matrixStoryParameters = {
@@ -6,18 +6,18 @@ export const matrixStoryParameters = {
   measure: { disable: true },
   outline: { disable: true },
   controls: { disable: true },
-} satisfies Parameters
+} satisfies Parameters;
 
 /** Layout-heavy stories: disable actions noise and dev-tool overlays. */
 export const layoutStoryParameters = {
   ...matrixStoryParameters,
   actions: { disable: true },
-} satisfies Parameters
+} satisfies Parameters;
 
 /** Mobile-first overlays (drawer, sheet). */
 export const mobileViewportParameters = {
   viewport: { defaultViewport: "mobile" },
-} satisfies Parameters
+} satisfies Parameters;
 
 /**
  * Interaction / play-function stories: disable addon-a11y during play (avoids axe
@@ -30,4 +30,4 @@ export const interactionStoryParameters = {
   outline: { disable: true },
   actions: { disable: true },
   a11y: { disable: true },
-} satisfies Parameters
+} satisfies Parameters;

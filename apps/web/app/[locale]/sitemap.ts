@@ -1,38 +1,51 @@
-import fs from "node:fs";
-import { blog, legal } from "@repo/cms";
+import { cmsLocales, localePathPrefix } from "@repo/cms/locale";
 import type { MetadataRoute } from "next";
+import { blog, legal } from "@repo/cms";
 import { env } from "@/env";
 
-const appFolders = fs.readdirSync("app", { withFileTypes: true });
-const pages = appFolders
-  .filter((file) => file.isDirectory())
-  .filter((folder) => !folder.name.startsWith("_"))
-  .filter((folder) => !folder.name.startsWith("("))
-  .map((folder) => folder.name);
-const blogs = (await blog.getPosts()).map((post) => post._slug);
-const legals = (await legal.getPostsMeta()).map((post) => post._slug);
 const protocol = env.VERCEL_PROJECT_PRODUCTION_URL?.startsWith("https")
   ? "https"
   : "http";
-const url = new URL(`${protocol}://${env.VERCEL_PROJECT_PRODUCTION_URL}`);
+const baseUrl = new URL(`${protocol}://${env.VERCEL_PROJECT_PRODUCTION_URL}`);
 
-const sitemap = async (): Promise<MetadataRoute.Sitemap> => [
-  {
-    url: new URL("/", url).href,
-    lastModified: new Date(),
-  },
-  ...pages.map((page) => ({
-    url: new URL(page, url).href,
-    lastModified: new Date(),
-  })),
-  ...blogs.map((blog) => ({
-    url: new URL(`blog/${blog}`, url).href,
-    lastModified: new Date(),
-  })),
-  ...legals.map((legal) => ({
-    url: new URL(`legal/${legal}`, url).href,
-    lastModified: new Date(),
-  })),
-];
+const sitemap = async (): Promise<MetadataRoute.Sitemap> => {
+  const entries: MetadataRoute.Sitemap = [
+    {
+      url: baseUrl.href,
+      lastModified: new Date(),
+    },
+  ];
+
+  for (const locale of cmsLocales) {
+    const prefix = localePathPrefix(locale);
+    const localeBase = prefix === "" ? baseUrl.href : new URL(prefix, baseUrl).href;
+
+    const [blogs, legals] = await Promise.all([
+      blog.getPosts({ locale }),
+      legal.getPostsMeta({ locale }),
+    ]);
+
+    entries.push({
+      url: new URL("blog", localeBase).href,
+      lastModified: new Date(),
+    });
+
+    for (const post of blogs) {
+      entries.push({
+        url: new URL(`blog/${post._slug}`, localeBase).href,
+        lastModified: new Date(),
+      });
+    }
+
+    for (const legalPost of legals) {
+      entries.push({
+        url: new URL(`legal/${legalPost._slug}`, localeBase).href,
+        lastModified: new Date(),
+      });
+    }
+  }
+
+  return entries;
+};
 
 export default sitemap;

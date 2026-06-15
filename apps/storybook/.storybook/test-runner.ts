@@ -1,50 +1,76 @@
 import { appendFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import type { Result } from "axe-core";
 import type { TestRunnerConfig } from "@storybook/test-runner";
 import { getStoryContext } from "@storybook/test-runner";
 import { getViolations, injectAxe } from "axe-playwright";
 
-const STORYBOOK_DEV_URL =
-  process.env.STORYBOOK_URL ?? "http://127.0.0.1:6006";
-
-const DEBUG_PANELS = {
-  interactions: "storybook/interactions/panel",
-  a11y: "storybook/a11y/panel",
-  actions: "storybook/actions/panel",
-} as const;
-
-type StorybookDebugPanel = keyof typeof DEBUG_PANELS;
-
-function storybookDebugUrl(storyId: string, panel: StorybookDebugPanel) {
-  const params = new URLSearchParams({
-    path: `/story/${storyId}`,
-    addonPanel: DEBUG_PANELS[panel],
-  });
-
-  return `${STORYBOOK_DEV_URL}/?${params.toString()}`;
-}
-
-function formatStorybookDebugMessage(
-  storyId: string,
-  summary: string,
-  panel: StorybookDebugPanel = "a11y"
-) {
-  return `${summary}\n\nDebug in Storybook:\n${storybookDebugUrl(storyId, panel)}`;
-}
+import { formatStorybookDebugMessage } from "./debug.ts";
 
 const storybookConfigDir = dirname(fileURLToPath(import.meta.url));
 const reportDir = join(storybookConfigDir, "a11y-reports");
 const summaryPath = join(reportDir, "summary.md");
 const indexPath = join(reportDir, "index.json");
+const overflowCheckEnabled = process.env.STORYBOOK_OVERFLOW_CHECK === "1";
+const overflowWidth = Number(process.env.STORYBOOK_OVERFLOW_WIDTH ?? 0);
+const overflowLabel =
+  process.env.STORYBOOK_OVERFLOW_LABEL ?? `${overflowWidth}px`;
 
-type ReportIndexEntry = {
+interface ReportIndexEntry {
+  name: string;
   storyId: string;
   title: string;
-  name: string;
   violations: string[];
-};
+}
+
+interface StoryContextLike {
+  name: string;
+  parameters?: {
+    a11y?: {
+      disable?: boolean;
+      test?: "off" | "todo" | "error";
+    };
+  };
+  tags?: string[];
+  title: string;
+}
+
+/** Afenda/block axe lane — skip legacy ui reference stories and interaction plays. */
+function shouldSkipPostVisitA11y(storyContext: StoryContextLike) {
+  if (storyContext.title.startsWith("ui/")) {
+    return true;
+  }
+
+  if (storyContext.parameters?.a11y?.disable) {
+    return true;
+  }
+
+  if (storyContext.parameters?.a11y?.test === "off") {
+    return true;
+  }
+
+  if (storyContext.tags?.includes("interaction")) {
+    return true;
+  }
+
+  if (storyContext.tags?.includes("visual-audit")) {
+    return true;
+  }
+
+  return false;
+}
+
+function shouldSkipPostVisitOverflow(storyContext: StoryContextLike) {
+  if (storyContext.title.startsWith("ui/")) {
+    return true;
+  }
+
+  if (storyContext.tags?.includes("visual-audit")) {
+    return true;
+  }
+
+  return false;
+}
 
 const readIndexEntries = async (): Promise<ReportIndexEntry[]> => {
   try {
@@ -53,7 +79,7 @@ const readIndexEntries = async (): Promise<ReportIndexEntry[]> => {
       | ReportIndexEntry[]
       | { stories?: ReportIndexEntry[] };
 
-    return Array.isArray(parsed) ? parsed : parsed.stories ?? [];
+    return Array.isArray(parsed) ? parsed : (parsed.stories ?? []);
   } catch {
     return [];
   }
@@ -101,7 +127,9 @@ const upsertIndexEntry = async (entry: ReportIndexEntry) => {
 
   const existingEntries = await readIndexEntries();
   const nextEntries = [
-    ...existingEntries.filter((candidate) => candidate.storyId !== entry.storyId),
+    ...existingEntries.filter(
+      (candidate) => candidate.storyId !== entry.storyId
+    ),
     entry,
   ].sort((left, right) =>
     `${left.title}/${left.name}`.localeCompare(`${right.title}/${right.name}`)
@@ -126,22 +154,54 @@ const escapeMarkdown = (value: string) => value.replace(/\|/g, "\\|");
 
 const config: TestRunnerConfig = {
   async preVisit(page) {
+    if (overflowCheckEnabled && overflowWidth > 0) {
+      await page.setViewportSize({ height: 900, width: overflowWidth });
+      return;
+    }
+
     await injectAxe(page);
   },
   async postVisit(page, context) {
     const storyContext = await getStoryContext(page, context);
 
-    if (storyContext.title.startsWith("ui/")) {
+    if (overflowCheckEnabled && !shouldSkipPostVisitOverflow(storyContext)) {
+      await page.waitForSelector("#storybook-root", { state: "attached" });
+
+      const overflow = await page.evaluate(() => {
+        const root = document.querySelector("#storybook-root");
+        const body = document.body;
+        const documentElement = document.documentElement;
+        const viewportWidth = documentElement.clientWidth;
+        const maxScrollWidth = Math.max(
+          body.scrollWidth,
+          documentElement.scrollWidth,
+          root?.scrollWidth ?? 0
+        );
+
+        return {
+          maxScrollWidth,
+          viewportWidth,
+        };
+      });
+
+      if (overflow.maxScrollWidth > overflow.viewportWidth + 1) {
+        throw new Error(
+          formatStorybookDebugMessage(
+            context.id,
+            `Horizontal overflow at ${overflowLabel}: ${overflow.maxScrollWidth}px content in ${overflow.viewportWidth}px viewport`,
+            "actions"
+          )
+        );
+      }
+
       return;
     }
 
-    if (storyContext.parameters?.a11y?.disable) {
+    if (shouldSkipPostVisitA11y(storyContext)) {
       return;
     }
 
-    if (storyContext.tags?.includes("interaction")) {
-      return;
-    }
+    await page.waitForSelector("#storybook-root", { state: "attached" });
 
     const violations = await getViolations(page, "#storybook-root");
 
@@ -173,15 +233,14 @@ const config: TestRunnerConfig = {
       JSON.stringify(reportEntry, null, 2)
     );
     await appendSummaryRows(
-      reportEntry.violations
-        .map(
-          (violation) =>
-            `| ${escapeMarkdown(reportEntry.title)}/${escapeMarkdown(
-              reportEntry.name ?? ""
-            )} | ${escapeMarkdown(violation.id)} | ${
-              violation.impact ?? "unknown"
-            } | ${violation.nodes.length} |`
-        )
+      reportEntry.violations.map(
+        (violation) =>
+          `| ${escapeMarkdown(reportEntry.title)}/${escapeMarkdown(
+            reportEntry.name ?? ""
+          )} | ${escapeMarkdown(violation.id)} | ${
+            violation.impact ?? "unknown"
+          } | ${violation.nodes.length} |`
+      )
     );
     await upsertIndexEntry({
       storyId: context.id,

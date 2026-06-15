@@ -51,3 +51,10 @@ export class MissingOrganizationError extends Error {
     this.name = "MissingOrganizationError";
   }
 }
+
+export class InsufficientRoleError extends Error {
+  constructor(message = "Insufficient permissions") {
+    super(message);
+    this.name = "InsufficientRoleError";
+  }
+}

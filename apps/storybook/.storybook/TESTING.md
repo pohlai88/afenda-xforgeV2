@@ -2,6 +2,8 @@
 
 Afenda Storybook uses stories as browser-rendered test cases. The testing stack is intentionally split by failure type.
 
+**Stack:** `@storybook/react-vite` + Vite monorepo aliases — see [ECOSYSTEM.md](./ECOSYSTEM.md).
+
 ## Test Lanes
 
 | Lane | Purpose | Tool | Command |
@@ -67,8 +69,7 @@ http://127.0.0.1:6006/?path=/story/<story-id>&addonPanel=storybook/a11y/panel
 | --- | --- | --- |
 | `Axe is already running` | addon-a11y + test-runner both scan during `play` | `tags: ["interaction"]` + `interactionStoryParameters`; test-runner skips postVisit axe for that tag |
 | Portal content not found | Content renders outside `#storybook-root` | Use `screen.findByRole` / `screen.findByPlaceholderText` after click |
-| Implicit `onCheckedChange` action | `argTypesRegex` injects args that override handlers | Destructure `onCheckedChange: _` from `useArgs()` before spreading |
-| Play assumes default args | Controls persist args in the browser session | Normalize state at the start of `play`, or use a dedicated story `id` |
+| `Play assumes default args` | Controls persist args in the browser session | Use local `useState` in interaction stories; spread `interactionStoryParameters` |
 | `ui/*` color-contrast in CI | Legacy reference stories, not Afenda surface | Expected for `ui/*` smoke; fix in design system or disable a11y on matrix stories |
 
 ## Interaction Tests

@@ -7,10 +7,11 @@ import { env } from "@/env";
 
 interface HeroProps {
   dictionary: Dictionary;
+  locale: string;
 }
 
-export const Hero = async ({ dictionary }: HeroProps) => {
-  const latestPost = await blog.getLatestPost();
+export const Hero = async ({ dictionary, locale }: HeroProps) => {
+  const latestPost = await blog.getLatestPost({ locale });
 
   return (
     <div className="w-full">

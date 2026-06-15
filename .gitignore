@@ -279,3 +279,36 @@ packages/database/generated
 .contentlayer
 .content-collections
 .source
+
+# --- afenda-Xforge (monorepo + tooling) ---
+
+# Env templates stay tracked; everything else env-shaped is local
+.env.*
+!.env.example
+!**/.env.example
+
+# Per-app deploy / auth scratch (apps/app/.gitignore mirrors Playwright paths)
+**/.vercel/
+**/.clerk/
+
+# Playwright (apps/app/e2e)
+apps/app/output/playwright/
+**/test-results/
+**/playwright-report/
+**/blob-report/
+
+# Storybook generated reports & coverage (see a11y:report / test-storybook:coverage)
+apps/storybook/.storybook/a11y-reports/
+apps/storybook/coverage/
+
+# Local AI / design scratch (shared .ui-craft/brief.md may stay tracked)
+.codex-artifacts/
+
+# Skill / memory backups
+*.original.md
+
+# Chromatic / visual test bundles
+chromatic-build-*.zip
+
+# Storybook Vite dev cache
+apps/storybook/node_modules/.cache/storybook

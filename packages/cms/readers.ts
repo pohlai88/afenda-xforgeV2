@@ -1,13 +1,14 @@
 import type { LegalPost, LegalPostMeta, Post, PostMeta } from "./types";
+import type { ReaderOptions } from "./collections/types";
 
 export interface BlogReader {
-  getPosts(): Promise<PostMeta[]>;
-  getPost(slug: string): Promise<Post | null>;
-  getLatestPost(): Promise<Post | null>;
+  getPosts(options?: ReaderOptions): Promise<PostMeta[]>;
+  getPost(slug: string, options?: ReaderOptions): Promise<Post | null>;
+  getLatestPost(options?: ReaderOptions): Promise<Post | null>;
 }
 
 export interface LegalReader {
-  getPostsMeta(): Promise<LegalPostMeta[]>;
-  getPosts(): Promise<LegalPost[]>;
-  getPost(slug: string): Promise<LegalPost | null>;
+  getPostsMeta(options?: ReaderOptions): Promise<LegalPostMeta[]>;
+  getPosts(options?: ReaderOptions): Promise<LegalPost[]>;
+  getPost(slug: string, options?: ReaderOptions): Promise<LegalPost | null>;
 }

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { authSuccess, mapAuthError } from "./auth-result";
+import { requireEditor } from "./cms";
 import { auth, requireAuth, requireOrg } from "./server";
 import type { AuthActionResult, AuthenticatedContext } from "./types";
 
@@ -21,6 +22,21 @@ export const withOrg = async <TData>(
 ): Promise<AuthActionResult<TData>> => {
   try {
     return authSuccess(await handler(await requireOrg()));
+  } catch (error) {
+    return mapAuthError(error);
+  }
+};
+
+export const withEditor = async <TData>(
+  handler: (
+    context: AuthenticatedContext & {
+      orgId: string;
+      role: "owner" | "editor";
+    }
+  ) => Promise<TData>
+): Promise<AuthActionResult<TData>> => {
+  try {
+    return authSuccess(await handler(await requireEditor()));
   } catch (error) {
     return mapAuthError(error);
   }

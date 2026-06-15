@@ -26,7 +26,7 @@ export const generateMetadata = async ({
 const BlogIndex = async ({ params }: BlogProps) => {
   const { locale } = await params;
   const dictionary = await getDictionary(locale);
-  const posts = await blog.getPosts();
+  const posts = await blog.getPosts({ locale });
 
   const jsonLd: WithContext<Blog> = {
     "@type": "Blog",

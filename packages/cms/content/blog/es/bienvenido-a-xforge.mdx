@@ -1,0 +1,30 @@
+---
+title: "Bienvenido a XForge"
+description: "Cómo reemplazamos un CMS alojado con contenido MDX respaldado en git."
+status: published
+locale: es
+date: "2026-06-01"
+image:
+  url: "/blog/placeholder.svg"
+  width: 1200
+  height: 630
+  alt: "Imagen de blog XForge"
+authors:
+  - name: "Equipo XForge"
+categories:
+  - name: "Producto"
+---
+
+## Por qué contenido basado en archivos
+
+Los sitios de marketing no necesitan un token de CMS propietario para publicar entradas de blog y páginas legales. Los archivos MDX en git ofrecen control de versiones, vistas previas en PRs y cero dependencia de API en tiempo de ejecución.
+
+## Qué obtienes
+
+- Frontmatter tipado validado con Zod
+- Cuerpo MDX compilado en tiempo de build o solicitud
+- Tabla de contenidos y tiempo de lectura generados automáticamente
+
+## Próximos pasos
+
+Añade nuevas entradas bajo `packages/cms/content/blog/{locale}/` y páginas legales bajo `packages/cms/content/legal/{locale}/`.

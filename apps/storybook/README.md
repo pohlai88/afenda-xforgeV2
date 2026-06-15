@@ -1,40 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Storybook (`apps/storybook`)
 
-## Getting Started
+Design-system workshop for `@repo/design-system` — **Vite + React**, port **6006**.
 
-First, run the development server:
+## Commands
 
 ```bash
-bun dev
-# or
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+pnpm --filter storybook dev              # local workshop
+pnpm --filter storybook build            # static export → storybook-static/
+pnpm --filter storybook check              # typecheck + static build
+pnpm --filter storybook typecheck
+pnpm --filter storybook test-storybook:interaction   # narrow play lane
+pnpm --filter storybook clean            # remove build output + caches
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Docs
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+| Doc | Purpose |
+| --- | --- |
+| [`.storybook/ECOSYSTEM.md`](./.storybook/ECOSYSTEM.md) | Stack, Vite aliases, performance knobs |
+| [`.storybook/TESTING.md`](./.storybook/TESTING.md) | Test lanes, MCP debugging, failure patterns |
+| [`.storybook/TAGS.md`](./.storybook/TAGS.md) | Story tags and filters |
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Environment
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `STORYBOOK_URL` | `http://127.0.0.1:6006` | test-runner / CI target |
+| `STORYBOOK_DISABLE_MCP=1` | unset | Omit MCP addon (set automatically on `build`) |
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+Cursor MCP: `"storybook": { "url": "http://127.0.0.1:6006/mcp" }` in `.cursor/mcp.json`.

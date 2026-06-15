@@ -40,13 +40,7 @@ type BlockRuntimeState =
   | "readonly"
   | "ready";
 
-type BlockTone =
-  | "neutral"
-  | "info"
-  | "positive"
-  | "success"
-  | "warning"
-  | "critical";
+type BlockTone = "neutral" | "info" | "success" | "warning" | "critical";
 
 interface BlockBaseProps {
   readonly blockId?: string;
@@ -58,15 +52,20 @@ interface BlockBaseProps {
 
 interface BlockAction {
   readonly "aria-label"?: string;
+  readonly auditEvent?: string;
+  readonly auditScope?: string;
   readonly capability?: string;
+  readonly confirmationLabel?: string;
+  readonly destructive?: boolean;
   readonly disabled?: boolean;
   readonly href?: string;
   readonly icon?: ReactNode;
-  readonly key?: string;
+  readonly key: string;
   readonly label: string;
   readonly onClick?: MouseEventHandler<HTMLButtonElement>;
   readonly permission?: string;
   readonly reason?: string;
+  readonly roles?: readonly string[];
   readonly variant?: ComponentProps<typeof Button>["variant"];
 }
 
@@ -258,7 +257,7 @@ function FilterBar({
           {activeFilters?.map((filter) => (
             <span
               className={cn(
-                "inline-flex h-7 max-w-full shrink-0 items-center gap-1.5 rounded-full border px-2.5 font-medium text-[12px] leading-none",
+                "inline-flex h-7 max-w-full shrink-0 items-center gap-1.5 rounded-[var(--xforge-radius-sm)] border px-2.5 font-medium text-[12px] leading-none",
                 filterChipClassName[filter.tone ?? "neutral"]
               )}
               key={filter.id}
@@ -306,19 +305,17 @@ type StatsStripProps = ComponentProps<"section"> &
 const metricToneClassName: Record<BlockTone, string> = {
   neutral: "",
   info: "text-info",
-  positive: "text-success",
   success: "text-success",
   warning: "text-warning",
   critical: "text-danger",
 };
 
 const filterChipClassName: Record<BlockTone, string> = {
-  neutral: "border-border-default bg-surface-raised text-text-primary",
-  info: "border-info/40 bg-info-muted text-info",
-  positive: "border-success/40 bg-success-muted text-success",
-  success: "border-success/40 bg-success-muted text-success",
-  warning: "border-warning/50 bg-warning-muted text-text-primary",
-  critical: "border-danger/50 bg-danger-muted text-text-primary",
+  neutral: "border-border-default bg-surface text-text-primary",
+  info: "border-info/50 bg-surface text-info",
+  success: "border-success/50 bg-surface text-success",
+  warning: "border-warning/60 bg-surface text-warning",
+  critical: "border-danger/60 bg-surface text-danger",
 };
 
 const blockDensityClassName: Record<BlockDensity, string> = {
@@ -334,7 +331,6 @@ const blockToneToBadgeTone: Record<
   critical: "critical",
   info: "info",
   neutral: "neutral",
-  positive: "positive",
   success: "positive",
   warning: "warning",
 };
@@ -446,7 +442,6 @@ function EmptyPanel({
           blockRecipe("blockEmpty"),
           blockDensityClassName[density],
           tone === "critical" && "border-danger/40 bg-danger-muted/40",
-          tone === "positive" && "border-success/40 bg-success-muted/30",
           tone === "success" && "border-success/40 bg-success-muted/30",
           tone === "warning" && "border-warning/40 bg-warning-muted/30"
         )}
@@ -556,7 +551,7 @@ function BlockActions({
     return (
       <div className={blockRecipe("blockToolbar")}>
         {actions.map((action) => (
-          <BlockActionButton action={action} key={action.key ?? action.label} />
+          <BlockActionButton action={action} key={action.key} />
         ))}
       </div>
     );
@@ -574,6 +569,8 @@ function isBlockActionArray(
       (action) =>
         action &&
         typeof action === "object" &&
+        "key" in action &&
+        typeof action.key === "string" &&
         "label" in action &&
         typeof action.label === "string"
     )
@@ -588,18 +585,26 @@ function BlockActionButton({ action }: { readonly action: BlockAction }) {
     </>
   );
 
-  if (action.href) {
+  const resolvedVariant =
+    action.destructive && !action.disabled
+      ? "destructive"
+      : (action.variant ?? "secondary");
+
+  if (action.href && !action.disabled) {
     return (
       <Button
-        aria-disabled={action.disabled}
         aria-label={action["aria-label"]}
         asChild
+        data-audit-event={action.auditEvent}
+        data-audit-scope={action.auditScope}
         data-capability={action.capability}
+        data-confirmation-label={action.confirmationLabel}
         data-permission={action.permission}
         data-reason={action.reason}
+        data-required-roles={action.roles?.join(" ")}
         size="sm"
         title={action.reason}
-        variant={action.variant ?? "secondary"}
+        variant={resolvedVariant}
       >
         <a href={action.href}>{content}</a>
       </Button>
@@ -609,21 +614,33 @@ function BlockActionButton({ action }: { readonly action: BlockAction }) {
   return (
     <Button
       aria-label={action["aria-label"]}
+      data-audit-event={action.auditEvent}
+      data-audit-scope={action.auditScope}
       data-capability={action.capability}
+      data-confirmation-label={action.confirmationLabel}
       data-permission={action.permission}
       data-reason={action.reason}
+      data-required-roles={action.roles?.join(" ")}
       disabled={action.disabled}
       onClick={action.onClick}
       size="sm"
       title={action.reason}
-      variant={action.variant ?? "secondary"}
+      variant={resolvedVariant}
     >
       {content}
     </Button>
   );
 }
 
-export { EmptyPanel, FilterBar, FormSection, PageHeader, StatsStrip };
+export {
+  BlockActionButton,
+  BlockActions,
+  EmptyPanel,
+  FilterBar,
+  FormSection,
+  PageHeader,
+  StatsStrip,
+};
 export type {
   ActiveFilter,
   BlockAction,

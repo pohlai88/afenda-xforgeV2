@@ -69,7 +69,7 @@ const tenantMetrics = [
     label: "Ready to post",
     value: "86",
     description: "Validated records awaiting batch approval.",
-    tone: "positive" as const,
+    tone: "success" as const,
     icon: <CheckCircle2Icon aria-hidden="true" />,
   },
   {

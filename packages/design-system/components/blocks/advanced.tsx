@@ -49,6 +49,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
+  type Header,
   type RowSelectionState,
   type SortingState,
   useReactTable,
@@ -72,21 +73,14 @@ import type { ComponentProps, ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { blockRecipe } from "./block-recipes";
 import type { BlockAction, PageHeaderMeta, StatsMetric } from "./foundation";
-import { FormSection, PageHeader } from "./foundation";
+import { BlockActionButton, FormSection, PageHeader } from "./foundation";
 
-type BlockTone =
-  | "neutral"
-  | "info"
-  | "positive"
-  | "success"
-  | "warning"
-  | "critical";
+type BlockTone = "neutral" | "info" | "success" | "warning" | "critical";
 type SaveState = "idle" | "saving" | "saved" | "conflict" | "offline" | "error";
 
 const metricToneClassName: Record<BlockTone, string> = {
   neutral: "",
   info: "text-info",
-  positive: "text-success",
   success: "text-success",
   warning: "text-warning",
   critical: "text-danger",
@@ -295,34 +289,7 @@ function AdvancedDataTable<TData extends object>({
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
-                  {header.isPlaceholder ? null : (
-                    <button
-                      className={cn(
-                        "inline-flex items-center gap-1 text-left outline-none",
-                        header.column.getCanSort() &&
-                          "hover:text-text-primary focus-visible:text-text-primary"
-                      )}
-                      disabled={!header.column.getCanSort()}
-                      onClick={header.column.getToggleSortingHandler()}
-                      type="button"
-                    >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                      {header.column.getCanSort() ? (
-                        <ChevronDownIcon
-                          aria-hidden="true"
-                          className={cn(
-                            "size-3 transition-transform",
-                            header.column.getIsSorted() === "asc" &&
-                              "rotate-180",
-                            !header.column.getIsSorted() && "opacity-35"
-                          )}
-                        />
-                      ) : null}
-                    </button>
-                  )}
+                  <AdvancedTableHeaderContent header={header} />
                 </TableHead>
               ))}
             </TableRow>
@@ -417,6 +384,43 @@ function AdvancedDataTable<TData extends object>({
         </div>
       </div>
     </section>
+  );
+}
+
+function AdvancedTableHeaderContent<TData extends object>({
+  header,
+}: {
+  readonly header: Header<TData, unknown>;
+}) {
+  if (header.isPlaceholder) {
+    return null;
+  }
+
+  const content = flexRender(
+    header.column.columnDef.header,
+    header.getContext()
+  );
+
+  if (!header.column.getCanSort()) {
+    return content;
+  }
+
+  return (
+    <button
+      className="inline-flex items-center gap-1 text-left outline-none hover:text-text-primary focus-visible:text-text-primary"
+      onClick={header.column.getToggleSortingHandler()}
+      type="button"
+    >
+      {content}
+      <ChevronDownIcon
+        aria-hidden="true"
+        className={cn(
+          "size-3 transition-transform motion-reduce:transition-none",
+          header.column.getIsSorted() === "asc" && "rotate-180",
+          !header.column.getIsSorted() && "opacity-35"
+        )}
+      />
+    </button>
   );
 }
 
@@ -644,7 +648,7 @@ function RiskEvidencePanel({
       <div className="grid gap-3 sm:grid-cols-3">
         {metrics.map((metric) => (
           <div
-            className="grid min-w-0 gap-1 border-border-default border-l pl-3 first:border-l-0 first:pl-0"
+            className="grid min-w-0 gap-1 border-border-default border-t pt-3 first:border-t-0 first:pt-0 sm:border-t-0 sm:border-l sm:pt-0 sm:pl-3 sm:first:border-l-0 sm:first:pl-0"
             key={metric.id}
           >
             <span className={blockRecipe("blockMetricLabel")}>
@@ -678,24 +682,30 @@ function RiskEvidencePanel({
         </div>
       ) : null}
       <Separator />
-      <ol className="grid gap-3">
-        {evidence.map((item) => (
-          <li className="grid grid-cols-[auto_1fr] gap-3" key={item.id}>
-            <StatusDot tone={item.tone ?? "neutral"} />
-            <div className="grid min-w-0 gap-1">
-              <div className="flex min-w-0 flex-wrap items-center gap-2">
-                <span className="font-medium text-text-primary">
-                  {item.actor}
-                </span>
-                <span className="font-mono text-text-secondary text-xs tabular-nums">
-                  {item.time}
-                </span>
+      {evidence.length ? (
+        <ol className="grid gap-3">
+          {evidence.map((item) => (
+            <li className="grid grid-cols-[auto_1fr] gap-3" key={item.id}>
+              <StatusDot tone={item.tone ?? "neutral"} />
+              <div className="grid min-w-0 gap-1">
+                <div className="flex min-w-0 flex-wrap items-center gap-2">
+                  <span className="font-medium text-text-primary">
+                    {item.actor}
+                  </span>
+                  <span className="font-mono text-text-secondary text-xs tabular-nums">
+                    {item.time}
+                  </span>
+                </div>
+                <p className={blockRecipe("blockDescription")}>{item.detail}</p>
               </div>
-              <p className={blockRecipe("blockDescription")}>{item.detail}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <div className="rounded-[var(--xforge-radius-sm)] border border-border-default border-dashed bg-surface px-3 py-2 text-text-secondary text-xs">
+          No evidence events are attached to this record yet.
+        </div>
+      )}
     </section>
   );
 }
@@ -837,7 +847,7 @@ function OperationalDashboardShell({
                 aria-current={item.active ? "page" : undefined}
                 className={cn(
                   "inline-flex h-8 items-center gap-2 rounded-[var(--xforge-radius-sm)] px-2 text-left text-text-secondary outline-none hover:bg-surface-hover hover:text-text-primary focus-visible:ring-2 focus-visible:ring-ring",
-                  item.active && "bg-brand-primary/10 text-text-primary"
+                  item.active && "bg-brand-primary/10 text-brand-primary"
                 )}
                 key={item.label}
                 type="button"
@@ -890,7 +900,6 @@ function StatusDot({ tone }: { readonly tone: BlockTone }) {
         "mt-1 size-2 shrink-0 rounded-full",
         tone === "neutral" && "bg-text-tertiary",
         tone === "info" && "bg-info",
-        tone === "positive" && "bg-success",
         tone === "success" && "bg-success",
         tone === "warning" && "bg-warning",
         tone === "critical" && "bg-danger"
@@ -906,7 +915,6 @@ const blockToneToBadgeTone: Record<
   critical: "critical",
   info: "info",
   neutral: "neutral",
-  positive: "positive",
   success: "positive",
   warning: "warning",
 };
@@ -924,21 +932,7 @@ function AdvancedBlockActions({
     return (
       <>
         {actions.map((action) => (
-          <Button
-            aria-label={action["aria-label"]}
-            data-capability={action.capability}
-            data-permission={action.permission}
-            data-reason={action.reason}
-            disabled={action.disabled}
-            key={action.key ?? action.label}
-            onClick={action.onClick}
-            size="sm"
-            title={action.reason}
-            variant={action.variant ?? "secondary"}
-          >
-            {action.icon}
-            {action.label}
-          </Button>
+          <BlockActionButton action={action} key={action.key} />
         ))}
       </>
     );
@@ -956,6 +950,8 @@ function isBlockActionArray(
       (action) =>
         action &&
         typeof action === "object" &&
+        "key" in action &&
+        typeof action.key === "string" &&
         "label" in action &&
         typeof action.label === "string"
     )

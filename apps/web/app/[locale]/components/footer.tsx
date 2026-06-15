@@ -3,8 +3,8 @@ import { Status } from "@repo/observability/status";
 import Link from "next/link";
 import { env } from "@/env";
 
-export const Footer = async () => {
-  const legalPages = await legal.getPostsMeta();
+export const Footer = async ({ locale }: { locale: string }) => {
+  const legalPages = await legal.getPostsMeta({ locale });
 
   const navigationItems = [
     {

@@ -6,28 +6,29 @@ type AfendaBlockRecipeOwner =
   | "section"
   | "metric"
   | "empty"
-  | "density"
+  | "density";
 
-type AfendaBlockRecipeKind = "composition" | "layout" | "typography"
+type AfendaBlockRecipeKind = "composition" | "layout" | "typography";
 
-type AfendaBlockRecipeScope = "block" | "block-family"
+type AfendaBlockRecipeScope = "block" | "block-family";
 
-type AfendaBlockRecipeEntry = {
-  readonly owner: AfendaBlockRecipeOwner
-  readonly kind: AfendaBlockRecipeKind
-  readonly scope: AfendaBlockRecipeScope
-  readonly description: string
-  readonly className: string
+interface AfendaBlockRecipeEntry {
+  readonly className: string;
+  readonly description: string;
+  readonly kind: AfendaBlockRecipeKind;
+  readonly owner: AfendaBlockRecipeOwner;
+  readonly scope: AfendaBlockRecipeScope;
 }
 
-type AfendaBlockRecipeContract = Record<string, AfendaBlockRecipeEntry>
+type AfendaBlockRecipeContract = Record<string, AfendaBlockRecipeEntry>;
 
 const afendaBlockRecipe = {
   blockShell: {
     owner: "shell",
     kind: "layout",
     scope: "block",
-    description: "Root block shell. Blocks must not set page-level width by default.",
+    description:
+      "Root block shell. Blocks must not set page-level width by default.",
     className: "w-full min-w-0",
   },
   blockStack: {
@@ -41,7 +42,8 @@ const afendaBlockRecipe = {
     owner: "header",
     kind: "layout",
     scope: "block-family",
-    description: "Responsive header layout for title, description, and actions.",
+    description:
+      "Responsive header layout for title, description, and actions.",
     className:
       "flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between",
   },
@@ -71,14 +73,16 @@ const afendaBlockRecipe = {
     owner: "toolbar",
     kind: "layout",
     scope: "block-family",
-    description: "Action and filter toolbar layout that wraps without breaking density.",
+    description:
+      "Action and filter toolbar layout that wraps without breaking density.",
     className: "flex min-w-0 flex-wrap items-center gap-2",
   },
   blockPanel: {
     owner: "panel",
     kind: "composition",
     scope: "block-family",
-    description: "Default block panel surface for evidence and metadata groups.",
+    description:
+      "Default block panel surface for evidence and metadata groups.",
     className:
       "rounded-[var(--card-radius)] border border-border-default bg-surface-raised text-text-primary shadow-panel",
   },
@@ -107,8 +111,10 @@ const afendaBlockRecipe = {
     owner: "metric",
     kind: "typography",
     scope: "block-family",
-    description: "Metric value typography for counts, SLA, and variance values.",
-    className: "text-[20px] font-semibold leading-none tabular-nums text-text-primary",
+    description:
+      "Metric value typography for counts, SLA, and variance values.",
+    className:
+      "text-[20px] font-semibold leading-none tabular-nums text-text-primary",
   },
   blockMetricLabel: {
     owner: "metric",
@@ -140,17 +146,17 @@ const afendaBlockRecipe = {
     description: "Default comfortable block density modifier.",
     className: "gap-4",
   },
-} as const satisfies AfendaBlockRecipeContract
+} as const satisfies AfendaBlockRecipeContract;
 
-type AfendaBlockRecipeKey = keyof typeof afendaBlockRecipe
+type AfendaBlockRecipeKey = keyof typeof afendaBlockRecipe;
 
 function blockRecipe(...keys: AfendaBlockRecipeKey[]) {
-  return keys.map((key) => afendaBlockRecipe[key].className).join(" ")
+  return keys.map((key) => afendaBlockRecipe[key].className).join(" ");
 }
 
-export { afendaBlockRecipe, blockRecipe }
+export { afendaBlockRecipe, blockRecipe };
 export type {
   AfendaBlockRecipeContract,
   AfendaBlockRecipeEntry,
   AfendaBlockRecipeKey,
-}
+};

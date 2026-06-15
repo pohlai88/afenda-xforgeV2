@@ -49,7 +49,6 @@ const meta = {
   component: Table,
   tags: ["autodocs"],
   argTypes: {},
-  parameters: layoutStoryParameters,
   render: (args) => (
     <Table {...args}>
       <TableCaption>A list of your recent invoices.</TableCaption>
@@ -85,7 +84,9 @@ type Story = StoryObj<typeof meta>;
 /**
  * The default form of the table.
  */
-export const Default: Story = {};
+export const Default: Story = {
+  parameters: layoutStoryParameters,
+};
 
 export const DenseOperatorMatrix: Story = {
   parameters: matrixStoryParameters,

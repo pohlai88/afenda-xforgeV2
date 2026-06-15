@@ -1,5 +1,7 @@
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { blog } from "@repo/cms";
+import { getPreviewReaderOptions } from "@repo/cms/reader-options";
+import { buildLocaleSlugParams } from "@repo/cms/static-params";
 import { Body } from "@repo/cms/components/body";
 import { Image } from "@repo/cms/components/image";
 import { TableOfContents } from "@repo/cms/components/toc";
@@ -18,15 +20,25 @@ const url = new URL(`${protocol}://${env.VERCEL_PROJECT_PRODUCTION_URL}`);
 
 interface BlogPostProperties {
   readonly params: Promise<{
+    locale: string;
     slug: string;
+  }>;
+  readonly searchParams: Promise<{
+    preview?: string;
+    token?: string;
   }>;
 }
 
 export const generateMetadata = async ({
   params,
+  searchParams,
 }: BlogPostProperties): Promise<Metadata> => {
-  const { slug } = await params;
-  const post = await blog.getPost(slug);
+  const { locale, slug } = await params;
+  const query = await searchParams;
+  const post = await blog.getPost(
+    slug,
+    getPreviewReaderOptions("blog", locale, slug, query)
+  );
 
   if (!post) {
     return {};
@@ -39,15 +51,19 @@ export const generateMetadata = async ({
   });
 };
 
-export const generateStaticParams = async (): Promise<{ slug: string }[]> => {
-  const posts = await blog.getPosts();
+export const generateStaticParams = (): Promise<
+  { locale: string; slug: string }[]
+> =>
+  buildLocaleSlugParams(async (locale) => {
+    const posts = await blog.getPosts({ locale });
+    return posts.map((post) => post._slug);
+  });
 
-  return posts.map(({ _slug }) => ({ slug: _slug }));
-};
-
-const BlogPost = async ({ params }: BlogPostProperties) => {
-  const { slug } = await params;
-  const page = await blog.getPost(slug);
+const BlogPost = async ({ params, searchParams }: BlogPostProperties) => {
+  const { locale, slug } = await params;
+  const query = await searchParams;
+  const readerOptions = getPreviewReaderOptions("blog", locale, slug, query);
+  const page = await blog.getPost(slug, readerOptions);
 
   if (!page) {
     notFound();

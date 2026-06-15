@@ -1,0 +1,46 @@
+name: Storybook check
+
+on:
+  pull_request:
+    paths:
+      - "apps/storybook/**"
+      - "packages/design-system/**"
+      - "pnpm-lock.yaml"
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/storybook/**"
+      - "packages/design-system/**"
+      - "pnpm-lock.yaml"
+
+concurrency:
+  group: storybook-check-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck and static build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      STORYBOOK_DISABLE_MCP: "1"
+      CI: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Storybook check
+        run: pnpm --filter storybook check

@@ -64,7 +64,7 @@ const approvalRows = [
     owner: "Mina Shah",
     amount: "86,420.00",
     status: "Ready",
-    tone: "positive" as const,
+    tone: "success" as const,
     sla: "1h 12m",
   },
   {
@@ -135,7 +135,7 @@ const auditEvents = [
     action: "attached evidence to",
     target: "AP-10479",
     outcome: "Captured",
-    tone: "positive" as const,
+    tone: "success" as const,
   },
   {
     id: "audit-3838",
@@ -164,7 +164,7 @@ const timelineItems = [
     description:
       "Invoice metadata, tenant scope, and vendor reference passed schema checks.",
     time: "09:45",
-    tone: "positive" as const,
+    tone: "success" as const,
     meta: "Record lock started",
   },
   {
@@ -375,6 +375,7 @@ function OperatorPagination() {
 const statusDotClassName = {
   critical: "bg-danger",
   info: "bg-info",
-  positive: "bg-success",
+  neutral: "bg-muted-foreground",
+  success: "bg-success",
   warning: "bg-warning",
 } as const;

@@ -1,9 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/react"
-import { FilterIcon, PlusIcon } from "lucide-react"
-
-import { Badge } from "@repo/design-system/components/afenda-ui/badge"
-import { Button } from "@repo/design-system/components/afenda-ui/button"
-import { Input } from "@repo/design-system/components/afenda-ui/input"
+import { Badge } from "@repo/design-system/components/afenda-ui/badge";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
 import {
   Table,
   TableBody,
@@ -11,11 +8,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table"
-import { blockRecipe } from "@repo/design-system/components/blocks"
-import { cn } from "@repo/design-system/lib/utils"
+} from "@repo/design-system/components/afenda-ui/table";
+import {
+  blockRecipe,
+  blockRegistryEntries,
+} from "@repo/design-system/components/blocks";
+import { cn } from "@repo/design-system/lib/utils";
+import type { Meta, StoryObj } from "@storybook/react";
+import { FilterIcon, PlusIcon } from "lucide-react";
 
-import { layoutStoryParameters } from "../../.storybook/essentials"
+import { layoutStoryParameters } from "../../.storybook/essentials";
 
 const meta = {
   title: "Blocks/Block Readiness",
@@ -30,15 +32,17 @@ const meta = {
       },
     },
   },
-} satisfies Meta
+} satisfies Meta;
 
-export default meta
+export default meta;
 
-type Story = StoryObj<typeof meta>
+type Story = StoryObj<typeof meta>;
 
 export const DataTableShellContract: Story = {
   render: () => (
-    <section className={cn("w-[880px]", blockRecipe("blockShell", "blockStack"))}>
+    <section
+      className={cn("w-[880px]", blockRecipe("blockShell", "blockStack"))}
+    >
       <header className={blockRecipe("blockHeader")}>
         <div className={blockRecipe("blockHeaderContent")}>
           <h2 className={blockRecipe("blockTitle")}>Tenant approvals</h2>
@@ -105,11 +109,13 @@ export const DataTableShellContract: Story = {
       </div>
     </section>
   ),
-}
+};
 
 export const StatsAndEmptyContracts: Story = {
   render: () => (
-    <section className={cn("w-[760px]", blockRecipe("blockShell", "blockStack"))}>
+    <section
+      className={cn("w-[760px]", blockRecipe("blockShell", "blockStack"))}
+    >
       <div className="grid grid-cols-3 gap-3">
         {[
           ["Open approvals", "18"],
@@ -128,7 +134,7 @@ export const StatsAndEmptyContracts: Story = {
         ))}
       </div>
 
-      <div className={cn(blockRecipe("blockEmpty"), "p-6")}>
+      <div className={cn(blockRecipe("blockEmpty"), "p-4")}>
         <div className="grid gap-2">
           <h2 className={blockRecipe("blockTitle")}>No exceptions found</h2>
           <p className={blockRecipe("blockDescription")}>
@@ -139,4 +145,64 @@ export const StatsAndEmptyContracts: Story = {
       </div>
     </section>
   ),
-}
+};
+
+export const SupportedBlockRegistry: Story = {
+  render: () => (
+    <section
+      className={cn("w-[920px]", blockRecipe("blockShell", "blockStack"))}
+    >
+      <header className={blockRecipe("blockHeader")}>
+        <div className={blockRecipe("blockHeaderContent")}>
+          <h2 className={blockRecipe("blockTitle")}>
+            Supported block registry
+          </h2>
+          <p className={blockRecipe("blockDescription")}>
+            Canonical map of block types available to app builders and registry
+            consumers.
+          </p>
+        </div>
+        <Badge tone="positive" variant="outline">
+          {blockRegistryEntries.length} blocks
+        </Badge>
+      </header>
+
+      <div className={cn(blockRecipe("blockPanel"), "overflow-hidden")}>
+        <Table variant="plain">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Block type</TableHead>
+              <TableHead>Component</TableHead>
+              <TableHead>Family</TableHead>
+              <TableHead>Data slot</TableHead>
+              <TableHead>Description</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {blockRegistryEntries.map((entry) => (
+              <TableRow key={entry.type}>
+                <TableCell className="font-mono tabular-nums">
+                  {entry.type}
+                </TableCell>
+                <TableCell className="font-mono tabular-nums">
+                  {entry.importName}
+                </TableCell>
+                <TableCell>
+                  <Badge tone="neutral" variant="outline">
+                    {entry.family}
+                  </Badge>
+                </TableCell>
+                <TableCell className="font-mono tabular-nums">
+                  {entry.dataSlot}
+                </TableCell>
+                <TableCell className="max-w-80 text-text-secondary">
+                  {entry.description}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </section>
+  ),
+};

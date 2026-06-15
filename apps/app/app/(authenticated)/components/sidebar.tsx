@@ -166,6 +166,11 @@ const data = {
   ],
   navSecondary: [
     {
+      title: "Content",
+      url: "/cms",
+      icon: BookOpenIcon,
+    },
+    {
       title: "Webhooks",
       url: "/webhooks",
       icon: AnchorIcon,

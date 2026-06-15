@@ -1,0 +1,33 @@
+{/* Storybook 10: blocks live under @storybook/addon-docs (not a separate @storybook/blocks package). */}
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Introduction/Overview" />
+
+# Afenda Storybook
+
+Workshop for `@repo/design-system` — Afenda UI, Blocks, and legacy `ui/*` reference stories.
+
+## Layers
+
+| Sidebar | Purpose |
+| --- | --- |
+| **Afenda UI** | Product primitives and patterns (primary surface) |
+| **Blocks** | Composed operator workflows |
+| **ui/** | shadcn reference — smoke only; axe skipped in CI for this lane |
+
+## Toolbars
+
+- **Theme** — light / dark via `@storybook/addon-themes`
+- **Layout** — center, padded, fullscreen, surface, frame
+- **Density** — comfortable / compact
+- **Viewport** — mobile through dense dashboard
+
+## Commands
+
+```bash
+pnpm --filter storybook dev
+pnpm --filter storybook check          # typecheck + static build
+pnpm --filter storybook test-storybook:interaction
+```
+
+See `.storybook/ECOSYSTEM.md` and `.storybook/TESTING.md` for MCP, Vite, and test lanes.

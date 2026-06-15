@@ -1,13 +1,18 @@
-/** Default local Storybook URL (override with STORYBOOK_URL in CI). */
-export const STORYBOOK_DEV_URL =
-  process.env.STORYBOOK_URL ?? "http://127.0.0.1:6006";
+export { STORYBOOK_DEV_URL } from "./constants.ts";
 
-export type StorybookDebugPanel = "interactions" | "a11y" | "actions";
+import { STORYBOOK_DEV_URL as DEFAULT_STORYBOOK_DEV_URL } from "./constants.ts";
+
+export type StorybookDebugPanel =
+  | "actions"
+  | "a11y"
+  | "interactions"
+  | "overflow";
 
 const DEBUG_PANELS: Record<StorybookDebugPanel, string> = {
   interactions: "storybook/interactions/panel",
   a11y: "storybook/a11y/panel",
   actions: "storybook/actions/panel",
+  overflow: "storybook/actions/panel",
 };
 
 /** Storybook iframe path segment, e.g. `/story/afenda-ui-button--default`. */
@@ -22,7 +27,7 @@ export function storybookStoryPath(storyId: string) {
 export function storybookDebugUrl(
   storyId: string,
   panel: StorybookDebugPanel = "interactions",
-  baseUrl: string = STORYBOOK_DEV_URL
+  baseUrl: string = DEFAULT_STORYBOOK_DEV_URL
 ) {
   const params = new URLSearchParams({
     path: storybookStoryPath(storyId),

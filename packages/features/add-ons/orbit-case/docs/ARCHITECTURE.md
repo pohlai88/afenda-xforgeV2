@@ -1,7 +1,7 @@
 # Orbit Case — Architecture
 
 **Version:** 0.1  
-**Status:** Phase 1 scaffold + Orbit Core implementation  
+**Status:** Phase 1.1 complete (Orbit Core + attachments + calendar/timeline)  
 **Package:** `@repo/orbit-case`  
 **Route:** `/orbit-case`
 
@@ -33,9 +33,9 @@ Users create work immediately without choosing a module, form, workflow, or SOP.
 ```txt
 Orbit Case
     ├── Work Engine      (CRUD, assign, tags, status)
-    ├── Board Engine     (list, kanban — calendar/timeline Phase 1.1)
+    ├── Board Engine     (list, kanban, calendar, timeline)
     ├── Comment Engine
-    ├── Attachment Engine (Phase 1.1 — @repo/storage)
+    ├── Attachment Engine (@repo/storage metadata; blob upload in app)
     ├── Watch Engine
     ├── Activity Engine  (append-only audit)
     └── Morphing Engine  (Phase 2+)
@@ -47,9 +47,10 @@ Orbit Case
 | Engine | Phase | Location |
 |--------|-------|----------|
 | Work | 1 | `engines/work/` |
-| Board | 1 | `engines/board/` |
+| Board | 1 / 1.1 | `engines/board/` (kanban, calendar, timeline) |
 | Activity | 1 | `engines/activity/` |
 | Comment | 1 | `engines/work/comments.ts` |
+| Attachment | 1.1 | `engines/attachment/` |
 | Link | 2 | `engines/link/` |
 | Morph | 2–3 | `engines/morph/` |
 

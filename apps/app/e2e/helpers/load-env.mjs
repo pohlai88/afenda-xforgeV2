@@ -87,3 +87,7 @@ export const assertE2eSupabaseEnv = () => {
 
   return { loaded, status };
 };
+
+export const getE2eBlobEnvStatus = () => ({
+  blobReadWriteToken: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+});

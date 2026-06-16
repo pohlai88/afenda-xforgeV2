@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { getE2eBlobEnvStatus } from "./helpers/load-env.mjs";
 import { signInWithPassword } from "./helpers/sign-in";
 
 test.describe("Orbit Case lifecycle", () => {
@@ -27,5 +28,65 @@ test.describe("Orbit Case lifecycle", () => {
     });
     await page.getByRole("button", { name: "Archive case" }).click();
     await expect(page).toHaveURL(/\/orbit-case$/);
+  });
+
+  test("due date appears on calendar and timeline tabs", async ({ page }) => {
+    const uniqueTitle = `E2E Due ${Date.now()}`;
+    const today = new Date();
+    const dayLabel = String(today.getDate());
+
+    await signInWithPassword(page);
+
+    await page.goto("/orbit-case");
+    await page.getByLabel("Orbit Case title").fill(uniqueTitle);
+    await page.getByRole("button", { name: "Create case" }).click();
+    await expect(page).toHaveURL(/\/orbit-case\/[^/]+$/, { timeout: 15_000 });
+
+    await page.getByRole("button", { name: "Set due date" }).click();
+    await page
+      .getByRole("gridcell", { name: dayLabel, exact: true })
+      .first()
+      .click();
+    await expect(page.getByRole("button", { name: "Set due date" })).toHaveCount(
+      0,
+      { timeout: 15_000 }
+    );
+
+    await page.goto("/orbit-case");
+    await page.getByRole("tab", { name: "Calendar" }).click();
+    await page
+      .getByRole("gridcell", { name: dayLabel, exact: true })
+      .first()
+      .click();
+    await expect(page.getByText(uniqueTitle)).toBeVisible({ timeout: 15_000 });
+
+    await page.getByRole("tab", { name: "Timeline" }).click();
+    await expect(page.getByText(uniqueTitle)).toBeVisible({ timeout: 15_000 });
+  });
+
+  test("uploads attachment when blob storage is configured", async ({ page }) => {
+    if (!getE2eBlobEnvStatus().blobReadWriteToken) {
+      test.skip(true, "BLOB_READ_WRITE_TOKEN not configured");
+    }
+
+    const uniqueTitle = `E2E Attach ${Date.now()}`;
+    const fileName = "e2e-orbit-notes.txt";
+
+    await signInWithPassword(page);
+
+    await page.goto("/orbit-case");
+    await page.getByLabel("Orbit Case title").fill(uniqueTitle);
+    await page.getByRole("button", { name: "Create case" }).click();
+    await expect(page).toHaveURL(/\/orbit-case\/[^/]+$/, { timeout: 15_000 });
+
+    await page.getByLabel("Upload attachment").setInputFiles({
+      name: fileName,
+      mimeType: "text/plain",
+      buffer: Buffer.from("orbit case e2e attachment"),
+    });
+
+    await expect(page.getByRole("link", { name: fileName })).toBeVisible({
+      timeout: 20_000,
+    });
   });
 });

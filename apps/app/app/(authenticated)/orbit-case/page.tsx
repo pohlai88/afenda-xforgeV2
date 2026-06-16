@@ -1,3 +1,4 @@
+import { getOrganizationRole } from "@repo/auth/cms";
 import { requireOrg } from "@repo/auth/server";
 import type { OrbitCaseBoardDto, OrbitCaseDto } from "@repo/orbit-case";
 import { toOrbitCaseBoardDto, toOrbitCaseDto } from "@repo/orbit-case";
@@ -16,7 +17,8 @@ export const metadata: Metadata = {
 };
 
 export default async function OrbitCasePage() {
-  const { orgId } = await requireOrg();
+  const { orgId, userId } = await requireOrg();
+  const role = await getOrganizationRole(userId, orgId);
   const [cases, board] = await Promise.all([
     listOrbitCases(orgId),
     getOrbitCaseBoard(orgId),
@@ -35,6 +37,7 @@ export default async function OrbitCasePage() {
       <OrbitCaseWorkspace
         initialBoard={initialBoard.columns}
         initialCases={initialCases}
+        showRegistryLink={role === "owner"}
       />
     </>
   );

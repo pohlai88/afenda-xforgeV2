@@ -47,7 +47,7 @@ export const AuthSuccessAlert = ({
   message,
   title,
 }: AuthSuccessAlertProperties) => (
-  <Alert role="status" tone="positive">
+  <Alert role="status" tone="success">
     {title ? <AlertTitle>{title}</AlertTitle> : null}
     <AlertDescription className={title ? recipe("captionText") : undefined}>
       {message}

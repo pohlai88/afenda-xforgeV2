@@ -121,7 +121,7 @@ export const DocumentSearch = ({
                   ) : null}
                 </div>
                 <Badge
-                  tone={result.status === "published" ? "positive" : "neutral"}
+                  tone={result.status === "published" ? "success" : "neutral"}
                   variant="soft"
                 >
                   {result.status}

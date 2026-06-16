@@ -12,7 +12,9 @@
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "node scripts/repair-drizzle-journal.mjs && drizzle-kit migrate",
+    "db:repair-journal": "node scripts/repair-drizzle-journal.mjs",
+    "db:repair-journal:check": "node scripts/repair-drizzle-journal.mjs --check",
     "db:pull": "drizzle-kit pull",
     "db:push": "drizzle-kit push"
   },

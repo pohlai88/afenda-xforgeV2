@@ -33,6 +33,7 @@ import { listCases } from "@/app/actions/orbit-case/list";
 interface OrbitCaseWorkspaceProps {
   initialBoard: OrbitCaseBoardColumnDto[];
   initialCases: OrbitCaseDto[];
+  showRegistryLink?: boolean;
 }
 
 const statusLabel: Record<OrbitCaseStatus, string> = {
@@ -47,6 +48,7 @@ const statusLabel: Record<OrbitCaseStatus, string> = {
 export function OrbitCaseWorkspace({
   initialCases,
   initialBoard,
+  showRegistryLink = false,
 }: OrbitCaseWorkspaceProps) {
   const router = useRouter();
   const [cases, setCases] = useState(initialCases);
@@ -76,8 +78,7 @@ export function OrbitCaseWorkspace({
       const created = result.data;
       setTitle("");
       setDescription("");
-      router.push(`/orbit-case/${created.id}`);
-      router.refresh();
+      router.replace(`/orbit-case/${created.id}`);
     });
   };
 
@@ -121,7 +122,17 @@ export function OrbitCaseWorkspace({
           "grid gap-4"
         )}
       >
-        <h2 className={blockRecipe("blockTitle")}>Capture work</h2>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className={blockRecipe("blockTitle")}>Capture work</h2>
+          {showRegistryLink ? (
+            <Link
+              className="text-muted-foreground text-sm hover:text-foreground"
+              href="/orbit-case/settings"
+            >
+              Push registry
+            </Link>
+          ) : null}
+        </div>
         <p className={blockRecipe("blockDescription")}>
           Start with a title — classify and push to governed modules later.
         </p>

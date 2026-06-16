@@ -22,7 +22,7 @@ VALUES (
   true,
   now()
 )
-ON CONFLICT ("organizationId", "destinationId") DO NOTHING;
+ON CONFLICT ("id") DO NOTHING;
 
 INSERT INTO "next_forge"."orbit_push_templates" (
   "id",

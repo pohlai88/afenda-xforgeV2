@@ -9,7 +9,7 @@ import {
 } from "@repo/orbit-case/server";
 import { revalidatePath } from "next/cache";
 
-export const deleteCase = (
+export const deleteCase = async (
   input: unknown
 ): Promise<AuthActionResult<{ deleted: boolean }>> => {
   const parsed = deleteOrbitCaseSchema.parse(input);

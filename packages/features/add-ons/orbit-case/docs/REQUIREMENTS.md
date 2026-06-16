@@ -50,6 +50,7 @@ A user lands on `/orbit-case`, enters “Need RM50k for production line”, and 
 - [x] Storybook story for Orbit Case board
 - [x] `pnpm --filter @repo/orbit-case typecheck` + `test` green
 - [x] `pnpm --filter app typecheck` green
+- [ ] OC-7 Attachments (deferred Phase 1.1)
 
 ---
 
@@ -66,10 +67,12 @@ A user lands on `/orbit-case`, enters “Need RM50k for production line”, and 
 
 ### Phase 2 DoD
 
-- [ ] Registry DB tables + admin UI
-- [ ] `engines/morph/push-orchestrator.ts` with idempotency
-- [ ] Integration test: junior cannot push Budget; finance can
-- [ ] Optional `emit-org-event` for `orbit.case.pushed`
+- [x] Registry DB tables (`0024`, `0025`) + owner admin UI at `/orbit-case/settings`
+- [x] `engines/morph/push-orchestrator.ts` with idempotency
+- [x] Integration test: member cannot push Budget; owner can (`orbit-case.push.integration.test.ts`)
+- [x] `emit-org-event` for `orbit.case.created` and `orbit.case.pushed`
+- [x] E2E lifecycle (`orbit-case.spec.ts`) + push smoke (`orbit-case-push.spec.ts`)
+- [x] Webhook delivery integration (`orbit-case-events.integration.test.ts`)
 
 ---
 
@@ -84,3 +87,20 @@ Destinations (incremental): Approval, Meeting, Budget, Purchase, Lead, Complaint
 - [ ] Push creates target + `orbit_object_links`
 - [ ] UI shows linked projection from case detail
 - [ ] E2E: case → push → open target → origin visible
+
+*(Budget request stub satisfies Phase 2; remaining destinations are Phase 3.)*
+
+---
+
+## Database migrations
+
+Apply schema changes **only** via Drizzle:
+
+```bash
+pnpm migrate
+# equivalent: pnpm --filter @repo/database db:migrate
+```
+
+The migrate script repairs `drizzle.__drizzle_migrations` journal drift before running `drizzle-kit migrate`. Manual SQL / Supabase MCP `apply_migration` are blocked by Cursor hook `guard-drizzle-migrate`.
+
+**JWT push capabilities:** migration `0025` installs the access-token hook. Users must **sign out and sign in** once to receive `app_metadata.orbit_push_capabilities` in JWT (role fallback applies until then).

@@ -37,11 +37,19 @@
       {
         "command": "node .cursor/hooks/ask-vercel-env-pull.mjs",
         "timeout": 5
+      },
+      {
+        "command": "node .cursor/hooks/guard-drizzle-migrate.mjs",
+        "timeout": 5
       }
     ],
     "beforeMCPExecution": [
       {
         "command": "node .cursor/hooks/guard-vercel-deploy-mcp.mjs",
+        "timeout": 5
+      },
+      {
+        "command": "node .cursor/hooks/guard-drizzle-migrate.mjs",
         "timeout": 5
       }
     ],

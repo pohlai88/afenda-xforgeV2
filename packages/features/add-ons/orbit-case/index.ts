@@ -71,3 +71,17 @@ export type {
   OrbitCaseCreatedEvent,
   OrbitCasePushedEvent,
 } from "./contract/events";
+export {
+  deletePushDestinationSchema,
+  deletePushTemplateSchema,
+  upsertPushDestinationSchema,
+  upsertPushTemplateSchema,
+} from "./contract/registry.schema";
+export type {
+  UpsertPushDestinationInput,
+  UpsertPushTemplateInput,
+} from "./contract/registry.schema";
+export {
+  orbitCaseCapabilitiesForRole,
+  resolveOrbitPushCapabilities,
+} from "./contract/capabilities";

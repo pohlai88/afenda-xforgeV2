@@ -37,12 +37,12 @@ interface DeliveriesTableProperties {
 const statusVariant = (
   status: WebhookDeliveryStatus
 ): {
-  tone: "neutral" | "positive" | "warning" | "critical";
+  tone: "neutral" | "success" | "warning" | "critical";
   variant: "soft" | "outline";
 } => {
   switch (status) {
     case "delivered":
-      return { tone: "positive", variant: "soft" };
+      return { tone: "success", variant: "soft" };
     case "failed":
       return { tone: "critical", variant: "soft" };
     case "retrying":

@@ -56,7 +56,7 @@ export const DocumentList = ({
             </TableCell>
             <TableCell>
               <Badge
-                tone={document.status === "published" ? "positive" : "neutral"}
+                tone={document.status === "published" ? "success" : "neutral"}
                 variant="soft"
               >
                 {document.status}

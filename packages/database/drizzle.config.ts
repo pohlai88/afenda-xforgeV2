@@ -9,16 +9,13 @@ loadEnv({ path: path.resolve(configDir, "../../.env") });
 loadEnv({ path: path.resolve(configDir, "../../.env.local"), override: true });
 loadEnv({ path: path.resolve(configDir, ".env"), override: true });
 
-const databaseUrl = process.env.DIRECT_URL ?? process.env.DATABASE_URL ?? "";
+const databaseUrl = process.env.DATABASE_URL ?? process.env.DIRECT_URL ?? "";
 
 export default defineConfig({
   schema: "./schema.ts",
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url:
-      databaseUrl.includes("db.") && process.env.DATABASE_URL
-        ? process.env.DATABASE_URL
-        : databaseUrl,
+    url: databaseUrl,
   },
 });

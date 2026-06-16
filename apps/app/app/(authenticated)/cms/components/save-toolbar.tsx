@@ -63,7 +63,7 @@ export const SaveToolbar = ({
         disabled={isSaving}
         onClick={onDelete}
         type="button"
-        variant="destructive"
+        variant="critical"
       >
         Delete
       </Button>

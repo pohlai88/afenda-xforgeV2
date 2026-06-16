@@ -60,7 +60,23 @@
 - `orbit_case_tags`
 - `orbit_case_activity`
 
-Phase 2+: `orbit_push_destinations`, `orbit_push_templates`, `orbit_push_events`, `orbit_object_links`.
+Phase 2+: `orbit_push_destinations`, `orbit_push_templates`, `orbit_push_events`, `orbit_object_links`, `orbit_budget_requests`.
+
+Admin registry: `/orbit-case/settings` (owner-only).
+
+---
+
+## Database migrations
+
+Apply via repo Drizzle workflow only:
+
+```bash
+pnpm migrate
+```
+
+Runs `db:repair-journal` then `drizzle-kit migrate` on `@repo/database`. Do not apply `packages/database/drizzle/*.sql` manually.
+
+After migration `0025`, re-sign-in so JWT includes `orbit_push_capabilities`.
 
 ---
 
@@ -80,7 +96,9 @@ Use `updateTag` in Server Actions after successful mutations (Next.js 16 cache c
 |------|------|
 | Unit | `packages/features/add-ons/orbit-case/test/` |
 | Integration | `packages/features/add-ons/orbit-case/test/integration/` |
-| E2E | `apps/app/e2e/orbit-case.spec.ts` (Phase 1.1) |
+| Webhooks | `packages/webhooks/test/integration/orbit-case-events.integration.test.ts` |
+| E2E lifecycle | `apps/app/e2e/orbit-case.spec.ts` |
+| E2E push | `apps/app/e2e/orbit-case-push.spec.ts` |
 
 ---
 

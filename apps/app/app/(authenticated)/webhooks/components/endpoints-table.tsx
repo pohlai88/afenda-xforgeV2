@@ -29,12 +29,12 @@ interface EndpointsTableProperties {
 const healthVariant = (
   status: WebhookEndpointPublic["lastDeliveryStatus"]
 ): {
-  tone: "neutral" | "positive" | "warning" | "critical";
+  tone: "neutral" | "success" | "warning" | "critical";
   variant: "soft" | "outline";
 } => {
   switch (status) {
     case "delivered":
-      return { tone: "positive", variant: "soft" };
+      return { tone: "success", variant: "soft" };
     case "failed":
       return { tone: "critical", variant: "soft" };
     case "retrying":
@@ -188,7 +188,7 @@ export const EndpointsTable = ({
                       </Badge>
                     ) : null}
                     <Badge
-                      tone={endpoint.enabled ? "positive" : "neutral"}
+                      tone={endpoint.enabled ? "success" : "neutral"}
                       variant="soft"
                     >
                       {endpoint.enabled ? "Enabled" : "Disabled"}
@@ -258,7 +258,7 @@ export const EndpointsTable = ({
                       onClick={() => handleDelete(endpoint.id)}
                       size="sm"
                       type="button"
-                      variant="destructive"
+                      variant="critical"
                     >
                       Delete
                     </Button>

@@ -38,7 +38,7 @@ const App = async () => {
     <>
       <Header
         badge={
-          <Badge tone="positive" variant="outline">
+          <Badge tone="success" variant="outline">
             Controlled
           </Badge>
         }

@@ -60,3 +60,14 @@ export {
   resolveMissingTemplateFields,
 } from "./lib/registry/template-registry";
 export { ensureSystemPushDefaults } from "./lib/registry/system-defaults";
+export {
+  deleteOrgPushDestination,
+  deleteOrgPushTemplate,
+  listAdminPushRegistry,
+  upsertOrgPushDestination,
+  upsertOrgPushTemplate,
+} from "./lib/registry/push-registry-admin";
+export type {
+  AdminPushDestinationRow,
+  AdminPushTemplateRow,
+} from "./lib/registry/push-registry-admin";

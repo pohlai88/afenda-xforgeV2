@@ -168,7 +168,10 @@ function isKnownFalsePositive(finding) {
     (relativePath ===
       "packages/design-system/contracts/afenda-recipe.contract.ts" ||
       relativePath ===
-        "packages/design-system/contracts/afenda-class-name-policy.contract.ts") &&
+        "packages/design-system/contracts/afenda-class-name-policy.contract.ts" ||
+      relativePath === "packages/design-system/contracts/afenda-motion.contract.ts" ||
+      relativePath ===
+        "packages/design-system/test/afenda-design-system-contract.test.ts") &&
     finding.message === "transition: all"
   ) {
     return true;

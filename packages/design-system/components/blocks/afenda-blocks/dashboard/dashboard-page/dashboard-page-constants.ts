@@ -1,5 +1,7 @@
 import { DEFAULT_DASHBOARD_NAV_TOPBAR_HEIGHT } from "../topbar/dashboard-topbar-constants";
-import { DASHBOARD_CHROME_INSET } from "./dashboard-page-spacing";
+
+/** Reserved for optional shell gutters — SidebarInset uses afenda-ui primitive margins. */
+export const DASHBOARD_CHROME_INSET = "var(--xforge-layout-site-inset)";
 
 export const DASHBOARD_PAGE_DESCRIPTION =
   "Composed dashboard-01 page with transparent nav topbar, sidebar, page header, KPI cards, chart, data table, and site footer.";

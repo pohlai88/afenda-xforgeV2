@@ -37,7 +37,7 @@ import {
   dashboardDataTableTypeBadgeClass,
 } from "./dashboard-data-table-recipes";
 import type { DashboardDataTableRow } from "./dashboard-data-table-schema";
-import { saveDashboardDataTableField } from "./dashboard-data-table-utils";
+import { demoSaveDashboardDataTableField } from "./dashboard-data-table-demo-actions";
 import { DataTableCellViewer } from "./data-table-cell-viewer";
 import { DataTableDragHandle } from "./data-table-drag-handle";
 
@@ -122,7 +122,7 @@ export const dashboardDataTableColumns: ColumnDef<DashboardDataTableRow>[] = [
       <form
         onSubmit={(event) => {
           event.preventDefault();
-          saveDashboardDataTableField(row.original.header);
+          demoSaveDashboardDataTableField(row.original.header);
         }}
       >
         <Label className="sr-only" htmlFor={`${row.original.id}-target`}>
@@ -143,7 +143,7 @@ export const dashboardDataTableColumns: ColumnDef<DashboardDataTableRow>[] = [
       <form
         onSubmit={(event) => {
           event.preventDefault();
-          saveDashboardDataTableField(row.original.header);
+          demoSaveDashboardDataTableField(row.original.header);
         }}
       >
         <Label className="sr-only" htmlFor={`${row.original.id}-limit`}>

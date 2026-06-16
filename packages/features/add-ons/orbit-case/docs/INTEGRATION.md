@@ -76,7 +76,7 @@ pnpm migrate
 
 Runs `db:repair-journal` then `drizzle-kit migrate` on `@repo/database`. Do not apply `packages/database/drizzle/*.sql` manually.
 
-After migration `0025`, re-sign-in so JWT includes `orbit_push_capabilities`.
+After migration `0025`, push authorization uses live DB role with JWT claims capped to that ceiling. Token refresh (automatic) applies hook-injected claims when present; stale tokens cannot exceed role permissions.
 
 ---
 

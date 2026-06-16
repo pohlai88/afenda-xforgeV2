@@ -103,4 +103,4 @@ pnpm migrate
 
 The migrate script repairs `drizzle.__drizzle_migrations` journal drift before running `drizzle-kit migrate`. Manual SQL / Supabase MCP `apply_migration` are blocked by Cursor hook `guard-drizzle-migrate`.
 
-**JWT push capabilities:** migration `0025` installs the access-token hook. Users must **sign out and sign in** once to receive `app_metadata.orbit_push_capabilities` in JWT (role fallback applies until then).
+**JWT push capabilities:** migration `0025` installs the access-token hook. Authorization always uses the **live org role from the database** as the capability ceiling; JWT claims are optional hints capped to that ceiling. Missing, empty, invalid, or stale claims fall back to role defaults — **no manual re-sign-in is required for push authorization**. Automatic token refresh will pick up hook-injected claims when present.

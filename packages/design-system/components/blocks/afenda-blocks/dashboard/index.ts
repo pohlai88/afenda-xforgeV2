@@ -3,7 +3,7 @@ export type {
   ChartAreaDataPoint,
   ChartAreaInteractiveProps,
 } from "./chart/chart-area-types";
-export type { ChartAreaTimeRange } from "./chart/dashboard-chart-constants";
+export type { ChartAreaTimeRange } from "./chart/chart-area-types";
 export {
   CHART_AREA_DEFAULT_DESCRIPTION,
   CHART_AREA_DEFAULT_DESCRIPTION_MOBILE,

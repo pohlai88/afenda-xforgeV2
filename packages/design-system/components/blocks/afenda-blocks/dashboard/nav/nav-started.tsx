@@ -34,13 +34,15 @@ import {
 } from "./dashboard-nav-recipes";
 import type { NavStartedItem, NavStartedProps } from "./dashboard-nav-types";
 
+interface NavStartedCollapsibleRowProps {
+  readonly item: NavStartedItem;
+  readonly renderLink: ReturnType<typeof resolveSidebarLinkRenderer>;
+}
+
 const NavStartedCollapsibleRow = memo(function NavStartedCollapsibleRow({
   item,
   renderLink,
-}: {
-  readonly item: NavStartedItem;
-  readonly renderLink: ReturnType<typeof resolveSidebarLinkRenderer>;
-}) {
+}: NavStartedCollapsibleRowProps) {
   const Icon = item.icon;
   const subItems = item.items ?? [];
 

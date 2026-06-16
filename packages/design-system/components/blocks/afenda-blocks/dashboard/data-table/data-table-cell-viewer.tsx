@@ -2,7 +2,6 @@
 
 import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
-  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
@@ -37,36 +36,22 @@ import {
   DASHBOARD_DATA_TABLE_STATUSES,
 } from "./dashboard-data-table-constants";
 import {
+  DEMO_DATA_TABLE_CELL_VIEWER_CHART_CONFIG,
+  DEMO_DATA_TABLE_CELL_VIEWER_CHART_DATA,
+} from "./data-table-cell-viewer-demo-data";
+import {
   dashboardDataTableDrawerCopyClass,
   dashboardDataTableDrawerTrendClass,
 } from "./dashboard-data-table-recipes";
 import type { DashboardDataTableRow } from "./dashboard-data-table-schema";
 
-const DRAWER_CHART_DATA = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-] as const;
-
-const DRAWER_CHART_CONFIG = {
-  desktop: {
-    label: "Desktop",
-    color: "var(--brand-primary)",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "var(--brand-primary)",
-  },
-} satisfies ChartConfig;
+export interface DataTableCellViewerProps {
+  readonly item: DashboardDataTableRow;
+}
 
 export const DataTableCellViewer = memo(function DataTableCellViewer({
   item,
-}: {
-  readonly item: DashboardDataTableRow;
-}) {
+}: DataTableCellViewerProps) {
   const isMobile = useIsMobile();
 
   return (
@@ -91,12 +76,12 @@ export const DataTableCellViewer = memo(function DataTableCellViewer({
           {isMobile ? null : (
             <>
               <ChartContainer
-                config={DRAWER_CHART_CONFIG}
+                config={DEMO_DATA_TABLE_CELL_VIEWER_CHART_CONFIG}
                 useResponsiveContainer={false}
               >
                 <AreaChart
                   accessibilityLayer
-                  data={[...DRAWER_CHART_DATA]}
+                  data={[...DEMO_DATA_TABLE_CELL_VIEWER_CHART_DATA]}
                   responsive
                   style={{ height: "100%", width: "100%" }}
                 >

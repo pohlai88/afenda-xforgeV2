@@ -32,6 +32,7 @@ import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import type {
   ChartAreaDataPoint,
   ChartAreaInteractiveProps,
+  ChartAreaTimeRange,
 } from "./chart-area-types";
 import {
   CHART_AREA_DEFAULT_DESCRIPTION,
@@ -40,7 +41,6 @@ import {
   CHART_AREA_DEFAULT_TITLE,
   CHART_AREA_SELECT_LABEL,
   CHART_AREA_TIME_RANGE_OPTIONS,
-  type ChartAreaTimeRange,
 } from "./dashboard-chart-constants";
 import { DEMO_DASHBOARD_CHART_AREA_DATA } from "./dashboard-chart-data";
 import {

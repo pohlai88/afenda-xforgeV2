@@ -21,6 +21,7 @@ import { NavMain } from "../nav/nav-main";
 import { NavSecondary } from "../nav/nav-secondary";
 import { NavStarted } from "../nav/nav-started";
 import { NavUser } from "../nav/nav-user";
+import type { NavMainItem } from "../nav/dashboard-nav-types";
 import {
   DEMO_DASHBOARD_SIDEBAR_BRAND,
   DEMO_DASHBOARD_SIDEBAR_DOCUMENTS,
@@ -42,13 +43,15 @@ import type {
 const DASHBOARD_MAIN_NAV_GROUP_ID = "dashboard-main-navigation";
 const DASHBOARD_MAIN_NAV_GROUP_LABEL = "Main navigation";
 
+interface DashboardSidebarBrandBlockProps {
+  readonly brand: DashboardSidebarBrand;
+  readonly renderLink: ReturnType<typeof resolveSidebarLinkRenderer>;
+}
+
 const DashboardSidebarBrandBlock = memo(function DashboardSidebarBrandBlock({
   brand,
   renderLink,
-}: {
-  readonly brand: DashboardSidebarBrand;
-  readonly renderLink: ReturnType<typeof resolveSidebarLinkRenderer>;
-}) {
+}: DashboardSidebarBrandBlockProps) {
   const BrandIcon = brand.icon ?? GalleryVerticalEndIcon;
 
   return (
@@ -88,9 +91,9 @@ const DashboardSidebarBrandBlock = memo(function DashboardSidebarBrandBlock({
 });
 
 function resolveMainNavigationGroup(
-  items: AppSidebarProps["mainItems"]
+  items: readonly NavMainItem[]
 ): SidebarNavGroup | null {
-  if (!items || items.length === 0) {
+  if (items.length === 0) {
     return null;
   }
 
@@ -127,7 +130,10 @@ function renderDefaultContent({
   readonly secondaryItems: AppSidebarProps["secondaryItems"];
   readonly startedItems: AppSidebarProps["startedItems"];
 }): ReactNode {
-  const mainNavigationGroup = resolveMainNavigationGroup(mainItems);
+  const mainNavigationGroup =
+    mainItems !== false && mainItems
+      ? resolveMainNavigationGroup(mainItems)
+      : null;
 
   return (
     <>

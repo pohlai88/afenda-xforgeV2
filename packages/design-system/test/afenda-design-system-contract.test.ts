@@ -37,7 +37,15 @@ import {
   AFENDA_COMPONENT_VARIANT_RULES,
 } from "../contracts/afenda-component.contract";
 import {
-  AFENDA_EXAMPLE_RULES,
+  AFENDA_EXAMPLE_ACCESS_RULES,
+  AFENDA_EXAMPLE_AUTHORITY_RULES,
+  AFENDA_EXAMPLE_COMPONENT_RULES,
+  AFENDA_EXAMPLE_COPY_PASTE_RULES,
+  AFENDA_EXAMPLE_FORBIDDEN_OWNERSHIP,
+  AFENDA_EXAMPLE_RECIPE_RULES,
+  AFENDA_EXAMPLE_SLOT_RULES,
+  AFENDA_EXAMPLE_TOKEN_RULES,
+  AFENDA_EXAMPLE_VARIANT_RULES,
   AFENDA_EXAMPLE_VERSION_RULES,
 } from "../contracts/afenda-example.contract";
 import {
@@ -49,6 +57,16 @@ import {
   AFENDA_PUBLIC_EXPORTS,
 } from "../contracts/afenda-export.contract";
 import {
+  AFENDA_MOTION_ACCESSIBILITY_RULES,
+  AFENDA_MOTION_AUTHORITY_RULES,
+  AFENDA_MOTION_CLASS_NAME_RULES,
+  AFENDA_MOTION_FORBIDDEN_PATTERNS,
+  AFENDA_MOTION_FORBIDDEN_OWNERSHIP,
+  AFENDA_MOTION_RECIPE_RULES,
+  AFENDA_MOTION_USAGE_RULES,
+  AFENDA_MOTION_WARNING_PATTERNS,
+} from "../contracts/afenda-motion.contract";
+import {
   AFENDA_RECIPE_AUTHORITY_RULES,
   AFENDA_RECIPE_COMPONENT_RULES,
   AFENDA_RECIPE_IMPORT_RULES,
@@ -58,6 +76,17 @@ import {
   AFENDA_SLOT_FORBIDDEN_OWNERSHIP,
   AFENDA_SLOT_USAGE_RULES,
 } from "../contracts/afenda-slot.contract";
+import {
+  AFENDA_STATE_ACCESSIBILITY_RULES,
+  AFENDA_STATE_AUTHORITY_RULES,
+  AFENDA_STATE_COMPONENT_RULES,
+  AFENDA_STATE_FORBIDDEN_ALIASES,
+  AFENDA_STATE_FORBIDDEN_PATTERNS,
+  AFENDA_STATE_FORBIDDEN_OWNERSHIP,
+  AFENDA_STATE_NAMING_RULES,
+  AFENDA_STATE_VARIANT_RULES,
+  AFENDA_STATE_WARNING_PATTERNS,
+} from "../contracts/afenda-state.contract";
 import {
   AFENDA_FORBIDDEN_VARIANT_ALIASES,
   AFENDA_VARIANT_ALIAS_RULES,
@@ -314,20 +343,63 @@ describe("afenda design-system anti-drift contract", () => {
       "example",
     ]);
     expect(AFENDA_EXAMPLE_VERSION_RULES).toMatchObject({
-      examplesMustDeclareContractVersion: true,
-      examplesMustImportCurrentContract: true,
-      staleExamplesAreHardFail: true,
+      deprecatedExamplesRequireReplacement: true,
+      examplesMustTrackCanonicalContracts: true,
+      examplesMustUseCurrentContractVersion: true,
+      staleExamplesAreForbidden: true,
     });
   });
 
   it("keeps examples safe for AI imitation", () => {
-    expect(AFENDA_EXAMPLE_RULES).toMatchObject({
-      mustBeCopyPasteSafe: true,
-      mustNotContainBusinessLogic: true,
-      mustNotUseRawSemanticTailwind: true,
-      mustUseDataSlot: true,
-      mustUsePublicExportsOnly: true,
-      mustUseRecipe: true,
+    expect(AFENDA_EXAMPLE_AUTHORITY_RULES).toMatchObject({
+      exampleOwnsAiImitation: true,
+      exampleOwnsCanonicalUsagePatterns: true,
+      exampleOwnsCopyPasteSafety: true,
+    });
+    expect(AFENDA_EXAMPLE_COPY_PASTE_RULES).toMatchObject({
+      examplesMustBeCopyPasteSafe: true,
+      examplesMustCompileWithoutModification: true,
+      examplesMustUseCanonicalImports: true,
+      examplesMustUseCurrentContractVocabulary: true,
+      examplesMustUsePublicExportsOnly: true,
+    });
+    expect(AFENDA_EXAMPLE_COMPONENT_RULES).toMatchObject({
+      examplesMustNotInventComponentNames: true,
+      examplesMustUseGovernedComponents: true,
+    });
+    expect(AFENDA_EXAMPLE_VARIANT_RULES).toMatchObject({
+      examplesMustNotInventVariants: true,
+      examplesMustNotUseForbiddenAliases: true,
+      examplesMustUseContractVariants: true,
+    });
+    expect(AFENDA_EXAMPLE_SLOT_RULES).toMatchObject({
+      examplesMustNotInventSlots: true,
+      examplesMustUseCanonicalDataSlots: true,
+      examplesMustUseContractSlots: true,
+    });
+    expect(AFENDA_EXAMPLE_RECIPE_RULES).toMatchObject({
+      examplesMustNotInlineSemanticStyling: true,
+      examplesMustNotReplaceRecipesWithClassNames: true,
+      examplesMustUseRecipes: true,
+    });
+    expect(AFENDA_EXAMPLE_TOKEN_RULES).toMatchObject({
+      examplesMustConsumeTokensIndirectly: true,
+      examplesMustNotDeclareTokens: true,
+      examplesMustNotInventCssVariables: true,
+      examplesMustNotUseRawValues: true,
+    });
+    expect(AFENDA_EXAMPLE_ACCESS_RULES).toMatchObject({
+      examplesMustNotUseInternalPaths: true,
+      examplesMustNotUsePrivateImports: true,
+      examplesMustUsePublicExportsOnly: true,
+    });
+    expect(AFENDA_EXAMPLE_FORBIDDEN_OWNERSHIP).toMatchObject({
+      examplesMustNotOwnBehavior: true,
+      examplesMustNotOwnBusinessLogic: true,
+      examplesMustNotOwnSlots: true,
+      examplesMustNotOwnStyling: true,
+      examplesMustNotOwnValues: true,
+      examplesMustNotOwnVariants: true,
     });
   });
 
@@ -362,6 +434,91 @@ describe("afenda design-system anti-drift contract", () => {
       'aria-hidden="true"',
       'role="button"',
       "onClick={",
+    ]);
+  });
+
+  it("keeps motion as tokenized movement safety authority", () => {
+    expect(AFENDA_MOTION_AUTHORITY_RULES).toMatchObject({
+      motionOwnsAnimationSafety: true,
+      motionOwnsMovementSafety: true,
+      motionOwnsReducedMotionPolicy: true,
+    });
+    expect(AFENDA_MOTION_USAGE_RULES).toMatchObject({
+      durationMustUseContractVocabulary: true,
+      easingMustUseContractVocabulary: true,
+      motionMustUseTokens: true,
+      reducedMotionMustBeSupported: true,
+    });
+    expect(AFENDA_MOTION_FORBIDDEN_OWNERSHIP).toMatchObject({
+      classNameMustNotDeclareMotionValues: true,
+      componentsMustNotDeclareMotionValues: true,
+      examplesMustNotDeclareMotionValues: true,
+    });
+    expect(AFENDA_MOTION_RECIPE_RULES).toMatchObject({
+      recipesMustIncludeMotionReduceFallback: true,
+      recipesMustNotUseRawDurationValues: true,
+      recipesMustNotUseRawEasingValues: true,
+    });
+    expect(AFENDA_MOTION_ACCESSIBILITY_RULES).toMatchObject({
+      flashingMotionIsForbidden: true,
+      prefersReducedMotionMustBeRespected: true,
+    });
+    expect(AFENDA_MOTION_CLASS_NAME_RULES).toMatchObject({
+      classNameMustNotOwnAnimation: true,
+      transitionAllIsForbidden: true,
+    });
+    expect(AFENDA_MOTION_FORBIDDEN_PATTERNS).toContain("transition-all");
+    expect(AFENDA_MOTION_FORBIDDEN_PATTERNS).not.toContain("animate-spin");
+    expect(AFENDA_MOTION_WARNING_PATTERNS).toEqual([
+      "transition",
+      "duration-",
+      "ease-",
+      "animate-",
+      "animate-spin",
+      "animate-pulse",
+    ]);
+  });
+
+  it("keeps state as lifecycle condition authority", () => {
+    expect(AFENDA_STATE_AUTHORITY_RULES).toMatchObject({
+      stateOwnsAsyncVocabulary: true,
+      stateOwnsInteractionVocabulary: true,
+      stateOwnsLifecycleCondition: true,
+      stateOwnsValidationVocabulary: true,
+    });
+    expect(AFENDA_STATE_FORBIDDEN_OWNERSHIP).toMatchObject({
+      componentsMustNotInventStates: true,
+      examplesMustNotInventStates: true,
+      statesMustNotOwnBusinessLogic: true,
+      statesMustNotOwnStyling: true,
+    });
+    expect(AFENDA_STATE_NAMING_RULES).toMatchObject({
+      stateNamesMustUseContractVocabulary: true,
+      unknownStateIsHardFail: true,
+    });
+    expect(AFENDA_STATE_COMPONENT_RULES).toMatchObject({
+      componentsMustReflectInvalidStateThroughAriaInvalid: true,
+      componentsMustUseContractStates: true,
+    });
+    expect(AFENDA_STATE_VARIANT_RULES).toMatchObject({
+      stateAndVariantMustRemainSeparate: true,
+      variantsMustNotReplaceStates: true,
+    });
+    expect(AFENDA_STATE_ACCESSIBILITY_RULES).toMatchObject({
+      disabledStateMustBeProgrammaticallyDisabledWhenPossible: true,
+      invalidStateMustMapToAriaInvalid: true,
+      loadingStateMustExposeBusyWhenApplicable: true,
+    });
+    expect(AFENDA_STATE_FORBIDDEN_ALIASES.loading).toEqual([
+      "pending",
+      "fetching",
+      "submitting",
+    ]);
+    expect(AFENDA_STATE_FORBIDDEN_PATTERNS).not.toContain("isPending");
+    expect(AFENDA_STATE_WARNING_PATTERNS).toEqual([
+      "isPending",
+      "isFetching",
+      "isSubmitting",
     ]);
   });
 

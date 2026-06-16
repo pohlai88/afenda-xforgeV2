@@ -99,8 +99,6 @@ import type { DashboardDataTableProps } from "./dashboard-data-table-types";
 import { dashboardDataTableColumns } from "./data-table-columns";
 import { DataTableDraggableRow } from "./data-table-draggable-row";
 
-export type { DashboardDataTableProps } from "./dashboard-data-table-types";
-
 export const DashboardDataTable = memo(function DashboardDataTable({
   className,
   data: initialData,

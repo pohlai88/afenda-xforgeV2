@@ -20,7 +20,6 @@ import { DEMO_DASHBOARD_PAGE_FOOTER_PROPS } from "./dashboard-page-footer-demo-c
 import {
   dashboardAppSidebarContainClass,
   dashboardPageBodyClass,
-  dashboardPageChartSectionClass,
   dashboardPageChromeClass,
   dashboardPageContainerClass,
   dashboardPageContentClass,
@@ -104,9 +103,7 @@ export const DashboardPage = memo(function DashboardPage({
                       <SectionCards {...sectionCardsProps} />
                     ) : null}
                     {chartProps !== false ? (
-                      <div className={dashboardPageChartSectionClass}>
-                        <ChartAreaInteractive {...chartProps} />
-                      </div>
+                      <ChartAreaInteractive {...chartProps} />
                     ) : null}
                     <DashboardDataTable data={data} {...dataTableProps} />
                   </div>

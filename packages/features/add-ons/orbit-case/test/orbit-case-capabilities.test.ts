@@ -2,9 +2,16 @@ import { describe, expect, it } from "vitest";
 import { resolveOrbitPushCapabilities } from "../contract/capabilities";
 
 describe("resolveOrbitPushCapabilities", () => {
-  it("prefers JWT claim capabilities over role defaults", () => {
+  it("prefers JWT claim capabilities within the live role ceiling", () => {
+    expect(resolveOrbitPushCapabilities("member", ["meeting"])).toEqual([
+      "meeting",
+    ]);
+  });
+
+  it("falls back to role defaults when JWT grants exceed the role ceiling", () => {
     expect(resolveOrbitPushCapabilities("member", ["budget"])).toEqual([
-      "budget",
+      "meeting",
+      "task",
     ]);
   });
 
@@ -21,5 +28,17 @@ describe("resolveOrbitPushCapabilities", () => {
     expect(
       resolveOrbitPushCapabilities("member", ["not-a-capability", "meeting"])
     ).toEqual(["meeting"]);
+  });
+
+  it("caps stale JWT grants that exceed the live org role ceiling", () => {
+    expect(
+      resolveOrbitPushCapabilities("member", ["budget", "approval", "meeting"])
+    ).toEqual(["meeting"]);
+  });
+
+  it("uses valid JWT subset for owner without requiring re-sign-in", () => {
+    expect(resolveOrbitPushCapabilities("owner", ["budget", "meeting"])).toEqual(
+      ["budget", "meeting"]
+    );
   });
 });

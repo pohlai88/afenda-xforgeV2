@@ -17,7 +17,6 @@ import { DEFAULT_DASHBOARD_PAGE_PROVIDER_STYLE } from "../components/blocks/afen
 import { dashboardPageFooterClass } from "../components/blocks/afenda-blocks/dashboard/dashboard-page/dashboard-page-footer-recipes";
 import {
   dashboardAppSidebarContainClass,
-  dashboardPageChartSectionClass,
   dashboardPageContainerClass,
   dashboardPageContentClass,
   dashboardPageInsetClass,
@@ -249,7 +248,6 @@ describe("dashboard-01 inset floating panel recipes", () => {
     expect(dashboardPageContentClass).toBe(
       "flex flex-col gap-4 px-4 py-4 md:gap-6 md:py-6 lg:px-6"
     );
-    expect(dashboardPageChartSectionClass).toBe("");
     expect(dashboardPageContainerClass).not.toContain(
       "px-[var(--dashboard-chrome-inset)]"
     );

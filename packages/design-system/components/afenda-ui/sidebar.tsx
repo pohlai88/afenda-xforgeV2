@@ -15,7 +15,6 @@ import {
   useState,
 } from "react";
 import { Button } from "./button";
-import { Kbd } from "./kbd";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +24,16 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 import { Input } from "./input";
+import { Kbd } from "./kbd";
 import { recipe } from "./recipes";
+import { Separator } from "./separator";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "./sheet";
 import {
   persistSidebarBehaviorMode,
   readSidebarBehaviorCookie,
@@ -43,14 +51,6 @@ import {
   sidebarIconRailNavGroupClass,
   sidebarIconRailWidth,
 } from "./sidebar-rail-recipes";
-import { Separator } from "./separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "./sheet";
 import { Skeleton } from "./skeleton";
 import {
   Tooltip,
@@ -181,7 +181,7 @@ function SidebarProvider({
         _setOpen(openState);
       }
     },
-    [openProp, setOpenProp]
+    [openProp, setOpenProp, _open]
   );
 
   const setBehaviorMode = useCallback(
@@ -306,8 +306,14 @@ function Sidebar({
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
 }) {
-  const { isMobile, setHoverPeek, behaviorMode, state, openMobile, setOpenMobile } =
-    useSidebar();
+  const {
+    isMobile,
+    setHoverPeek,
+    behaviorMode,
+    state,
+    openMobile,
+    setOpenMobile,
+  } = useSidebar();
 
   const handlePointerEnter = useCallback(() => {
     if (behaviorMode === "hover") {
@@ -467,10 +473,7 @@ function SidebarControlMenu({
           type="button"
           variant="quiet"
         >
-          <PanelLeftIcon
-            aria-hidden="true"
-            className="size-4 shrink-0"
-          />
+          <PanelLeftIcon aria-hidden="true" className="size-4 shrink-0" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -609,7 +612,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-hidden group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:overflow-x-hidden group-data-[collapsible=icon]:overflow-hidden",
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-hidden group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:overflow-hidden group-data-[collapsible=icon]:overflow-x-hidden",
         recipe("motionReduce"),
         className
       )}
@@ -746,11 +749,7 @@ const sidebarMenuButtonVariants = cva(
     "group-has-data-[sidebar=menu-action]/menu-item:pr-8",
     sidebarIconRailMenuButtonClass,
     "[&>span:last-child]:truncate",
-    recipe(
-      "colorTransition",
-      "mutedControlIcon",
-      "motionReduce"
-    ),
+    recipe("colorTransition", "mutedControlIcon", "motionReduce"),
   ],
   {
     variants: {
@@ -761,7 +760,7 @@ const sidebarMenuButtonVariants = cva(
       size: {
         default: "h-8",
         sm: "h-7 text-[12px]",
-        lg: "h-12 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:bg-transparent!",
+        lg: "h-12 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:bg-transparent! group-data-[collapsible=icon]:p-0!",
       },
     },
     defaultVariants: {

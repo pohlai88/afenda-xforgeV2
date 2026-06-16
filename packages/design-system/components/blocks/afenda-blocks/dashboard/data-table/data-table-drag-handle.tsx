@@ -23,7 +23,10 @@ export const DataTableDragHandle = memo(function DataTableDragHandle({
       type="button"
       variant="quiet"
     >
-      <GripVerticalIcon aria-hidden="true" className="size-3 text-text-secondary" />
+      <GripVerticalIcon
+        aria-hidden="true"
+        className="size-3 text-text-secondary"
+      />
       <span className="sr-only">Drag to reorder</span>
     </Button>
   );

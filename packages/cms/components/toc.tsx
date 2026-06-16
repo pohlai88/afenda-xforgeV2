@@ -1,8 +1,8 @@
 import type { TocItem } from "../types";
 
-type TableOfContentsProperties = {
+interface TableOfContentsProperties {
   items: TocItem[];
-};
+}
 
 export const TableOfContents = ({ items }: TableOfContentsProperties) => (
   <ol className="flex list-none flex-col gap-2 text-sm">

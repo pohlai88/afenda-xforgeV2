@@ -1,7 +1,5 @@
 "use client";
 
-import type { CSSProperties, PointerEvent as ReactPointerEvent, RefObject } from "react";
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   DEFAULT_CONTENT_LAYOUT_MIN_HEIGHT,
   DEFAULT_CONTENT_LAYOUT_MIN_WIDTH,
@@ -11,9 +9,10 @@ import {
   applyGeometryToElement,
   geometryToContainerStyle,
 } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-helpers";
+import type { CSSProperties, RefObject } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type {
   ContentLayoutGeometry,
-  ContentLayoutResizeIntent,
   ContentLayoutResizeStartHandler,
 } from "./content-layout-types";
 
@@ -67,7 +66,7 @@ function useContentLayoutResize({
   );
 
   useLayoutEffect(() => {
-    if (!isResizing || !liveGeometryRef.current) {
+    if (!(isResizing && liveGeometryRef.current)) {
       return;
     }
 

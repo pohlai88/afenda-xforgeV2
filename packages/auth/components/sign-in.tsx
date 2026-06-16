@@ -40,6 +40,7 @@ import { AnonymousSignInButton } from "./anonymous-sign-in-button";
 import { AuthCaptcha, useCaptchaOptions } from "./auth-captcha";
 import { AuthErrorAlert, AuthSuccessAlert } from "./auth-feedback";
 import { AuthPendingButton } from "./auth-pending-button";
+import { authLinkClass } from "./auth-section";
 import {
   DEVELOPER_SIGN_IN_CREDENTIALS,
   type DeveloperSignInCredentials,
@@ -49,7 +50,6 @@ import { PasswordField } from "./password-field";
 import { passwordRequirementsSummary } from "./password-requirements";
 import { PhoneAuthPanel } from "./phone-auth-panel";
 import { SsoSignInPanel } from "./sso-sign-in-panel";
-import { authLinkClass } from "./auth-section";
 
 const emailFieldId = "sign-in-email";
 const passwordFieldId = "sign-in-password";
@@ -59,9 +59,9 @@ const signInSchema = createSignInSchema();
 
 type SignInMode = "password" | "magic-link";
 
-type SignInProperties = {
+interface SignInProperties {
   initialError?: string | null;
-};
+}
 
 const focusField = (field: keyof AuthFieldErrors) => {
   const id = field === "email" ? emailFieldId : passwordFieldId;
@@ -320,7 +320,9 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
         }
       >
         {magicLinkSent ? (
-          <AuthSuccessAlert message={`Check your email for a sign-in link or ${settings.otp.length}-digit code. Both expire in about ${Math.round(settings.otp.expSeconds / 60)} minutes.`} />
+          <AuthSuccessAlert
+            message={`Check your email for a sign-in link or ${settings.otp.length}-digit code. Both expire in about ${Math.round(settings.otp.expSeconds / 60)} minutes.`}
+          />
         ) : null}
         {formError &&
         !fieldErrors.email &&
@@ -328,139 +330,147 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
         !fieldErrors.token ? (
           <AuthErrorAlert id={formErrorId} message={formError} />
         ) : null}
-      <Field>
-        <FieldLabel htmlFor={emailFieldId}>Email</FieldLabel>
-        <Input
-          aria-describedby={emailInvalid ? `${emailFieldId}-error` : undefined}
-          aria-invalid={emailInvalid || undefined}
-          autoComplete="email"
-          id={emailFieldId}
-          name="email"
-          onChange={(event) => {
-            setEmail(event.target.value);
-            if (fieldErrors.email) {
-              setFieldErrors((current) => ({ ...current, email: undefined }));
-            }
-          }}
-          placeholder="you@example.com"
-          ref={emailInputRef}
-          required
-          type="email"
-          value={email}
-        />
-        {fieldErrors.email ? (
-          <FieldError id={`${emailFieldId}-error`}>
-            {fieldErrors.email}
-          </FieldError>
-        ) : null}
-      </Field>
-      {mode === "password" ? (
         <Field>
-          <div className="flex items-center justify-between gap-2">
-            <FieldLabel htmlFor={passwordFieldId}>Password</FieldLabel>
-            <Link
-              className={cn(authLinkClass, recipe("captionText"))}
-              href="/forgot-password"
-            >
-              Forgot password?
-            </Link>
-          </div>
-          <PasswordField
-            autoComplete="current-password"
-            describedBy={
-              passwordInvalid ? `${passwordFieldId}-error` : undefined
-            }
-            id={passwordFieldId}
-            invalid={passwordInvalid}
-            label=""
-            name="password"
-            onChange={(value) => {
-              setPassword(value);
-              if (fieldErrors.password) {
-                setFieldErrors((current) => ({
-                  ...current,
-                  password: undefined,
-                }));
-              }
-            }}
-            value={password}
-          />
-          {fieldErrors.password ? (
-            <FieldError id={`${passwordFieldId}-error`}>
-              {fieldErrors.password}
-            </FieldError>
-          ) : null}
-          {weakPasswordBlocked ? (
-            <FieldHint id={`${passwordFieldId}-weak-hint`}>
-              Your password no longer meets current security requirements (
-              {passwordRequirementsSummary(passwordPolicy)}).{" "}
-              <Link className={authLinkClass} href="/forgot-password">
-                Reset your password
-              </Link>{" "}
-              to sign in again.
-            </FieldHint>
-          ) : null}
-        </Field>
-      ) : null}
-      {mode === "magic-link" && magicLinkSent ? (
-        <Field>
-          <FieldLabel htmlFor={otpFieldId}>Email code</FieldLabel>
-          <InputOTP
+          <FieldLabel htmlFor={emailFieldId}>Email</FieldLabel>
+          <Input
             aria-describedby={
-              otpInvalid ? `${otpFieldId}-error` : `${otpFieldId}-hint`
+              emailInvalid ? `${emailFieldId}-error` : undefined
             }
-            aria-invalid={otpInvalid || undefined}
-            id={otpFieldId}
-            maxLength={settings.otp.length}
-            onChange={(value) => {
-              setOtpCode(value);
-              if (fieldErrors.token) {
-                setFieldErrors((current) => ({ ...current, token: undefined }));
+            aria-invalid={emailInvalid || undefined}
+            autoComplete="email"
+            id={emailFieldId}
+            name="email"
+            onChange={(event) => {
+              setEmail(event.target.value);
+              if (fieldErrors.email) {
+                setFieldErrors((current) => ({ ...current, email: undefined }));
               }
             }}
-            value={otpCode}
-          >
-            <InputOTPGroup>
-              {Array.from({ length: settings.otp.length }, (_, index) => (
-                <InputOTPSlot index={index} key={`sign-in-otp-slot-${index}`} />
-              ))}
-            </InputOTPGroup>
-          </InputOTP>
-          <FieldHint id={`${otpFieldId}-hint`}>
-            Enter the code from your email if you prefer not to use the link.
-          </FieldHint>
-          {fieldErrors.token ? (
-            <FieldError id={`${otpFieldId}-error`}>
-              {fieldErrors.token}
+            placeholder="you@example.com"
+            ref={emailInputRef}
+            required
+            type="email"
+            value={email}
+          />
+          {fieldErrors.email ? (
+            <FieldError id={`${emailFieldId}-error`}>
+              {fieldErrors.email}
             </FieldError>
           ) : null}
         </Field>
-      ) : null}
-      {settings.security.captchaEnabled ? (
-        <AuthCaptcha onTokenChange={setCaptchaToken} />
-      ) : null}
-      <AuthPendingButton
-        className="w-full"
-        pending={loading}
-        pendingLabel={submitPendingLabel}
-        type="submit"
-        variant="primary"
-      >
-        {submitLabel}
-      </AuthPendingButton>
-      {settings.email ? (
-        <p className={cn("text-center", recipe("captionText"))}>
-          <button
-            className={authLinkClass}
-            onClick={toggleMode}
-            type="button"
-          >
-            {mode === "password"
-              ? "Use email link or code instead"
-              : "Use password instead"}
-          </button>
-        </p>
-      ) : null}
+        {mode === "password" ? (
+          <Field>
+            <div className="flex items-center justify-between gap-2">
+              <FieldLabel htmlFor={passwordFieldId}>Password</FieldLabel>
+              <Link
+                className={cn(authLinkClass, recipe("captionText"))}
+                href="/forgot-password"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <PasswordField
+              autoComplete="current-password"
+              describedBy={
+                passwordInvalid ? `${passwordFieldId}-error` : undefined
+              }
+              id={passwordFieldId}
+              invalid={passwordInvalid}
+              label=""
+              name="password"
+              onChange={(value) => {
+                setPassword(value);
+                if (fieldErrors.password) {
+                  setFieldErrors((current) => ({
+                    ...current,
+                    password: undefined,
+                  }));
+                }
+              }}
+              value={password}
+            />
+            {fieldErrors.password ? (
+              <FieldError id={`${passwordFieldId}-error`}>
+                {fieldErrors.password}
+              </FieldError>
+            ) : null}
+            {weakPasswordBlocked ? (
+              <FieldHint id={`${passwordFieldId}-weak-hint`}>
+                Your password no longer meets current security requirements (
+                {passwordRequirementsSummary(passwordPolicy)}).{" "}
+                <Link className={authLinkClass} href="/forgot-password">
+                  Reset your password
+                </Link>{" "}
+                to sign in again.
+              </FieldHint>
+            ) : null}
+          </Field>
+        ) : null}
+        {mode === "magic-link" && magicLinkSent ? (
+          <Field>
+            <FieldLabel htmlFor={otpFieldId}>Email code</FieldLabel>
+            <InputOTP
+              aria-describedby={
+                otpInvalid ? `${otpFieldId}-error` : `${otpFieldId}-hint`
+              }
+              aria-invalid={otpInvalid || undefined}
+              id={otpFieldId}
+              maxLength={settings.otp.length}
+              onChange={(value) => {
+                setOtpCode(value);
+                if (fieldErrors.token) {
+                  setFieldErrors((current) => ({
+                    ...current,
+                    token: undefined,
+                  }));
+                }
+              }}
+              value={otpCode}
+            >
+              <InputOTPGroup>
+                {Array.from({ length: settings.otp.length }, (_, index) => (
+                  <InputOTPSlot
+                    index={index}
+                    key={`sign-in-otp-slot-${index}`}
+                  />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
+            <FieldHint id={`${otpFieldId}-hint`}>
+              Enter the code from your email if you prefer not to use the link.
+            </FieldHint>
+            {fieldErrors.token ? (
+              <FieldError id={`${otpFieldId}-error`}>
+                {fieldErrors.token}
+              </FieldError>
+            ) : null}
+          </Field>
+        ) : null}
+        {settings.security.captchaEnabled ? (
+          <AuthCaptcha onTokenChange={setCaptchaToken} />
+        ) : null}
+        <AuthPendingButton
+          className="w-full"
+          pending={loading}
+          pendingLabel={submitPendingLabel}
+          type="submit"
+          variant="primary"
+        >
+          {submitLabel}
+        </AuthPendingButton>
+        {settings.email ? (
+          <p className={cn("text-center", recipe("captionText"))}>
+            <button
+              className={authLinkClass}
+              onClick={toggleMode}
+              type="button"
+            >
+              {mode === "password"
+                ? "Use email link or code instead"
+                : "Use password instead"}
+            </button>
+          </p>
+        ) : null}
       </form>
       <p className={cn("text-center", recipe("captionText"))}>
         No account?{" "}

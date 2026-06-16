@@ -1,10 +1,10 @@
 "use client";
 
 import { TooltipProvider } from "@repo/design-system/components/afenda-ui/tooltip";
-import { cn } from "@repo/design-system/lib/utils";
+import { TOPBAR_DEFAULT_BRAND_TOOLTIP } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import { resolveTopbarSidebarControl } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-helpers";
 import { operatorAppTopbarShellClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
-import { TOPBAR_DEFAULT_BRAND_TOOLTIP } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
+import { cn } from "@repo/design-system/lib/utils";
 import { TopbarBrandDisk } from "./topbar-brand-disk";
 import { TopbarScopeSwitchers } from "./topbar-scope-switchers";
 import { TopbarSidebarControl } from "./topbar-sidebar-control";

@@ -1,7 +1,4 @@
-import {
-  blockRecipe,
-  SidebarTrigger,
-} from "@repo/design-system/design-system";
+import { blockRecipe, SidebarTrigger } from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { ReactNode } from "react";
 

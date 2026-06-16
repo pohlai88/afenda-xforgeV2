@@ -8,11 +8,11 @@ const description = "We sent you a confirmation link to finish signing up.";
 
 export const metadata: Metadata = createMetadata({ title, description });
 
-type SignUpSuccessPageProperties = {
+interface SignUpSuccessPageProperties {
   readonly searchParams: Promise<{
     email?: string | string[];
   }>;
-};
+}
 
 const readInitialEmail = (email: string | string[] | undefined) => {
   if (typeof email === "string") {

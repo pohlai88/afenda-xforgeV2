@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  Button,
-  cn,
-  recipe,
-} from "@repo/design-system/design-system";
+import { Button, cn, recipe } from "@repo/design-system/design-system";
 import { useCallback, useEffect, useId, useState } from "react";
 import { fromSupabaseError } from "../auth-result";
 import { isPasskeyOriginSupported } from "../auth-ui-settings";
@@ -16,20 +12,20 @@ import {
   AuthSuccessAlert,
   PasskeyOriginNotice,
 } from "./auth-feedback";
+import { PasskeyIcon } from "./auth-icons";
 import { AuthPendingButton } from "./auth-pending-button";
 import {
   AuthLoadingState,
   AuthSection,
   AuthSectionHeader,
 } from "./auth-section";
-import { PasskeyIcon } from "./auth-icons";
 
-type PasskeyRecord = {
-  id: string;
-  friendly_name?: string;
+interface PasskeyRecord {
   created_at: string;
+  friendly_name?: string;
+  id: string;
   last_used_at?: string;
-};
+}
 
 export const PasskeyManager = () => {
   const { settings } = useAuthUiConfig();
@@ -132,8 +128,8 @@ export const PasskeyManager = () => {
         <AuthConfigNotice>
           <PasskeyOriginNotice rpOrigins={settings.passkey.rpOrigins} />
           <p className={cn("mt-2", recipe("captionText"))}>
-            On localhost, test passkeys on a Vercel preview or production URL that
-            matches the configured RP origins.
+            On localhost, test passkeys on a Vercel preview or production URL
+            that matches the configured RP origins.
           </p>
         </AuthConfigNotice>
       )}
@@ -190,7 +186,9 @@ export const PasskeyManager = () => {
       )}
       <AuthPendingButton
         className="w-fit"
-        disabled={(action !== null && action !== "register") || !passkeyOriginSupported}
+        disabled={
+          (action !== null && action !== "register") || !passkeyOriginSupported
+        }
         onClick={handleRegister}
         pending={action === "register"}
         pendingLabel="Waiting for passkey…"

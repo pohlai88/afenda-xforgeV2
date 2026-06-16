@@ -12,11 +12,11 @@ import {
 } from "@repo/design-system/design-system";
 import Link from "next/link";
 
-type DocumentListProperties = {
+interface DocumentListProperties {
   collection: CmsCollectionName;
-  locale: CmsLocale;
   documents: CmsDocumentListItem[];
-};
+  locale: CmsLocale;
+}
 
 export const DocumentList = ({
   collection,

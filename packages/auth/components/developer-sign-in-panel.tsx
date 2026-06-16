@@ -11,9 +11,9 @@ export type DeveloperSignInCredentials = typeof DEVELOPER_SIGN_IN_CREDENTIALS;
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-type DeveloperSignInPanelProperties = {
+interface DeveloperSignInPanelProperties {
   onApply: (credentials: DeveloperSignInCredentials) => void;
-};
+}
 
 export const DeveloperSignInPanel = ({
   onApply,

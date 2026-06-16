@@ -1,17 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, type ReactNode } from "react";
+import { type ReactNode, useCallback } from "react";
 import {
-  parseCockpitQueueRowKey,
   type CockpitQueueRowKey,
+  parseCockpitQueueRowKey,
 } from "./workspace-cockpit-data";
 import { WorkspaceCommandPalette } from "./workspace-command-palette";
+import { WorkspaceShellFrame, WorkspaceShellRoot } from "./workspace-shell";
 import { WorkspaceShortcutsDialog } from "./workspace-shortcuts-dialog";
-import {
-  WorkspaceShellFrame,
-  WorkspaceShellRoot,
-} from "./workspace-shell";
 
 interface AuthenticatedAppShellProperties {
   readonly activeOrganizationId: string | null;

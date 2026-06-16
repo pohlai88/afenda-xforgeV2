@@ -1,8 +1,6 @@
 "use client";
 
 import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { cn } from "@repo/design-system/lib/utils";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import {
   contentLayoutSidebarAriaLabel,
   contentLayoutSidebarToggleAriaLabel,
@@ -10,6 +8,8 @@ import {
   DEFAULT_CONTENT_LAYOUT_SIDEBAR_WIDTH,
 } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
 import { contentLayoutSidebarClass } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import type {
   ContentLayoutSidebarPanelProps,
   ContentLayoutSidebarProps,
@@ -98,11 +98,11 @@ function ContentLayoutSidebarPanel({
           )}
         </Button>
       </div>
-      {!collapsed ? (
-        <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto">
+      {collapsed ? null : (
+        <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
           {children}
         </div>
-      ) : null}
+      )}
     </aside>
   );
 }

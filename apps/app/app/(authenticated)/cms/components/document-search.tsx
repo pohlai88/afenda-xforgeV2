@@ -7,18 +7,18 @@ import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { searchDocuments } from "@/app/actions/cms/documents";
 
-type DocumentSearchProperties = {
+interface DocumentSearchProperties {
   collection: CmsCollectionName;
   locale: CmsLocale;
-};
+}
 
-type SearchResult = {
-  slug: string;
-  title: string;
+interface SearchResult {
   description: string | null;
-  status: string;
   rank: number;
-};
+  slug: string;
+  status: string;
+  title: string;
+}
 
 const SEARCH_DEBOUNCE_MS = 400;
 const MIN_QUERY_LENGTH = 2;

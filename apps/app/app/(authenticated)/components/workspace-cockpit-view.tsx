@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  blockRecipe,
   Button,
+  blockRecipe,
   Table,
   TableBody,
   TableCell,
@@ -20,6 +20,10 @@ import {
   statusTextClass,
 } from "./cockpit-status-ui";
 import {
+  type CockpitKpiItem,
+  type CockpitQueueRow,
+  type CockpitQueueRowKey,
+  type CockpitQueueTable,
   cockpitActivities,
   cockpitAuditEvents,
   cockpitKpis,
@@ -27,10 +31,6 @@ import {
   cockpitQueueTables,
   cockpitSequenceSteps,
   getCockpitQueueRowKey,
-  type CockpitKpiItem,
-  type CockpitQueueRow,
-  type CockpitQueueRowKey,
-  type CockpitQueueTable,
 } from "./workspace-cockpit-data";
 import {
   CockpitQueueScope,
@@ -70,7 +70,9 @@ function TenantDashboardHeader() {
             <h2 className="font-semibold text-[18px] text-text-primary leading-5 tracking-tight">
               Governed tenant dashboard
             </h2>
-            <p className={cn(blockRecipe("blockDescription"), "mt-1 max-w-2xl")}>
+            <p
+              className={cn(blockRecipe("blockDescription"), "mt-1 max-w-2xl")}
+            >
               Signed in with tenant role admin. Sensitive reads stay tenant and
               company scoped.
             </p>
@@ -86,7 +88,7 @@ function TenantDashboardHeader() {
           <div
             className={cn(
               blockRecipe("blockMetric"),
-              "font-mono text-[var(--status-success)] tabular-nums slashed-zero"
+              "font-mono text-[var(--status-success)] slashed-zero tabular-nums"
             )}
           >
             10/10
@@ -121,7 +123,7 @@ function KpiCard({ delta, detail, title, tone, trend, value }: CockpitKpiItem) {
       <div
         className={cn(
           blockRecipe("blockMetric"),
-          "mt-2 font-mono text-[18px] tabular-nums slashed-zero"
+          "mt-2 font-mono text-[18px] slashed-zero tabular-nums"
         )}
       >
         {value}
@@ -176,9 +178,7 @@ function WorkQueueTable({ table }: { readonly table: CockpitQueueTable }) {
           {table.rows.map((row) => {
             const rowKey = getCockpitQueueRowKey(table.id, row.id);
 
-            return (
-              <QueueTableRow key={rowKey} row={row} rowKey={rowKey} />
-            );
+            return <QueueTableRow key={rowKey} row={row} rowKey={rowKey} />;
           })}
         </TableBody>
       </Table>
@@ -209,7 +209,7 @@ function QueueTableRow({
       <TableCell className="px-3 py-2 font-medium text-[13px]">
         {row.name}
       </TableCell>
-      <TableCell className="px-3 py-2 font-mono text-[12px] text-text-secondary tabular-nums slashed-zero">
+      <TableCell className="px-3 py-2 font-mono text-[12px] text-text-secondary slashed-zero tabular-nums">
         {row.id}
       </TableCell>
       <TableCell className="px-3 py-2 text-right">
@@ -299,7 +299,7 @@ function AuditEvidenceRail() {
             />
             <div className="min-w-0">
               <div className="font-medium text-[13px]">{event.title}</div>
-              <div className="truncate font-mono text-[11px] text-text-secondary tabular-nums slashed-zero">
+              <div className="truncate font-mono text-[11px] text-text-secondary slashed-zero tabular-nums">
                 {event.meta}
               </div>
             </div>
@@ -316,7 +316,9 @@ function AuditEvidenceRail() {
           "bg-surface-muted/20"
         )}
       >
-        <div className={blockRecipe("blockTitle")}>Selected evidence detail</div>
+        <div className={blockRecipe("blockTitle")}>
+          Selected evidence detail
+        </div>
         <div className="mt-2">
           <CockpitStatusChip label="Company grant missing" tone="amber" />
         </div>

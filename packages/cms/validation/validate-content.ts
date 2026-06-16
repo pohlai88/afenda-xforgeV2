@@ -11,10 +11,10 @@ import { contentRoot } from "../loader/paths";
 import { DEFAULT_LOCALE, normalizeLocale } from "../locale";
 import { siteSettingsSchema } from "../schemas/settings.schema";
 
-export type ValidationError = {
+export interface ValidationError {
   file: string;
   message: string;
-};
+}
 
 export type ValidationResult =
   | { ok: true; fileCount: number }

@@ -91,7 +91,12 @@
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "storybook#build": {
-      "env": ["NODE_ENV", "SKIP_ENV_VALIDATION", "NEXT_PUBLIC_*", "STORYBOOK_DISABLE_MCP"],
+      "env": [
+        "NODE_ENV",
+        "SKIP_ENV_VALIDATION",
+        "NEXT_PUBLIC_*",
+        "STORYBOOK_DISABLE_MCP"
+      ],
       "outputs": ["storybook-static/**"]
     },
     "test": {

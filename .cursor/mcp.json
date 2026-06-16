@@ -14,26 +14,15 @@
     },
     "next-devtools": {
       "command": "npx",
-      "args": [
-        "-y",
-        "next-devtools-mcp@latest"
-      ]
+      "args": ["-y", "next-devtools-mcp@latest"]
     },
     "shadcn": {
       "command": "npx",
-      "args": [
-        "-y",
-        "shadcn@latest",
-        "mcp",
-        "-c",
-        "packages/design-system"
-      ]
+      "args": ["-y", "shadcn@latest", "mcp", "-c", "packages/design-system"]
     },
     "fetch": {
       "command": "uvx",
-      "args": [
-        "mcp-server-fetch"
-      ],
+      "args": ["mcp-server-fetch"],
       "env": {
         "PYTHONIOENCODING": "utf-8"
       }

@@ -1,9 +1,9 @@
 "use client";
 
 import { TooltipProvider } from "@repo/design-system/components/afenda-ui/tooltip";
+import { TopbarBrandDisk } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-brand-disk";
 import { TOPBAR_DEFAULT_BRAND_TOOLTIP } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import { resolveTopbarSidebarControl } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-helpers";
-import { TopbarBrandDisk } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-brand-disk";
 import { TopbarScopeSwitchers } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-scope-switchers";
 import { TopbarSidebarControl } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-sidebar-control";
 import { TopbarUtilitiesRail } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-utilities-rail";
@@ -36,16 +36,25 @@ export const DashboardNavTopbar = memo(function DashboardNavTopbar({
         data-slot="dashboard-nav-topbar"
         {...properties}
       >
-        <div className={dashboardNavTopbarLeftClass} data-slot="dashboard-nav-topbar-left">
+        <div
+          className={dashboardNavTopbarLeftClass}
+          data-slot="dashboard-nav-topbar-left"
+        >
           {sidebarControlProps ? (
             <TopbarSidebarControl {...sidebarControlProps} />
           ) : null}
           {brand ? (
-            <TopbarBrandDisk tooltip={TOPBAR_DEFAULT_BRAND_TOOLTIP} {...brand} />
+            <TopbarBrandDisk
+              tooltip={TOPBAR_DEFAULT_BRAND_TOOLTIP}
+              {...brand}
+            />
           ) : null}
           <TopbarScopeSwitchers switchers={scopeSwitchers} />
         </div>
-        <div className={dashboardNavTopbarRightClass} data-slot="dashboard-nav-topbar-right">
+        <div
+          className={dashboardNavTopbarRightClass}
+          data-slot="dashboard-nav-topbar-right"
+        >
           {trailing}
           {utilitiesRail ? <TopbarUtilitiesRail {...utilitiesRail} /> : null}
         </div>

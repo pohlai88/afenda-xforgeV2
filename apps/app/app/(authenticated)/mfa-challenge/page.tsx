@@ -11,13 +11,15 @@ const description =
 
 export const metadata: Metadata = createMetadata({ title, description });
 
-type MfaChallengePageProperties = {
+interface MfaChallengePageProperties {
   readonly searchParams: Promise<{
     next?: string | string[];
   }>;
-};
+}
 
-const MfaChallengePage = async ({ searchParams }: MfaChallengePageProperties) => {
+const MfaChallengePage = async ({
+  searchParams,
+}: MfaChallengePageProperties) => {
   const { next } = await searchParams;
   const nextParam = Array.isArray(next) ? next[0] : next;
   const nextHref = resolveSafeRedirect(nextParam ?? null);

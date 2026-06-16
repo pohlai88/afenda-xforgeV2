@@ -3,9 +3,9 @@
 import { getMDXComponent } from "mdx-bundler/client/react";
 import { useMemo } from "react";
 
-type BodyProperties = {
+interface BodyProperties {
   code: string;
-};
+}
 
 export const Body = ({ code }: BodyProperties) => {
   const Component = useMemo(() => getMDXComponent(code), [code]);

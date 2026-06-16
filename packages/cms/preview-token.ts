@@ -6,12 +6,12 @@ import { normalizeLocale } from "./locale";
 
 const TOKEN_TTL_MS = 60 * 60 * 1000;
 
-type PreviewPayload = {
+interface PreviewPayload {
   collection: string;
+  exp: number;
   locale: string;
   slug: string;
-  exp: number;
-};
+}
 
 const encodePayload = (payload: PreviewPayload): string =>
   Buffer.from(JSON.stringify(payload)).toString("base64url");

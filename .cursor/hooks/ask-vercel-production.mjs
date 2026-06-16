@@ -6,8 +6,7 @@ import { emit, log, parseStdinJson } from "./_hook-utils.mjs";
 
 const TAG = "ask-vercel-production";
 
-const PRODUCTION_DEPLOY =
-  /\bvercel\b[\s\S]*(?:--prod(?:uction)?|\bpromote\b)/i;
+const PRODUCTION_DEPLOY = /\bvercel\b[\s\S]*(?:--prod(?:uction)?|\bpromote\b)/i;
 
 const SAFE_VERCEL =
   /\bvercel\b[\s\S]*\b(env\s+(pull|ls|list|add|rm|remove)|link|login|logout|whoami|inspect|logs|dev)\b/i;

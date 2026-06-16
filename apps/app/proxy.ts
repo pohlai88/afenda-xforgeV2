@@ -12,7 +12,7 @@ const securityHeaders = env.FLAGS_SECRET
   : securityMiddleware(noseconeOptions);
 
 // Supabase auth middleware wraps other middleware in its callback
-export default authMiddleware((request, event) =>
+export default authMiddleware((_request, _event) =>
   securityHeaders()
 ) as unknown as NextProxy;
 

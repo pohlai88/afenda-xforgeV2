@@ -19,7 +19,7 @@ if (input === null) {
 
 const command = typeof input.command === "string" ? input.command : "";
 
-if (!command || !WRONG_INSTALL.test(command)) {
+if (!(command && WRONG_INSTALL.test(command))) {
   emit({ permission: "allow" });
   process.exit(0);
 }

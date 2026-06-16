@@ -1,7 +1,8 @@
 "use server";
 
-import { withAuth, withOrg, withOwner } from "@repo/auth/guards";
 import { getOrganizationRole } from "@repo/auth/cms";
+import { withAuth, withOrg, withOwner } from "@repo/auth/guards";
+import type { OrganizationRole } from "@repo/auth/organization-roles";
 import {
   addOrganizationMember,
   createOrganization,
@@ -10,7 +11,6 @@ import {
   switchOrganization,
   updateOrganizationName,
 } from "@repo/auth/organizations";
-import type { OrganizationRole } from "@repo/auth/organization-roles";
 import { revalidatePath } from "next/cache";
 
 export const getActiveOrganizations = async () => {

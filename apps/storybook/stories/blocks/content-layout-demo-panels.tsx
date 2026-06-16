@@ -92,8 +92,12 @@ export function DemoContentLayoutActivityDrawer() {
         {DEMO_ACTIVITY_ITEMS.map((item) => (
           <li className="grid gap-0.5" key={item.id}>
             <div className="flex items-center justify-between gap-2">
-              <span className="font-medium text-text-primary">{item.actor}</span>
-              <span className="tabular-nums text-text-tertiary">{item.time}</span>
+              <span className="font-medium text-text-primary">
+                {item.actor}
+              </span>
+              <span className="text-text-tertiary tabular-nums">
+                {item.time}
+              </span>
             </div>
             <p>{item.detail}</p>
           </li>
@@ -110,17 +114,24 @@ export interface DemoContentLayoutScrollPanelsProps {
 export function DemoContentLayoutScrollPanels({
   sectionCount = DEMO_SCROLL_SECTION_COUNT,
 }: DemoContentLayoutScrollPanelsProps) {
+  const sections = Array.from({ length: sectionCount }, (_, index) => ({
+    id: `panel-${index + 1}`,
+    label: `Section ${index + 1}`,
+  }));
+
   return (
     <div className="grid gap-4 p-[var(--xforge-space-5)]">
-      {Array.from({ length: sectionCount }, (_, index) => (
+      {sections.map((section) => (
         <div
           className={cn(blockRecipe("blockPanel", "blockPanelPadding"))}
-          key={`panel-${index + 1}`}
+          key={section.id}
         >
           <div className={blockRecipe("blockDescription")}>
-            Section {index + 1}
+            {section.label}
           </div>
-          <p className={cn(blockRecipe("blockDescription"), "mt-1 max-w-prose")}>
+          <p
+            className={cn(blockRecipe("blockDescription"), "mt-1 max-w-prose")}
+          >
             Main content scrolls vertically below the breadcrumb topbar. Footer,
             drawer header, and topbar remain fixed within the rounded shell.
           </p>
@@ -132,10 +143,18 @@ export function DemoContentLayoutScrollPanels({
 
 export function DemoContentLayoutBreadcrumbTrailing() {
   return (
-    <Button className="gap-1.5 text-[12px]" size="sm" type="button" variant="quiet">
+    <Button
+      className="gap-1.5 text-[12px]"
+      size="sm"
+      type="button"
+      variant="quiet"
+    >
       <CalendarIcon aria-hidden="true" className="size-3.5" />
       {DEMO_BREADCRUMB_TRAILING_LABEL}
-      <ChevronDownIcon aria-hidden="true" className="size-3 text-text-tertiary" />
+      <ChevronDownIcon
+        aria-hidden="true"
+        className="size-3 text-text-tertiary"
+      />
     </Button>
   );
 }

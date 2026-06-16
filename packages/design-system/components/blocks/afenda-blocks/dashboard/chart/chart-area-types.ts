@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
 import type { ChartConfig } from "@repo/design-system/components/afenda-ui/chart";
+import type { ReactNode } from "react";
 
 export interface ChartAreaDataPoint {
   readonly date: string;

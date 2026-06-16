@@ -13,12 +13,15 @@ import {
   sidebarIconRailIconClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
 import { cn } from "@repo/design-system/lib/utils";
-import { memo, type ComponentPropsWithoutRef } from "react";
+import { type ComponentPropsWithoutRef, memo } from "react";
 import {
   navMainGroupContentClass,
   navMainItemButtonClass,
 } from "./dashboard-nav-recipes";
-import type { NavSecondaryItem, NavSecondaryProps } from "./dashboard-nav-types";
+import type {
+  NavSecondaryItem,
+  NavSecondaryProps,
+} from "./dashboard-nav-types";
 
 const NavSecondaryItemRow = memo(function NavSecondaryItemRow({
   item,

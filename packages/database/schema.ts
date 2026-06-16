@@ -209,3 +209,132 @@ export const cmsDocumentRevisionRelations = relations(
     }),
   })
 );
+
+export const orbitCaseStatuses = [
+  "backlog",
+  "ready",
+  "doing",
+  "waiting",
+  "done",
+  "cancelled",
+] as const;
+
+export type OrbitCaseStatusDb = (typeof orbitCaseStatuses)[number];
+
+export const orbitCasePriorities = [
+  "none",
+  "low",
+  "medium",
+  "high",
+  "urgent",
+] as const;
+
+export type OrbitCasePriorityDb = (typeof orbitCasePriorities)[number];
+
+export const orbitCase = nextForge.table("orbit_cases", {
+  id: text("id").primaryKey(),
+  organizationId: text("organizationId")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  status: text("status")
+    .$type<OrbitCaseStatusDb>()
+    .notNull()
+    .default("backlog"),
+  priority: text("priority")
+    .$type<OrbitCasePriorityDb>()
+    .notNull()
+    .default("none"),
+  ownerId: text("ownerId"),
+  assigneeId: text("assigneeId"),
+  dueAt: timestamp("dueAt", { precision: 3, mode: "date" }),
+  createdBy: text("createdBy").notNull(),
+  softDeletedAt: timestamp("softDeletedAt", { precision: 3, mode: "date" }),
+  createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { precision: 3, mode: "date" }).notNull(),
+});
+
+export const orbitCaseWatcher = nextForge.table(
+  "orbit_case_watchers",
+  {
+    id: text("id").primaryKey(),
+    caseId: text("caseId")
+      .notNull()
+      .references(() => orbitCase.id, { onDelete: "cascade" }),
+    organizationId: text("organizationId")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull(),
+    createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    unique("orbit_case_watchers_case_user_unique").on(
+      table.caseId,
+      table.userId
+    ),
+  ]
+);
+
+export const orbitCaseComment = nextForge.table("orbit_case_comments", {
+  id: text("id").primaryKey(),
+  caseId: text("caseId")
+    .notNull()
+    .references(() => orbitCase.id, { onDelete: "cascade" }),
+  organizationId: text("organizationId")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  authorId: text("authorId").notNull(),
+  body: text("body").notNull(),
+  createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+});
+
+export const orbitCaseTag = nextForge.table(
+  "orbit_case_tags",
+  {
+    id: text("id").primaryKey(),
+    caseId: text("caseId")
+      .notNull()
+      .references(() => orbitCase.id, { onDelete: "cascade" }),
+    organizationId: text("organizationId")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    tag: text("tag").notNull(),
+  },
+  (table) => [
+    unique("orbit_case_tags_case_tag_unique").on(table.caseId, table.tag),
+  ]
+);
+
+export const orbitCaseActivity = nextForge.table("orbit_case_activity", {
+  id: text("id").primaryKey(),
+  caseId: text("caseId")
+    .notNull()
+    .references(() => orbitCase.id, { onDelete: "cascade" }),
+  organizationId: text("organizationId")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  actorId: text("actorId").notNull(),
+  action: text("action").notNull(),
+  payload: jsonb("payload").notNull().default({}),
+  createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+});
+
+export const orbitCaseRelations = relations(orbitCase, ({ one, many }) => ({
+  organization: one(organization, {
+    fields: [orbitCase.organizationId],
+    references: [organization.id],
+  }),
+  watchers: many(orbitCaseWatcher),
+  comments: many(orbitCaseComment),
+  tags: many(orbitCaseTag),
+  activity: many(orbitCaseActivity),
+}));

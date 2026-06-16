@@ -8,7 +8,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 const title = "Organization";
-const description = "Create workspaces, rename your active org, and invite members.";
+const description =
+  "Create workspaces, rename your active org, and invite members.";
 
 export const metadata: Metadata = createMetadata({ title, description });
 

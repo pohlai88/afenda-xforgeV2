@@ -15,12 +15,12 @@ const uploadSchema = z.object({
   size: z.number().max(5 * 1024 * 1024),
 });
 
-type CmsUploadedImage = {
+interface CmsUploadedImage {
+  alt: string | null;
+  height: number;
   url: string;
   width: number;
-  height: number;
-  alt: string | null;
-};
+}
 
 export const uploadCmsAsset = async (
   formData: FormData

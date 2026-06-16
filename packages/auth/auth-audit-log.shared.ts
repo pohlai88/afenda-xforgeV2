@@ -1,10 +1,10 @@
-export type AuthAuditLogEntry = {
-  id: string;
-  createdAt: string;
+export interface AuthAuditLogEntry {
   action: string;
+  createdAt: string;
+  id: string;
   ipAddress: string | null;
   userAgent: string | null;
-};
+}
 
 const AUTH_AUDIT_ACTION_LABELS: Record<string, string> = {
   login: "Signed in",

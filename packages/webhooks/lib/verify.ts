@@ -3,12 +3,12 @@ import { DEFAULT_WEBHOOK_SIGNATURE_TOLERANCE_SEC } from "./constants";
 import { parseSigningSecret } from "./secrets";
 import { buildSignedContent } from "./signing";
 
-export type VerifyStandardWebhookInput = {
-  secret: string;
-  rawBody: string;
+export interface VerifyStandardWebhookInput {
   headers: Record<string, string | undefined> | Headers;
+  rawBody: string;
+  secret: string;
   toleranceSeconds?: number;
-};
+}
 
 export type VerifyStandardWebhookResult =
   | { ok: true; id: string; timestamp: number }

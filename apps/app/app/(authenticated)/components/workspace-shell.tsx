@@ -4,9 +4,9 @@ import { AuthenticatedAppShellBlock } from "@repo/design-system/design-system";
 import type { ReactNode } from "react";
 import { AppTopbar } from "./app-topbar";
 import { AppSidebarNav } from "./sidebar";
-import { WorkspaceSessionProvider } from "./workspace-session-context";
-import { WorkspaceKeyboardProvider } from "./workspace-keyboard-provider";
 import type { CockpitQueueRowKey } from "./workspace-cockpit-data";
+import { WorkspaceKeyboardProvider } from "./workspace-keyboard-provider";
+import { WorkspaceSessionProvider } from "./workspace-session-context";
 
 interface WorkspaceShellRootProperties {
   readonly activeOrganizationId: string | null;
@@ -40,7 +40,9 @@ interface WorkspaceShellFrameProperties {
   readonly children: ReactNode;
 }
 
-export function WorkspaceShellFrame({ children }: WorkspaceShellFrameProperties) {
+export function WorkspaceShellFrame({
+  children,
+}: WorkspaceShellFrameProperties) {
   return (
     <AuthenticatedAppShellBlock
       appSidebar={<AppSidebarNav />}

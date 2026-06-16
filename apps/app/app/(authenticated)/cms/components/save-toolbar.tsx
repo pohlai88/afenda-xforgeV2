@@ -4,18 +4,18 @@ import type { CmsCollectionName } from "@repo/cms/writer";
 import { Button } from "@repo/design-system/design-system";
 import Link from "next/link";
 
-type SaveToolbarProperties = {
+interface SaveToolbarProperties {
   collection: CmsCollectionName;
-  locale: string;
-  slug?: string;
   isDirty: boolean;
   isSaving: boolean;
-  onSaveDraft: () => void;
-  onPublish: () => void;
+  locale: string;
   onDelete?: () => void;
-  onSharePreview?: () => void;
   onOpenPublicPreview?: () => void;
-};
+  onPublish: () => void;
+  onSaveDraft: () => void;
+  onSharePreview?: () => void;
+  slug?: string;
+}
 
 export const SaveToolbar = ({
   collection,

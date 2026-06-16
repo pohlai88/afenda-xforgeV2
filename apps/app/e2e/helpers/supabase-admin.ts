@@ -1,22 +1,22 @@
 export type AuthLinkType = "signup" | "magiclink" | "recovery" | "invite";
 
-export type GeneratedAuthLink = {
+export interface GeneratedAuthLink {
   actionLink: string;
+  emailOtp: string;
   hashedToken: string;
   verificationType: string;
-  emailOtp: string;
-};
+}
 
-type AdminUserRecord = {
-  id: string;
+interface AdminUserRecord {
+  confirmed_at?: string | null;
   email?: string;
   email_confirmed_at?: string | null;
-  confirmed_at?: string | null;
-};
+  id: string;
+}
 
-type AdminUserList = {
+interface AdminUserList {
   users?: AdminUserRecord[];
-};
+}
 
 type GenerateLinkResponse = GeneratedAuthLink & {
   verification_type?: string;

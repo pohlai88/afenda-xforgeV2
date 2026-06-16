@@ -1,13 +1,12 @@
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-
-import { blockRecipe } from "../components/blocks/block-recipes";
 import {
   contentLayoutBlockShellClass,
   contentLayoutSidebarClass,
 } from "../components/blocks/afenda-blocks/content-layout/content-layout-recipes";
+import { blockRecipe } from "../components/blocks/block-recipes";
 
 const contentLayoutRoot = join(
   fileURLToPath(new URL(".", import.meta.url)),
@@ -38,10 +37,7 @@ describe("content layout block recipes", () => {
     const violations: string[] = [];
 
     for (const file of walk(contentLayoutRoot)) {
-      if (
-        !/\.tsx$/.test(file) ||
-        file.endsWith("content-layout-recipes.ts")
-      ) {
+      if (!/\.tsx$/.test(file) || file.endsWith("content-layout-recipes.ts")) {
         continue;
       }
 

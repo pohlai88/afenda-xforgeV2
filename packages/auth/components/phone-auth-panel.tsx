@@ -22,10 +22,10 @@ import { AuthDivider } from "./auth-divider";
 import { AuthErrorAlert, AuthSuccessAlert } from "./auth-feedback";
 import { AuthPendingButton } from "./auth-pending-button";
 
-type PhoneAuthPanelProperties = {
+interface PhoneAuthPanelProperties {
   mode: "sign-in" | "sign-up";
   onError?: (message: string | null) => void;
-};
+}
 
 export const PhoneAuthPanel = ({ mode, onError }: PhoneAuthPanelProperties) => {
   const { settings } = useAuthUiConfig();
@@ -61,7 +61,9 @@ export const PhoneAuthPanel = ({ mode, onError }: PhoneAuthPanelProperties) => {
     const trimmed = phone.trim();
 
     if (!trimmed) {
-      setFieldError("Enter your phone number in E.164 format (e.g. +15551234567).");
+      setFieldError(
+        "Enter your phone number in E.164 format (e.g. +15551234567)."
+      );
       setLoading(false);
       return;
     }
@@ -101,7 +103,9 @@ export const PhoneAuthPanel = ({ mode, onError }: PhoneAuthPanelProperties) => {
     const trimmedCode = otpCode.trim();
 
     if (trimmedCode.length !== settings.otp.length) {
-      setFieldError(`Enter the ${settings.otp.length}-digit code from your SMS.`);
+      setFieldError(
+        `Enter the ${settings.otp.length}-digit code from your SMS.`
+      );
       setLoading(false);
       return;
     }
@@ -127,7 +131,11 @@ export const PhoneAuthPanel = ({ mode, onError }: PhoneAuthPanelProperties) => {
 
   return (
     <div className={cn("flex flex-col", recipe("sectionGap"))}>
-      <AuthDivider label={mode === "sign-up" ? "Or sign up with phone" : "Or sign in with phone"} />
+      <AuthDivider
+        label={
+          mode === "sign-up" ? "Or sign up with phone" : "Or sign in with phone"
+        }
+      />
       {codeSent ? (
         <AuthSuccessAlert
           message={`Enter the ${settings.otp.length}-digit code sent to your phone.`}
@@ -154,7 +162,9 @@ export const PhoneAuthPanel = ({ mode, onError }: PhoneAuthPanelProperties) => {
             type="tel"
             value={phone}
           />
-          <FieldHint>Use international format including country code.</FieldHint>
+          <FieldHint>
+            Use international format including country code.
+          </FieldHint>
           {fieldError && !codeSent ? (
             <FieldError>{fieldError}</FieldError>
           ) : null}

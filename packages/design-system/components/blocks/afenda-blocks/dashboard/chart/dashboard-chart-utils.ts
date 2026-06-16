@@ -1,5 +1,5 @@
-import type { ChartAreaTimeRange } from "./dashboard-chart-constants";
 import type { ChartAreaDataPoint } from "./chart-area-types";
+import type { ChartAreaTimeRange } from "./dashboard-chart-constants";
 
 const CHART_AREA_TIME_RANGE_DAYS: Record<ChartAreaTimeRange, number> = {
   "7d": 7,

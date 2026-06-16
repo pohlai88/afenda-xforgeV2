@@ -1,5 +1,5 @@
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 import { sidebarIconRailBlockItemClass } from "@repo/design-system/components/afenda-ui/sidebar-rail-recipes";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 
 const navMainGroupContentClass = [
   blockRecipe("blockStack"),

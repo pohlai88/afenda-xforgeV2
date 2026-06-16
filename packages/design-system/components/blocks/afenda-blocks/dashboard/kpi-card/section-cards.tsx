@@ -40,7 +40,10 @@ const SectionCard = memo(function SectionCard({
   const TrendIcon = TREND_ICONS[item.trend];
 
   return (
-    <Card className={sectionCardsCardClass} data-slot={`section-card-${item.id}`}>
+    <Card
+      className={sectionCardsCardClass}
+      data-slot={`section-card-${item.id}`}
+    >
       <CardHeader>
         <CardDescription>{item.label}</CardDescription>
         <CardTitle className={sectionCardsTitleClass}>{item.value}</CardTitle>

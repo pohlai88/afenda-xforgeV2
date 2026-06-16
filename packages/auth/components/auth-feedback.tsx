@@ -8,12 +8,12 @@ import {
 } from "@repo/design-system/design-system";
 import type { ReactNode } from "react";
 
-type AuthErrorAlertProperties = {
+interface AuthErrorAlertProperties {
   readonly id?: string;
   readonly message: string;
   readonly onRetry?: () => void;
   readonly retryLabel?: string;
-};
+}
 
 export const AuthErrorAlert = ({
   id,
@@ -38,10 +38,10 @@ export const AuthErrorAlert = ({
   </>
 );
 
-type AuthSuccessAlertProperties = {
+interface AuthSuccessAlertProperties {
   readonly message: string;
   readonly title?: string;
-};
+}
 
 export const AuthSuccessAlert = ({
   message,
@@ -55,9 +55,9 @@ export const AuthSuccessAlert = ({
   </Alert>
 );
 
-type AuthConfigNoticeProperties = {
+interface AuthConfigNoticeProperties {
   readonly children: ReactNode;
-};
+}
 
 /** Non-error configuration or environment guidance (warning tone). */
 export const AuthConfigNotice = ({ children }: AuthConfigNoticeProperties) => (
@@ -66,9 +66,9 @@ export const AuthConfigNotice = ({ children }: AuthConfigNoticeProperties) => (
   </Alert>
 );
 
-type PasskeyOriginNoticeProperties = {
+interface PasskeyOriginNoticeProperties {
   readonly rpOrigins: readonly string[];
-};
+}
 
 export const PasskeyOriginNotice = ({
   rpOrigins,

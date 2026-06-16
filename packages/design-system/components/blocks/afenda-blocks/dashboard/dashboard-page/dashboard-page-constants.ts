@@ -1,6 +1,4 @@
-import {
-  DEFAULT_DASHBOARD_NAV_TOPBAR_HEIGHT,
-} from "../topbar/dashboard-topbar-constants";
+import { DEFAULT_DASHBOARD_NAV_TOPBAR_HEIGHT } from "../topbar/dashboard-topbar-constants";
 import { DASHBOARD_CHROME_INSET } from "./dashboard-page-spacing";
 
 export const DASHBOARD_PAGE_DESCRIPTION =

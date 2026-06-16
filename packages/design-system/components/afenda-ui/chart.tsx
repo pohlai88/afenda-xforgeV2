@@ -69,7 +69,7 @@ function ChartContainer({
       <div
         aria-label={props["aria-label"] ?? "Chart"}
         className={cn(
-          "flex min-h-[240px] min-w-0 w-full justify-center",
+          "flex min-h-[240px] w-full min-w-0 justify-center",
           "[&_.recharts-cartesian-axis-tick_text]:fill-text-secondary",
           "[&_.recharts-cartesian-grid_line]:stroke-border-subtle",
           "[&_.recharts-cartesian-axis-line]:stroke-border-default",

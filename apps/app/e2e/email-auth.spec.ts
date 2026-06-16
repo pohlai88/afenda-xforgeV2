@@ -15,12 +15,25 @@ const e2eEmail =
   process.env.E2E_AUTH_EMAIL ??
   process.env.E2E_ORG_ADMIN_EMAIL ??
   "e2e-playwright@xforge.local";
-const e2ePassword =
+const _e2ePassword =
   process.env.E2E_AUTH_PASSWORD ??
   process.env.E2E_ORG_ADMIN_PASSWORD ??
   "123qweasdzxc!@#";
 
 const baseURL = getPlaywrightBaseUrl();
+
+const ACCOUNT_EXISTS_COPY_PATTERN = /If an account exists for that address/i;
+const APP_ROOT_URL_PATTERN = /\/($|\?)/;
+const CHECK_EMAIL_SIGN_IN_COPY_PATTERN =
+  /Check your email for a sign-in link/i;
+const EMAIL_NOT_CONFIRMED_COPY_PATTERN = /email not confirmed/i;
+const PASSWORD_REQUIREMENT_COPY_PATTERN = /At least \d+ characters/i;
+const SIGN_IN_PATH_PATTERN = /\/sign-in/;
+const SIGN_UP_SUCCESS_URL_PATTERN = /\/sign-up-success$/;
+const SIGN_UP_URL_PATTERN = /\/sign-up$/;
+const UPDATE_PASSWORD_URL_PATTERN = /\/update-password$/;
+const VERIFICATION_LINK_COPY_PATTERN =
+  /verification link to confirm your email/i;
 
 const fillSignUpPassword = async (
   page: import("@playwright/test").Page,
@@ -36,10 +49,12 @@ test.describe("Email authentication UI", () => {
     await page.goto("/sign-up");
 
     await expect(
-      page.getByText(/verification link to confirm your email/i)
+      page.getByText(VERIFICATION_LINK_COPY_PATTERN)
     ).toBeVisible();
     await expect(page.getByLabel("Password requirements")).toBeVisible();
-    await expect(page.getByText(/At least \d+ characters/i)).toBeVisible();
+    await expect(
+      page.getByText(PASSWORD_REQUIREMENT_COPY_PATTERN)
+    ).toBeVisible();
   });
 
   test("validates password policy before calling Supabase", async ({
@@ -52,9 +67,9 @@ test.describe("Email authentication UI", () => {
     await page.getByRole("button", { name: "Create account" }).click();
 
     await expect(page.locator("#sign-up-error")).toContainText(
-      /At least \d+ characters/i
+      PASSWORD_REQUIREMENT_COPY_PATTERN
     );
-    await expect(page).toHaveURL(/\/sign-up$/);
+    await expect(page).toHaveURL(SIGN_UP_URL_PATTERN);
   });
 
   test("sign-in exposes magic link mode for email auth", async ({ page }) => {
@@ -78,7 +93,7 @@ test.describe("Email authentication UI", () => {
     await page.getByRole("button", { name: "Send sign-in link" }).click();
 
     await expect(
-      page.getByText(/Check your email for a sign-in link/i)
+      page.getByText(CHECK_EMAIL_SIGN_IN_COPY_PATTERN)
     ).toBeVisible();
   });
 
@@ -105,7 +120,7 @@ test.describe("Email authentication UI", () => {
 });
 
 test.describe("Email authentication (Supabase integration)", () => {
-  test.skip(
+  test(
     !hasSupabaseAdminEnv(),
     "Requires NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY from .env.local / .env.secret (run pnpm test:e2e:env)"
   );
@@ -125,7 +140,7 @@ test.describe("Email authentication (Supabase integration)", () => {
       await fillSignUpPassword(page, password);
       await page.getByRole("button", { name: "Create account" }).click();
 
-      await expect(page).toHaveURL(/\/sign-up-success$/);
+      await expect(page).toHaveURL(SIGN_UP_SUCCESS_URL_PATTERN);
       await expect(
         page.getByRole("heading", { name: "Check your email" })
       ).toBeVisible();
@@ -147,8 +162,8 @@ test.describe("Email authentication (Supabase integration)", () => {
       await page.locator("#sign-in-password").fill(password);
       await page.getByRole("button", { name: "Sign in" }).click();
 
-      await expect(page.getByText(/email not confirmed/i)).toBeVisible();
-      await expect(page).toHaveURL(/\/sign-in/);
+      await expect(page.getByText(EMAIL_NOT_CONFIRMED_COPY_PATTERN)).toBeVisible();
+      await expect(page).toHaveURL(SIGN_IN_PATH_PATTERN);
     } finally {
       await deleteUserByEmail(email);
     }
@@ -176,7 +191,7 @@ test.describe("Email authentication (Supabase integration)", () => {
       await page.locator("#sign-in-password").fill(password);
       await page.getByRole("button", { name: "Sign in" }).click();
 
-      await expect(page).toHaveURL(/\/($|\?)/, { timeout: 30_000 });
+      await expect(page).toHaveURL(APP_ROOT_URL_PATTERN, { timeout: 30_000 });
     } finally {
       await deleteUserByEmail(email);
     }
@@ -189,7 +204,7 @@ test.describe("Email authentication (Supabase integration)", () => {
     const confirmUrl = buildConfirmUrl(baseURL, link, "/");
 
     await page.goto(confirmUrl, { waitUntil: "networkidle" });
-    await expect(page).toHaveURL(/\/($|\?)/, { timeout: 20_000 });
+    await expect(page).toHaveURL(APP_ROOT_URL_PATTERN, { timeout: 20_000 });
   });
 
   test("recovery link opens update-password after confirmation", async ({
@@ -202,7 +217,7 @@ test.describe("Email authentication (Supabase integration)", () => {
 
     await page.goto(confirmUrl);
 
-    await expect(page).toHaveURL(/\/update-password$/);
+    await expect(page).toHaveURL(UPDATE_PASSWORD_URL_PATTERN);
     await expect(
       page.getByRole("heading", { name: "Update password" })
     ).toBeVisible();
@@ -225,7 +240,7 @@ test.describe("Email authentication (Supabase integration)", () => {
 
       await expect(page.getByText("Email sent")).toBeVisible();
       await expect(
-        page.getByText(/If an account exists for that address/i)
+        page.getByText(ACCOUNT_EXISTS_COPY_PATTERN)
       ).toBeVisible();
     } finally {
       await deleteUserByEmail(email);

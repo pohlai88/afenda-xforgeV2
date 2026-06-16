@@ -4,8 +4,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@repo/design-system/components/afenda-ui/sidebar";
-import { cn } from "@repo/design-system/lib/utils";
-import { memo } from "react";
 import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
 import {
   sidebarIconRailHiddenClass,
@@ -14,6 +12,8 @@ import {
   sidebarNavItemIdleClass,
   sidebarNavItemSelectedClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import { memo } from "react";
 import type { SidebarNavItemRowProps } from "./sidebar-types";
 
 export const SidebarNavItemRow = memo(function SidebarNavItemRow({
@@ -28,16 +28,16 @@ export const SidebarNavItemRow = memo(function SidebarNavItemRow({
     <SidebarMenuItem data-slot={`app-sidebar-nav-item-${item.id}`}>
       <SidebarMenuButton
         asChild
+        className={cn(
+          sidebarNavItemBaseClass,
+          selected ? sidebarNavItemSelectedClass : sidebarNavItemIdleClass
+        )}
         isActive={selected}
         tooltip={{
           description: item.description,
           label: item.label,
           shortcut: item.shortcut,
         }}
-        className={cn(
-          sidebarNavItemBaseClass,
-          selected ? sidebarNavItemSelectedClass : sidebarNavItemIdleClass
-        )}
       >
         {linkRenderer({
           "aria-current": selected ? "page" : undefined,

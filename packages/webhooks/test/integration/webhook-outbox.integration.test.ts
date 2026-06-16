@@ -24,11 +24,11 @@ import { enqueueWebhookEvent } from "../../lib/outbound/enqueue";
 import { verifyStandardWebhook } from "../../lib/verify";
 import { setIntegrationFetchHandler } from "../../test-support/setup-integration-fetch";
 
-type CapturedWebhookRequest = {
-  url: string;
-  headers: Record<string, string>;
+interface CapturedWebhookRequest {
   body: string;
-};
+  headers: Record<string, string>;
+  url: string;
+}
 
 const hasDatabase = Boolean(process.env.DATABASE_URL ?? process.env.DIRECT_URL);
 
@@ -155,7 +155,7 @@ describe.skipIf(!hasDatabase)("webhook outbox integration", () => {
     });
 
     expect(deliveryResult.delivered).toBe(1);
-    expect(JSON.parse(capturedRequests[0]!.body).type).toBe(
+    expect(JSON.parse(capturedRequests[0]?.body).type).toBe(
       CMS_EVENT_UNPUBLISHED
     );
   });
@@ -232,7 +232,7 @@ describe.skipIf(!hasDatabase)("webhook outbox integration", () => {
     );
 
     expect(rotation?.secret).toMatch(/^whsec_/);
-    endpointSecret = rotation!.secret;
+    endpointSecret = rotation?.secret;
 
     const enqueueResult = await enqueueWebhookEvent(
       organizationId,
@@ -379,7 +379,7 @@ describe.skipIf(!hasDatabase)("webhook outbox integration", () => {
         )
         .limit(1);
 
-      createdDeliveryIds.push(listDelivery!.id);
+      createdDeliveryIds.push(listDelivery?.id);
 
       await processWebhookDeliveries({
         deliveryIds: enqueueResult.deliveryIds,
@@ -403,8 +403,8 @@ describe.skipIf(!hasDatabase)("webhook outbox integration", () => {
     });
 
     expect(pageTwo.deliveries).toHaveLength(1);
-    expect(pageOneIds.has(pageTwo.deliveries[0]!.id)).toBe(false);
-    expect(createdDeliveryIds).toContain(pageTwo.deliveries[0]!.id);
+    expect(pageOneIds.has(pageTwo.deliveries[0]?.id)).toBe(false);
+    expect(createdDeliveryIds).toContain(pageTwo.deliveries[0]?.id);
 
     const unknownEndpoint = await listWebhookDeliveries(organizationId, {
       endpointId: createId(),

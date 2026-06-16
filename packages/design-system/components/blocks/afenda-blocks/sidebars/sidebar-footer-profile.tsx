@@ -1,14 +1,16 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@repo/design-system/components/afenda-ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@repo/design-system/components/afenda-ui/avatar";
 import {
   SidebarFooter,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@repo/design-system/components/afenda-ui/sidebar";
-import { cn } from "@repo/design-system/lib/utils";
-import { memo } from "react";
 import { SIDEBAR_DEFAULT_PROFILE_DESCRIPTION } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-constants";
 import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
 import {
@@ -20,6 +22,8 @@ import {
   sidebarIconRailHiddenClass,
   sidebarProfileInitials,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import { memo } from "react";
 import type { SidebarFooterProfileProps } from "./sidebar-types";
 
 export const SidebarFooterProfile = memo(function SidebarFooterProfile({
@@ -71,9 +75,7 @@ export const SidebarFooterProfile = memo(function SidebarFooterProfile({
               children: (
                 <>
                   <Avatar className={sidebarIconRailAvatarClass}>
-                    {avatarSrc ? (
-                      <AvatarImage alt="" src={avatarSrc} />
-                    ) : null}
+                    {avatarSrc ? <AvatarImage alt="" src={avatarSrc} /> : null}
                     <AvatarFallback className={sidebarAvatarFallbackClass}>
                       {initials}
                     </AvatarFallback>

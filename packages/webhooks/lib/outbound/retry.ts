@@ -61,9 +61,7 @@ export const getNextAttemptAt = (
 
   const delay =
     WEBHOOK_TRANSIENT_RETRY_DELAYS_MS[attempts] ??
-    WEBHOOK_TRANSIENT_RETRY_DELAYS_MS[
-      WEBHOOK_TRANSIENT_RETRY_DELAYS_MS.length - 1
-    ];
+    WEBHOOK_TRANSIENT_RETRY_DELAYS_MS.at(-1);
 
   return new Date(Date.now() + delay);
 };

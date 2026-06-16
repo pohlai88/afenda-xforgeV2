@@ -1,13 +1,23 @@
 "use client";
 
 import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { cn } from "@repo/design-system/lib/utils";
-import { memo, useCallback, useMemo, useRef, useState, type DragEvent } from "react";
 import { TOPBAR_MAX_PINNED_UTILITY_SLOTS } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import {
+  type DragEvent,
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { TopbarNotifications } from "./topbar-notifications";
 import { TopbarTooltip } from "./topbar-tooltip";
-import type { TopbarUtilityAction, TopbarUtilitiesBarProps } from "./topbar-types";
+import type {
+  TopbarUtilitiesBarProps,
+  TopbarUtilityAction,
+} from "./topbar-types";
 
 function reorderUtilityIds(
   order: readonly string[],
@@ -39,8 +49,8 @@ function getUtilityTooltipDescription(
 }
 
 interface TopbarUtilityPinProps {
-  readonly children?: React.ReactNode;
   readonly action: TopbarUtilityAction;
+  readonly children?: React.ReactNode;
   readonly draggable: boolean;
   readonly isDragging: boolean;
   readonly isDropTarget: boolean;
@@ -77,8 +87,9 @@ const TopbarUtilityPin = memo(function TopbarUtilityPin({
       <div
         aria-grabbed={draggable ? isDragging : undefined}
         className={cn(
-          "relative inline-flex shrink-0 rounded-md transition-[opacity,box-shadow] duration-80 motion-reduce:transition-none",
-          draggable && "cursor-grab active:cursor-grabbing",
+          "group relative inline-flex shrink-0 rounded-md transition-[opacity,box-shadow,transform] duration-120 ease-out motion-reduce:transition-none",
+          draggable && "cursor-move active:cursor-move",
+          "hover:scale-[1.08]",
           isDragging && "z-10 opacity-55 shadow-sm",
           isDropTarget &&
             "after:absolute after:inset-y-0.5 after:-right-0.5 after:w-0.5 after:rounded-full after:bg-brand-primary/70"
@@ -95,6 +106,7 @@ const TopbarUtilityPin = memo(function TopbarUtilityPin({
             aria-label={action.label}
             className={cn(
               topbarIconActionClass,
+              "transition-transform duration-120 ease-out group-hover:scale-[1.02] motion-reduce:transition-none",
               draggable && "touch-none select-none"
             )}
             data-slot={`app-topbar-utility-${action.id}`}
@@ -144,7 +156,9 @@ export function TopbarUtilitiesBar({
     () =>
       cappedOrder
         .map((id) => actionById.get(id))
-        .filter((action): action is TopbarUtilityAction => action !== undefined),
+        .filter(
+          (action): action is TopbarUtilityAction => action !== undefined
+        ),
     [actionById, cappedOrder]
   );
 
@@ -252,7 +266,10 @@ export function TopbarUtilitiesBar({
             tooltipsDisabled={tooltipsDisabled}
           >
             {action.id === "notifications" && notifications ? (
-              <TopbarNotifications action={action} notifications={notifications} />
+              <TopbarNotifications
+                action={action}
+                notifications={notifications}
+              />
             ) : undefined}
           </TopbarUtilityPin>
         );

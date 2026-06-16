@@ -60,9 +60,9 @@ export const hasEmailPasswordIdentity = (identities: UserIdentity[]): boolean =>
 export const getLinkableOAuthProviders = (
   identities: UserIdentity[],
   enabled: { google?: boolean }
-): Array<"google"> => {
+): "google"[] => {
   const linked = new Set(identities.map((identity) => identity.provider));
-  const providers: Array<"google"> = [];
+  const providers: "google"[] = [];
 
   if (enabled.google && !linked.has("google")) {
     providers.push("google");

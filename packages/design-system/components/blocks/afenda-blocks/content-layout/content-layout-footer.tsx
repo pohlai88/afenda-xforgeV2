@@ -1,11 +1,11 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
 import {
   DEFAULT_CONTENT_LAYOUT_FOOTER_COPYRIGHT,
   EMPTY_CONTENT_LAYOUT_FOOTER_LINKS,
 } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
 import { contentLayoutFooterClass } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
+import { cn } from "@repo/design-system/lib/utils";
 import type { ContentLayoutFooterProps } from "./content-layout-types";
 
 export function ContentLayoutFooter({
@@ -20,7 +20,10 @@ export function ContentLayoutFooter({
     >
       <span className="min-w-0 truncate tabular-nums">{copyright}</span>
       {links.length > 0 ? (
-        <nav aria-label="Footer links" className="flex shrink-0 items-center gap-4">
+        <nav
+          aria-label="Footer links"
+          className="flex shrink-0 items-center gap-4"
+        >
           {links.map((link) => (
             <a
               className="text-text-secondary transition-colors duration-150 hover:text-text-primary motion-reduce:transition-none"

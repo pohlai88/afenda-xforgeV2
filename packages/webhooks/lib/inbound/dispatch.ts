@@ -10,12 +10,12 @@ import {
 } from "./stripe";
 import type { InboundWebhookResult } from "./types";
 
-export type HandleInboundWebhookOptions = {
+export interface HandleInboundWebhookOptions {
   stripe?: {
     secret: string;
     verify: StripeWebhookVerifier;
   };
-};
+}
 
 export const handleInboundWebhook = async (
   provider: InboundProvider,

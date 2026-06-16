@@ -21,10 +21,10 @@ import {
   updateEndpoint,
 } from "@/app/actions/webhooks/endpoints";
 
-type EndpointsTableProperties = {
+interface EndpointsTableProperties {
   endpoints: WebhookEndpointPublic[];
   isOwner: boolean;
-};
+}
 
 const healthVariant = (
   status: WebhookEndpointPublic["lastDeliveryStatus"]
@@ -96,6 +96,7 @@ export const EndpointsTable = ({
 
   const handleRotate = (endpointId: string) => {
     if (
+      // biome-ignore lint/suspicious/noAlert: Keeps current destructive secret-rotation confirmation behavior.
       !window.confirm(
         "Rotate signing secret? The previous secret remains valid for 24 hours."
       )
@@ -122,6 +123,7 @@ export const EndpointsTable = ({
   };
 
   const handleDelete = (endpointId: string) => {
+    // biome-ignore lint/suspicious/noAlert: Keeps current destructive endpoint deletion confirmation behavior.
     if (!window.confirm("Delete this webhook endpoint?")) {
       return;
     }

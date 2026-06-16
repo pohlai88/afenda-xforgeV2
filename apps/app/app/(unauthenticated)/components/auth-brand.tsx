@@ -8,11 +8,13 @@ const AfendaMark = () => (
     className="inline-flex size-7 shrink-0 items-center justify-center rounded-[var(--xforge-radius-sm)] border border-border-default bg-brand-primary/8"
   >
     <svg
+      aria-hidden
       className="size-3.5 text-brand-primary"
       fill="none"
       viewBox="0 0 16 16"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <title>Afenda mark</title>
       <path
         d="M8 2.5 3 13h2.1l.9-2.2h3.8l.9 2.2H13L8 2.5Zm-.6 6.8L8 6.2l.6 3.1H7.4Z"
         fill="currentColor"
@@ -35,9 +37,9 @@ export const AuthBrand = () => (
   </Link>
 );
 
-type AuthTrustFooterProps = {
+interface AuthTrustFooterProps {
   readonly className?: string;
-};
+}
 
 export const AuthTrustFooter = ({ className }: AuthTrustFooterProps) => (
   <p

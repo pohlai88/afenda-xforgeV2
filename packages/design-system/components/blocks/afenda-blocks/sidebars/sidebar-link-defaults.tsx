@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
 
-import type { SidebarLinkRenderer, SidebarLinkRenderProps } from "./sidebar-types";
+import type {
+  SidebarLinkRenderer,
+  SidebarLinkRenderProps,
+} from "./sidebar-types";
 
 export function defaultSidebarLink({
   "aria-current": ariaCurrent,

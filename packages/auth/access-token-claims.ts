@@ -39,23 +39,23 @@ export const SUPABASE_AMR_METHODS = [
 
 export type SupabaseAmrMethod = (typeof SUPABASE_AMR_METHODS)[number];
 
-export type SupabaseAmrClaim = {
+export interface SupabaseAmrClaim {
   method: SupabaseAmrMethod | string;
   timestamp: number;
-};
+}
 
 /** Standard Supabase `app_metadata` plus hook-injected org claims. */
-export type AccessTokenAppMetadata = {
-  provider?: string;
-  providers?: string[];
+export interface AccessTokenAppMetadata {
   organization_id?: string;
   organization_role?: OrganizationRole;
-};
+  provider?: string;
+  providers?: string[];
+}
 
-export type AccessTokenUserMetadata = {
-  name?: string;
+export interface AccessTokenUserMetadata {
   activeOrganizationId?: string;
-};
+  name?: string;
+}
 
 /**
  * Supabase Auth access-token claims (authenticated user JWT).
@@ -63,36 +63,36 @@ export type AccessTokenUserMetadata = {
  *
  * @see https://supabase.com/docs/guides/auth/jwt-fields
  */
-export type SupabaseAccessTokenClaims = {
-  iss: string;
+export interface SupabaseAccessTokenClaims {
+  aal: SupabaseAal | string;
+  amr?: SupabaseAmrClaim[];
+  app_metadata?: AccessTokenAppMetadata;
   aud: SupabaseJwtAudience | string | string[];
+  email: string;
   exp: number;
   iat: number;
-  sub: string;
-  role: SupabaseJwtRole | string;
-  aal: SupabaseAal | string;
-  session_id: string;
-  email: string;
-  phone: string;
   is_anonymous: boolean;
+  iss: string;
   jti?: string;
   nbf?: number;
-  app_metadata?: AccessTokenAppMetadata;
+  phone: string;
+  role: SupabaseJwtRole | string;
+  session_id: string;
+  sub: string;
   user_metadata?: AccessTokenUserMetadata;
-  amr?: SupabaseAmrClaim[];
-};
+}
 
 /**
  * Anon / service-role API key JWTs include `ref` (project reference).
  * In Rust, deserialize with `#[serde(rename = "ref")]`.
  */
-export type SupabaseApiKeyJwtClaims = {
+export interface SupabaseApiKeyJwtClaims {
+  exp: number;
+  iat: number;
   iss: string;
   ref: string;
   role: "anon" | "service_role";
-  iat: number;
-  exp: number;
-};
+}
 
 const REQUIRED_AUTHENTICATED_CLAIM_KEYS = [
   "iss",
@@ -108,10 +108,12 @@ const REQUIRED_AUTHENTICATED_CLAIM_KEYS = [
   "is_anonymous",
 ] as const satisfies readonly (keyof SupabaseAccessTokenClaims)[];
 
+const TRAILING_SLASH_PATTERN = /\/$/;
+
 export const getSupabaseAuthIssuer = (
   supabaseUrl = getSupabaseUrl()
 ): string => {
-  const base = supabaseUrl.replace(/\/$/, "");
+  const base = supabaseUrl.replace(TRAILING_SLASH_PATTERN, "");
   return `${base}/auth/v1`;
 };
 
@@ -200,11 +202,11 @@ export const hasRequiredAuthenticatedClaims = (
   );
 };
 
-export type ValidateAccessTokenClaimsOptions = {
-  expectedIssuer?: string;
+export interface ValidateAccessTokenClaimsOptions {
   expectedAudience?: SupabaseJwtAudience;
+  expectedIssuer?: string;
   nowSeconds?: number;
-};
+}
 
 export type AccessTokenValidationResult =
   | { ok: true }

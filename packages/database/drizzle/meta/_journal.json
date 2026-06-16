@@ -162,6 +162,13 @@
       "when": 1720353600000,
       "tag": "0022_org_invite_bootstrap",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1720440000000,
+      "tag": "0023_orbit_case_core",
+      "breakpoints": true
     }
   ]
 }

@@ -1,17 +1,6 @@
 "use client";
 
-import {
-  Button,
-  cn,
-  recipe,
-} from "@repo/design-system/design-system";
-import { AuthConfigNotice, AuthErrorAlert, AuthSuccessAlert } from "./auth-feedback";
-import { AuthPendingButton } from "./auth-pending-button";
-import {
-  AuthLoadingState,
-  AuthSection,
-  AuthSectionHeader,
-} from "./auth-section";
+import { Button, cn, recipe } from "@repo/design-system/design-system";
 import type { UserIdentity } from "@supabase/supabase-js";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
@@ -27,7 +16,18 @@ import {
   isSsoIdentity,
 } from "../identities";
 import { buildAuthCallbackRedirect } from "../redirects";
+import {
+  AuthConfigNotice,
+  AuthErrorAlert,
+  AuthSuccessAlert,
+} from "./auth-feedback";
 import { GoogleIcon } from "./auth-icons";
+import { AuthPendingButton } from "./auth-pending-button";
+import {
+  AuthLoadingState,
+  AuthSection,
+  AuthSectionHeader,
+} from "./auth-section";
 
 export const IdentityManager = () => {
   const { settings } = useAuthUiConfig();

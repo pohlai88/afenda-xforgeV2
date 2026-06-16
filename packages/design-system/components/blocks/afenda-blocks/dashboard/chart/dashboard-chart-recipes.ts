@@ -5,8 +5,7 @@ const chartAreaInteractiveCardClass = [
   dashboardBlockCardSurfaceClass,
 ].join(" ");
 
-const chartAreaInteractiveDescriptionWideClass =
-  "hidden @[540px]/card:block";
+const chartAreaInteractiveDescriptionWideClass = "hidden @[540px]/card:block";
 
 const chartAreaInteractiveDescriptionNarrowClass = "@[540px]/card:hidden";
 

@@ -1,6 +1,10 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@repo/design-system/components/afenda-ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@repo/design-system/components/afenda-ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -87,7 +91,9 @@ const NavUserIdentity = memo(function NavUserIdentity({
           {displayName}
         </span>
         {email ? (
-          <span className="truncate text-[11px] text-text-tertiary">{email}</span>
+          <span className="truncate text-[11px] text-text-tertiary">
+            {email}
+          </span>
         ) : null}
       </div>
     </>
@@ -192,7 +198,10 @@ export const NavUser = memo(function NavUser({
               />
               <EllipsisVerticalIcon
                 aria-hidden="true"
-                className={cn("ml-auto size-4 shrink-0", sidebarIconRailHiddenClass)}
+                className={cn(
+                  "ml-auto size-4 shrink-0",
+                  sidebarIconRailHiddenClass
+                )}
               />
             </SidebarMenuButton>
           </DropdownMenuTrigger>

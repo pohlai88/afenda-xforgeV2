@@ -12,7 +12,7 @@ import type { PasswordPolicy } from "../auth-ui-settings";
 import { EyeIcon, EyeOffIcon } from "./auth-icons";
 import { PasswordRequirements } from "./password-requirements";
 
-type PasswordFieldProperties = {
+interface PasswordFieldProperties {
   autoComplete: "new-password" | "current-password";
   describedBy?: string;
   id: string;
@@ -25,7 +25,7 @@ type PasswordFieldProperties = {
   required?: boolean;
   showRequirements?: boolean;
   value: string;
-};
+}
 
 export const PasswordField = ({
   autoComplete,

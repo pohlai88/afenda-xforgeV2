@@ -9,13 +9,13 @@ import {
   ApprovalQueueBlock,
   AuthenticatedAppShellBlock,
   Badge,
-  blockRecipe,
   Button,
+  blockRecipe,
+  DEFAULT_ERP_ACTIONS_MENU_ITEMS,
+  DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
   DEMO_ERP_SIDEBAR_LABEL_GROUPS,
   DEMO_ERP_SIDEBAR_NAV_GROUPS,
   DEMO_ERP_SIDEBAR_QUICK_ACTIONS,
-  DEFAULT_ERP_ACTIONS_MENU_ITEMS,
-  DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
   EmptyPanel,
   Kbd,
   OperatorAppSidebar,
@@ -205,7 +205,9 @@ export const AppSidebarQuickActions: Story = {
           <div className={cn(blockRecipe("blockTitle"), "mt-1")}>
             Sidebar quick actions wired to Storybook
           </div>
-          <p className={cn(blockRecipe("blockDescription"), "mt-1 max-w-prose")}>
+          <p
+            className={cn(blockRecipe("blockDescription"), "mt-1 max-w-prose")}
+          >
             This story isolates app sidebar quick actions so topic labels and
             keyboard shortcuts stay explicit without the rest of the shell
             competing for attention.
@@ -243,10 +245,7 @@ function DemoCommandFilterBar() {
           {filter.label}
         </Button>
       ))}
-      <span
-        aria-hidden="true"
-        className="mx-1 h-4 w-px bg-border-subtle"
-      />
+      <span aria-hidden="true" className="mx-1 h-4 w-px bg-border-subtle" />
       <Button
         className="gap-1.5 text-text-secondary"
         size="sm"
@@ -316,7 +315,11 @@ function DemoAppTopbar() {
     },
   ];
 
-  const defaultEnabledUtilityIds = ["help", "feedback", "notifications"] as const;
+  const defaultEnabledUtilityIds = [
+    "help",
+    "feedback",
+    "notifications",
+  ] as const;
   const actionsMenuItems: readonly TopbarActionMenuItem[] =
     DEFAULT_ERP_ACTIONS_MENU_ITEMS;
 
@@ -380,7 +383,12 @@ function DemoSiteTopbar() {
             Controlled
           </Badge>
         </div>
-        <p className={cn(blockRecipe("blockDescription"), "max-w-prose truncate")}>
+        <p
+          className={cn(
+            blockRecipe("blockDescription"),
+            "max-w-prose truncate"
+          )}
+        >
           Review approvals, evidence completeness, and policy locks before
           posting operational changes.
         </p>
@@ -430,7 +438,10 @@ function DemoBottomDrawer() {
   return (
     <section
       aria-label="Posting review drawer"
-      className={cn(blockRecipe("blockSection"), "h-full min-h-0 overflow-hidden")}
+      className={cn(
+        blockRecipe("blockSection"),
+        "h-full min-h-0 overflow-hidden"
+      )}
       data-slot="demo-site-bottom-drawer-content"
     >
       <div className={blockRecipe("blockHeader")}>

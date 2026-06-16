@@ -5,8 +5,10 @@ import { requireEditor, requireOwner } from "./cms";
 import { requireAuth, requireOrg } from "./server";
 import type { AuthActionResult, AuthenticatedContext } from "./types";
 
+type MaybePromise<TData> = Promise<TData> | TData;
+
 export const withAuth = async <TData>(
-  handler: (context: AuthenticatedContext) => Promise<TData>
+  handler: (context: AuthenticatedContext) => MaybePromise<TData>
 ): Promise<AuthActionResult<TData>> => {
   try {
     return authSuccess(await handler(await requireAuth()));
@@ -16,7 +18,9 @@ export const withAuth = async <TData>(
 };
 
 export const withOrg = async <TData>(
-  handler: (context: AuthenticatedContext & { orgId: string }) => Promise<TData>
+  handler: (
+    context: AuthenticatedContext & { orgId: string }
+  ) => MaybePromise<TData>
 ): Promise<AuthActionResult<TData>> => {
   try {
     return authSuccess(await handler(await requireOrg()));
@@ -31,7 +35,7 @@ export const withEditor = async <TData>(
       orgId: string;
       role: "owner" | "editor";
     }
-  ) => Promise<TData>
+  ) => MaybePromise<TData>
 ): Promise<AuthActionResult<TData>> => {
   try {
     return authSuccess(await handler(await requireEditor()));
@@ -43,7 +47,7 @@ export const withEditor = async <TData>(
 export const withOwner = async <TData>(
   handler: (
     context: AuthenticatedContext & { orgId: string; role: "owner" }
-  ) => Promise<TData>
+  ) => MaybePromise<TData>
 ): Promise<AuthActionResult<TData>> => {
   try {
     return authSuccess(await handler(await requireOwner()));

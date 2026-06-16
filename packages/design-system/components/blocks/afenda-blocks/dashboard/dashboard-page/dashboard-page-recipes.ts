@@ -24,8 +24,7 @@ const dashboardAppSidebarContainClass = [
   "!max-h-full",
 ].join(" ");
 
-const dashboardPageMainColumnClass =
-  "flex min-h-0 min-w-0 flex-1 flex-col";
+const dashboardPageMainColumnClass = "flex min-h-0 min-w-0 flex-1 flex-col";
 
 /**
  * DashboardPage wraps SidebarInset inside a right-column container, so the

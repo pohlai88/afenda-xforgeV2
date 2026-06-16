@@ -17,7 +17,7 @@ import {
 const root = path.resolve(import.meta.dirname, "..");
 const envPath = path.join(root, ".env");
 const secretPath = path.join(root, ".env.secret");
-const configPath = path.join(root, "supabase", "config.toml");
+const _configPath = path.join(root, "supabase", "config.toml");
 const verifyOnly = process.argv.includes("--verify-only");
 
 function parseToken(filePath, key) {

@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
-import type { CSSProperties } from "react";
 import { CONTENT_LAYOUT_RESIZE_HANDLE_SIZE } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
 import { contentLayoutResizeHandleClass } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import type { CSSProperties } from "react";
 import type {
   ContentLayoutResizeIntent,
   ContentLayoutResizeStartHandler,

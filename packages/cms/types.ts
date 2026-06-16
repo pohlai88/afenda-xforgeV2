@@ -1,56 +1,56 @@
 import type { ContentStatus } from "./schemas";
 
-export type ContentImage = {
+export interface ContentImage {
+  alt: string | null;
+  height: number;
   url: string;
   width: number;
-  height: number;
-  alt: string | null;
-};
+}
 
-export type ContentAuthor = {
+export interface ContentAuthor {
   _title: string;
   avatar?: ContentImage;
   xUrl?: string;
-};
+}
 
-export type ContentCategory = {
+export interface ContentCategory {
   _title: string;
-};
+}
 
-export type TocItem = {
+export interface TocItem {
   id: string;
-  title: string;
   level: 2 | 3;
-};
+  title: string;
+}
 
-export type ContentBody = {
+export interface ContentBody {
+  code: string;
   plainText: string;
   readingTime: number;
-  code: string;
   toc: TocItem[];
-};
+}
 
-export type PostMeta = {
+export interface PostMeta {
   _slug: string;
   _title: string;
-  status: ContentStatus;
+  authors: ContentAuthor[];
+  categories: ContentCategory[];
   date: string;
   description: string;
   image: ContentImage;
-  authors: ContentAuthor[];
-  categories: ContentCategory[];
-};
+  status: ContentStatus;
+}
 
 export type Post = PostMeta & {
   body: ContentBody;
 };
 
-export type LegalPostMeta = {
+export interface LegalPostMeta {
   _slug: string;
   _title: string;
-  status: ContentStatus;
   description: string;
-};
+  status: ContentStatus;
+}
 
 export type LegalPost = LegalPostMeta & {
   body: ContentBody;

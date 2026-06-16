@@ -2,7 +2,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadE2eEnv } from "../e2e/helpers/load-env.mjs";
 
-const appDir = path.dirname(fileURLToPath(import.meta.url));
+const _appDir = path.dirname(fileURLToPath(import.meta.url));
 
 loadE2eEnv();
 

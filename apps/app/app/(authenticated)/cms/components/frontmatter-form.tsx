@@ -17,11 +17,11 @@ import {
 import { useRef, useTransition } from "react";
 import { uploadCmsAsset } from "@/app/actions/cms/media";
 
-type FrontmatterFormProperties = {
+interface FrontmatterFormProperties {
   collection: CmsCollectionName;
-  values: Record<string, unknown>;
   onChange: (values: Record<string, unknown>) => void;
-};
+  values: Record<string, unknown>;
+}
 
 const setField = (
   values: Record<string, unknown>,

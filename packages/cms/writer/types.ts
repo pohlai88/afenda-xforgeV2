@@ -18,34 +18,34 @@ export type DeleteResult =
       message: string;
     };
 
-export type SaveDocumentInput<
+export interface SaveDocumentInput<
   TFrontmatter extends { status: ContentStatus; title: string },
-> = {
-  slug?: string;
-  locale: string;
-  frontmatter: TFrontmatter;
+> {
   body: string;
-};
+  frontmatter: TFrontmatter;
+  locale: string;
+  slug?: string;
+}
 
-export type WriterConfig<
+export interface WriterConfig<
   TFrontmatter extends { status: ContentStatus; title: string },
-> = {
+> {
+  readonly defaultFrontmatter?: Partial<TFrontmatter>;
   readonly name: CollectionName;
   readonly schema: z.ZodType<TFrontmatter>;
-  readonly defaultFrontmatter?: Partial<TFrontmatter>;
-};
+}
 
-export type CollectionWriter<
+export interface CollectionWriter<
   TFrontmatter extends { status: ContentStatus; title: string },
-> = {
-  save: (input: SaveDocumentInput<TFrontmatter>) => Promise<SaveResult>;
+> {
   delete: (slug: string, locale: string) => Promise<DeleteResult>;
   listSlugs: (locale: string) => Promise<string[]>;
-};
+  save: (input: SaveDocumentInput<TFrontmatter>) => Promise<SaveResult>;
+}
 
-export type RawDocument<TFrontmatter extends { status: ContentStatus }> = {
-  slug: string;
-  locale: string;
-  frontmatter: TFrontmatter;
+export interface RawDocument<TFrontmatter extends { status: ContentStatus }> {
   body: string;
-};
+  frontmatter: TFrontmatter;
+  locale: string;
+  slug: string;
+}

@@ -1,6 +1,10 @@
 import type {
+  SidebarCardSection,
+  SidebarCardSectionItem,
+  SidebarCardSectionItemActiveFn,
   SidebarItemActiveFn,
   SidebarLabelGroup,
+  SidebarMatchStrategy,
   SidebarNavGroup,
   SidebarNavItem,
 } from "./sidebar-types";
@@ -25,7 +29,7 @@ function normalizeSidebarPath(path: string): string {
 function matchesSidebarPath(
   pathname: string,
   href: string,
-  match: SidebarNavItem["match"]
+  match?: SidebarMatchStrategy
 ): boolean {
   const normalizedPathname = normalizeSidebarPath(pathname);
   const normalizedHref = normalizeSidebarPath(href);
@@ -53,6 +57,37 @@ export function isSidebarNavItemActive(
   }
 
   return matchesSidebarPath(pathname, item.href, item.match);
+}
+
+export function isSidebarCardSectionItemActive(
+  pathname: string,
+  item: SidebarCardSectionItem
+): boolean {
+  if (item.selected !== undefined) {
+    return item.selected;
+  }
+
+  return matchesSidebarPath(pathname, item.href, item.match);
+}
+
+export function isSidebarCardSectionActive(
+  pathname: string,
+  section: SidebarCardSection,
+  isItemActive: SidebarCardSectionItemActiveFn = isSidebarCardSectionItemActive
+): boolean {
+  if (section.selected !== undefined) {
+    return section.selected;
+  }
+
+  if (matchesSidebarPath(pathname, section.href, section.match)) {
+    return true;
+  }
+
+  const menuItems = section.menuItems ?? [];
+
+  return [...section.items, ...menuItems].some((item) =>
+    isItemActive(pathname, item)
+  );
 }
 
 export function flattenSidebarNavGroups<
@@ -87,4 +122,20 @@ export function resolveSidebarActiveItemIds(
   }
 
   return activeItemIds;
+}
+
+export function resolveSidebarActiveCardSectionIds(
+  sections: readonly SidebarCardSection[],
+  pathname: string,
+  isItemActive: SidebarCardSectionItemActiveFn = isSidebarCardSectionItemActive
+): ReadonlySet<string> {
+  const activeSectionIds = new Set<string>();
+
+  for (const section of sections) {
+    if (isSidebarCardSectionActive(pathname, section, isItemActive)) {
+      activeSectionIds.add(section.id);
+    }
+  }
+
+  return activeSectionIds;
 }

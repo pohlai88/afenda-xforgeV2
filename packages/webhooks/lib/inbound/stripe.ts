@@ -4,10 +4,10 @@ import {
 } from "../registry/events";
 import type { InboundEvent } from "./types";
 
-export type StripeWebhookEvent = {
-  type: string;
+export interface StripeWebhookEvent {
   data: { object: unknown };
-};
+  type: string;
+}
 
 export type StripeWebhookVerifier = (
   body: string,

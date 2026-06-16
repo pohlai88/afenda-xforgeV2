@@ -1,6 +1,5 @@
 "use client";
 
-import { recipe } from "@repo/design-system/design-system";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 import { fromSupabaseError } from "../auth-result";
@@ -117,7 +116,9 @@ export const SessionControls = () => {
       <div className="flex flex-wrap gap-2">
         <AuthPendingButton
           disabled={loading !== null && loading !== "local"}
-          onClick={() => void handleSignOut("local")}
+          onClick={() => {
+            handleSignOut("local").catch(() => undefined);
+          }}
           pending={loading === "local"}
           pendingLabel="Signing out…"
           type="button"
@@ -127,7 +128,9 @@ export const SessionControls = () => {
         </AuthPendingButton>
         <AuthPendingButton
           disabled={loading !== null && loading !== "global"}
-          onClick={() => void handleSignOut("global")}
+          onClick={() => {
+            handleSignOut("global").catch(() => undefined);
+          }}
           pending={loading === "global"}
           pendingLabel="Signing out…"
           type="button"

@@ -16,7 +16,10 @@ export function useControllableBoolean({
   controlled,
   defaultValue = false,
   onChange,
-}: UseControllableBooleanOptions): readonly [boolean, ControllableBooleanSetter] {
+}: UseControllableBooleanOptions): readonly [
+  boolean,
+  ControllableBooleanSetter,
+] {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const value = controlled ?? internalValue;
 

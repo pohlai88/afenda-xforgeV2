@@ -179,7 +179,9 @@ export const dashboardDataTableColumns: ColumnDef<DashboardDataTableRow>[] = [
               id={`${row.original.id}-reviewer`}
               size="compact"
             >
-              <SelectValue placeholder={DASHBOARD_DATA_TABLE_REVIEWER_PLACEHOLDER} />
+              <SelectValue
+                placeholder={DASHBOARD_DATA_TABLE_REVIEWER_PLACEHOLDER}
+              />
             </SelectTrigger>
             <SelectContent align="end">
               {DASHBOARD_DATA_TABLE_REVIEWERS.map((reviewer) => (

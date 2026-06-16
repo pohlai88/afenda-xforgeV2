@@ -39,14 +39,13 @@ const AppLayout = async ({ children }: AppLayoutProperties) => {
   const pathname = headerStore.get("x-pathname") ?? "/";
   const search = headerStore.get("x-search") ?? "";
 
-  if (!pathname.startsWith("/mfa-challenge")) {
-    const mfaRedirect = await resolveServerMfaRedirect(`${pathname}${search}`);
-
-    if (mfaRedirect) {
-      redirect(mfaRedirect);
-    }
-  } else {
+  if (pathname.startsWith("/mfa-challenge")) {
     return <MfaChallengeShell>{children}</MfaChallengeShell>;
+  }
+  const mfaRedirect = await resolveServerMfaRedirect(`${pathname}${search}`);
+
+  if (mfaRedirect) {
+    redirect(mfaRedirect);
   }
 
   let { orgId } = await auth();
@@ -58,10 +57,7 @@ const AppLayout = async ({ children }: AppLayoutProperties) => {
       organizations.length === 0 &&
       !hasPendingOrganizationInvite(user.user_metadata)
     ) {
-      const organization = await createOrganization(
-        "My Organization",
-        user.id
-      );
+      const organization = await createOrganization("My Organization", user.id);
       orgId = organization.id;
     } else if (organizations.length > 0) {
       await switchOrganization(organizations[0].id);

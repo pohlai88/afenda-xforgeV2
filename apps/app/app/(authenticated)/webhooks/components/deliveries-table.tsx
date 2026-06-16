@@ -20,19 +20,19 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { replayDelivery } from "@/app/actions/webhooks/endpoints";
 
-type DeliveriesTableProperties = {
+interface DeliveriesTableProperties {
   deliveries: WebhookDeliveryRecord[];
-  endpoints: WebhookEndpointPublic[];
-  isOwner: boolean;
-  statusFilter: WebhookDeliveryStatus | "all";
   endpointFilter: string;
-  nextCursor: string | null;
+  endpoints: WebhookEndpointPublic[];
   isLoadingMore: boolean;
+  isOwner: boolean;
   loadMoreError: string | null;
-  onStatusFilterChange: (status: WebhookDeliveryStatus | "all") => void;
+  nextCursor: string | null;
   onEndpointFilterChange: (endpointId: string) => void;
   onLoadMore: () => void;
-};
+  onStatusFilterChange: (status: WebhookDeliveryStatus | "all") => void;
+  statusFilter: WebhookDeliveryStatus | "all";
+}
 
 const statusVariant = (
   status: WebhookDeliveryStatus
@@ -139,9 +139,7 @@ export const DeliveriesTable = ({
         </p>
       ) : null}
       {notice ? (
-        <p className="text-muted-foreground text-sm" role="status">
-          {notice}
-        </p>
+        <output className="text-muted-foreground text-sm">{notice}</output>
       ) : null}
       {loadMoreError ? (
         <p className="text-destructive text-sm" role="alert">

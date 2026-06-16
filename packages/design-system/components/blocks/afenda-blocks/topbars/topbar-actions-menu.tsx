@@ -11,13 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@repo/design-system/components/afenda-ui/dropdown-menu";
 import { Kbd } from "@repo/design-system/components/afenda-ui/kbd";
-import { cn } from "@repo/design-system/lib/utils";
 import {
   TOPBAR_DEFAULT_ACTIONS_MENU_BUTTON_LABEL,
   TOPBAR_DEFAULT_ACTIONS_MENU_DESCRIPTION,
   TOPBAR_DEFAULT_ACTIONS_MENU_LABEL,
 } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
+import { cn } from "@repo/design-system/lib/utils";
 import { MoreHorizontalIcon } from "lucide-react";
 import { TopbarTooltip } from "./topbar-tooltip";
 import type { TopbarActionsMenuProps } from "./topbar-types";

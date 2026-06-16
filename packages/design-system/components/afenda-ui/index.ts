@@ -314,6 +314,7 @@ export {
   SheetTitle,
   SheetTrigger,
 } from "./sheet";
+export type { SidebarMenuTooltipProps } from "./sidebar";
 export {
   Sidebar,
   SidebarContent,
@@ -342,7 +343,6 @@ export {
   useSidebar,
 } from "./sidebar";
 export type { SidebarBehaviorMode } from "./sidebar-behavior";
-export type { SidebarMenuTooltipProps } from "./sidebar";
 export { SIDEBAR_BEHAVIOR_OPTIONS } from "./sidebar-behavior";
 export { Skeleton } from "./skeleton";
 export { Slider } from "./slider";

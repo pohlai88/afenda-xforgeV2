@@ -1,18 +1,18 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { resolveSafeRedirectPath } from "./safe-redirect";
 
-export type MfaAssuranceStatus = {
-  needsChallenge: boolean;
+export interface MfaAssuranceStatus {
   currentLevel: string | null;
+  needsChallenge: boolean;
   nextLevel: string | null;
-};
+}
 
-export type VerifiableTotpFactor = {
-  id: string;
-  friendly_name?: string;
+export interface VerifiableTotpFactor {
   factor_type: string;
+  friendly_name?: string;
+  id: string;
   status: string;
-};
+}
 
 export const getMfaAssuranceStatus = async (
   supabase: SupabaseClient
@@ -25,8 +25,7 @@ export const getMfaAssuranceStatus = async (
   }
 
   return {
-    needsChallenge:
-      data.currentLevel === "aal1" && data.nextLevel === "aal2",
+    needsChallenge: data.currentLevel === "aal1" && data.nextLevel === "aal2",
     currentLevel: data.currentLevel,
     nextLevel: data.nextLevel,
   };

@@ -7,12 +7,12 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from "@repo/design-system/components/afenda-ui/menubar";
-import { cn } from "@repo/design-system/lib/utils";
 import {
   topbarScopeCaptionClass,
   topbarScopeTriggerClass,
   topbarScopeValueClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
+import { cn } from "@repo/design-system/lib/utils";
 import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { TopbarTooltip } from "./topbar-tooltip";
 import type { TopbarScopeSwitcherProps } from "./topbar-types";
@@ -29,10 +29,13 @@ export function TopbarScopeSwitcher({
   const activeOption =
     options.find((option) => option.id === activeOptionId) ?? options[0];
   const tooltipDescription =
-    description ?? `Choose the active ${label.toLowerCase()} for this workspace.`;
+    description ??
+    `Choose the active ${label.toLowerCase()} for this workspace.`;
 
   return (
-    <Menubar className={cn("h-auto w-auto border-0 bg-transparent p-0", className)}>
+    <Menubar
+      className={cn("h-auto w-auto border-0 bg-transparent p-0", className)}
+    >
       <MenubarMenu>
         <TopbarTooltip
           description={tooltipDescription}

@@ -4,12 +4,12 @@ import type { ReactNode } from "react";
 /** Shared underline style for in-form auth links. */
 export const authLinkClass = "underline underline-offset-4";
 
-type AuthSectionProperties = {
+interface AuthSectionProperties {
   readonly "aria-busy"?: boolean;
   readonly "aria-labelledby"?: string;
   readonly children: ReactNode;
   readonly className?: string;
-};
+}
 
 export const AuthSection = ({
   children,
@@ -26,11 +26,11 @@ export const AuthSection = ({
   </section>
 );
 
-type AuthSectionHeaderProperties = {
+interface AuthSectionHeaderProperties {
   readonly description: ReactNode;
   readonly title: string;
   readonly titleId?: string;
-};
+}
 
 export const AuthSectionHeader = ({
   title,
@@ -45,10 +45,10 @@ export const AuthSectionHeader = ({
   </div>
 );
 
-type AuthConfigRowProperties = {
+interface AuthConfigRowProperties {
   readonly label: string;
   readonly value: ReactNode;
-};
+}
 
 export const AuthConfigRow = ({ label, value }: AuthConfigRowProperties) => (
   <div className="flex flex-col gap-0.5 border-border-default border-b py-3 last:border-b-0">
@@ -57,9 +57,9 @@ export const AuthConfigRow = ({ label, value }: AuthConfigRowProperties) => (
   </div>
 );
 
-type AuthConfigListProperties = {
+interface AuthConfigListProperties {
   readonly children: ReactNode;
-};
+}
 
 export const AuthConfigList = ({ children }: AuthConfigListProperties) => (
   <dl className="rounded-[var(--xforge-radius-md)] border border-border-default px-4">
@@ -67,9 +67,9 @@ export const AuthConfigList = ({ children }: AuthConfigListProperties) => (
   </dl>
 );
 
-type AuthLoadingStateProperties = {
+interface AuthLoadingStateProperties {
   readonly label: string;
-};
+}
 
 export const AuthLoadingState = ({ label }: AuthLoadingStateProperties) => (
   <p aria-live="polite" className={recipe("captionText")}>

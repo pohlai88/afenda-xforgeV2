@@ -32,6 +32,33 @@ const sidebarNavPanelNavClass = [
 
 const sidebarNavGroupShellClass = "min-w-0 gap-1 p-0";
 
+const sidebarCardSectionShellClass = "min-w-0 gap-1 p-0";
+
+const sidebarCardSectionExpandedClass = [
+  sidebarIconRailHiddenClass,
+  "rounded-[var(--xforge-radius-lg)] border border-border-default/70 bg-surface-raised/85 p-1.5 shadow-xs",
+].join(" ");
+
+const sidebarCardSectionHeaderClass =
+  "flex min-h-8 min-w-0 items-center gap-2 rounded-[var(--xforge-radius-md)] px-2 py-1.5";
+
+const sidebarCardSectionTitleClass =
+  "min-w-0 flex-1 truncate font-medium text-[12px] text-sidebar-foreground leading-4";
+
+const sidebarCardSectionActionClass =
+  "inline-flex size-6 shrink-0 items-center justify-center rounded-[var(--xforge-radius-sm)] text-text-secondary transition-colors duration-100 hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30";
+
+const sidebarCardSectionItemClass =
+  "block min-w-0 rounded-[var(--xforge-radius-md)] border border-border-default/65 bg-background/70 px-2.5 py-2 text-left transition-colors duration-100 hover:border-border-default hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30";
+
+const sidebarCardSectionItemIdleClass = "text-sidebar-foreground/88";
+
+const sidebarCardSectionItemSelectedClass =
+  "border-brand-primary/25 bg-brand-primary/10 text-brand-primary";
+
+const sidebarCardSectionRailMenuClass =
+  "hidden group-data-[collapsible=icon]:flex";
+
 const sidebarQuickActionClass = [
   "flex h-8 min-w-0 items-center gap-2 rounded-md px-2 text-[length:var(--xforge-font-caption-size)] text-sidebar-foreground/88 leading-[var(--xforge-font-caption-line-height)] hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
   sidebarIconRailBlockItemClass,
@@ -90,6 +117,15 @@ function sidebarProfileInitials(label: string): string {
 export {
   operatorAppSidebarShellClass,
   sidebarAvatarFallbackClass,
+  sidebarCardSectionActionClass,
+  sidebarCardSectionExpandedClass,
+  sidebarCardSectionHeaderClass,
+  sidebarCardSectionItemClass,
+  sidebarCardSectionItemIdleClass,
+  sidebarCardSectionItemSelectedClass,
+  sidebarCardSectionRailMenuClass,
+  sidebarCardSectionShellClass,
+  sidebarCardSectionTitleClass,
   sidebarFooterButtonClass,
   sidebarFooterClass,
   sidebarFooterMenuClass,

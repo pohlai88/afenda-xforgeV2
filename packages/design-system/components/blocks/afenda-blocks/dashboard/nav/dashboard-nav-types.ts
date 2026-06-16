@@ -1,8 +1,8 @@
-import type { ReactNode } from "react";
 import type {
   SidebarIconComponent,
   SidebarLinkRenderer,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-types";
+import type { ReactNode } from "react";
 
 export interface NavUserMenuItem {
   readonly icon?: SidebarIconComponent;

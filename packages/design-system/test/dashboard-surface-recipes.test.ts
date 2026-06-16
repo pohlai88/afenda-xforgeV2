@@ -7,11 +7,13 @@ import { describe, expect, it } from "vitest";
 
 import {
   dashboardBlockCardSurfaceClass,
-  dashboardFloatingPanelClass,
   dashboardDataTableTableClass,
+  dashboardFloatingPanelClass,
   dashboardKpiCardTintClass,
   dashboardSystemCanvasClass,
 } from "../components/blocks/afenda-blocks/dashboard/dashboard-block-recipes";
+import { DashboardPage } from "../components/blocks/afenda-blocks/dashboard/dashboard-page/dashboard-page";
+import { DEFAULT_DASHBOARD_PAGE_PROVIDER_STYLE } from "../components/blocks/afenda-blocks/dashboard/dashboard-page/dashboard-page-constants";
 import { dashboardPageFooterClass } from "../components/blocks/afenda-blocks/dashboard/dashboard-page/dashboard-page-footer-recipes";
 import {
   dashboardAppSidebarContainClass,
@@ -22,16 +24,18 @@ import {
   dashboardPageMainClass,
   dashboardPageProviderClass,
 } from "../components/blocks/afenda-blocks/dashboard/dashboard-page/dashboard-page-recipes";
-import { dashboardNavTopbarShellClass } from "../components/blocks/afenda-blocks/dashboard/topbar/dashboard-topbar-recipes";
-import { DEFAULT_DASHBOARD_PAGE_PROVIDER_STYLE } from "../components/blocks/afenda-blocks/dashboard/dashboard-page/dashboard-page-constants";
-import { DashboardPage } from "../components/blocks/afenda-blocks/dashboard/dashboard-page/dashboard-page";
 import {
   dashboardDataTableGridClass,
   dashboardDataTableHeaderClass,
   dashboardDataTableTabsListClass,
 } from "../components/blocks/afenda-blocks/dashboard/data-table/dashboard-data-table-recipes";
 import { sectionCardsCardClass } from "../components/blocks/afenda-blocks/dashboard/kpi-card/dashboard-section-cards-recipes";
-import { siteHeaderActionsClass, siteHeaderInnerClass, siteHeaderShellClass } from "../components/blocks/afenda-blocks/dashboard/site-header/dashboard-site-header-recipes";
+import {
+  siteHeaderActionsClass,
+  siteHeaderInnerClass,
+  siteHeaderShellClass,
+} from "../components/blocks/afenda-blocks/dashboard/site-header/dashboard-site-header-recipes";
+import { dashboardNavTopbarShellClass } from "../components/blocks/afenda-blocks/dashboard/topbar/dashboard-topbar-recipes";
 
 const dashboardRoot = join(
   fileURLToPath(new URL(".", import.meta.url)),
@@ -95,10 +99,7 @@ function extractClassFromMarkup(
   markup: string,
   slot: string
 ): string | undefined {
-  const tagPattern = new RegExp(
-    `<[a-z][^>]*data-slot="${slot}"[^>]*>`,
-    "iu"
-  );
+  const tagPattern = new RegExp(`<[a-z][^>]*data-slot="${slot}"[^>]*>`, "iu");
   const tag = tagPattern.exec(markup)?.[0];
   if (!tag) {
     return undefined;
@@ -127,12 +128,16 @@ function assertRenderedProviderShell(className: string, label: string): void {
   assertEmbeddedSidebar(className, label);
 }
 
-function assertNoBuiltWrapperBackground(className: string, label: string): void {
+function assertNoBuiltWrapperBackground(
+  className: string,
+  label: string
+): void {
   const normalized = normalizeMarkupClass(className);
   for (const token of forbiddenWrapperBackgroundTokens) {
-    expect(normalized, `${label} must not paint wrapper with ${token}`).not.toContain(
-      token
-    );
+    expect(
+      normalized,
+      `${label} must not paint wrapper with ${token}`
+    ).not.toContain(token);
   }
   expect(normalized, `${label} must cancel inset gutter fill`).toContain(
     "has-data-[variant=inset]:!bg-transparent"
@@ -149,11 +154,12 @@ function assertEmbeddedSidebar(className: string, label: string): void {
   }
 }
 
-function assertInsetNotFlattened(className: string, label: string): void {
+function _assertInsetNotFlattened(className: string, label: string): void {
   for (const token of forbiddenInsetFlattenTokens) {
-    expect(className, `${label} must not flatten inset with ${token}`).not.toContain(
-      token
-    );
+    expect(
+      className,
+      `${label} must not flatten inset with ${token}`
+    ).not.toContain(token);
   }
 }
 
@@ -318,7 +324,9 @@ describe("dashboard page composition contract", () => {
     expect(sidebarPrimitiveSource).toContain("function SidebarInset");
     expect(sidebarPrimitiveSource).toMatch(/SidebarInset[\s\S]*bg-sidebar/);
     expect(dashboardPageSource).toContain("dashboardPageInsetClass");
-    expect(dashboardPageInsetClass).toContain("md:rounded-[var(--card-radius)]");
+    expect(dashboardPageInsetClass).toContain(
+      "md:rounded-[var(--card-radius)]"
+    );
     expect(dashboardPageInsetClass).toContain("md:overflow-hidden");
     expect(dashboardPageInsetClass).toContain("md:shadow-panel");
   });
@@ -341,9 +349,10 @@ describe("dashboard page composition contract", () => {
     const footerIndex = markup.indexOf('data-slot="dashboard-footer"');
     expect(insetIndex, "inset missing").toBeGreaterThan(-1);
     expect(footerIndex, "footer missing").toBeGreaterThan(insetIndex);
-    expect(footerIndex, "footer must sit outside sidebar-inset").toBeGreaterThan(
-      insetCloseIndex
-    );
+    expect(
+      footerIndex,
+      "footer must sit outside sidebar-inset"
+    ).toBeGreaterThan(insetCloseIndex);
     expect(markup).not.toContain('data-variant="sidebar"');
 
     const wrapperClass = extractClassFromMarkup(markup, "dashboard-page");
@@ -355,9 +364,10 @@ describe("dashboard page composition contract", () => {
     expect(insetClass, "inset class missing").toBeDefined();
 
     assertRenderedProviderShell(wrapperClass!, "rendered wrapper");
-    expect(normalizeMarkupClass(topbarClass!), "nav topbar must stay transparent").toContain(
-      "bg-transparent"
-    );
+    expect(
+      normalizeMarkupClass(topbarClass!),
+      "nav topbar must stay transparent"
+    ).toContain("bg-transparent");
     expect(
       normalizeMarkupClass(insetClass!),
       "inset should inherit primitive bg-sidebar"
@@ -378,9 +388,10 @@ describe("dashboard page composition contract", () => {
       normalizeMarkupClass(insetClass!),
       "inset radius must come from primitive only"
     ).toContain("rounded-[var(--card-radius)]");
-    expect(normalizeMarkupClass(insetClass!), "no dashboard inset margin overrides").not.toContain(
-      "!mt-0"
-    );
+    expect(
+      normalizeMarkupClass(insetClass!),
+      "no dashboard inset margin overrides"
+    ).not.toContain("!mt-0");
   });
 });
 

@@ -3,10 +3,10 @@ import "server-only";
 import type Stripe from "stripe";
 import { stripe } from "./index";
 
-export type StripeWebhookPayload = {
-  type: string;
+export interface StripeWebhookPayload {
   data: { object: unknown };
-};
+  type: string;
+}
 
 /**
  * Stripe signature verification for inbound webhooks.

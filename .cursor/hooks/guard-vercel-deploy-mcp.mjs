@@ -17,11 +17,7 @@ if (input === null) {
 }
 
 const toolName =
-  input.tool_name ??
-  input.toolName ??
-  input.name ??
-  input.mcp_tool ??
-  "";
+  input.tool_name ?? input.toolName ?? input.name ?? input.mcp_tool ?? "";
 
 const serverName = input.server ?? input.mcp_server ?? "";
 

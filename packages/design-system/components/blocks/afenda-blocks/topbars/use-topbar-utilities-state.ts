@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
 import { TOPBAR_MAX_PINNED_UTILITY_SLOTS } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import {
   buildCatalogMaps,
@@ -8,7 +7,11 @@ import {
   buildPinnedOrder,
   resolveDefaultEnabledIds,
 } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-utilities-helpers";
-import type { TopbarUtilitiesRailProps, TopbarUtilityAction } from "./topbar-types";
+import { useCallback, useMemo, useState } from "react";
+import type {
+  TopbarUtilitiesRailProps,
+  TopbarUtilityAction,
+} from "./topbar-types";
 
 interface UseTopbarUtilitiesStateOptions {
   readonly catalog: TopbarUtilitiesRailProps["catalog"];
@@ -32,9 +35,10 @@ function createInitialTopbarUtilitiesState(
   defaultOrder?: readonly string[]
 ): TopbarUtilitiesInternalState {
   const { catalogIds } = buildCatalogMaps(catalog);
-  const enabledIds = resolveDefaultEnabledIds(catalog, defaultEnabledIds).filter(
-    (id) => catalogIds.has(id)
-  );
+  const enabledIds = resolveDefaultEnabledIds(
+    catalog,
+    defaultEnabledIds
+  ).filter((id) => catalogIds.has(id));
 
   return {
     enabledIds,
@@ -52,14 +56,16 @@ export function useTopbarUtilitiesState({
   onOrderChange,
   order: controlledOrder,
 }: UseTopbarUtilitiesStateOptions) {
-  const { catalogById } = useMemo(
-    () => buildCatalogMaps(catalog),
-    [catalog]
-  );
+  const { catalogById } = useMemo(() => buildCatalogMaps(catalog), [catalog]);
 
-  const [internalState, setInternalState] = useState<TopbarUtilitiesInternalState>(
-    () => createInitialTopbarUtilitiesState(catalog, defaultEnabledIds, defaultOrder)
-  );
+  const [internalState, setInternalState] =
+    useState<TopbarUtilitiesInternalState>(() =>
+      createInitialTopbarUtilitiesState(
+        catalog,
+        defaultEnabledIds,
+        defaultOrder
+      )
+    );
 
   const resolvedEnabledIds = controlledEnabledIds ?? internalState.enabledIds;
   const resolvedOrder = controlledOrder ?? internalState.order;
@@ -133,5 +139,6 @@ export function useTopbarUtilitiesState({
     pinnedActions,
     pinnedOrder,
     resolvedEnabledIds,
+    resolvedOrder,
   };
 }

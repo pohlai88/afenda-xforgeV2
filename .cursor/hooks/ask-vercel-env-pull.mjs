@@ -18,7 +18,7 @@ if (input === null) {
 
 const command = typeof input.command === "string" ? input.command : "";
 
-if (!command || !ENV_PULL.test(command)) {
+if (!(command && ENV_PULL.test(command))) {
   emit({ permission: "allow" });
   process.exit(0);
 }

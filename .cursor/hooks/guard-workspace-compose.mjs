@@ -59,7 +59,7 @@ if (toolName && !EDIT_TOOLS.has(toolName)) {
 
 const path = extractPath(input);
 
-if (!path || !DESIGN_SYSTEM_UI.test(path)) {
+if (!(path && DESIGN_SYSTEM_UI.test(path))) {
   emit({ permission: "allow" });
   process.exit(0);
 }

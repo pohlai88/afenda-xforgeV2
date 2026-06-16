@@ -17,22 +17,22 @@ export type AuthContext =
 
 export type AuthenticatedContext = Extract<AuthContext, { userId: string }>;
 
-export type ConfirmAuthLinkParams = {
-  tokenHash: string | null;
-  type: string | null;
+export interface ConfirmAuthLinkParams {
   code: string | null;
   next: string | null;
   origin: string;
-};
+  tokenHash: string | null;
+  type: string | null;
+}
 
 export type ConfirmAuthLinkResult =
   | { ok: true; redirectTo: string }
   | { ok: false; error: string };
 
-export type AuthSession = {
-  user: User;
+export interface AuthSession {
   orgId: string | null;
-};
+  user: User;
+}
 
 export type AuthActionResult<TData = void> =
   | { ok: true; data: TData }

@@ -15,12 +15,12 @@ export const metadata = {
   description: "Manage outbound CMS webhook endpoints and delivery history.",
 };
 
-type WebhooksPageProperties = {
+interface WebhooksPageProperties {
   searchParams: Promise<{
     status?: string;
     endpointId?: string;
   }>;
-};
+}
 
 const WebhooksPage = async ({ searchParams }: WebhooksPageProperties) => {
   const { userId, orgId } = await requireOrg();

@@ -12,14 +12,14 @@ import type { ContentBody } from "../types";
 import type { ParsedMdxDocument } from "./content-source";
 import { getContentSource } from "./resolve-source";
 
-type DocumentMeta<
+interface DocumentMeta<
   TFrontmatter extends { status: ContentStatus },
   TMeta extends { _slug: string },
-> = {
+> {
   content: string;
   frontmatter: TFrontmatter;
   meta: TMeta;
-};
+}
 
 const resolveLocale = (options?: ReaderOptions): string =>
   normalizeLocale(options?.locale ?? DEFAULT_LOCALE);
@@ -105,7 +105,7 @@ export const createCollectionReader = <
     }
 
     return [...documents].sort((left, right) =>
-      config.sortMeta!(left.meta, right.meta)
+      config.sortMeta?.(left.meta, right.meta)
     );
   };
 

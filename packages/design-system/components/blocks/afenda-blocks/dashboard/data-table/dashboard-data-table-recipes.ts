@@ -1,8 +1,7 @@
 const dashboardDataTableShellClass =
   "@container/main flex w-full flex-col justify-start gap-6";
 
-const dashboardDataTableToolbarClass =
-  "flex items-center justify-between";
+const dashboardDataTableToolbarClass = "flex items-center justify-between";
 
 const dashboardDataTableViewSelectClass = "flex w-fit @4xl/main:hidden";
 
@@ -24,8 +23,7 @@ const dashboardDataTableBodyClass = "**:data-[slot=table-cell]:first:w-8";
 
 const dashboardDataTableEmptyCellClass = "h-24 text-center";
 
-const dashboardDataTableFooterClass =
-  "flex items-center justify-between px-4";
+const dashboardDataTableFooterClass = "flex items-center justify-between px-4";
 
 const dashboardDataTableSelectionSummaryClass =
   "hidden flex-1 text-[12px] text-text-secondary lg:flex";

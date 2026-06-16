@@ -14,13 +14,13 @@ import {
   keys,
 } from "./keys";
 
-type JwksResponse = {
+interface JwksResponse {
   keys?: Array<{
     kid?: string;
     alg?: string;
     kty?: string;
   }>;
-};
+}
 
 const parseJwks = (payload: JwksResponse): JwtSigningKeyInfo[] =>
   (payload.keys ?? [])

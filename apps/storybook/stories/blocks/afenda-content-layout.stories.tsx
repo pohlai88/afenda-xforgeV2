@@ -1,13 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/react";
 import {
   AuthenticatedAppShellBlock,
   ContentLayoutBlock,
+  type ContentLayoutBlockProps,
   ContentLayoutBottomDrawer,
   ContentLayoutBreadcrumbsTopbar,
   ContentLayoutFooter,
   DEFAULT_CONTENT_LAYOUT_FOOTER_LINKS,
-  DEMO_CONTENT_LAYOUT_BREADCRUMBS,
   DEMO_CONTENT_LAYOUT_BOTTOM_DRAWER_LABEL,
+  DEMO_CONTENT_LAYOUT_BREADCRUMBS,
   DEMO_CONTENT_LAYOUT_DEFAULT_NAV_HREF,
   DEMO_ERP_SIDEBAR_LABEL_GROUPS,
   DEMO_ERP_SIDEBAR_NAV_GROUPS,
@@ -15,10 +15,10 @@ import {
   OperatorAppSidebar,
   SidebarFooterProfile,
   SidebarFooterTrailingControl,
-  stripSidebarNavItemSelection,
-  type ContentLayoutBlockProps,
   type SidebarLinkRenderProps,
+  stripSidebarNavItemSelection,
 } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 import { useCallback, useState } from "react";
 
 import { layoutStoryParameters } from "../../.storybook/essentials";
@@ -35,7 +35,9 @@ const demoInteractiveNavGroups = stripSidebarNavItemSelection(
 );
 
 function useDemoContentLayoutNav() {
-  const [activeHref, setActiveHref] = useState(DEMO_CONTENT_LAYOUT_DEFAULT_NAV_HREF);
+  const [activeHref, setActiveHref] = useState(
+    DEMO_CONTENT_LAYOUT_DEFAULT_NAV_HREF
+  );
 
   const onNavigate = useCallback((href: string) => {
     setActiveHref(href);
@@ -115,7 +117,9 @@ function DemoContentLayoutBlock({
       rightSidebar={<DemoContentLayoutAuditRail />}
       {...props}
     >
-      {children ?? <DemoContentLayoutScrollPanels sectionCount={sectionCount} />}
+      {children ?? (
+        <DemoContentLayoutScrollPanels sectionCount={sectionCount} />
+      )}
     </ContentLayoutBlock>
   );
 }

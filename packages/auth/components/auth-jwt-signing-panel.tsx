@@ -24,12 +24,20 @@ export const AuthJwtSigningPanel = ({
   jwtExpSeconds: number;
 }) => {
   const titleId = useId();
-  const signingLabel =
-    report.signingSystem === "asymmetric"
-      ? "Asymmetric signing keys (JWKS)"
-      : report.signingSystem === "legacy_hs256_only"
-        ? "Legacy JWT secret (HS256)"
-        : "Unknown — check JWKS endpoint";
+  let signingLabel = "Unknown — check JWKS endpoint";
+  if (report.signingSystem === "legacy_hs256_only") {
+    signingLabel = "Legacy JWT secret (HS256)";
+  }
+  if (report.signingSystem === "asymmetric") {
+    signingLabel = "Asymmetric signing keys (JWKS)";
+  }
+
+  let legacyAnonKeyLabel = "Disabled";
+  if (report.legacyAnonKeyEnabled === null) {
+    legacyAnonKeyLabel = "Unknown (needs SUPABASE_ACCESS_TOKEN)";
+  } else if (report.legacyAnonKeyEnabled) {
+    legacyAnonKeyLabel = "Still enabled in Supabase";
+  }
 
   const activeKeySummary =
     report.activeKeys.length > 0
@@ -71,13 +79,7 @@ export const AuthJwtSigningPanel = ({
         />
         <AuthConfigRow
           label="Legacy anon API key"
-          value={
-            report.legacyAnonKeyEnabled === null
-              ? "Unknown (needs SUPABASE_ACCESS_TOKEN)"
-              : report.legacyAnonKeyEnabled
-                ? "Still enabled in Supabase"
-                : "Disabled"
-          }
+          value={legacyAnonKeyLabel}
         />
         <AuthConfigRow
           label="JWKS discovery"

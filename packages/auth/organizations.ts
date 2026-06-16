@@ -3,7 +3,7 @@ import "server-only";
 import { createId } from "@paralleldrive/cuid2";
 import { database } from "@repo/database";
 import { organization, organizationMember } from "@repo/database/schema";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { canOwnOrg, getOrganizationRole } from "./cms";
 import { withActiveOrganizationId } from "./metadata";
 import { isOrganizationMember } from "./organization-context";
@@ -22,14 +22,14 @@ import {
 const INVITE_ORGANIZATION_ID_KEY = "inviteOrganizationId";
 const INVITE_ORGANIZATION_ROLE_KEY = "inviteOrganizationRole";
 
-export type OrganizationMemberRecord = {
+export interface OrganizationMemberRecord {
+  displayName: string | null;
+  email: string | null;
   id: string;
-  userId: string;
   organizationId: string;
   role: OrganizationRole;
-  email: string | null;
-  displayName: string | null;
-};
+  userId: string;
+}
 
 export type InviteMemberResult =
   | { kind: "added"; userId: string }
@@ -273,10 +273,7 @@ export const inviteOrganizationMember = async (
   const admin = createAdminClient();
   const siteUrl =
     process.env.NEXT_PUBLIC_APP_URL ??
-    process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(
-      /\.supabase\.co$/,
-      ""
-    ) ??
+    process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\.supabase\.co$/, "") ??
     "http://localhost:3000";
 
   const { error } = await admin.auth.admin.inviteUserByEmail(normalizedEmail, {

@@ -61,12 +61,12 @@ export const passwordRequirementsHint = (policy: PasswordPolicy): string => {
   return `${lengthHint}. Include ${charsetHint}.`;
 };
 
-type PasswordRequirementsProperties = {
+interface PasswordRequirementsProperties {
   describedById: string;
   password: string;
   policy: PasswordPolicy;
   showChecklist: boolean;
-};
+}
 
 export const PasswordRequirements = ({
   policy,
@@ -95,7 +95,9 @@ export const PasswordRequirements = ({
 
   return (
     <div className={cn("flex flex-col gap-1.5", recipe("captionText"))}>
-      <FieldHint id={describedById}>{passwordRequirementsHint(policy)}</FieldHint>
+      <FieldHint id={describedById}>
+        {passwordRequirementsHint(policy)}
+      </FieldHint>
       {showChecklist ? (
         <ul
           aria-label="Password requirements"

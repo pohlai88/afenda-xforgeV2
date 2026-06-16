@@ -1,11 +1,11 @@
 import type { InboundProvider } from "../registry/events";
 
-export type InboundEvent<TData = unknown> = {
-  provider: InboundProvider;
-  type: string;
+export interface InboundEvent<TData = unknown> {
   data: TData;
+  provider: InboundProvider;
   raw: unknown;
-};
+  type: string;
+}
 
 export type InboundHandler<TData = unknown> = (
   event: InboundEvent<TData>

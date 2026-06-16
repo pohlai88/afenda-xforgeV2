@@ -10,11 +10,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { getInitials } from "./user-initials";
-import { useWorkspaceSession } from "./workspace-session-context";
 import {
   workspaceNavGroups,
+  workspacePinnedNavGroups,
   workspaceQuickActions,
+  workspaceSystemCardSections,
 } from "./workspace-nav-routes";
+import { useWorkspaceSession } from "./workspace-session-context";
 
 function renderSidebarLink({
   "aria-current": ariaCurrent,
@@ -49,9 +51,11 @@ export const AppSidebarNav = () => {
 
   return (
     <OperatorAppSidebar
+      cardSections={workspaceSystemCardSections}
       footer={footer}
       groups={workspaceNavGroups}
       pathname={pathname}
+      pinnedGroups={workspacePinnedNavGroups}
       quickActions={workspaceQuickActions}
       renderLink={renderSidebarLink}
     />

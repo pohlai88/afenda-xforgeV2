@@ -45,7 +45,7 @@ export const EmailChangeSection = () => {
       setLoading(false);
     };
 
-    void loadUser();
+    loadUser().catch(() => undefined);
   }, [supabase.auth]);
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -109,7 +109,9 @@ export const EmailChangeSection = () => {
           onSubmit={handleSubmit}
         >
           <Field>
-            <FieldLabel htmlFor={`${titleId}-current`}>Current email</FieldLabel>
+            <FieldLabel htmlFor={`${titleId}-current`}>
+              Current email
+            </FieldLabel>
             <Input
               disabled
               id={`${titleId}-current`}

@@ -6,13 +6,13 @@ import type { ContentStatus } from "./schemas";
 import type { LegalPostMeta, PostMeta } from "./types";
 import { cmsReaders } from "./writer";
 
-export type CmsDocumentListItem = {
-  slug: string;
-  title: string;
-  status: ContentStatus;
-  description: string;
+export interface CmsDocumentListItem {
   date?: string;
-};
+  description: string;
+  slug: string;
+  status: ContentStatus;
+  title: string;
+}
 
 export const blogMetaToListItem = (
   document: PostMeta

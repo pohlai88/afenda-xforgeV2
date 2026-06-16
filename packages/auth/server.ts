@@ -61,10 +61,10 @@ export const createClient = async () => {
   });
 };
 
-type AdminClientOptions = {
+interface AdminClientOptions {
   /** End-user IP for Supabase rate limiting (requires sb_forwarded_for_enabled). */
   forwardedFor?: string | null;
-};
+}
 
 /** Secret-key Supabase client for server-side Auth admin calls. */
 export const createAdminClient = ({

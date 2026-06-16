@@ -18,9 +18,7 @@ export type SidebarItemActiveFn = (
   item: SidebarNavItem
 ) => boolean;
 
-export type SidebarLinkRenderer = (
-  props: SidebarLinkRenderProps
-) => ReactNode;
+export type SidebarLinkRenderer = (props: SidebarLinkRenderProps) => ReactNode;
 
 export interface SidebarNavItem {
   readonly badge?: string;
@@ -39,6 +37,33 @@ export interface SidebarNavGroup {
   readonly id: string;
   readonly items: readonly SidebarNavItem[];
   readonly label: string;
+}
+
+export type SidebarCardSectionItemActiveFn = (
+  pathname: string,
+  item: SidebarCardSectionItem
+) => boolean;
+
+export interface SidebarCardSectionItem {
+  readonly description?: string;
+  readonly href: string;
+  readonly id: string;
+  readonly label: string;
+  readonly match?: SidebarMatchStrategy;
+  readonly selected?: boolean;
+  readonly shortcut?: string;
+}
+
+export interface SidebarCardSection {
+  readonly description?: string;
+  readonly href: string;
+  readonly icon: SidebarIconComponent;
+  readonly id: string;
+  readonly items: readonly SidebarCardSectionItem[];
+  readonly label: string;
+  readonly match?: SidebarMatchStrategy;
+  readonly menuItems?: readonly SidebarCardSectionItem[];
+  readonly selected?: boolean;
 }
 
 export interface SidebarQuickAction {
@@ -81,14 +106,24 @@ export interface SidebarNavGroupPanelProps {
   readonly renderLink?: SidebarLinkRenderer;
 }
 
+export interface SidebarCardSectionPanelProps {
+  readonly isActive: boolean;
+  readonly isItemActive?: SidebarCardSectionItemActiveFn;
+  readonly pathname?: string;
+  readonly renderLink?: SidebarLinkRenderer;
+  readonly section: SidebarCardSection;
+}
+
 export interface SidebarLabelGroupPanelProps {
   readonly group: SidebarLabelGroup;
 }
 
 export interface SidebarNavPanelProps {
+  readonly cardSections?: readonly SidebarCardSection[];
   readonly className?: string;
   readonly emptyNavigationLabel?: string;
   readonly groups: readonly SidebarNavGroup[];
+  readonly isCardSectionItemActive?: SidebarCardSectionItemActiveFn;
   readonly isItemActive?: SidebarItemActiveFn;
   readonly labelGroups?: readonly SidebarLabelGroup[];
   readonly pathname?: string;
@@ -114,13 +149,16 @@ export interface SidebarFooterProfileProps {
 }
 
 export interface OperatorAppSidebarProps {
+  readonly cardSections?: readonly SidebarCardSection[];
   readonly className?: string;
   readonly emptyNavigationLabel?: string;
   readonly footer?: ReactNode;
   readonly groups: readonly SidebarNavGroup[];
+  readonly isCardSectionItemActive?: SidebarCardSectionItemActiveFn;
   readonly isItemActive?: SidebarItemActiveFn;
   readonly labelGroups?: readonly SidebarLabelGroup[];
   readonly pathname?: string;
+  readonly pinnedGroups?: readonly SidebarNavGroup[];
   readonly quickActions?: readonly SidebarQuickAction[];
   readonly renderLink?: SidebarLinkRenderer;
 }

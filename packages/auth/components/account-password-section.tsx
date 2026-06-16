@@ -46,10 +46,10 @@ export const AccountPasswordSection = () => {
   }, [supabase.auth]);
 
   useEffect(() => {
-    void loadIdentities();
+    loadIdentities().catch(() => undefined);
   }, [loadIdentities]);
 
-  if (!loading && !error && !hasEmailPasswordIdentity(identities)) {
+  if (!(loading || error || hasEmailPasswordIdentity(identities))) {
     return <SetAccountPassword onSuccess={loadIdentities} />;
   }
 
@@ -63,15 +63,15 @@ export const AccountPasswordSection = () => {
       {error ? (
         <AuthErrorAlert
           message={error}
-          onRetry={() => void loadIdentities()}
+          onRetry={() => {
+            loadIdentities().catch(() => undefined);
+          }}
         />
       ) : null}
-      {loading ? (
-        <AuthLoadingState label="Loading password settings…" />
-      ) : null}
-      {!loading && !error ? (
+      {loading ? <AuthLoadingState label="Loading password settings…" /> : null}
+      {loading || error ? null : (
         <UpdatePasswordForm onSuccess={loadIdentities} variant="account" />
-      ) : null}
+      )}
     </AuthSection>
   );
 };

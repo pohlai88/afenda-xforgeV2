@@ -3,17 +3,44 @@ import { describe, expect, it } from "vitest";
 import {
   flattenSidebarNavGroups,
   hasOperatorSidebarNavigation,
+  isSidebarCardSectionActive,
+  isSidebarCardSectionItemActive,
   isSidebarNavItemActive,
+  resolveSidebarActiveCardSectionIds,
   resolveSidebarActiveItemIds,
   stripSidebarNavItemSelection,
 } from "../components/blocks/afenda-blocks/sidebars/sidebar-nav-helpers";
-import type { SidebarNavItem } from "../components/blocks/afenda-blocks/sidebars/sidebar-types";
+import type {
+  SidebarCardSection,
+  SidebarNavItem,
+} from "../components/blocks/afenda-blocks/sidebars/sidebar-types";
 
 const baseItem: SidebarNavItem = {
   id: "cms",
   label: "Content",
   href: "/cms",
   icon: () => null,
+};
+
+const baseCardSection: SidebarCardSection = {
+  id: "system",
+  label: "System",
+  href: "/system/administration",
+  icon: () => null,
+  items: [
+    {
+      id: "notifications",
+      label: "Notifications",
+      href: "/system/notifications",
+    },
+  ],
+  menuItems: [
+    {
+      id: "account-security",
+      label: "Account security",
+      href: "/account/security",
+    },
+  ],
 };
 
 describe("isSidebarNavItemActive", () => {
@@ -109,6 +136,45 @@ describe("resolveSidebarActiveItemIds", () => {
   });
 });
 
+describe("sidebar card section active state", () => {
+  it("matches card items with the same path strategy as nav items", () => {
+    expect(
+      isSidebarCardSectionItemActive("/system/notifications", {
+        id: "notifications",
+        label: "Notifications",
+        href: "/system/notifications",
+      })
+    ).toBe(true);
+    expect(
+      isSidebarCardSectionItemActive("/system/notifications/history", {
+        id: "notifications",
+        label: "Notifications",
+        href: "/system/notifications",
+      })
+    ).toBe(true);
+    expect(
+      isSidebarCardSectionItemActive("/system/notifications/history", {
+        id: "notifications",
+        label: "Notifications",
+        href: "/system/notifications",
+        match: "exact",
+      })
+    ).toBe(false);
+  });
+
+  it("marks a card section active from its menu-only settings links", () => {
+    expect(
+      isSidebarCardSectionActive("/account/security", baseCardSection)
+    ).toBe(true);
+    expect([
+      ...resolveSidebarActiveCardSectionIds(
+        [baseCardSection],
+        "/account/security"
+      ),
+    ]).toEqual(["system"]);
+  });
+});
+
 describe("hasOperatorSidebarNavigation", () => {
   it("returns false when groups and labels are empty", () => {
     expect(hasOperatorSidebarNavigation([], [])).toBe(false);
@@ -122,13 +188,16 @@ describe("hasOperatorSidebarNavigation", () => {
       )
     ).toBe(true);
     expect(
-      hasOperatorSidebarNavigation([], [
-        {
-          id: "signals",
-          label: "Signals",
-          items: [{ id: "s1", label: "Queue", tone: "warning" }],
-        },
-      ])
+      hasOperatorSidebarNavigation(
+        [],
+        [
+          {
+            id: "signals",
+            label: "Signals",
+            items: [{ id: "s1", label: "Queue", tone: "warning" }],
+          },
+        ]
+      )
     ).toBe(true);
   });
 });
@@ -145,6 +214,6 @@ describe("stripSidebarNavItemSelection", () => {
 
     const stripped = stripSidebarNavItemSelection(groups);
     expect(stripped[0]?.items[0]?.selected).toBeUndefined();
-    expect(isSidebarNavItemActive("/cms", stripped[0]!.items[0]!)).toBe(true);
+    expect(isSidebarNavItemActive("/cms", stripped[0]?.items[0]!)).toBe(true);
   });
 });

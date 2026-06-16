@@ -10,9 +10,9 @@ import { AuthCaptcha, useCaptchaOptions } from "./auth-captcha";
 import { AuthErrorAlert } from "./auth-feedback";
 import { AuthPendingButton } from "./auth-pending-button";
 
-type AnonymousSignInButtonProperties = {
+interface AnonymousSignInButtonProperties {
   onError?: (message: string | null) => void;
-};
+}
 
 export const AnonymousSignInButton = ({
   onError,
@@ -71,7 +71,9 @@ export const AnonymousSignInButton = ({
       >
         Continue as guest
       </AuthPendingButton>
-      <p className={cn("text-center text-text-secondary", recipe("captionText"))}>
+      <p
+        className={cn("text-center text-text-secondary", recipe("captionText"))}
+      >
         Guest sessions are temporary. Link an email later from account settings.
       </p>
     </div>

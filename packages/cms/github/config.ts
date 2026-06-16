@@ -3,12 +3,12 @@ import "server-only";
 import { keys } from "../keys";
 import { normalizeLocale } from "../locale";
 
-export type GitHubConfig = {
-  token: string;
+export interface GitHubConfig {
+  branch: string;
   owner: string;
   repo: string;
-  branch: string;
-};
+  token: string;
+}
 
 export const collectionContentDirectory = (collection: string): string =>
   `packages/cms/content/${collection}`;

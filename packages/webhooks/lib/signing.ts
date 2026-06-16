@@ -1,11 +1,11 @@
 import { createHmac } from "node:crypto";
 import { parseSigningSecret } from "./secrets";
 
-export type StandardWebhookSignInput = {
+export interface StandardWebhookSignInput {
+  body: string;
   id: string;
   timestamp: string;
-  body: string;
-};
+}
 
 export const buildSignedContent = (
   id: string,

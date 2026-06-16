@@ -19,16 +19,16 @@ import { AuthErrorAlert } from "./auth-feedback";
 import { AuthPendingButton } from "./auth-pending-button";
 import { authLinkClass } from "./auth-section";
 
-type Organization = {
+interface Organization {
   id: string;
   name: string;
-};
+}
 
-type OrganizationSwitcherProperties = {
-  organizations: Organization[];
+interface OrganizationSwitcherProperties {
   activeOrganizationId: string | null;
   onSwitch: (organizationId: string) => Promise<void>;
-};
+  organizations: Organization[];
+}
 
 export const OrganizationSwitcher = ({
   organizations,
@@ -69,10 +69,10 @@ export const OrganizationSwitcher = ({
   );
 };
 
-type UserButtonProperties = {
+interface UserButtonProperties {
   email?: string | null;
   name?: string | null;
-};
+}
 
 export const UserButton = ({ email, name }: UserButtonProperties) => {
   const router = useRouter();
@@ -131,7 +131,12 @@ export const useAuthUser = () => {
   const supabase = createClient();
 
   useEffect(() => {
-    const applyUser = (user: { email?: string | null; user_metadata?: Record<string, unknown> } | null | undefined) => {
+    const applyUser = (
+      user:
+        | { email?: string | null; user_metadata?: Record<string, unknown> }
+        | null
+        | undefined
+    ) => {
       setEmail(user?.email ?? null);
       setName(getUserDisplayName(user?.user_metadata ?? undefined));
     };
@@ -147,7 +152,7 @@ export const useAuthUser = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [supabase.auth.getSession, supabase.auth.onAuthStateChange]);
 
   return { email, name };
 };

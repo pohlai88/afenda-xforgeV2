@@ -150,8 +150,7 @@ const afendaBlockRecipe = {
     owner: "shell",
     kind: "composition",
     scope: "block-family",
-    description:
-      "Workspace chrome strip above the operational site container.",
+    description: "Workspace chrome strip above the operational site container.",
     className:
       "border-border-default border-b bg-surface-raised text-sidebar-foreground",
   },
@@ -161,16 +160,14 @@ const afendaBlockRecipe = {
     scope: "block-family",
     description:
       "Secondary navigation or audit rail inside an app-shell site container.",
-    className:
-      "min-h-0 overflow-auto border-border-subtle bg-surface-muted/40",
+    className: "min-h-0 overflow-auto border-border-subtle bg-surface-muted/40",
   },
   blockStage: {
     owner: "shell",
     kind: "layout",
     scope: "block",
     description: "Canvas behind a floating or docked site container.",
-    className:
-      "relative min-h-0 min-w-0 overflow-hidden bg-surface-muted/20",
+    className: "relative min-h-0 min-w-0 overflow-hidden bg-surface-muted/20",
   },
 } as const satisfies AfendaBlockRecipeContract;
 

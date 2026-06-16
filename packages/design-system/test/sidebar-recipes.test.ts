@@ -1,14 +1,13 @@
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-
-import { blockRecipe } from "../components/blocks/block-recipes";
 import {
   operatorAppSidebarShellClass,
   sidebarNavPanelNavClass,
   sidebarProfileInitials,
 } from "../components/blocks/afenda-blocks/sidebars/sidebar-recipes";
+import { blockRecipe } from "../components/blocks/block-recipes";
 
 const sidebarsRoot = join(
   fileURLToPath(new URL(".", import.meta.url)),

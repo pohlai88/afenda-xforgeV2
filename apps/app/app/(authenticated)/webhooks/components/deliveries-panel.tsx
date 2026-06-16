@@ -10,14 +10,14 @@ import { useEffect, useState, useTransition } from "react";
 import { getWebhookDeliveries } from "@/app/actions/webhooks/endpoints";
 import { DeliveriesTable } from "./deliveries-table";
 
-type DeliveriesPanelProperties = {
+interface DeliveriesPanelProperties {
   deliveries: WebhookDeliveryRecord[];
+  endpointFilter: string;
   endpoints: WebhookEndpointPublic[];
   initialNextCursor: string | null;
   isOwner: boolean;
   statusFilter: WebhookDeliveryStatus | "all";
-  endpointFilter: string;
-};
+}
 
 export const DeliveriesPanel = ({
   deliveries,

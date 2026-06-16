@@ -19,23 +19,23 @@ import {
   type WebhookFailureClass,
 } from "./retry";
 
-export type DeliveryProcessResult = {
-  processed: number;
+export interface DeliveryProcessResult {
   delivered: number;
-  retrying: number;
   failed: number;
+  processed: number;
+  retrying: number;
   skipped: number;
-};
+}
 
-export type ProcessWebhookDeliveriesOptions = {
-  limit?: number;
+export interface ProcessWebhookDeliveriesOptions {
   deliveryIds?: string[];
-};
+  limit?: number;
+}
 
-type DeliveryRow = {
+interface DeliveryRow {
   delivery: typeof webhookDelivery.$inferSelect;
   endpoint: typeof webhookEndpoint.$inferSelect;
-};
+}
 
 const deliverableStatusCondition = (now: Date) =>
   and(

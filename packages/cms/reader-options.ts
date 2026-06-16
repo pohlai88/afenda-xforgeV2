@@ -3,10 +3,10 @@ import type { ReaderOptions } from "./collections/types";
 import { normalizeLocale } from "./locale";
 import { verifyPreviewToken } from "./preview-token";
 
-type PreviewSearchParams = {
+interface PreviewSearchParams {
   preview?: string;
   token?: string;
-};
+}
 
 export const getPreviewReaderOptions = (
   collection: CollectionName,

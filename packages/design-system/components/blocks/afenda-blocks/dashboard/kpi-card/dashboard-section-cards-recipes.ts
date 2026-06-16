@@ -19,11 +19,9 @@ const sectionCardsTitleClass =
 
 const sectionCardsBadgeClass = "px-1.5 text-text-secondary";
 
-const sectionCardsFooterClass =
-  "flex-col items-start gap-1.5 text-[12px]";
+const sectionCardsFooterClass = "flex-col items-start gap-1.5 text-[12px]";
 
-const sectionCardsFooterTitleClass =
-  "line-clamp-1 flex gap-2 font-medium";
+const sectionCardsFooterTitleClass = "line-clamp-1 flex gap-2 font-medium";
 
 const sectionCardsFooterDescriptionClass = "text-text-secondary";
 

@@ -10,36 +10,36 @@ export type FrontmatterFieldType =
   | "status"
   | "image";
 
-export type FrontmatterField = {
+export interface FrontmatterField {
   readonly key: string;
   readonly label: string;
   readonly type: FrontmatterFieldType;
-};
+}
 
-export type ReaderOptions = {
+export interface ReaderOptions {
   includeDrafts?: boolean;
   locale?: CmsLocale;
-};
+}
 
-export type CollectionConfig<
+export interface CollectionConfig<
   TFrontmatter extends { status: ContentStatus },
   TMeta extends { _slug: string },
-  TDoc extends TMeta & { body: ContentBody },
-> = {
+  _TDoc extends TMeta & { body: ContentBody },
+> {
+  readonly createDefaultFrontmatter: () => TFrontmatter;
+  readonly frontmatterFields: readonly FrontmatterField[];
+  readonly isPublished: (frontmatter: TFrontmatter) => boolean;
   readonly name: string;
   readonly schema: z.ZodType<TFrontmatter>;
-  readonly frontmatterFields: readonly FrontmatterField[];
-  readonly createDefaultFrontmatter: () => TFrontmatter;
-  readonly toMeta: (slug: string, frontmatter: TFrontmatter) => TMeta;
   readonly sortMeta?: (left: TMeta, right: TMeta) => number;
-  readonly isPublished: (frontmatter: TFrontmatter) => boolean;
-};
+  readonly toMeta: (slug: string, frontmatter: TFrontmatter) => TMeta;
+}
 
-export type CollectionReader<
+export interface CollectionReader<
   TMeta extends { _slug: string },
   TDoc extends TMeta & { body: ContentBody },
-> = {
-  getPostsMeta: (options?: ReaderOptions) => Promise<TMeta[]>;
-  getPosts: (options?: ReaderOptions) => Promise<TDoc[]>;
+> {
   getPost: (slug: string, options?: ReaderOptions) => Promise<TDoc | null>;
-};
+  getPosts: (options?: ReaderOptions) => Promise<TDoc[]>;
+  getPostsMeta: (options?: ReaderOptions) => Promise<TMeta[]>;
+}

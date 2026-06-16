@@ -67,7 +67,7 @@ export const getWebhookEndpoints = async (): Promise<
 export const getWebhookDeliveries = async (
   filters?: z.infer<typeof deliveryFiltersSchema>
 ): Promise<AuthActionResult<ListWebhookDeliveriesResult>> =>
-  withOrg(async ({ orgId }) => {
+  withOrg(({ orgId }) => {
     const parsed = deliveryFiltersSchema.parse(filters ?? {});
 
     return listWebhookDeliveries(orgId, parsed);
@@ -76,7 +76,7 @@ export const getWebhookDeliveries = async (
 export const createEndpoint = async (
   input: z.infer<typeof createEndpointSchema>
 ): Promise<AuthActionResult<WebhookEndpointWithSecret>> =>
-  withOwner(async ({ orgId }) => {
+  withOwner(({ orgId }) => {
     const parsed = createEndpointSchema.parse(input);
 
     return createWebhookEndpoint({
@@ -90,7 +90,7 @@ export const createEndpoint = async (
 export const updateEndpoint = async (
   input: z.infer<typeof updateEndpointSchema>
 ): Promise<AuthActionResult<WebhookEndpointPublic | null>> =>
-  withOwner(async ({ orgId }) => {
+  withOwner(({ orgId }) => {
     const parsed = updateEndpointSchema.parse(input);
 
     return updateWebhookEndpoint({
@@ -106,14 +106,12 @@ export const updateEndpoint = async (
 export const removeEndpoint = async (
   endpointId: string
 ): Promise<AuthActionResult<boolean>> =>
-  withOwner(async ({ orgId }) => deleteWebhookEndpoint(orgId, endpointId));
+  withOwner(({ orgId }) => deleteWebhookEndpoint(orgId, endpointId));
 
 export const rotateEndpointSecret = async (
   endpointId: string
 ): Promise<AuthActionResult<{ secret: string } | null>> =>
-  withOwner(async ({ orgId }) =>
-    rotateWebhookEndpointSecret(orgId, endpointId)
-  );
+  withOwner(({ orgId }) => rotateWebhookEndpointSecret(orgId, endpointId));
 
 export const replayDelivery = async (
   deliveryId: string
@@ -148,4 +146,4 @@ export const testEndpoint = async (
 export const resetEndpointHealth = async (
   endpointId: string
 ): Promise<AuthActionResult<boolean>> =>
-  withOwner(async ({ orgId }) => resetWebhookEndpointHealth(orgId, endpointId));
+  withOwner(({ orgId }) => resetWebhookEndpointHealth(orgId, endpointId));

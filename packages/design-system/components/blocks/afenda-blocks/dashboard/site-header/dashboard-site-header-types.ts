@@ -1,5 +1,5 @@
-import type { CSSProperties, ReactNode } from "react";
 import type { SidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-types";
+import type { CSSProperties, ReactNode } from "react";
 
 export interface SiteHeaderProps {
   readonly actions?: ReactNode;

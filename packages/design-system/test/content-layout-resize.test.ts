@@ -31,7 +31,16 @@ describe("content layout resize helpers", () => {
 
   it("expands height from the bottom edge", () => {
     expect(
-      applyContentLayoutResize("resize-bottom", start, 0, 24, 320, 240, 800, 600)
+      applyContentLayoutResize(
+        "resize-bottom",
+        start,
+        0,
+        24,
+        320,
+        240,
+        800,
+        600
+      )
     ).toEqual({
       ...start,
       height: 424,

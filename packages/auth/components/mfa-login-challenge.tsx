@@ -29,9 +29,9 @@ import { AuthErrorAlert } from "./auth-feedback";
 import { AuthPendingButton } from "./auth-pending-button";
 import { AuthSection, AuthSectionHeader } from "./auth-section";
 
-type MfaLoginChallengeProperties = {
+interface MfaLoginChallengeProperties {
   nextHref?: string;
-};
+}
 
 export const MfaLoginChallenge = ({
   nextHref = "/",
@@ -66,7 +66,7 @@ export const MfaLoginChallenge = ({
     setFactors(verified);
     setFactorId((current) => current ?? verified[0]?.id ?? null);
     setLoading(false);
-  }, [supabase.auth.mfa]);
+  }, [supabase.auth.mfa, supabase]);
 
   useEffect(() => {
     void loadFactors();
@@ -134,10 +134,7 @@ export const MfaLoginChallenge = ({
       ) : factors.length > 1 ? (
         <Field>
           <FieldLabel htmlFor={`${titleId}-factor`}>Authenticator</FieldLabel>
-          <Select
-            onValueChange={setFactorId}
-            value={factorId ?? undefined}
-          >
+          <Select onValueChange={setFactorId} value={factorId ?? undefined}>
             <SelectTrigger id={`${titleId}-factor`}>
               <SelectValue placeholder="Select authenticator" />
             </SelectTrigger>
@@ -183,7 +180,8 @@ export const MfaLoginChallenge = ({
             <FieldHint id={`${otpFieldId}-hint`}>
               Open your authenticator app and enter the current code.
             </FieldHint>
-            {verifyCode.length > 0 && verifyCode.length < settings.otp.length ? (
+            {verifyCode.length > 0 &&
+            verifyCode.length < settings.otp.length ? (
               <FieldError>Enter all {settings.otp.length} digits.</FieldError>
             ) : null}
           </Field>

@@ -15,20 +15,25 @@ const ENV_LOAD_ORDER = [
   path.join(appDir, ".env.local"),
 ];
 
+const ENV_LINE_PATTERN =
+  /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=(.*)$/;
+const ENV_LINE_SPLIT_PATTERN = /\r?\n/;
+const ENV_VALUE_QUOTES_PATTERN = /^["']|["']$/g;
+
 export const loadEnvFile = (envPath) => {
   if (!fs.existsSync(envPath)) {
     return false;
   }
 
-  for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
-    const match = line.match(
-      /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=(.*)$/
-    );
+  for (const line of fs
+    .readFileSync(envPath, "utf8")
+    .split(ENV_LINE_SPLIT_PATTERN)) {
+    const match = line.match(ENV_LINE_PATTERN);
     if (!match || process.env[match[1]]) {
       continue;
     }
 
-    process.env[match[1]] = match[2].trim().replace(/^["']|["']$/g, "");
+    process.env[match[1]] = match[2].trim().replace(ENV_VALUE_QUOTES_PATTERN, "");
   }
 
   return true;

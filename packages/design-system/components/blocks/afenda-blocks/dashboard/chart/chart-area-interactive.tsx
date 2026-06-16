@@ -29,6 +29,10 @@ import { useIsMobile } from "@repo/design-system/hooks/use-mobile";
 import { cn } from "@repo/design-system/lib/utils";
 import { memo, useId, useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import type {
+  ChartAreaDataPoint,
+  ChartAreaInteractiveProps,
+} from "./chart-area-types";
 import {
   CHART_AREA_DEFAULT_DESCRIPTION,
   CHART_AREA_DEFAULT_DESCRIPTION_MOBILE,
@@ -40,11 +44,6 @@ import {
 } from "./dashboard-chart-constants";
 import { DEMO_DASHBOARD_CHART_AREA_DATA } from "./dashboard-chart-data";
 import {
-  filterChartAreaDataByTimeRange,
-  formatChartAreaAxisDate,
-  formatChartAreaTooltipLabel,
-} from "./dashboard-chart-utils";
-import {
   chartAreaInteractiveCardClass,
   chartAreaInteractiveContainerClass,
   chartAreaInteractiveContentClass,
@@ -53,7 +52,11 @@ import {
   chartAreaInteractiveSelectTriggerClass,
   chartAreaInteractiveToggleGroupClass,
 } from "./dashboard-chart-recipes";
-import type { ChartAreaDataPoint, ChartAreaInteractiveProps } from "./chart-area-types";
+import {
+  filterChartAreaDataByTimeRange,
+  formatChartAreaAxisDate,
+  formatChartAreaTooltipLabel,
+} from "./dashboard-chart-utils";
 
 const DEFAULT_CHART_AREA_CONFIG = {
   visitors: {

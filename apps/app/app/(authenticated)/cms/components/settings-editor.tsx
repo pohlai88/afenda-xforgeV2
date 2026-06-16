@@ -11,9 +11,9 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { updateSettings } from "@/app/actions/cms/settings";
 
-type SettingsEditorProperties = {
+interface SettingsEditorProperties {
   initialSettings: SiteSettings;
-};
+}
 
 export const SettingsEditor = ({
   initialSettings,

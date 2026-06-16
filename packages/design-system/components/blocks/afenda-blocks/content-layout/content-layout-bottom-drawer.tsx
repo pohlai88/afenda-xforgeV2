@@ -1,9 +1,6 @@
 "use client";
 
 import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { cn } from "@repo/design-system/lib/utils";
-import { ChevronDownIcon } from "lucide-react";
-import { useMemo } from "react";
 import {
   CONTENT_LAYOUT_BOTTOM_DRAWER_COLLAPSE_ARIA_LABEL,
   CONTENT_LAYOUT_BOTTOM_DRAWER_EXPAND_ARIA_LABEL,
@@ -12,6 +9,9 @@ import {
   DEFAULT_CONTENT_LAYOUT_BOTTOM_DRAWER_MIN,
 } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
 import { contentLayoutDrawerClass } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import { ChevronDownIcon } from "lucide-react";
+import { useMemo } from "react";
 import type {
   ContentLayoutBottomDrawerPanelProps,
   ContentLayoutBottomDrawerProps,

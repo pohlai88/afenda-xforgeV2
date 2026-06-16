@@ -15,13 +15,13 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@repo/design-system/components/afenda-ui/sidebar";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
 import {
   sidebarGroupLabelClass,
   sidebarIconRailHiddenClass,
   sidebarIconRailIconClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 import { cn } from "@repo/design-system/lib/utils";
 import { ChevronRightIcon } from "lucide-react";
 import { memo } from "react";
@@ -62,7 +62,10 @@ const NavStartedCollapsibleRow = memo(function NavStartedCollapsibleRow({
             children: (
               <>
                 {Icon ? (
-                  <Icon aria-hidden="true" className={sidebarIconRailIconClass} />
+                  <Icon
+                    aria-hidden="true"
+                    className={sidebarIconRailIconClass}
+                  />
                 ) : null}
                 <span
                   className={cn(

@@ -65,8 +65,7 @@ for (const gate of GATES) {
     [result.stdout ?? "", result.stderr ?? ""]
       .filter(Boolean)
       .join("\n")
-      .trim() ||
-      `${gate.label} exited with code ${result.status ?? "unknown"}`
+      .trim() || `${gate.label} exited with code ${result.status ?? "unknown"}`
   );
 
   if (result.status === 0 && !result.error) {

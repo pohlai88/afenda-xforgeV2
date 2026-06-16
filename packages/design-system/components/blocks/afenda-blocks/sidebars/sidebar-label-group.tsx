@@ -1,14 +1,17 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
-import { memo } from "react";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 import {
   sidebarGroupLabelClass,
   sidebarIconRailHiddenClass,
   sidebarLabelRowClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import type { SidebarLabelGroupPanelProps, SidebarLabelTone } from "./sidebar-types";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import { memo } from "react";
+import type {
+  SidebarLabelGroupPanelProps,
+  SidebarLabelTone,
+} from "./sidebar-types";
 
 const labelToneClassName: Record<SidebarLabelTone, string> = {
   critical: "bg-destructive",
@@ -18,7 +21,9 @@ const labelToneClassName: Record<SidebarLabelTone, string> = {
   warning: "bg-warning",
 };
 
-function SidebarLabelGroupPanelComponent({ group }: SidebarLabelGroupPanelProps) {
+function SidebarLabelGroupPanelComponent({
+  group,
+}: SidebarLabelGroupPanelProps) {
   return (
     <div
       className={cn("grid min-w-0 gap-1", sidebarIconRailHiddenClass)}

@@ -169,9 +169,7 @@ export const NavMain = memo(function NavMain({
               ) : null}
               {inboxConfig ? (
                 <Button
-                  aria-label={
-                    inboxConfig.label ?? NAV_MAIN_DEFAULT_INBOX_LABEL
-                  }
+                  aria-label={inboxConfig.label ?? NAV_MAIN_DEFAULT_INBOX_LABEL}
                   asChild={Boolean(inboxConfig.href)}
                   className={navMainInboxButtonClass}
                   onClick={inboxConfig.href ? undefined : inboxConfig.onSelect}

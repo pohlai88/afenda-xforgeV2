@@ -1,5 +1,8 @@
-import type { TopbarUtilitiesMarketItem, TopbarUtilityAction } from "./topbar-types";
 import { TOPBAR_MAX_PINNED_UTILITY_SLOTS } from "./topbar-constants";
+import type {
+  TopbarUtilitiesMarketItem,
+  TopbarUtilityAction,
+} from "./topbar-types";
 
 export function resolveDefaultEnabledIds(
   catalog: readonly TopbarUtilitiesMarketItem[],

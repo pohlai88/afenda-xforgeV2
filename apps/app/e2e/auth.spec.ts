@@ -9,12 +9,20 @@ const e2ePassword =
   process.env.E2E_ORG_ADMIN_PASSWORD ??
   "123qweasdzxc!@#";
 
+const INVALID_AUTH_LINK_COPY_PATTERN = /invalid or has expired/i;
+const PASSWORD_POLICY_COPY_PATTERN = /At least \d+ characters|uppercase|symbol/i;
+const ROOT_URL_PATTERN = /\/$/;
+const SIGN_IN_ERROR_URL_PATTERN = /\/sign-in\?error=/;
+const SIGN_IN_PATH_PATTERN = /\/sign-in/;
+const SIGN_IN_URL_PATTERN = /\/sign-in$/;
+const SIGN_UP_PATH_PATTERN = /\/sign-up/;
+
 test.describe("Supabase auth flows", () => {
   test("redirects unauthenticated users from / to sign-in", async ({
     page,
   }) => {
     await page.goto("/");
-    await expect(page).toHaveURL(/\/sign-in$/);
+    await expect(page).toHaveURL(SIGN_IN_URL_PATTERN);
     await expect(
       page.getByRole("heading", { name: "Welcome back" })
     ).toBeVisible();
@@ -29,7 +37,7 @@ test.describe("Supabase auth flows", () => {
     await expect(
       page.getByText("Email or password is incorrect.")
     ).toBeVisible();
-    await expect(page).toHaveURL(/\/sign-in/);
+    await expect(page).toHaveURL(SIGN_IN_PATH_PATTERN);
   });
 
   test("signs in with valid credentials and loads workspace", async ({
@@ -40,7 +48,7 @@ test.describe("Supabase auth flows", () => {
     await page.getByLabel("Password").fill(e2ePassword);
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(ROOT_URL_PATTERN);
     await expect(
       page.getByRole("heading", { name: "Governed tenant dashboard" })
     ).toBeVisible();
@@ -51,17 +59,17 @@ test.describe("Supabase auth flows", () => {
     await page.getByLabel("Email").fill(e2eEmail);
     await page.getByLabel("Password").fill(e2ePassword);
     await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(ROOT_URL_PATTERN);
 
     await page.getByRole("button", { name: "Toggle Sidebar" }).click();
     await page
       .getByRole("button", { name: "Sign out" })
       .evaluate((button) => (button as HTMLButtonElement).click());
 
-    await expect(page).toHaveURL(/\/sign-in$/);
+    await expect(page).toHaveURL(SIGN_IN_URL_PATTERN);
 
     await page.goto("/");
-    await expect(page).toHaveURL(/\/sign-in$/);
+    await expect(page).toHaveURL(SIGN_IN_URL_PATTERN);
   });
 
   test("renders forgot-password and update-password pages", async ({
@@ -100,8 +108,8 @@ test.describe("Supabase auth flows", () => {
       "/auth/confirm?token_hash=invalid&type=recovery&next=/update-password"
     );
 
-    await expect(page).toHaveURL(/\/sign-in\?error=/);
-    await expect(page.getByText(/invalid or has expired/i)).toBeVisible();
+    await expect(page).toHaveURL(SIGN_IN_ERROR_URL_PATTERN);
+    await expect(page.getByText(INVALID_AUTH_LINK_COPY_PATTERN)).toBeVisible();
   });
 
   test("renders sign-up-success page", async ({ page }) => {
@@ -121,9 +129,9 @@ test.describe("Supabase auth flows", () => {
     await page.locator("#sign-up-password").fill("validpass123");
     await page.getByRole("button", { name: "Create account" }).click();
 
-    await expect(page).toHaveURL(/\/sign-up/);
+    await expect(page).toHaveURL(SIGN_UP_PATH_PATTERN);
     await expect(
-      page.getByText(/At least \d+ characters|uppercase|symbol/i)
+      page.getByText(PASSWORD_POLICY_COPY_PATTERN)
     ).toBeVisible();
   });
 
@@ -134,7 +142,7 @@ test.describe("Supabase auth flows", () => {
     await page.getByLabel("Email").fill(e2eEmail);
     await page.getByLabel("Password").fill(e2ePassword);
     await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page).toHaveURL(/\/$/);
+    await expect(page).toHaveURL(ROOT_URL_PATTERN);
 
     await page.goto("/search?q=Building");
     await expect(

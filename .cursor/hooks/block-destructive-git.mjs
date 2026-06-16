@@ -5,8 +5,7 @@
  */
 import { readFileSync } from "node:fs";
 
-const DESTRUCTIVE_GIT =
-  /\bgit\b[\s\S]*\b(restore|checkout\s+--|clean)\b/i;
+const DESTRUCTIVE_GIT = /\bgit\b[\s\S]*\b(restore|checkout\s+--|clean)\b/i;
 
 function readStdin() {
   try {
@@ -32,7 +31,7 @@ try {
 
 const command = typeof input.command === "string" ? input.command : "";
 
-if (!command || !DESTRUCTIVE_GIT.test(command)) {
+if (!(command && DESTRUCTIVE_GIT.test(command))) {
   emit({ permission: "allow" });
   process.exit(0);
 }

@@ -8,11 +8,11 @@ import type { AuthActionResult } from "./types";
 
 export type AuthFieldErrors = Partial<Record<string, string>>;
 
-export type AuthFormFailure = {
-  ok: false;
-  formError?: string;
+export interface AuthFormFailure {
   fieldErrors: AuthFieldErrors;
-};
+  formError?: string;
+  ok: false;
+}
 
 export type AuthFormResult<TInput> =
   | { ok: true; data: TInput }

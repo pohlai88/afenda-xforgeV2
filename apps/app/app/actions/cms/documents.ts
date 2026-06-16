@@ -55,13 +55,13 @@ const saveDocumentSchema = z.object({
   body: z.string(),
 });
 
-type CmsDocumentDetail = {
+interface CmsDocumentDetail {
+  body: string;
   collection: CmsCollectionName;
+  frontmatter: Record<string, unknown>;
   locale: CmsLocale;
   slug: string;
-  frontmatter: Record<string, unknown>;
-  body: string;
-};
+}
 
 const isPublishedStatus = (frontmatter: Record<string, unknown>): boolean =>
   frontmatter.status === "published";
@@ -163,7 +163,7 @@ export const listDocuments = async (
   collection: string,
   locale: string = DEFAULT_LOCALE
 ): Promise<AuthActionResult<CmsDocumentListItem[]>> =>
-  withEditor(async () => {
+  withEditor(() => {
     if (!isCmsCollection(collection)) {
       throw new Error("Unknown collection");
     }
@@ -308,7 +308,7 @@ export const createPreviewLink = async (
   locale: string,
   slug: string
 ): Promise<AuthActionResult<{ token: string | null; url: string | null }>> =>
-  withEditor(async () => {
+  withEditor(() => {
     if (!isCmsCollection(collection)) {
       throw new Error("Unknown collection");
     }
@@ -336,7 +336,7 @@ export const searchDocuments = async (
   locale: string,
   query: string
 ): Promise<AuthActionResult<CmsSearchHit[]>> =>
-  withEditor(async () => {
+  withEditor(() => {
     if (!isCmsCollection(collection)) {
       throw new Error("Unknown collection");
     }

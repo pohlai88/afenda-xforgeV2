@@ -1,16 +1,17 @@
 "use client";
 
+import { useId } from "react";
 import { formatJwtLifetime } from "../auth-ui-settings";
 import { useAuthUiConfig } from "../context/auth-ui-config";
-import { passwordRequirementsSummary } from "./password-requirements";
 import {
   AuthConfigList,
   AuthConfigRow,
   AuthSection,
   AuthSectionHeader,
 } from "./auth-section";
-import { useId } from "react";
+import { passwordRequirementsSummary } from "./password-requirements";
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Declarative matrix of independent Supabase auth settings.
 export const AuthConfigPanel = () => {
   const { settings, passwordPolicy } = useAuthUiConfig();
   const titleId = useId();
@@ -23,11 +24,21 @@ export const AuthConfigPanel = () => {
     .filter(Boolean)
     .join(", ");
 
-  const mfaStatus = settings.mfa.totpEnrollEnabled
-    ? "TOTP enrollment enabled"
-    : settings.mfa.totpVerifyEnabled
-      ? "TOTP verify only (enrollment disabled in Supabase)"
-      : "Off";
+  let mfaStatus = "Off";
+  if (settings.mfa.totpVerifyEnabled) {
+    mfaStatus = "TOTP verify only (enrollment disabled in Supabase)";
+  }
+  if (settings.mfa.totpEnrollEnabled) {
+    mfaStatus = "TOTP enrollment enabled";
+  }
+
+  let phoneMfaStatus = "Off — UI ready when phone MFA is enabled";
+  if (settings.mfa.phoneVerifyEnabled) {
+    phoneMfaStatus = "Phone verify only";
+  }
+  if (settings.mfa.phoneEnrollEnabled) {
+    phoneMfaStatus = "Phone enrollment enabled";
+  }
 
   return (
     <AuthSection aria-labelledby={titleId}>
@@ -144,16 +155,7 @@ export const AuthConfigPanel = () => {
           }
         />
         <AuthConfigRow label="Multi-factor auth" value={mfaStatus} />
-        <AuthConfigRow
-          label="Phone MFA"
-          value={
-            settings.mfa.phoneEnrollEnabled
-              ? "Phone enrollment enabled"
-              : settings.mfa.phoneVerifyEnabled
-                ? "Phone verify only"
-                : "Off — UI ready when phone MFA is enabled"
-          }
-        />
+        <AuthConfigRow label="Phone MFA" value={phoneMfaStatus} />
         <AuthConfigRow
           label="Passkey origins"
           value={

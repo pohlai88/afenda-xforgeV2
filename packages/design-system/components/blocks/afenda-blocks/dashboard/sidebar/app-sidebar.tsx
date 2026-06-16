@@ -15,7 +15,7 @@ import { sidebarIconRailHiddenClass } from "@repo/design-system/components/block
 import type { SidebarNavGroup } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-types";
 import { cn } from "@repo/design-system/lib/utils";
 import { GalleryVerticalEndIcon } from "lucide-react";
-import { memo, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { type ComponentPropsWithoutRef, memo, type ReactNode } from "react";
 import { NavDocuments } from "../nav/nav-documents";
 import { NavMain } from "../nav/nav-main";
 import { NavSecondary } from "../nav/nav-secondary";
@@ -190,7 +190,11 @@ export const AppSidebar = memo(function AppSidebar({
   const showUser = user !== false;
 
   return (
-    <Sidebar collapsible={collapsible} data-slot="app-sidebar" {...sidebarProps}>
+    <Sidebar
+      collapsible={collapsible}
+      data-slot="app-sidebar"
+      {...sidebarProps}
+    >
       {header ??
         (showBrand && brand ? (
           <DashboardSidebarBrandBlock brand={brand} renderLink={linkRenderer} />

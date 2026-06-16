@@ -19,9 +19,9 @@ import { AuthDivider } from "./auth-divider";
 import { AuthErrorAlert } from "./auth-feedback";
 import { AuthPendingButton } from "./auth-pending-button";
 
-type SsoSignInPanelProperties = {
+interface SsoSignInPanelProperties {
   onError?: (message: string | null) => void;
-};
+}
 
 export const SsoSignInPanel = ({ onError }: SsoSignInPanelProperties) => {
   const { settings } = useAuthUiConfig();
@@ -31,8 +31,7 @@ export const SsoSignInPanel = ({ onError }: SsoSignInPanelProperties) => {
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const hintDomains = useMemo(() => getSsoHintDomains(), []);
-  const placeholder =
-    hintDomains[0] ?? "company.com";
+  const placeholder = hintDomains[0] ?? "company.com";
 
   if (!settings.saml) {
     return null;

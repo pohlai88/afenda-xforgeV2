@@ -1,19 +1,18 @@
 import {
   flattenSidebarNavGroups,
+  type SidebarCardSection,
   type SidebarNavGroup,
   type SidebarNavItem,
   type SidebarQuickAction,
 } from "@repo/design-system/design-system";
 import {
-  BellIcon,
-  BoxesIcon,
+  BirdIcon,
+  BugIcon,
+  Columns3CogIcon,
+  DogIcon,
   FactoryIcon,
-  FolderOpenIcon,
-  HouseIcon,
-  PlusIcon,
-  SettingsIcon,
+  FishIcon,
   SearchIcon,
-  ShieldCheckIcon,
   ShoppingCartIcon,
   SquareKanbanIcon,
   TrendingUpIcon,
@@ -21,31 +20,30 @@ import {
   UsersIcon,
   WalletCardsIcon,
   WarehouseIcon,
-  WaypointsIcon,
 } from "lucide-react";
 
-export const workspaceQuickActions: readonly SidebarQuickAction[] = [
-  {
-    id: "orbit-case",
-    href: "/orbit-case",
-    icon: PlusIcon,
-    shortcut: "⌘N",
-    topic: "Orbit Case",
-    description:
-      "Start a case for inquiry, approval, complaint, incident, request, investigation, or opportunity.",
-  },
-];
+export const workspaceQuickActions: readonly SidebarQuickAction[] = [];
 
-export const workspaceNavGroups: readonly SidebarNavGroup[] = [
+export const workspacePinnedNavGroups: readonly SidebarNavGroup[] = [
   {
     id: "main",
     label: "Main",
     items: [
       {
+        id: "orbit-case",
+        label: "Orbit Case",
+        href: "/orbit-case",
+        icon: BugIcon,
+        match: "prefix",
+        shortcut: "⌘N",
+        description:
+          "Start a case for inquiry, approval, complaint, incident, request, investigation, or opportunity.",
+      },
+      {
         id: "nexus-net",
         label: "Nexus Net",
         href: "/",
-        icon: WaypointsIcon,
+        icon: BirdIcon,
         match: "exact",
         description:
           "Open the operational map, local workspace widgets, and tenant shortcuts.",
@@ -54,7 +52,7 @@ export const workspaceNavGroups: readonly SidebarNavGroup[] = [
         id: "arcana-vault",
         label: "Arcana Vault",
         href: "/arcana-vault",
-        icon: HouseIcon,
+        icon: DogIcon,
         match: "prefix",
         description:
           "Open the user-owned room for drafts, notes, bookmarks, pins, and private files.",
@@ -63,13 +61,16 @@ export const workspaceNavGroups: readonly SidebarNavGroup[] = [
         id: "codex-drive",
         label: "Codex Drive",
         href: "/codex-drive",
-        icon: BoxesIcon,
+        icon: FishIcon,
         match: "prefix",
         description:
           "Retrieve uploaded, shared, downloaded, and bucket-backed objects.",
       },
     ],
   },
+];
+
+export const workspaceNavGroups: readonly SidebarNavGroup[] = [
   {
     id: "applications",
     label: "Applications",
@@ -77,7 +78,7 @@ export const workspaceNavGroups: readonly SidebarNavGroup[] = [
       {
         id: "crm",
         label: "CRM",
-        href: "/cms",
+        href: "/applications/crm",
         icon: UsersIcon,
         match: "prefix",
         description: "Customer relationships, accounts, and activity records.",
@@ -85,7 +86,7 @@ export const workspaceNavGroups: readonly SidebarNavGroup[] = [
       {
         id: "sales",
         label: "Sales",
-        href: "/dashboard",
+        href: "/applications/sales",
         icon: TrendingUpIcon,
         match: "prefix",
         description: "Pipeline, opportunities, quotes, and revenue work.",
@@ -93,7 +94,7 @@ export const workspaceNavGroups: readonly SidebarNavGroup[] = [
       {
         id: "procurement",
         label: "Procurement",
-        href: "/webhooks",
+        href: "/applications/procurement",
         icon: ShoppingCartIcon,
         match: "prefix",
         description: "Requests, suppliers, purchases, and approvals.",
@@ -101,7 +102,7 @@ export const workspaceNavGroups: readonly SidebarNavGroup[] = [
       {
         id: "inventory",
         label: "Inventory",
-        href: "/dashboard",
+        href: "/applications/inventory",
         icon: WarehouseIcon,
         match: "prefix",
         description: "Stock, locations, movements, and fulfillment signals.",
@@ -109,7 +110,7 @@ export const workspaceNavGroups: readonly SidebarNavGroup[] = [
       {
         id: "manufacturing",
         label: "Manufacturing",
-        href: "/dashboard",
+        href: "/applications/manufacturing",
         icon: FactoryIcon,
         match: "prefix",
         description: "Production planning, work orders, and shop-floor status.",
@@ -117,7 +118,7 @@ export const workspaceNavGroups: readonly SidebarNavGroup[] = [
       {
         id: "hrm",
         label: "HRM",
-        href: "/account/organization",
+        href: "/applications/hrm",
         icon: UserRoundCogIcon,
         match: "prefix",
         description: "People, roles, membership, and workforce operations.",
@@ -125,7 +126,7 @@ export const workspaceNavGroups: readonly SidebarNavGroup[] = [
       {
         id: "finance",
         label: "Finance",
-        href: "/dashboard",
+        href: "/applications/finance",
         icon: WalletCardsIcon,
         match: "prefix",
         description: "Controls, approvals, payments, and finance records.",
@@ -133,57 +134,100 @@ export const workspaceNavGroups: readonly SidebarNavGroup[] = [
       {
         id: "projects",
         label: "Projects",
-        href: "/dashboard",
+        href: "/applications/projects",
         icon: SquareKanbanIcon,
         match: "prefix",
         description: "Project boards, delivery work, and execution tracking.",
       },
     ],
   },
+];
+
+export const workspaceSystemCardSections: readonly SidebarCardSection[] = [
   {
     id: "system",
     label: "System",
+    href: "/system/administration",
+    icon: Columns3CogIcon,
+    match: "prefix",
+    description: "System controls, operator governance, and account settings.",
     items: [
       {
         id: "notifications",
         label: "Notifications",
-        href: "/search?q=notifications",
-        icon: BellIcon,
+        href: "/system/notifications",
         match: "prefix",
-        description: "Alerts, mentions, subscriptions, and operator updates.",
+        description: "Alerts, mentions, and operator updates.",
       },
       {
         id: "approvals",
         label: "Approvals",
-        href: "/dashboard",
-        icon: ShieldCheckIcon,
+        href: "/system/approvals",
         match: "prefix",
-        description: "Approval queues, sign-off work, and control gates.",
+        description: "Approval queues and control gates.",
       },
       {
         id: "administration",
         label: "Administration",
-        href: "/account/security",
-        icon: SettingsIcon,
+        href: "/system/administration",
+        match: "prefix",
+        description: "Tenant policy and system controls.",
+      },
+    ],
+    menuItems: [
+      {
+        id: "notifications",
+        label: "Notifications",
+        href: "/system/notifications",
+        match: "prefix",
+        description: "Alerts and subscriptions",
+      },
+      {
+        id: "approvals",
+        label: "Approvals",
+        href: "/system/approvals",
+        match: "prefix",
+        description: "Queues and sign-offs",
+      },
+      {
+        id: "administration",
+        label: "Administration",
+        href: "/system/administration",
         match: "prefix",
         shortcut: "⌘,",
-        description: "Account security, tenant policy, and system settings.",
+        description: "Tenant policy and controls",
+      },
+      {
+        id: "account-security",
+        label: "Account security",
+        href: "/account/security",
+        match: "prefix",
+        description: "Sign-in, passkeys, and MFA",
+      },
+      {
+        id: "organization",
+        label: "Organization",
+        href: "/account/organization",
+        match: "prefix",
+        description: "Workspaces and members",
       },
     ],
   },
 ];
 
 export const workspacePaletteNavItems: readonly SidebarNavItem[] = [
-  {
-    id: "orbit-case",
-    label: "Orbit Case",
-    href: "/orbit-case",
-    icon: PlusIcon,
-    shortcut: "⌘N",
-    description:
-      "Start a case for inquiry, approval, complaint, incident, request, investigation, or opportunity.",
-  },
+  ...flattenSidebarNavGroups(workspacePinnedNavGroups),
   ...flattenSidebarNavGroups(workspaceNavGroups),
+  {
+    id: "system-settings",
+    label: "System settings",
+    href: "/system/administration",
+    icon: Columns3CogIcon,
+    match: "prefix",
+    shortcut: "⌘,",
+    description:
+      "Open system settings, account security, and organization controls.",
+  },
   {
     id: "search",
     label: "Search workspace",

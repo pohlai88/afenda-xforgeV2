@@ -11,7 +11,7 @@ import { buildMfaChallengeHref, getMfaAssuranceStatus } from "./mfa-login";
 type AuthMiddlewareHandler = (
   request: NextRequest,
   event: NextFetchEvent
-) => Response | Promise<Response | void | undefined>;
+) => Response | Promise<Response | undefined | undefined>;
 
 const MFA_EXEMPT_PATH_PREFIXES = [
   "/sign-in",

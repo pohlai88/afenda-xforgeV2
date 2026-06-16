@@ -3,10 +3,10 @@
 import { Skeleton } from "@repo/design-system/design-system";
 import dynamic from "next/dynamic";
 
-type MdxEditorProperties = {
-  value: string;
+interface MdxEditorProperties {
   onChange: (value: string) => void;
-};
+  value: string;
+}
 
 export const MdxEditor = dynamic<MdxEditorProperties>(
   () => import("./mdx-editor-panel").then((module) => module.MdxEditorPanel),

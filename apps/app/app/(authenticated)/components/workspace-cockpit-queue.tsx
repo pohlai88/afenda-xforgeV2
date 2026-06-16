@@ -2,12 +2,12 @@
 
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useRef,
-  type ReactNode,
 } from "react";
 import type { CockpitQueueRowKey } from "./workspace-cockpit-data";
 import { useWorkspaceKeyboardContext } from "./workspace-keyboard-provider";
@@ -20,7 +20,9 @@ interface CockpitQueueContextValue {
   ) => void;
 }
 
-const CockpitQueueContext = createContext<CockpitQueueContextValue | null>(null);
+const CockpitQueueContext = createContext<CockpitQueueContextValue | null>(
+  null
+);
 
 interface CockpitQueueScopeProperties {
   readonly children: ReactNode;

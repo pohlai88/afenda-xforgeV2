@@ -206,7 +206,8 @@ function useSiteContainerResize({
         }
 
         const snappedRight =
-          stageRect.width - (start.x + nextWidth) <= SITE_CONTAINER_SNAP_DISTANCE;
+          stageRect.width - (start.x + nextWidth) <=
+          SITE_CONTAINER_SNAP_DISTANCE;
         const snappedBottom =
           stageRect.height - (start.y + nextHeight) <=
           SITE_CONTAINER_SNAP_DISTANCE;
@@ -266,7 +267,10 @@ function AppShellAppSidebarColumn({
     state === "collapsed" ? "var(--sidebar-width-icon)" : expandedWidth;
   const sidebarNode = (
     <Sidebar
-      className={appSidebarConfig?.className}
+      className={cn(
+        "!absolute !inset-y-0 !h-full !max-h-full",
+        appSidebarConfig?.className
+      )}
       collapsible={appSidebarConfig?.collapsible ?? "icon"}
       variant={appSidebarConfig?.variant ?? "sidebar"}
     >
@@ -280,7 +284,7 @@ function AppShellAppSidebarColumn({
       aria-label="Application sidebar"
       className={cn(
         blockRecipe("blockRail"),
-        "h-full min-h-0 shrink-0 self-stretch overflow-hidden border-r transition-[width] duration-200 ease-linear motion-reduce:transition-none"
+        "relative h-full min-h-0 shrink-0 self-stretch overflow-hidden border-r transition-[width] duration-200 ease-linear motion-reduce:transition-none"
       )}
       data-slot="app-sidebar"
       data-state={state}
@@ -377,7 +381,7 @@ function AppShellSiteContainer({
       ) : null}
       <div
         className={cn(
-          "grid min-h-0 flex-1 overflow-hidden grid-rows-[minmax(0,1fr)]",
+          "grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)] overflow-hidden",
           getSiteBodyGridClassName({
             hasLeftSidebar: Boolean(siteSidebarLeft),
             hasRightSidebar: Boolean(siteRightSidebar),
@@ -394,11 +398,9 @@ function AppShellSiteContainer({
               siteSidebarConfig?.className
             )}
             data-slot="site-sidebar-left"
-            tabIndex={0}
             style={
               {
-                width:
-                  siteSidebarConfig?.width ?? DEFAULT_SITE_SIDEBAR_WIDTH,
+                width: siteSidebarConfig?.width ?? DEFAULT_SITE_SIDEBAR_WIDTH,
               } as CSSProperties
             }
           >
@@ -417,7 +419,6 @@ function AppShellSiteContainer({
           )}
           data-slot="site-main"
           role="region"
-          tabIndex={0}
         >
           {auditEvidenceScopeSync}
           {children}
@@ -427,7 +428,6 @@ function AppShellSiteContainer({
             aria-label="Site right sidebar"
             className={cn(blockRecipe("blockRail"), "border-l")}
             data-slot="site-right-sidebar"
-            tabIndex={0}
             style={
               {
                 width: "var(--xforge-layout-audit-rail)",

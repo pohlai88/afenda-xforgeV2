@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  blockRecipe,
   Button,
+  blockRecipe,
   Input,
   Kbd,
 } from "@repo/design-system/design-system";
@@ -72,7 +72,7 @@ export function WorkspaceCommandBar() {
           />
           <Input
             aria-keyshortcuts="Control+K Meta+K"
-            className="h-9 pe-16 ps-9 font-mono text-[13px] tabular-nums"
+            className="h-9 ps-9 pe-16 font-mono text-[13px] tabular-nums"
             name="q"
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search records, actions, evidence"

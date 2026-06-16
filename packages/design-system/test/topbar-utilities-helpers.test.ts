@@ -1,12 +1,11 @@
 import { describe, expect, it } from "vitest";
-
+import type { TopbarUtilitiesMarketItem } from "../components/blocks/afenda-blocks/topbars/topbar-types";
 import {
   buildCatalogMaps,
   buildPinnedActions,
   buildPinnedOrder,
   resolveDefaultEnabledIds,
 } from "../components/blocks/afenda-blocks/topbars/topbar-utilities-helpers";
-import type { TopbarUtilitiesMarketItem } from "../components/blocks/afenda-blocks/topbars/topbar-types";
 
 const catalog: readonly TopbarUtilitiesMarketItem[] = [
   { id: "help", label: "Help", icon: null },

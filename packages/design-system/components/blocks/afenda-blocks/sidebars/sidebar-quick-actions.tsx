@@ -7,8 +7,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@repo/design-system/components/afenda-ui/sidebar";
-import { cn } from "@repo/design-system/lib/utils";
-import { memo } from "react";
 import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
 import {
   sidebarIconRailHiddenClass,
@@ -17,6 +15,8 @@ import {
   sidebarQuickActionKbdClass,
   sidebarQuickActionsHeaderClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import { memo } from "react";
 import type { SidebarQuickActionsProps } from "./sidebar-types";
 
 export const SidebarQuickActions = memo(function SidebarQuickActions({

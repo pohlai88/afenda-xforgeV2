@@ -5,13 +5,13 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
 } from "@repo/design-system/components/afenda-ui/sidebar";
-import { cn } from "@repo/design-system/lib/utils";
-import { memo } from "react";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 import {
   sidebarGroupLabelClass,
   sidebarNavGroupShellClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import { memo } from "react";
 import { SidebarNavItemRow } from "./sidebar-nav-item";
 import type { SidebarNavGroupPanelProps } from "./sidebar-types";
 

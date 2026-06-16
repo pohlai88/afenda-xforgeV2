@@ -29,9 +29,9 @@ const truncateAgent = (value: string | null) => {
   return value.length > 72 ? `${value.slice(0, 69)}…` : value;
 };
 
-type AuthAuditLogPanelProperties = {
+interface AuthAuditLogPanelProperties {
   readonly entries: AuthAuditLogEntry[];
-};
+}
 
 export const AuthAuditLogPanel = ({ entries }: AuthAuditLogPanelProperties) => {
   const titleId = useId();

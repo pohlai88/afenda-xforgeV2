@@ -35,12 +35,12 @@ const passwordFieldId = "update-password-new";
 const confirmFieldId = "update-password-confirm";
 const formErrorId = "update-password-error";
 
-type UpdatePasswordFormProperties = {
-  /** Recovery (email link) skips current-password and reauth requirements. */
-  variant?: ChangePasswordVariant;
+interface UpdatePasswordFormProperties {
   onSuccess?: () => void;
   redirectTo?: string;
-};
+  /** Recovery (email link) skips current-password and reauth requirements. */
+  variant?: ChangePasswordVariant;
+}
 
 const focusField = (field: keyof AuthFieldErrors) => {
   const ids: Record<string, string> = {
@@ -136,16 +136,15 @@ export const UpdatePasswordForm = ({
       setFieldErrors(validated.fieldErrors);
       setFormError(validated.formError ?? null);
       setLoading(false);
-      const firstField =
-        validated.fieldErrors.currentPassword
-          ? "currentPassword"
-          : validated.fieldErrors.nonce
-            ? "nonce"
-            : validated.fieldErrors.password
-              ? "password"
-              : validated.fieldErrors.confirmPassword
-                ? "confirmPassword"
-                : "password";
+      const firstField = validated.fieldErrors.currentPassword
+        ? "currentPassword"
+        : validated.fieldErrors.nonce
+          ? "nonce"
+          : validated.fieldErrors.password
+            ? "password"
+            : validated.fieldErrors.confirmPassword
+              ? "confirmPassword"
+              : "password";
       focusField(firstField);
       return;
     }

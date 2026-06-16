@@ -95,7 +95,6 @@ import {
   dashboardDataTableToolbarClass,
   dashboardDataTableViewSelectClass,
 } from "./dashboard-data-table-recipes";
-import type { DashboardDataTableRow } from "./dashboard-data-table-schema";
 import type { DashboardDataTableProps } from "./dashboard-data-table-types";
 import { dashboardDataTableColumns } from "./data-table-columns";
 import { DataTableDraggableRow } from "./data-table-draggable-row";
@@ -155,7 +154,7 @@ export const DashboardDataTable = memo(function DashboardDataTable({
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
-    if (!active || !over || active.id === over.id) {
+    if (!(active && over) || active.id === over.id) {
       return;
     }
 
@@ -242,7 +241,10 @@ export const DashboardDataTable = memo(function DashboardDataTable({
           </Button>
         </div>
       </div>
-      <TabsContent className={dashboardDataTableOutlinePanelClass} value="outline">
+      <TabsContent
+        className={dashboardDataTableOutlinePanelClass}
+        value="outline"
+      >
         <div className={dashboardDataTableGridClass}>
           <DndContext
             collisionDetection={closestCenter}
@@ -299,7 +301,10 @@ export const DashboardDataTable = memo(function DashboardDataTable({
           </div>
           <div className={dashboardDataTablePaginationClass}>
             <div className={dashboardDataTablePageSizeClass}>
-              <Label className="text-[12px] font-medium" htmlFor="rows-per-page">
+              <Label
+                className="font-medium text-[12px]"
+                htmlFor="rows-per-page"
+              >
                 Rows per page
               </Label>
               <Select

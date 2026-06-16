@@ -20,11 +20,11 @@ import {
   listOrganizationMembers,
   renameOrganization,
 } from "../actions/organizations";
-import type { OrganizationMemberRecord } from "../organizations";
 import {
   ORGANIZATION_ROLES,
   type OrganizationRole,
 } from "../organization-roles";
+import type { OrganizationMemberRecord } from "../organizations";
 import { AuthErrorAlert, AuthSuccessAlert } from "./auth-feedback";
 import { AuthPendingButton } from "./auth-pending-button";
 import {
@@ -33,16 +33,16 @@ import {
   AuthSectionHeader,
 } from "./auth-section";
 
-type OrganizationSummary = {
+interface OrganizationSummary {
   id: string;
   name: string;
-};
+}
 
-type OrganizationManagerProperties = {
+interface OrganizationManagerProperties {
   activeOrganizationId: string | null;
-  organizations: OrganizationSummary[];
   canManageActiveOrganization: boolean;
-};
+  organizations: OrganizationSummary[];
+}
 
 export const OrganizationManager = ({
   activeOrganizationId,
@@ -187,7 +187,9 @@ export const OrganizationManager = ({
           onSubmit={handleCreate}
         >
           <Field>
-            <FieldLabel htmlFor={`${createTitleId}-name`}>Workspace name</FieldLabel>
+            <FieldLabel htmlFor={`${createTitleId}-name`}>
+              Workspace name
+            </FieldLabel>
             <Input
               id={`${createTitleId}-name`}
               onChange={(event) => setCreateName(event.target.value)}
@@ -243,7 +245,10 @@ export const OrganizationManager = ({
       ) : null}
 
       {activeOrganizationId ? (
-        <AuthSection aria-busy={loadingMembers} aria-labelledby={membersTitleId}>
+        <AuthSection
+          aria-busy={loadingMembers}
+          aria-labelledby={membersTitleId}
+        >
           <AuthSectionHeader
             description="Invite teammates by email. New users receive an invitation link."
             title="Members"

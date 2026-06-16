@@ -51,9 +51,7 @@ export function contentLayoutSidebarToggleAriaLabel(
   side: ContentLayoutSide,
   collapsed: boolean
 ): string {
-  return collapsed
-    ? `Expand ${side} sidebar`
-    : `Collapse ${side} sidebar`;
+  return collapsed ? `Expand ${side} sidebar` : `Collapse ${side} sidebar`;
 }
 
 export const DEFAULT_CONTENT_LAYOUT_FOOTER_COPYRIGHT = "2026© Afenda Inc.";

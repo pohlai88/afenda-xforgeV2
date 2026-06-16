@@ -11,13 +11,13 @@ import { buildAuthCallbackRedirect } from "../redirects";
 import { setPreferredSignInMethod } from "../sign-in-preference";
 import { AuthDivider } from "./auth-divider";
 import { PasskeyOriginNotice } from "./auth-feedback";
-import { AuthPendingButton } from "./auth-pending-button";
 import { GoogleIcon, PasskeyIcon } from "./auth-icons";
+import { AuthPendingButton } from "./auth-pending-button";
 
-type AlternativeAuthMethodsProperties = {
+interface AlternativeAuthMethodsProperties {
   mode: "sign-in" | "sign-up";
   onError?: (message: string | null) => void;
-};
+}
 
 export const AlternativeAuthMethods = ({
   mode,
@@ -123,9 +123,9 @@ export const AlternativeAuthMethods = ({
   );
 };
 
-type SignUpDisabledNoticeProperties = {
+interface SignUpDisabledNoticeProperties {
   className?: string;
-};
+}
 
 export const SignUpDisabledNotice = ({
   className,

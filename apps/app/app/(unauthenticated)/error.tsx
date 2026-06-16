@@ -4,11 +4,11 @@ import { Button, cn, recipe } from "@repo/design-system/design-system";
 import { captureException } from "@sentry/nextjs";
 import { useEffect } from "react";
 
-type AuthErrorProperties = {
+interface AuthErrorProperties {
   readonly error: Error & { digest?: string };
   readonly reset: () => void;
   readonly unstable_retry?: () => void;
-};
+}
 
 const AuthError = ({ error, reset, unstable_retry }: AuthErrorProperties) => {
   useEffect(() => {

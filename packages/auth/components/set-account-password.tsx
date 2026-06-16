@@ -23,13 +23,27 @@ import { PasswordField } from "./password-field";
 const passwordFieldId = "set-account-password";
 const confirmFieldId = "set-account-password-confirm";
 
-type SetAccountPasswordProperties = {
+interface SetAccountPasswordProperties {
   onSuccess?: () => void;
-};
+}
 
 const focusField = (field: keyof AuthFieldErrors) => {
   const id = field === "password" ? passwordFieldId : confirmFieldId;
   document.getElementById(id)?.focus();
+};
+
+const getFirstSetPasswordErrorField = (
+  errors: AuthFieldErrors
+): keyof AuthFieldErrors => {
+  if (errors.password) {
+    return "password";
+  }
+
+  if (errors.confirmPassword) {
+    return "confirmPassword";
+  }
+
+  return "password";
 };
 
 /** Adds email/password sign-in to OAuth-only accounts (Supabase updateUser password). */
@@ -58,18 +72,16 @@ export const SetAccountPassword = ({
     setFieldErrors({});
     setMessage(null);
 
-    const validated = parseAuthFormFields(schema, { password, confirmPassword });
+    const validated = parseAuthFormFields(schema, {
+      password,
+      confirmPassword,
+    });
 
     if (!validated.ok) {
       setFieldErrors(validated.fieldErrors);
       setFormError(validated.formError ?? null);
       setLoading(false);
-      const firstField = validated.fieldErrors.password
-        ? "password"
-        : validated.fieldErrors.confirmPassword
-          ? "confirmPassword"
-          : "password";
-      focusField(firstField);
+      focusField(getFirstSetPasswordErrorField(validated.fieldErrors));
       return;
     }
 

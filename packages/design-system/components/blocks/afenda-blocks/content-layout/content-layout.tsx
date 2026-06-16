@@ -1,15 +1,11 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
-import type { CSSProperties } from "react";
-import { useMemo, useRef } from "react";
 import {
+  DEFAULT_CONTENT_LAYOUT_FOOTER_HEIGHT,
   DEFAULT_CONTENT_LAYOUT_MIN_HEIGHT,
   DEFAULT_CONTENT_LAYOUT_MIN_WIDTH,
   DEFAULT_CONTENT_LAYOUT_RIGHT_SIDEBAR_WIDTH,
   DEFAULT_CONTENT_LAYOUT_TOPBAR_HEIGHT,
-  DEFAULT_CONTENT_LAYOUT_FOOTER_HEIGHT,
   EMPTY_CONTENT_LAYOUT_BREADCRUMBS,
 } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
 import {
@@ -23,6 +19,10 @@ import {
   contentLayoutMainClass,
   contentLayoutStageFooterPlacementClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import type { CSSProperties } from "react";
+import { useMemo, useRef } from "react";
 import { ContentLayoutBottomDrawer } from "./content-layout-bottom-drawer";
 import { ContentLayoutBreadcrumbsTopbar } from "./content-layout-breadcrumbs-topbar";
 import { ContentLayoutFooter } from "./content-layout-footer";
@@ -156,7 +156,6 @@ export function ContentLayoutBlock({
           aria-label="Main content"
           className={mainClassName}
           data-slot="content-layout-main"
-          tabIndex={0}
         >
           {children}
         </main>

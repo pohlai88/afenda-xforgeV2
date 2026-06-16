@@ -8,7 +8,12 @@ import {
   PopoverTrigger,
 } from "@repo/design-system/components/afenda-ui/popover";
 import { ScrollArea } from "@repo/design-system/components/afenda-ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@repo/design-system/components/afenda-ui/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@repo/design-system/components/afenda-ui/tabs";
 import { cn } from "@repo/design-system/lib/utils";
 import { Settings2Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
@@ -88,7 +93,7 @@ export function TopbarNotifications({
     () => localItems.filter((item) => item.unread).length,
     [localItems]
   );
-  const visibleItems = useMemo(
+  const _visibleItems = useMemo(
     () => filterNotifications(localItems, activeTab),
     [activeTab, localItems]
   );
@@ -236,7 +241,10 @@ export function TopbarNotifications({
                                 </span>
                               ) : null}
                               <span className="mt-1 block text-[10px] text-text-tertiary uppercase tracking-[0.08em]">
-                                {(item.scope ?? "inbox") as TopbarNotificationScope}
+                                {
+                                  (item.scope ??
+                                    "inbox") as TopbarNotificationScope
+                                }
                               </span>
                             </span>
                           </Button>

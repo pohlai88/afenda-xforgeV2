@@ -2,13 +2,13 @@ import type {
   Sidebar,
   SidebarProvider,
 } from "@repo/design-system/components/afenda-ui/sidebar";
-import type { CSSProperties, ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from "react";
 import type { ContentLayoutFooterProps } from "../../content-layout/content-layout-types";
-import type { AppSidebarProps } from "../sidebar/dashboard-sidebar-types";
 import type { ChartAreaInteractiveProps } from "../chart/chart-area-types";
-import type { DashboardDataTableProps } from "../data-table/dashboard-data-table-types";
 import type { DashboardDataTableRow } from "../data-table/dashboard-data-table-schema";
+import type { DashboardDataTableProps } from "../data-table/dashboard-data-table-types";
 import type { SectionCardsProps } from "../kpi-card/dashboard-section-cards-types";
+import type { AppSidebarProps } from "../sidebar/dashboard-sidebar-types";
 import type { SiteHeaderProps } from "../site-header/dashboard-site-header-types";
 import type { DashboardNavTopbarProps } from "../topbar/dashboard-topbar-types";
 

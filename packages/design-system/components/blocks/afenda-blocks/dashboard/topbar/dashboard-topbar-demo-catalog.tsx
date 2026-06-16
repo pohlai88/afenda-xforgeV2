@@ -56,7 +56,7 @@ const demoDashboardScopeSwitchers = [
   },
 ] as const;
 
-const DEMO_DASHBOARD_NAV_TOPBAR_USER = {
+const _DEMO_DASHBOARD_NAV_TOPBAR_USER = {
   avatarFallback: "AF",
   displayName: "Afenda Operator",
   email: "operator@afenda.example",

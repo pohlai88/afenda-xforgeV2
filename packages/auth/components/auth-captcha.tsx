@@ -2,14 +2,14 @@
 
 import { cn, recipe } from "@repo/design-system/design-system";
 import { useEffect, useId, useRef, useState } from "react";
-import { getCaptchaSiteKey } from "../keys";
 import { useAuthUiConfig } from "../context/auth-ui-config";
+import { getCaptchaSiteKey } from "../keys";
 import { AuthConfigNotice } from "./auth-feedback";
 
-type AuthCaptchaProperties = {
+interface AuthCaptchaProperties {
   className?: string;
   onTokenChange: (token: string | null) => void;
-};
+}
 
 type HCaptchaWindow = Window & {
   hcaptcha?: {
@@ -68,19 +68,23 @@ export const AuthCaptcha = ({
   const widgetIdRef = useRef<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const siteKey = getCaptchaSiteKey();
-  const provider = settings.security.captchaProvider?.toLowerCase() ?? "hcaptcha";
+  const provider =
+    settings.security.captchaProvider?.toLowerCase() ?? "hcaptcha";
 
   useEffect(() => {
     onTokenChange(null);
-  }, [onTokenChange, provider, siteKey]);
+  }, [onTokenChange]);
 
   useEffect(() => {
-    if (!(settings.security.captchaEnabled && siteKey && containerRef.current)) {
+    if (
+      !(settings.security.captchaEnabled && siteKey && containerRef.current)
+    ) {
       return;
     }
 
     let cancelled = false;
 
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Provider branches share the same guarded third-party widget lifecycle.
     const mountWidget = async () => {
       setLoadError(null);
 
@@ -140,18 +144,13 @@ export const AuthCaptcha = ({
       }
     };
 
-    void mountWidget();
+    mountWidget().catch(() => undefined);
 
     return () => {
       cancelled = true;
       onTokenChange(null);
     };
-  }, [
-    onTokenChange,
-    provider,
-    settings.security.captchaEnabled,
-    siteKey,
-  ]);
+  }, [onTokenChange, provider, settings.security.captchaEnabled, siteKey]);
 
   if (!settings.security.captchaEnabled) {
     return null;
@@ -161,7 +160,9 @@ export const AuthCaptcha = ({
     return (
       <AuthConfigNotice>
         CAPTCHA is enabled in Supabase but{" "}
-        <code className={recipe("captionText")}>NEXT_PUBLIC_CAPTCHA_SITE_KEY</code>{" "}
+        <code className={recipe("captionText")}>
+          NEXT_PUBLIC_CAPTCHA_SITE_KEY
+        </code>{" "}
         is not set. Add the site key to show the widget.
       </AuthConfigNotice>
     );

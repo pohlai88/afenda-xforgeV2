@@ -1,11 +1,11 @@
 import { cn, recipe } from "@repo/design-system/design-system";
 
-type AuthPageHeaderProps = {
+interface AuthPageHeaderProps {
   readonly description: string;
   readonly descriptionId?: string;
   readonly title: string;
   readonly titleId?: string;
-};
+}
 
 /** Page title + one-line subcopy inside the auth form card. */
 export const AuthPageHeader = ({
@@ -14,11 +14,7 @@ export const AuthPageHeader = ({
   titleId = "auth-page-title",
   descriptionId = "auth-page-description",
 }: AuthPageHeaderProps) => (
-  <header
-    aria-describedby={descriptionId}
-    aria-labelledby={titleId}
-    className="flex flex-col gap-1.5"
-  >
+  <header className="flex flex-col gap-1.5">
     <h1
       className="text-balance font-semibold text-2xl text-text-primary leading-tight tracking-tight"
       id={titleId}

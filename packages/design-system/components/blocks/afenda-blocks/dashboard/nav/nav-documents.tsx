@@ -16,20 +16,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@repo/design-system/components/afenda-ui/sidebar";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
 import {
   sidebarGroupLabelClass,
   sidebarIconRailHiddenClass,
   sidebarIconRailIconClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 import { cn } from "@repo/design-system/lib/utils";
-import {
-  EllipsisIcon,
-  FolderIcon,
-  Share2Icon,
-  TrashIcon,
-} from "lucide-react";
+import { EllipsisIcon, FolderIcon, Share2Icon, TrashIcon } from "lucide-react";
 import { memo } from "react";
 import {
   NAV_DOCUMENTS_DEFAULT_GROUP_LABEL,

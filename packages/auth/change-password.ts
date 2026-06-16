@@ -2,16 +2,16 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 
 export type ChangePasswordVariant = "recovery" | "account";
 
-export type ChangePasswordInput = {
-  password: string;
+export interface ChangePasswordInput {
   currentPassword?: string;
   nonce?: string;
-};
+  password: string;
+}
 
-export type ChangePasswordSecurity = {
+export interface ChangePasswordSecurity {
   requireCurrentPassword: boolean;
   requireReauthentication: boolean;
-};
+}
 
 /** Update password with project security settings (current password + reauth nonce). */
 export const changePassword = async (

@@ -41,13 +41,28 @@ const emailFieldId = "sign-up-email";
 const passwordFieldId = "sign-up-password";
 
 const focusField = (field: keyof AuthFieldErrors) => {
-  const id =
-    field === "name"
-      ? nameFieldId
-      : field === "email"
-        ? emailFieldId
-        : passwordFieldId;
+  let id = passwordFieldId;
+  if (field === "email") {
+    id = emailFieldId;
+  }
+  if (field === "name") {
+    id = nameFieldId;
+  }
   document.getElementById(id)?.focus();
+};
+
+const getFirstSignUpErrorField = (
+  errors: AuthFieldErrors
+): keyof AuthFieldErrors => {
+  if (errors.name) {
+    return "name";
+  }
+
+  if (errors.email) {
+    return "email";
+  }
+
+  return "password";
 };
 
 export const SignUp = () => {
@@ -90,12 +105,7 @@ export const SignUp = () => {
       setFieldErrors(validated.fieldErrors);
       setFormError(validated.formError ?? null);
       setLoading(false);
-      const firstField = validated.fieldErrors.name
-        ? "name"
-        : validated.fieldErrors.email
-          ? "email"
-          : "password";
-      focusField(firstField);
+      focusField(getFirstSignUpErrorField(validated.fieldErrors));
       return;
     }
 
@@ -167,112 +177,112 @@ export const SignUp = () => {
         {formError && Object.keys(fieldErrors).length === 0 ? (
           <AuthErrorAlert id={formErrorId} message={formError} />
         ) : null}
-      <Field>
-        <FieldLabel htmlFor={nameFieldId}>Name</FieldLabel>
-        <Input
-          aria-describedby={
-            fieldErrors.name ? `${nameFieldId}-error` : undefined
-          }
-          aria-invalid={fieldErrors.name ? true : undefined}
-          autoComplete="name"
-          id={nameFieldId}
-          name="name"
-          onChange={(event) => {
-            setName(event.target.value);
-            if (fieldErrors.name) {
-              setFieldErrors((current) => ({ ...current, name: undefined }));
+        <Field>
+          <FieldLabel htmlFor={nameFieldId}>Name</FieldLabel>
+          <Input
+            aria-describedby={
+              fieldErrors.name ? `${nameFieldId}-error` : undefined
             }
-          }}
-          placeholder="Your name"
-          required
-          type="text"
-          value={name}
-        />
-        {fieldErrors.name ? (
-          <FieldError id={`${nameFieldId}-error`}>
-            {fieldErrors.name}
-          </FieldError>
-        ) : null}
-      </Field>
-      <Field>
-        <FieldLabel htmlFor={emailFieldId}>Email</FieldLabel>
-        <Input
-          aria-describedby={
-            fieldErrors.email ? `${emailFieldId}-error` : undefined
-          }
-          aria-invalid={fieldErrors.email ? true : undefined}
-          autoComplete="email"
-          id={emailFieldId}
-          name="email"
-          onChange={(event) => {
-            setEmail(event.target.value);
-            if (fieldErrors.email) {
-              setFieldErrors((current) => ({ ...current, email: undefined }));
+            aria-invalid={fieldErrors.name ? true : undefined}
+            autoComplete="name"
+            id={nameFieldId}
+            name="name"
+            onChange={(event) => {
+              setName(event.target.value);
+              if (fieldErrors.name) {
+                setFieldErrors((current) => ({ ...current, name: undefined }));
+              }
+            }}
+            placeholder="Your name"
+            required
+            type="text"
+            value={name}
+          />
+          {fieldErrors.name ? (
+            <FieldError id={`${nameFieldId}-error`}>
+              {fieldErrors.name}
+            </FieldError>
+          ) : null}
+        </Field>
+        <Field>
+          <FieldLabel htmlFor={emailFieldId}>Email</FieldLabel>
+          <Input
+            aria-describedby={
+              fieldErrors.email ? `${emailFieldId}-error` : undefined
             }
-          }}
-          placeholder="you@example.com"
-          required
-          type="email"
-          value={email}
-        />
-        {fieldErrors.email ? (
-          <FieldError id={`${emailFieldId}-error`}>
-            {fieldErrors.email}
-          </FieldError>
-        ) : null}
-      </Field>
-      <Field>
-        <PasswordField
-          autoComplete="new-password"
-          describedBy={
-            fieldErrors.password ? `${passwordFieldId}-error` : undefined
-          }
-          id={passwordFieldId}
-          invalid={Boolean(fieldErrors.password)}
-          label="Password"
-          name="password"
-          onChange={(value) => {
-            setPassword(value);
-            if (fieldErrors.password) {
-              setFieldErrors((current) => ({
-                ...current,
-                password: undefined,
-              }));
+            aria-invalid={fieldErrors.email ? true : undefined}
+            autoComplete="email"
+            id={emailFieldId}
+            name="email"
+            onChange={(event) => {
+              setEmail(event.target.value);
+              if (fieldErrors.email) {
+                setFieldErrors((current) => ({ ...current, email: undefined }));
+              }
+            }}
+            placeholder="you@example.com"
+            required
+            type="email"
+            value={email}
+          />
+          {fieldErrors.email ? (
+            <FieldError id={`${emailFieldId}-error`}>
+              {fieldErrors.email}
+            </FieldError>
+          ) : null}
+        </Field>
+        <Field>
+          <PasswordField
+            autoComplete="new-password"
+            describedBy={
+              fieldErrors.password ? `${passwordFieldId}-error` : undefined
             }
-          }}
-          policy={passwordPolicy}
-          showRequirements
-          value={password}
-        />
-        {fieldErrors.password ? (
-          <FieldError id={`${passwordFieldId}-error`}>
-            {fieldErrors.password}
-          </FieldError>
+            id={passwordFieldId}
+            invalid={Boolean(fieldErrors.password)}
+            label="Password"
+            name="password"
+            onChange={(value) => {
+              setPassword(value);
+              if (fieldErrors.password) {
+                setFieldErrors((current) => ({
+                  ...current,
+                  password: undefined,
+                }));
+              }
+            }}
+            policy={passwordPolicy}
+            showRequirements
+            value={password}
+          />
+          {fieldErrors.password ? (
+            <FieldError id={`${passwordFieldId}-error`}>
+              {fieldErrors.password}
+            </FieldError>
+          ) : null}
+        </Field>
+        {settings.security.captchaEnabled ? (
+          <AuthCaptcha onTokenChange={setCaptchaToken} />
         ) : null}
-      </Field>
-      {settings.security.captchaEnabled ? (
-        <AuthCaptcha onTokenChange={setCaptchaToken} />
-      ) : null}
-      <AuthPendingButton
-        className="w-full"
-        pending={loading}
-        pendingLabel="Creating account…"
-        type="submit"
-        variant="primary"
-      >
-        Create account
-      </AuthPendingButton>
-      {settings.mailerAutoconfirm ? null : (
-        <p
-          className={cn(
-            "text-center text-text-secondary",
-            recipe("captionText")
-          )}
+        <AuthPendingButton
+          className="w-full"
+          pending={loading}
+          pendingLabel="Creating account…"
+          type="submit"
+          variant="primary"
         >
-          We will email a verification link to confirm your account.
-        </p>
-      )}
-      <AuthLegalLine />
+          Create account
+        </AuthPendingButton>
+        {settings.mailerAutoconfirm ? null : (
+          <p
+            className={cn(
+              "text-center text-text-secondary",
+              recipe("captionText")
+            )}
+          >
+            We will email a verification link to confirm your account.
+          </p>
+        )}
+        <AuthLegalLine />
       </form>
       <p className={cn("text-center", recipe("captionText"))}>
         Already have an account?{" "}

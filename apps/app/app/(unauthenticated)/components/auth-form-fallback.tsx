@@ -1,8 +1,8 @@
 import { cn, recipe, Skeleton } from "@repo/design-system/design-system";
 
-type AuthFormFallbackProps = {
+interface AuthFormFallbackProps {
   readonly label?: string;
-};
+}
 
 /** Instant fallback while auth client forms code-split or suspend. */
 export const AuthFormFallback = ({

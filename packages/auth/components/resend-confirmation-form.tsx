@@ -24,9 +24,9 @@ const emailFieldId = "resend-confirmation-email";
 const emailErrorId = "resend-confirmation-email-error";
 const emailHintId = "resend-confirmation-email-hint";
 
-type ResendConfirmationFormProperties = {
+interface ResendConfirmationFormProperties {
   readonly initialEmail?: string;
-};
+}
 
 const readStoredEmail = (propEmail: string) => {
   if (propEmail) {

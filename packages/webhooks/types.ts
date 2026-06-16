@@ -54,79 +54,79 @@ export const webhookEventTypeSchema = z.enum(OUTBOUND_WEBHOOK_EVENT_TYPES);
 export const cmsWebhookEventTypeSchema = z.enum(CMS_WEBHOOK_EVENTS);
 
 /** Maps each outbound event type to its `data` payload shape. */
-export type WebhookEventDataMap = {
+export interface WebhookEventDataMap {
   "cms.document.published": CmsDocumentEvent;
   "cms.document.unpublished": CmsDocumentEvent;
   "cms.settings.updated": CmsSettingsUpdatedEvent;
   "webhook.test": { message: string };
-};
+}
 
 /** JSON body delivered to subscriber endpoints (Standard Webhooks payload). */
-export type WebhookPayload<TType extends WebhookEventType> = {
-  type: TType;
-  timestamp: string;
-  organizationId: string;
+export interface WebhookPayload<TType extends WebhookEventType> {
   data: WebhookEventDataMap[TType];
-};
-
-export type WebhookEndpointPublic = {
-  id: string;
   organizationId: string;
-  url: string;
+  timestamp: string;
+  type: TType;
+}
+
+export interface WebhookEndpointPublic {
+  createdAt: Date;
+  description: string | null;
+  disabledUntil: Date | null;
   enabled: boolean;
   events: WebhookEventType[];
-  description: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  lastDeliveryStatus: WebhookDeliveryStatus | null;
-  lastDeliveryError: string | null;
-  recentFailures: number;
-  disabledUntil: Date | null;
+  id: string;
   isAutoDisabled: boolean;
-};
+  lastDeliveryError: string | null;
+  lastDeliveryStatus: WebhookDeliveryStatus | null;
+  organizationId: string;
+  recentFailures: number;
+  updatedAt: Date;
+  url: string;
+}
 
 export type WebhookEndpointWithSecret = WebhookEndpointPublic & {
   secret: string;
 };
 
-export type WebhookDeliveryRecord = {
-  id: string;
-  eventId: string;
-  organizationId: string;
-  endpointId: string;
-  eventType: WebhookEventType;
-  status: WebhookDeliveryStatus;
+export interface WebhookDeliveryRecord {
   attempts: number;
-  lastError: string | null;
-  responseStatus: number | null;
-  responseBody: string | null;
   createdAt: Date;
   deliveredAt: Date | null;
+  endpointId: string;
   endpointUrl?: string;
-};
+  eventId: string;
+  eventType: WebhookEventType;
+  id: string;
+  lastError: string | null;
+  organizationId: string;
+  responseBody: string | null;
+  responseStatus: number | null;
+  status: WebhookDeliveryStatus;
+}
 
-export type ListWebhookDeliveriesOptions = {
-  endpointId?: string;
-  status?: WebhookDeliveryStatus;
-  limit?: number;
+export interface ListWebhookDeliveriesOptions {
   cursor?: string;
-};
+  endpointId?: string;
+  limit?: number;
+  status?: WebhookDeliveryStatus;
+}
 
-export type ListWebhookDeliveriesResult = {
+export interface ListWebhookDeliveriesResult {
   deliveries: WebhookDeliveryRecord[];
   /** Delivery id cursor for the next page when `deliveries.length === limit`. */
   nextCursor: string | null;
-};
+}
 
-export type ReplayWebhookDeliveryResult = {
+export interface ReplayWebhookDeliveryResult {
   queued: true;
-};
+}
 
-export type EnqueueWebhookResult = {
-  eventId: string | null;
+export interface EnqueueWebhookResult {
   deliveryCount: number;
   deliveryIds: string[];
-};
+  eventId: string | null;
+}
 
 export const isWebhookEventType = (value: string): value is WebhookEventType =>
   (OUTBOUND_WEBHOOK_EVENT_TYPES as readonly string[]).includes(value);

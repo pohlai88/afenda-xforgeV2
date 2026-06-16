@@ -11,11 +11,11 @@ const description = "Sign in to your governed workspace.";
 
 export const metadata: Metadata = createMetadata({ title, description });
 
-type SignInPageProperties = {
+interface SignInPageProperties {
   readonly searchParams: Promise<{
     error?: string | string[];
   }>;
-};
+}
 
 const SignInPage = async ({ searchParams }: SignInPageProperties) => {
   const { error } = await searchParams;

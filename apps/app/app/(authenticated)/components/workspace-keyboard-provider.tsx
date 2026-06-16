@@ -2,13 +2,16 @@
 
 import {
   createContext,
+  type Dispatch,
+  type MutableRefObject,
+  type ReactNode,
+  type SetStateAction,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
-  type ReactNode,
 } from "react";
 import type { CockpitQueueRowKey } from "./workspace-cockpit-data";
 
@@ -49,6 +52,62 @@ function isEditableTarget(target: EventTarget | null): boolean {
   );
 }
 
+const isCommandPaletteShortcut = (event: KeyboardEvent): boolean =>
+  (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k";
+
+const isShortcutsDialogShortcut = (
+  event: KeyboardEvent,
+  key: string
+): boolean => key === "?" || (event.shiftKey && key === "/");
+
+const moveQueueSelection = (
+  event: KeyboardEvent,
+  key: string,
+  queueRowKeysRef: MutableRefObject<readonly CockpitQueueRowKey[]>,
+  selectedIndexRef: MutableRefObject<number>,
+  setSelectedIndex: Dispatch<SetStateAction<number>>
+): boolean => {
+  if (key !== "j" && key !== "k") {
+    return false;
+  }
+
+  event.preventDefault();
+  setSelectedIndex((current) => {
+    const next =
+      key === "j"
+        ? Math.min(queueRowKeysRef.current.length - 1, current + 1)
+        : Math.max(0, current - 1);
+    selectedIndexRef.current = next;
+    return next;
+  });
+
+  return true;
+};
+
+const editSelectedQueueRow = (
+  event: KeyboardEvent,
+  key: string,
+  queueRowKeysRef: MutableRefObject<readonly CockpitQueueRowKey[]>,
+  selectedIndexRef: MutableRefObject<number>,
+  onEditSelectedRowRef: MutableRefObject<
+    ((rowKey: CockpitQueueRowKey) => void) | undefined
+  >
+): boolean => {
+  if (key !== "e") {
+    return false;
+  }
+
+  const rowKey = queueRowKeysRef.current[selectedIndexRef.current] ?? null;
+
+  if (!rowKey) {
+    return false;
+  }
+
+  event.preventDefault();
+  onEditSelectedRowRef.current?.(rowKey);
+  return true;
+};
+
 interface WorkspaceKeyboardProviderProperties {
   readonly children: ReactNode;
   readonly onEditSelectedRow?: (rowKey: CockpitQueueRowKey) => void;
@@ -60,9 +119,9 @@ export function WorkspaceKeyboardProvider({
 }: WorkspaceKeyboardProviderProperties) {
   const [commandOpen, setCommandOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
-  const [queueRowKeys, setQueueRowKeys] = useState<readonly CockpitQueueRowKey[]>(
-    []
-  );
+  const [queueRowKeys, setQueueRowKeys] = useState<
+    readonly CockpitQueueRowKey[]
+  >([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const onEditSelectedRowRef = useRef(onEditSelectedRow);
@@ -103,7 +162,7 @@ export function WorkspaceKeyboardProvider({
         return;
       }
 
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+      if (isCommandPaletteShortcut(event)) {
         event.preventDefault();
         setCommandOpen(true);
         return;
@@ -115,7 +174,7 @@ export function WorkspaceKeyboardProvider({
 
       const key = event.key.toLowerCase();
 
-      if (key === "?" || (event.shiftKey && key === "/")) {
+      if (isShortcutsDialogShortcut(event, key)) {
         event.preventDefault();
         setShortcutsOpen(true);
         return;
@@ -125,38 +184,25 @@ export function WorkspaceKeyboardProvider({
         return;
       }
 
-      if (key === "j") {
-        event.preventDefault();
-        setSelectedIndex((current) => {
-          const next = Math.min(
-            queueRowKeysRef.current.length - 1,
-            current + 1
-          );
-          selectedIndexRef.current = next;
-          return next;
-        });
+      if (
+        moveQueueSelection(
+          event,
+          key,
+          queueRowKeysRef,
+          selectedIndexRef,
+          setSelectedIndex
+        )
+      ) {
         return;
       }
 
-      if (key === "k") {
-        event.preventDefault();
-        setSelectedIndex((current) => {
-          const next = Math.max(0, current - 1);
-          selectedIndexRef.current = next;
-          return next;
-        });
-        return;
-      }
-
-      if (key === "e") {
-        const rowKey =
-          queueRowKeysRef.current[selectedIndexRef.current] ?? null;
-
-        if (rowKey) {
-          event.preventDefault();
-          onEditSelectedRowRef.current?.(rowKey);
-        }
-      }
+      editSelectedQueueRow(
+        event,
+        key,
+        queueRowKeysRef,
+        selectedIndexRef,
+        onEditSelectedRowRef
+      );
     };
 
     window.addEventListener("keydown", onKeyDown);

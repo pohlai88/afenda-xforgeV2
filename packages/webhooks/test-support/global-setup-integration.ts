@@ -1,3 +1,4 @@
+// @boundaries-ignore: repo-level test-support is the shared Vitest bootstrap.
 import {
   hasIntegrationDatabase,
   loadIntegrationEnv,

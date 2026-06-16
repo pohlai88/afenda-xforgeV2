@@ -1,7 +1,5 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { cn } from "@repo/design-system/lib/utils";
 import {
   TOPBAR_MAX_PINNED_UTILITY_SLOTS,
   TOPBAR_MAX_TOTAL_UTILITY_SLOTS,
@@ -10,6 +8,8 @@ import {
   topbarUtilitiesFixedClusterClass,
   topbarUtilitiesPinnedClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import { useMemo, useState } from "react";
 import { TopbarActionsMenu } from "./topbar-actions-menu";
 import type { TopbarUtilitiesRailProps } from "./topbar-types";
 import { TopbarUtilitiesBar } from "./topbar-utilities-bar";
@@ -43,6 +43,7 @@ export function TopbarUtilitiesRail({
     pinnedActions,
     pinnedOrder,
     resolvedEnabledIds,
+    resolvedOrder,
   } = useTopbarUtilitiesState({
     catalog,
     defaultEnabledIds,
@@ -74,7 +75,7 @@ export function TopbarUtilitiesRail({
       aria-label="Topbar utilities"
       className={cn("flex min-w-0 items-center", className)}
       data-slot="app-topbar-utilities-rail"
-        role="toolbar"
+      role="toolbar"
     >
       {hasPinnedUtilities ? (
         <TopbarUtilitiesBar
@@ -102,8 +103,10 @@ export function TopbarUtilitiesRail({
           maxTotalSlots={maxTotalSlots}
           onEnabledChange={handleEnabledChange}
           onOpenChange={setMarketOpen}
+          onOrderChange={commitOrder}
           onRequestUtility={onRequestUtility}
           open={marketOpen}
+          order={resolvedOrder}
           requestUtilityFeaturesLabel={requestUtilityFeaturesLabel}
           requestUtilityNameLabel={requestUtilityNameLabel}
           requestUtilityNote={requestUtilityNote}

@@ -2,10 +2,10 @@
 
 import Editor from "@monaco-editor/react";
 
-type MdxEditorPanelProperties = {
-  value: string;
+interface MdxEditorPanelProperties {
   onChange: (value: string) => void;
-};
+  value: string;
+}
 
 export const MdxEditorPanel = ({
   value,

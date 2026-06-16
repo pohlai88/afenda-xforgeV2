@@ -13,7 +13,11 @@ import { useCallback, useEffect, useId, useState } from "react";
 import { fromSupabaseError } from "../auth-result";
 import { createClient } from "../client";
 import { useAuthUiConfig } from "../context/auth-ui-config";
-import { AuthConfigNotice, AuthErrorAlert, AuthSuccessAlert } from "./auth-feedback";
+import {
+  AuthConfigNotice,
+  AuthErrorAlert,
+  AuthSuccessAlert,
+} from "./auth-feedback";
 import { AuthPendingButton } from "./auth-pending-button";
 import {
   AuthLoadingState,
@@ -21,12 +25,12 @@ import {
   AuthSectionHeader,
 } from "./auth-section";
 
-type MfaFactor = {
-  id: string;
-  friendly_name?: string;
+interface MfaFactor {
   factor_type: string;
+  friendly_name?: string;
+  id: string;
   status: string;
-};
+}
 
 export const MfaManager = () => {
   const { settings } = useAuthUiConfig();
@@ -79,7 +83,9 @@ export const MfaManager = () => {
       const trimmed = phoneNumber.trim();
 
       if (!trimmed) {
-        setError("Enter your phone number in E.164 format (e.g. +15551234567).");
+        setError(
+          "Enter your phone number in E.164 format (e.g. +15551234567)."
+        );
         setEnrolling(false);
         return;
       }
@@ -156,7 +162,9 @@ export const MfaManager = () => {
     }
 
     setMessage(
-      enrollMode === "phone" ? "Phone factor added." : "Authenticator app added."
+      enrollMode === "phone"
+        ? "Phone factor added."
+        : "Authenticator app added."
     );
     setFactorId(null);
     setQrCode(null);
@@ -194,8 +202,10 @@ export const MfaManager = () => {
     return null;
   }
 
-  const showTotpActions = settings.mfa.totpEnrollEnabled || settings.mfa.totpVerifyEnabled;
-  const showPhoneActions = settings.mfa.phoneEnrollEnabled || settings.mfa.phoneVerifyEnabled;
+  const showTotpActions =
+    settings.mfa.totpEnrollEnabled || settings.mfa.totpVerifyEnabled;
+  const showPhoneActions =
+    settings.mfa.phoneEnrollEnabled || settings.mfa.phoneVerifyEnabled;
 
   return (
     <AuthSection aria-busy={loading} aria-labelledby={titleId}>
@@ -205,25 +215,26 @@ export const MfaManager = () => {
         titleId={titleId}
       />
 
-      {settings.mfa.totpEnrollEnabled || settings.mfa.phoneEnrollEnabled ? null : (
+      {settings.mfa.totpEnrollEnabled ||
+      settings.mfa.phoneEnrollEnabled ? null : (
         <AuthConfigNotice>
-          MFA enrollment is disabled in Supabase. Verification may still be required
-          for existing factors, but new methods cannot be added until enrollment is
-          turned on in the Supabase dashboard.
+          MFA enrollment is disabled in Supabase. Verification may still be
+          required for existing factors, but new methods cannot be added until
+          enrollment is turned on in the Supabase dashboard.
         </AuthConfigNotice>
       )}
 
       {settings.mfa.totpEnrollEnabled ? null : showTotpActions ? (
         <AuthConfigNotice>
-          TOTP enrollment is disabled in Supabase. Existing authenticator apps can
-          still verify sign-in when verify is enabled.
+          TOTP enrollment is disabled in Supabase. Existing authenticator apps
+          can still verify sign-in when verify is enabled.
         </AuthConfigNotice>
       ) : null}
 
       {settings.mfa.phoneEnrollEnabled ? null : showPhoneActions ? (
         <AuthConfigNotice>
-          Phone MFA enrollment is disabled in Supabase. Enable phone auth and SMS
-          in the dashboard to add phone factors.
+          Phone MFA enrollment is disabled in Supabase. Enable phone auth and
+          SMS in the dashboard to add phone factors.
         </AuthConfigNotice>
       ) : null}
 
@@ -300,7 +311,9 @@ export const MfaManager = () => {
               type="tel"
               value={phoneNumber}
             />
-            <FieldHint>Use international format including country code.</FieldHint>
+            <FieldHint>
+              Use international format including country code.
+            </FieldHint>
           </Field>
           <AuthPendingButton
             className="w-fit"
@@ -334,7 +347,9 @@ export const MfaManager = () => {
           )}
           <Field>
             <FieldLabel htmlFor={verifyFieldId}>
-              {enrollMode === "phone" ? "SMS verification code" : "Verification code"}
+              {enrollMode === "phone"
+                ? "SMS verification code"
+                : "Verification code"}
             </FieldLabel>
             <Input
               aria-describedby={`${verifyFieldId}-hint`}

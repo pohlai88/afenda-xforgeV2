@@ -63,7 +63,10 @@ export function TopbarUtilitiesRequestForm({
         ) : null}
       </div>
       <div className="grid gap-1.5">
-        <Label className="text-[11px] text-text-secondary" htmlFor="topbar-utility-request-name">
+        <Label
+          className="text-[11px] text-text-secondary"
+          htmlFor="topbar-utility-request-name"
+        >
           {nameLabel}
         </Label>
         <Input

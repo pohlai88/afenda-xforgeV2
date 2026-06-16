@@ -13,7 +13,10 @@ const ciBail = process.env.CI ? 1 : 0;
 export const testSupportPaths = {
   repoRoot,
   unitSetup: path.resolve(repoRoot, "test-support/setup-unit-env.ts"),
-  integrationSetup: path.resolve(repoRoot, "test-support/setup-integration-env.ts"),
+  integrationSetup: path.resolve(
+    repoRoot,
+    "test-support/setup-integration-env.ts"
+  ),
   serverOnlyStub: path.resolve(repoRoot, "test-support/server-only-stub.ts"),
 } as const;
 

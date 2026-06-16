@@ -7,14 +7,14 @@ import type { AuthAuditLogEntry } from "./auth-audit-log.shared";
 export type { AuthAuditLogEntry } from "./auth-audit-log.shared";
 export { formatAuthAuditAction } from "./auth-audit-log.shared";
 
-type AuditLogRow = {
-  id: string;
-  created_at: string;
+interface AuditLogRow {
   action: string | null;
   audit_ip: string | null;
+  created_at: string;
+  id: string;
   session_ip: string | null;
   session_user_agent: string | null;
-};
+}
 
 /**
  * Recent Supabase Auth audit events for the signed-in user.

@@ -1,4 +1,3 @@
-import type { Meta, StoryObj } from "@storybook/react";
 import {
   AuthenticatedAppShellBlock,
   DEFAULT_ERP_ACTIONS_MENU_ITEMS,
@@ -8,6 +7,7 @@ import {
   type TopbarActionMenuItem,
   type TopbarScopeSwitcherConfig,
 } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 import { Building2Icon } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -64,7 +64,11 @@ const demoScopeSwitchers: TopbarScopeSwitcherConfig[] = [
   },
 ];
 
-const demoDefaultEnabledUtilityIds = ["help", "feedback", "notifications"] as const;
+const demoDefaultEnabledUtilityIds = [
+  "help",
+  "feedback",
+  "notifications",
+] as const;
 
 function DemoOperatorTopbar() {
   const [scopeSwitchers, setScopeSwitchers] = useState(demoScopeSwitchers);
@@ -102,8 +106,8 @@ function DemoOperatorTopbar() {
       brand={{
         icon: <Building2Icon aria-hidden="true" className="size-4" />,
       }}
-      sidebarControl
       scopeSwitchers={wiredSwitchers}
+      sidebarControl
       utilitiesRail={{
         catalog: DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
         defaultEnabledIds: demoDefaultEnabledUtilityIds,
@@ -165,7 +169,7 @@ export const InAppShell: Story = {
       intent="operation"
       siteContainerConfig={{ adjustable: false, mode: "docked" }}
     >
-      <div className="grid min-h-40 place-items-center rounded-[var(--card-radius)] border border-dashed border-border-default bg-surface-muted/20 p-6 text-[13px] text-text-secondary">
+      <div className="grid min-h-40 place-items-center rounded-[var(--card-radius)] border border-border-default border-dashed bg-surface-muted/20 p-6 text-[13px] text-text-secondary">
         Site container content — topbar owns chrome; app owns route data.
       </div>
     </AuthenticatedAppShellBlock>

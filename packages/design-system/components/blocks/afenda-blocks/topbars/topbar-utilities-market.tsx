@@ -1,6 +1,5 @@
 "use client";
 
-import { memo, useMemo, useState } from "react";
 import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
   DropdownMenu,
@@ -11,48 +10,127 @@ import {
 } from "@repo/design-system/components/afenda-ui/dropdown-menu";
 import { Input } from "@repo/design-system/components/afenda-ui/input";
 import { Switch } from "@repo/design-system/components/afenda-ui/switch";
-import { cn } from "@repo/design-system/lib/utils";
-import { SearchIcon, StoreIcon } from "lucide-react";
 import { TOPBAR_FIXED_UTILITY_SLOTS } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import { GripVerticalIcon, SearchIcon, StoreIcon } from "lucide-react";
+import { type DragEvent, memo, useMemo, useState } from "react";
 import { TopbarTooltip } from "./topbar-tooltip";
-import { TopbarUtilitiesRequestForm } from "./topbar-utilities-request-form";
 import type { TopbarUtilitiesMarketProps } from "./topbar-types";
+import { TopbarUtilitiesRequestForm } from "./topbar-utilities-request-form";
+
+function reorderUtilityIds(
+  order: readonly string[],
+  draggedId: string,
+  targetId: string
+): readonly string[] {
+  const next = [...order];
+  const fromIndex = next.indexOf(draggedId);
+  const toIndex = next.indexOf(targetId);
+
+  if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
+    return order;
+  }
+
+  const [removed] = next.splice(fromIndex, 1);
+  next.splice(toIndex, 0, removed);
+  return next;
+}
 
 interface MarketCatalogRowProps {
   readonly atPinLimit: boolean;
+  readonly draggable: boolean;
   readonly enabled: boolean;
+  readonly isDragging: boolean;
+  readonly isDropTarget: boolean;
   readonly item: TopbarUtilitiesMarketProps["catalog"][number];
+  readonly onDragEnd: () => void;
+  readonly onDragLeave: () => void;
+  readonly onDragOver: (event: DragEvent<HTMLDivElement>) => void;
+  readonly onDragStart: (event: DragEvent<HTMLDivElement>) => void;
+  readonly onDrop: (event: DragEvent<HTMLDivElement>) => void;
   readonly onEnabledChange: TopbarUtilitiesMarketProps["onEnabledChange"];
+}
+
+function catalogRowMatchesFilter(
+  item: TopbarUtilitiesMarketProps["catalog"][number],
+  query: string
+): boolean {
+  const trimmed = query.trim().toLowerCase();
+  if (!trimmed) {
+    return true;
+  }
+
+  const haystack = [
+    item.label,
+    item.description ?? "",
+    item.id.replaceAll("-", " "),
+    ...(item.searchAliases ?? []),
+  ]
+    .join(" ")
+    .toLowerCase();
+  const tokens = trimmed.split(/\s+/).filter(Boolean);
+
+  return tokens.every((token) => haystack.includes(token));
 }
 
 const MarketCatalogRow = memo(function MarketCatalogRow({
   atPinLimit,
+  draggable,
   enabled,
   item,
   onEnabledChange,
+  onDragEnd,
+  onDragLeave,
+  onDragOver,
+  onDragStart,
+  onDrop,
+  isDragging,
+  isDropTarget,
 }: MarketCatalogRowProps) {
   return (
-    <div className="flex items-center gap-2 rounded-md px-2 py-1.5">
-      <span className="grid size-7 shrink-0 place-items-center rounded-md border border-border-subtle bg-surface-muted/40">
-        {item.icon}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="truncate font-medium text-[12px]">{item.label}</p>
-        {item.description ? (
-          <p className="truncate text-[10px] text-text-tertiary">
-            {item.description}
-          </p>
-        ) : null}
+    <div
+      className={cn(
+        "group relative rounded-md transition-[opacity,box-shadow,transform] duration-120 ease-out motion-reduce:transition-none",
+        draggable && "cursor-move active:cursor-move",
+        isDragging && "opacity-60",
+        isDropTarget &&
+          "after:absolute after:inset-y-1 after:-right-0.5 after:w-0.5 after:rounded-full after:bg-brand-primary/70"
+      )}
+      draggable={draggable}
+      onDragEnd={onDragEnd}
+      onDragLeave={onDragLeave}
+      onDragOver={onDragOver}
+      onDragStart={onDragStart}
+      onDrop={onDrop}
+    >
+      <div className="flex items-center gap-2 rounded-md px-2 py-1.5">
+        <span className="grid size-5 shrink-0 place-items-center text-text-tertiary">
+          <GripVerticalIcon aria-hidden="true" className="size-3.5" />
+        </span>
+        <span className="grid size-7 shrink-0 place-items-center rounded-md border border-border-subtle bg-surface-muted/40">
+          {item.icon}
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-medium text-[12px]">{item.label}</p>
+          {item.description ? (
+            <p className="truncate text-[10px] text-text-tertiary">
+              {item.description}
+            </p>
+          ) : null}
+        </div>
+        <Switch
+          aria-label={`${enabled ? "Remove" : "Pin"} ${item.label}`}
+          checked={enabled}
+          disabled={atPinLimit}
+          onCheckedChange={(checked) => {
+            onEnabledChange(item.id, checked);
+          }}
+          onPointerDown={(event) => {
+            event.stopPropagation();
+          }}
+        />
       </div>
-      <Switch
-        aria-label={`${enabled ? "Remove" : "Pin"} ${item.label}`}
-        checked={enabled}
-        disabled={atPinLimit}
-        onCheckedChange={(checked) => {
-          onEnabledChange(item.id, checked);
-        }}
-      />
     </div>
   );
 });
@@ -67,7 +145,9 @@ export function TopbarUtilitiesMarket({
   maxTotalSlots,
   menuLabel = "Open utilities market",
   onEnabledChange,
+  onOrderChange,
   onOpenChange,
+  order,
   onRequestUtility,
   open,
   requestUtilityFeaturesLabel,
@@ -77,21 +157,53 @@ export function TopbarUtilitiesMarket({
   requestUtilityTitle,
 }: TopbarUtilitiesMarketProps) {
   const [query, setQuery] = useState("");
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [dropTargetId, setDropTargetId] = useState<string | null>(null);
   const enabledIdSet = useMemo(() => new Set(enabledIds), [enabledIds]);
   const normalizedQuery = query.trim().toLowerCase();
   const enabledCount = enabledIds.length;
   const onBarTotal = enabledCount + TOPBAR_FIXED_UTILITY_SLOTS;
   const atPinLimit = enabledCount >= maxPinnedSlots;
-  const filteredCatalog = useMemo(() => {
-    if (!normalizedQuery) {
-      return catalog;
+  const resolvedOrder = useMemo(() => {
+    if (!order || order.length === 0) {
+      return catalog.map((item) => item.id);
     }
 
-    return catalog.filter((item) => {
-      const haystack = `${item.label} ${item.description ?? ""}`.toLowerCase();
-      return haystack.includes(normalizedQuery);
-    });
-  }, [catalog, normalizedQuery]);
+    const orderedIds = order.filter((id) =>
+      catalog.some((item) => item.id === id)
+    );
+    const missingIds = catalog
+      .map((item) => item.id)
+      .filter((id) => !orderedIds.includes(id));
+
+    return [...orderedIds, ...missingIds];
+  }, [catalog, order]);
+  const orderedCatalog = useMemo(() => {
+    const itemById = new Map(catalog.map((item) => [item.id, item]));
+    return resolvedOrder
+      .map((id) => itemById.get(id))
+      .filter(
+        (item): item is TopbarUtilitiesMarketProps["catalog"][number] =>
+          item !== undefined
+      );
+  }, [catalog, resolvedOrder]);
+  const filteredCatalog = useMemo(() => {
+    if (!normalizedQuery) {
+      return orderedCatalog;
+    }
+
+    return orderedCatalog.filter((item) =>
+      catalogRowMatchesFilter(item, normalizedQuery)
+    );
+  }, [normalizedQuery, orderedCatalog]);
+  const pinnedItems = useMemo(
+    () => filteredCatalog.filter((item) => enabledIdSet.has(item.id)),
+    [enabledIdSet, filteredCatalog]
+  );
+  const availableItems = useMemo(
+    () => filteredCatalog.filter((item) => !enabledIdSet.has(item.id)),
+    [enabledIdSet, filteredCatalog]
+  );
 
   if (catalog.length === 0) {
     return null;
@@ -123,12 +235,15 @@ export function TopbarUtilitiesMarket({
             Utilities market
           </DropdownMenuLabel>
           <p className="mt-1 text-[11px] text-text-tertiary leading-snug">
-            {catalog.length} available · {maxPinnedSlots} pin slots · {onBarTotal}/
-            {maxTotalSlots} on bar
+            {catalog.length} available · {maxPinnedSlots} pin slots ·{" "}
+            {onBarTotal}/{maxTotalSlots} on bar
           </p>
           <p className="text-[10px] text-text-tertiary leading-snug">
             {enabledCount} pinned · {TOPBAR_FIXED_UTILITY_SLOTS} fixed (market,
             menu)
+          </p>
+          <p className="text-[10px] text-text-tertiary leading-snug">
+            Drag here or on the topbar to reorder.
           </p>
           <div className="relative mt-2">
             <SearchIcon
@@ -148,15 +263,144 @@ export function TopbarUtilitiesMarket({
         </div>
         <div className="max-h-64 overflow-y-auto p-1">
           {filteredCatalog.length > 0 ? (
-            filteredCatalog.map((item) => (
-              <MarketCatalogRow
-                atPinLimit={atPinLimit && !enabledIdSet.has(item.id)}
-                enabled={enabledIdSet.has(item.id)}
-                item={item}
-                key={item.id}
-                onEnabledChange={onEnabledChange}
-              />
-            ))
+            <>
+              {pinnedItems.length > 0 ? (
+                <div className="px-2 pt-2 pb-1 font-medium text-[10px] text-text-tertiary uppercase tracking-[0.08em]">
+                  Pinned on topbar
+                </div>
+              ) : null}
+              {pinnedItems.map((item) => (
+                <MarketCatalogRow
+                  atPinLimit={atPinLimit && !enabledIdSet.has(item.id)}
+                  draggable={!normalizedQuery}
+                  enabled={enabledIdSet.has(item.id)}
+                  isDragging={draggingId === item.id}
+                  isDropTarget={
+                    dropTargetId === item.id &&
+                    draggingId !== null &&
+                    draggingId !== item.id
+                  }
+                  item={item}
+                  key={item.id}
+                  onDragEnd={() => {
+                    setDraggingId(null);
+                    setDropTargetId(null);
+                  }}
+                  onDragLeave={() => {
+                    setDropTargetId((current) =>
+                      current === item.id ? null : current
+                    );
+                  }}
+                  onDragOver={(event) => {
+                    if (normalizedQuery || draggingId === item.id) {
+                      return;
+                    }
+
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = "move";
+                    setDropTargetId(item.id);
+                  }}
+                  onDragStart={(event) => {
+                    if (normalizedQuery) {
+                      return;
+                    }
+
+                    setDraggingId(item.id);
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", item.id);
+                  }}
+                  onDrop={(event) => {
+                    if (normalizedQuery) {
+                      return;
+                    }
+
+                    event.preventDefault();
+                    const draggedId = event.dataTransfer.getData("text/plain");
+
+                    if (!draggedId || draggedId === item.id) {
+                      setDraggingId(null);
+                      setDropTargetId(null);
+                      return;
+                    }
+
+                    onOrderChange?.(
+                      reorderUtilityIds(resolvedOrder, draggedId, item.id)
+                    );
+                    setDraggingId(null);
+                    setDropTargetId(null);
+                  }}
+                  onEnabledChange={onEnabledChange}
+                />
+              ))}
+              {availableItems.length > 0 ? (
+                <div className="px-2 pt-3 pb-1 font-medium text-[10px] text-text-tertiary uppercase tracking-[0.08em]">
+                  Available utilities
+                </div>
+              ) : null}
+              {availableItems.map((item) => (
+                <MarketCatalogRow
+                  atPinLimit={atPinLimit && !enabledIdSet.has(item.id)}
+                  draggable={!normalizedQuery}
+                  enabled={enabledIdSet.has(item.id)}
+                  isDragging={draggingId === item.id}
+                  isDropTarget={
+                    dropTargetId === item.id &&
+                    draggingId !== null &&
+                    draggingId !== item.id
+                  }
+                  item={item}
+                  key={item.id}
+                  onDragEnd={() => {
+                    setDraggingId(null);
+                    setDropTargetId(null);
+                  }}
+                  onDragLeave={() => {
+                    setDropTargetId((current) =>
+                      current === item.id ? null : current
+                    );
+                  }}
+                  onDragOver={(event) => {
+                    if (normalizedQuery || draggingId === item.id) {
+                      return;
+                    }
+
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = "move";
+                    setDropTargetId(item.id);
+                  }}
+                  onDragStart={(event) => {
+                    if (normalizedQuery) {
+                      return;
+                    }
+
+                    setDraggingId(item.id);
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", item.id);
+                  }}
+                  onDrop={(event) => {
+                    if (normalizedQuery) {
+                      return;
+                    }
+
+                    event.preventDefault();
+                    const draggedId = event.dataTransfer.getData("text/plain");
+
+                    if (!draggedId || draggedId === item.id) {
+                      setDraggingId(null);
+                      setDropTargetId(null);
+                      return;
+                    }
+
+                    onOrderChange?.(
+                      reorderUtilityIds(resolvedOrder, draggedId, item.id)
+                    );
+                    setDraggingId(null);
+                    setDropTargetId(null);
+                  }}
+                  onEnabledChange={onEnabledChange}
+                />
+              ))}
+            </>
           ) : (
             <div className="px-2 py-6 text-center text-[11px] text-text-tertiary">
               No utilities match that search.

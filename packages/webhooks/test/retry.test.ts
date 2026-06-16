@@ -35,14 +35,14 @@ describe("getNextAttemptAt", () => {
     const next = getNextAttemptAt(1, "transient");
 
     expect(next).not.toBeNull();
-    expect(next!.getTime()).toBeGreaterThan(Date.now());
+    expect(next?.getTime()).toBeGreaterThan(Date.now());
   });
 
   it("schedules client-error retries with a short delay", () => {
     const next = getNextAttemptAt(0, "client");
 
     expect(next).not.toBeNull();
-    expect(next!.getTime()).toBeGreaterThan(Date.now());
-    expect(next!.getTime()).toBeLessThan(Date.now() + 2 * 60_000);
+    expect(next?.getTime()).toBeGreaterThan(Date.now());
+    expect(next?.getTime()).toBeLessThan(Date.now() + 2 * 60_000);
   });
 });

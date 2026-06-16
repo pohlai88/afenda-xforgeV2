@@ -1,160 +1,160 @@
-export type PasswordRule = {
+export interface PasswordRule {
   id: string;
   label: string;
   test: (password: string) => boolean;
-};
+}
 
 /** Serializable — safe to pass from Server Components to client context. */
-export type PasswordPolicyConfig = {
+export interface PasswordPolicyConfig {
+  blockLeakedPasswords: boolean;
   minLength: number;
+  requireDigits: boolean;
   requiredCharacters: string | null;
   requireLowercase: boolean;
-  requireUppercase: boolean;
-  requireDigits: boolean;
   requireSymbols: boolean;
-  blockLeakedPasswords: boolean;
-};
+  requireUppercase: boolean;
+}
 
 /** Resolved on the client — includes validator functions. */
 export type PasswordPolicy = PasswordPolicyConfig & {
   rules: PasswordRule[];
 };
 
-export type AuthPasskeySettings = {
+export interface AuthPasskeySettings {
   enabled: boolean;
-  rpId: string | null;
   rpDisplayName: string | null;
+  rpId: string | null;
   rpOrigins: string[];
-};
+}
 
-export type AuthMfaSettings = {
+export interface AuthMfaSettings {
   maxEnrolledFactors: number;
-  totpEnrollEnabled: boolean;
-  totpVerifyEnabled: boolean;
   phoneEnrollEnabled: boolean;
   phoneVerifyEnabled: boolean;
-};
+  totpEnrollEnabled: boolean;
+  totpVerifyEnabled: boolean;
+}
 
-export type AuthOtpSettings = {
-  length: number;
+export interface AuthOtpSettings {
   expSeconds: number;
-};
+  length: number;
+}
 
-export type AuthUrlSettings = {
+export interface AuthUrlSettings {
   siteUrl: string | null;
   uriAllowList: string[];
-};
+}
 
-export type AuthSecuritySettings = {
+export interface AuthSecuritySettings {
   captchaEnabled: boolean;
   captchaProvider: string | null;
+  manualLinkingEnabled: boolean;
   requireCurrentPasswordOnChange: boolean;
   requireReauthenticationOnChange: boolean;
-  manualLinkingEnabled: boolean;
-};
+}
 
-export type AuthSessionSettings = {
-  /** Access token (JWT) lifetime in seconds. Supabase recommends 3600 (1 hour). */
-  jwtExpSeconds: number;
-  /** Fixed max session lifetime in hours; `null` when time-box is disabled. */
-  timeboxHours: number | null;
+export interface AuthSessionSettings {
   /** Inactivity timeout in hours before session ends on next refresh. */
   inactivityTimeoutHours: number | null;
-  singlePerUser: boolean;
-  refreshTokenRotationEnabled: boolean;
+  /** Access token (JWT) lifetime in seconds. Supabase recommends 3600 (1 hour). */
+  jwtExpSeconds: number;
   /** SSR-safe reuse window — keep at 10s unless you know why you are changing it. */
   refreshTokenReuseIntervalSeconds: number;
-};
+  refreshTokenRotationEnabled: boolean;
+  singlePerUser: boolean;
+  /** Fixed max session lifetime in hours; `null` when time-box is disabled. */
+  timeboxHours: number | null;
+}
 
-export type AuthRateLimitSettings = {
+export interface AuthRateLimitSettings {
+  anonymousUsersPerHour: number | null;
   emailSentPerHour: number | null;
   otpPerInterval: number | null;
-  verifyPerInterval: number | null;
-  tokenRefreshPerInterval: number | null;
-  smsSentPerHour: number | null;
-  anonymousUsersPerHour: number | null;
   otpResendSeconds: number | null;
   sbForwardedForEnabled: boolean;
-};
+  smsSentPerHour: number | null;
+  tokenRefreshPerInterval: number | null;
+  verifyPerInterval: number | null;
+}
 
-export type AuthAuditSettings = {
+export interface AuthAuditSettings {
   /** When false, events still go to Supabase dashboard log storage. */
   postgresStorageEnabled: boolean;
-};
+}
 
-export type AuthUiSettings = {
+export interface AuthUiSettings {
+  anonymous: boolean;
+  audit: AuthAuditSettings;
+  disableSignup: boolean;
   email: boolean;
   google: boolean;
-  passkeys: boolean;
-  phone: boolean;
-  saml: boolean;
-  anonymous: boolean;
-  disableSignup: boolean;
   mailerAutoconfirm: boolean;
-  password: PasswordPolicyConfig;
-  passkey: AuthPasskeySettings;
   mfa: AuthMfaSettings;
   otp: AuthOtpSettings;
-  urls: AuthUrlSettings;
+  passkey: AuthPasskeySettings;
+  passkeys: boolean;
+  password: PasswordPolicyConfig;
+  phone: boolean;
+  rateLimits: AuthRateLimitSettings;
+  saml: boolean;
   security: AuthSecuritySettings;
   sessions: AuthSessionSettings;
-  rateLimits: AuthRateLimitSettings;
-  audit: AuthAuditSettings;
-};
+  urls: AuthUrlSettings;
+}
 
-export type SupabaseAuthSettingsResponse = {
+export interface SupabaseAuthSettingsResponse {
+  disable_signup?: boolean;
   external?: {
     email?: boolean;
     google?: boolean;
     phone?: boolean;
     anonymous_users?: boolean;
   };
-  disable_signup?: boolean;
   mailer_autoconfirm?: boolean;
   passkeys_enabled?: boolean;
   saml_enabled?: boolean;
-};
+}
 
-export type SupabaseManagementAuthConfig = {
-  password_min_length?: number | null;
-  password_required_characters?: string | null;
-  password_hibp_enabled?: boolean | null;
-  passkey_enabled?: boolean | null;
+export interface SupabaseManagementAuthConfig {
+  audit_log_disable_postgres?: boolean | null;
   external_anonymous_users_enabled?: boolean | null;
-  webauthn_rp_id?: string | null;
-  webauthn_rp_display_name?: string | null;
-  webauthn_rp_origins?: string | null;
+  jwt_exp?: number | null;
+  mailer_otp_exp?: number | null;
+  mailer_otp_length?: number | null;
   mfa_max_enrolled_factors?: number | null;
-  mfa_totp_enroll_enabled?: boolean | null;
-  mfa_totp_verify_enabled?: boolean | null;
   mfa_phone_enroll_enabled?: boolean | null;
   mfa_phone_verify_enabled?: boolean | null;
-  mailer_otp_length?: number | null;
-  mailer_otp_exp?: number | null;
-  site_url?: string | null;
-  uri_allow_list?: string | null;
-  security_captcha_enabled?: boolean | null;
-  security_captcha_provider?: string | null;
-  security_update_password_require_current_password?: boolean | null;
-  security_update_password_require_reauthentication?: boolean | null;
-  security_manual_linking_enabled?: boolean | null;
-  jwt_exp?: number | null;
-  sessions_timebox?: number | null;
-  sessions_inactivity_timeout?: number | null;
-  sessions_single_per_user?: boolean | null;
-  refresh_token_rotation_enabled?: boolean | null;
-  security_refresh_token_reuse_interval?: number | null;
+  mfa_totp_enroll_enabled?: boolean | null;
+  mfa_totp_verify_enabled?: boolean | null;
+  passkey_enabled?: boolean | null;
+  password_hibp_enabled?: boolean | null;
+  password_min_length?: number | null;
+  password_required_characters?: string | null;
+  rate_limit_anonymous_users?: number | null;
   rate_limit_email_sent?: number | null;
   rate_limit_otp?: number | null;
-  rate_limit_verify?: number | null;
-  rate_limit_token_refresh?: number | null;
   rate_limit_sms_sent?: number | null;
-  rate_limit_anonymous_users?: number | null;
+  rate_limit_token_refresh?: number | null;
+  rate_limit_verify?: number | null;
   rate_limit_web3?: number | null;
-  smtp_max_frequency?: number | null;
+  refresh_token_rotation_enabled?: boolean | null;
+  security_captcha_enabled?: boolean | null;
+  security_captcha_provider?: string | null;
+  security_manual_linking_enabled?: boolean | null;
+  security_refresh_token_reuse_interval?: number | null;
   security_sb_forwarded_for_enabled?: boolean | null;
-  audit_log_disable_postgres?: boolean | null;
-};
+  security_update_password_require_current_password?: boolean | null;
+  security_update_password_require_reauthentication?: boolean | null;
+  sessions_inactivity_timeout?: number | null;
+  sessions_single_per_user?: boolean | null;
+  sessions_timebox?: number | null;
+  site_url?: string | null;
+  smtp_max_frequency?: number | null;
+  uri_allow_list?: string | null;
+  webauthn_rp_display_name?: string | null;
+  webauthn_rp_id?: string | null;
+  webauthn_rp_origins?: string | null;
+}
 
 const LOWER_SET = "abcdefghijklmnopqrstuvwxyz";
 const UPPER_SET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

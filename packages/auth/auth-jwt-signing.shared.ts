@@ -1,23 +1,23 @@
-export type JwtSigningKeyInfo = {
-  kid: string;
+export interface JwtSigningKeyInfo {
   algorithm: string;
   keyType: string;
-};
+  kid: string;
+}
 
-export type JwtApiKeyMode = {
+export interface JwtApiKeyMode {
   client: "publishable" | "legacy_anon_jwt" | "missing" | "unknown";
   server: "secret" | "legacy_service_role_jwt" | "missing" | "unknown";
-};
+}
 
-export type JwtSigningReport = {
-  jwksUrl: string;
-  signingSystem: "asymmetric" | "legacy_hs256_only" | "unknown";
+export interface JwtSigningReport {
   activeKeys: JwtSigningKeyInfo[];
   apiKeys: JwtApiKeyMode;
-  verificationMethod: "getClaims_jwks";
+  jwksUrl: string;
   legacyAnonKeyEnabled: boolean | null;
   recommendations: string[];
-};
+  signingSystem: "asymmetric" | "legacy_hs256_only" | "unknown";
+  verificationMethod: "getClaims_jwks";
+}
 
 export const describeJwtAlgorithm = (algorithm: string): string => {
   switch (algorithm) {

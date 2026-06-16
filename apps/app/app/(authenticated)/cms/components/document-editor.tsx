@@ -13,13 +13,13 @@ import { FrontmatterForm } from "./frontmatter-form";
 import { MdxEditor } from "./mdx-editor";
 import { SaveToolbar } from "./save-toolbar";
 
-type DocumentEditorProperties = {
+interface DocumentEditorProperties {
   collection: CmsCollectionName;
-  locale: CmsLocale;
-  initialSlug?: string;
-  initialFrontmatter: Record<string, unknown>;
   initialBody: string;
-};
+  initialFrontmatter: Record<string, unknown>;
+  initialSlug?: string;
+  locale: CmsLocale;
+}
 
 export const DocumentEditor = ({
   collection,
@@ -137,6 +137,7 @@ export const DocumentEditor = ({
       return;
     }
 
+    // biome-ignore lint/suspicious/noAlert: Keeps the existing destructive confirm flow until a CMS dialog is designed.
     if (!window.confirm(`Delete "${slug}"? This cannot be undone.`)) {
       return;
     }

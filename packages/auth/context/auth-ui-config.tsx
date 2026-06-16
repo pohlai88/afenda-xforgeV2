@@ -8,26 +8,26 @@ import {
   resolvePasswordPolicy,
 } from "../auth-ui-settings";
 
-type AuthUiConfig = {
-  termsUrl?: string;
-  privacyUrl?: string;
+interface AuthUiConfig {
   helpUrl?: string;
-  settings: AuthUiSettings;
   passwordPolicy: PasswordPolicy;
-};
+  privacyUrl?: string;
+  settings: AuthUiSettings;
+  termsUrl?: string;
+}
 
 const AuthUiConfigContext = createContext<AuthUiConfig>({
   settings: defaultAuthUiSettings(),
   passwordPolicy: resolvePasswordPolicy(defaultAuthUiSettings().password),
 });
 
-type AuthUiConfigProviderProperties = {
+interface AuthUiConfigProviderProperties {
   children: ReactNode;
-  termsUrl?: string;
-  privacyUrl?: string;
   helpUrl?: string;
+  privacyUrl?: string;
   settings?: AuthUiSettings;
-};
+  termsUrl?: string;
+}
 
 export const AuthUiConfigProvider = ({
   children,
@@ -46,6 +46,7 @@ export const AuthUiConfigProvider = ({
       settings.password.requireUppercase,
       settings.password.requireDigits,
       settings.password.requireSymbols,
+      settings.password,
     ]
   );
 

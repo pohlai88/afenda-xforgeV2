@@ -15,6 +15,8 @@ const EDIT_TOOLS = new Set([
 ]);
 
 const ENV_PATH = /(?:^|[/\\])\.env(?:\.|$)|\.env\.example$/i;
+const NEXT_PUBLIC_ASSIGNMENT = /^(NEXT_PUBLIC_[A-Z0-9_]+)\s*=\s*(.*)$/;
+const NEXT_PUBLIC_PREFIX = /^NEXT_PUBLIC_/;
 
 /** Safe public key fragments (Supabase anon/publishable, app URLs). */
 const ALLOWED_KEY_FRAGMENTS = [
@@ -97,13 +99,13 @@ function scanEnvContent(content) {
       continue;
     }
 
-    const match = trimmed.match(/^(NEXT_PUBLIC_[A-Z0-9_]+)\s*=\s*(.*)$/);
+    const match = trimmed.match(NEXT_PUBLIC_ASSIGNMENT);
     if (!match) {
       continue;
     }
 
     const [, key, rawValue] = match;
-    const suffix = key.replace(/^NEXT_PUBLIC_/, "");
+    const suffix = key.replace(NEXT_PUBLIC_PREFIX, "");
 
     const allowed = ALLOWED_KEY_FRAGMENTS.some((fragment) =>
       suffix.includes(fragment)
@@ -147,7 +149,7 @@ if (toolName && !EDIT_TOOLS.has(toolName)) {
 
 const path = extractPath(input);
 
-if (!path || !ENV_PATH.test(path)) {
+if (!(path && ENV_PATH.test(path))) {
   emit({ permission: "allow" });
   process.exit(0);
 }

@@ -1,7 +1,7 @@
 import type {
   ComponentPropsWithoutRef,
-  PointerEvent as ReactPointerEvent,
   ReactNode,
+  PointerEvent as ReactPointerEvent,
   RefObject,
 } from "react";
 import type { BlockBaseProps } from "../../foundation";

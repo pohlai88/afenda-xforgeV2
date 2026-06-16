@@ -9,11 +9,11 @@ export {
   getCmsCacheTags,
 } from "./loader/cached-reads";
 
-export type CmsRevalidateInput = {
+export interface CmsRevalidateInput {
   collection: CollectionName;
   locale?: string;
   slug?: string;
-};
+}
 
 export const getCmsRevalidationPaths = ({
   collection,

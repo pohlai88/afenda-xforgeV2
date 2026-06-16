@@ -14,10 +14,7 @@ export function TopbarScopeSwitchers({
 
   return (
     <fieldset
-      className={cn(
-        "flex min-w-0 items-center gap-1 border-0 p-0",
-        className
-      )}
+      className={cn("flex min-w-0 items-center gap-1 border-0 p-0", className)}
       data-slot="app-topbar-scope-switchers"
     >
       <legend className="sr-only">Workspace scope switchers</legend>

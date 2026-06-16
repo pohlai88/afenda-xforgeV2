@@ -5,13 +5,13 @@ import type { AuthUiSettings } from "./auth-ui-settings";
 import { SupabaseAuthListener } from "./components/supabase-auth-listener";
 import { AuthUiConfigProvider } from "./context/auth-ui-config";
 
-type AuthProviderProperties = {
+interface AuthProviderProperties {
   children: ReactNode;
-  privacyUrl?: string;
-  termsUrl?: string;
   helpUrl?: string;
+  privacyUrl?: string;
   settings?: AuthUiSettings;
-};
+  termsUrl?: string;
+}
 
 export const AuthProvider = ({
   children,

@@ -1,7 +1,7 @@
-import type { CSSProperties } from "react";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
-import type { BlockDensity } from "../../foundation";
 import { DEFAULT_CONTENT_LAYOUT_INSETS } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+import type { CSSProperties } from "react";
+import type { BlockDensity } from "../../foundation";
 import type {
   ContentLayoutBodyGridInput,
   ContentLayoutGeometry,
@@ -40,7 +40,11 @@ function applyContentLayoutResize(
       return { ...start, width, x };
     }
     case "resize-bottom": {
-      const height = clamp(start.height + deltaY, minHeight, maxHeight - start.y);
+      const height = clamp(
+        start.height + deltaY,
+        minHeight,
+        maxHeight - start.y
+      );
       return { ...start, height };
     }
     case "resize-top": {
@@ -55,7 +59,9 @@ function applyContentLayoutResize(
   }
 }
 
-function geometryToContainerStyle(geometry: ContentLayoutGeometry): CSSProperties {
+function geometryToContainerStyle(
+  geometry: ContentLayoutGeometry
+): CSSProperties {
   return {
     bottom: "auto",
     height: `${geometry.height}px`,

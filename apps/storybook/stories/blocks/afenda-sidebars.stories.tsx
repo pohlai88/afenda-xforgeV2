@@ -1,4 +1,3 @@
-import type { Meta, StoryObj } from "@storybook/react";
 import {
   AuthenticatedAppShellBlock,
   DEMO_ERP_SIDEBAR_LABEL_GROUPS,
@@ -8,14 +7,15 @@ import {
   Sidebar,
   SidebarFooterProfile,
   SidebarFooterTrailingControl,
+  type SidebarLabelGroup,
+  type SidebarLinkRenderProps,
   SidebarNavPanel,
   SidebarProvider,
   SidebarQuickActions,
   SidebarRail,
   stripSidebarNavItemSelection,
-  type SidebarLabelGroup,
-  type SidebarLinkRenderProps,
 } from "@repo/design-system/design-system";
+import type { Meta, StoryObj } from "@storybook/react";
 import { useCallback, useState } from "react";
 
 import { layoutStoryParameters } from "../../.storybook/essentials";
@@ -124,7 +124,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Operator app sidebar (shadcn sidebar-07 icon collapse). Use `collapsible=\"icon\"` on `Sidebar`, `SidebarRail`, and tooltips when collapsed. Quick actions, grouped nav, optional labels, footer profile.",
+          'Operator app sidebar (shadcn sidebar-07 icon collapse). Use `collapsible="icon"` on `Sidebar`, `SidebarRail`, and tooltips when collapsed. Quick actions, grouped nav, optional labels, footer profile.',
       },
     },
   },
@@ -151,7 +151,7 @@ export const InAppShell: Story = {
       intent="operation"
       siteContainerConfig={{ adjustable: false, mode: "docked" }}
     >
-      <div className="grid min-h-40 place-items-center rounded-[var(--card-radius)] border border-dashed border-border-default bg-surface-muted/20 p-6 text-[13px] text-text-secondary">
+      <div className="grid min-h-40 place-items-center rounded-[var(--card-radius)] border border-border-default border-dashed bg-surface-muted/20 p-6 text-[13px] text-text-secondary">
         Site container content — sidebar block owns navigation chrome.
       </div>
     </AuthenticatedAppShellBlock>
@@ -177,7 +177,10 @@ export const NavigationGroupsOnly: Story = {
 export const LabelGroupsOnly: Story = {
   render: () => (
     <DemoOperatorSidebarStory>
-      <SidebarNavPanel groups={[]} labelGroups={DEMO_ERP_SIDEBAR_LABEL_GROUPS} />
+      <SidebarNavPanel
+        groups={[]}
+        labelGroups={DEMO_ERP_SIDEBAR_LABEL_GROUPS}
+      />
     </DemoOperatorSidebarStory>
   ),
 };

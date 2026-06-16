@@ -7,14 +7,14 @@ export const CMS_EVENT_PUBLISHED = "cms.document.published";
 export const CMS_EVENT_UNPUBLISHED = "cms.document.unpublished";
 export const CMS_EVENT_SETTINGS_UPDATED = "cms.settings.updated";
 
-export type CmsDocumentEventInput = {
+export interface CmsDocumentEventInput {
   collection: CollectionName;
   locale: CmsLocale;
-  slug: string;
-  title: string;
-  status: ContentStatus;
   publishedAt?: string;
-};
+  slug: string;
+  status: ContentStatus;
+  title: string;
+}
 
 export const cmsDocumentEventSchema = z.object({
   collection: cmsCollectionSchema,

@@ -108,7 +108,10 @@ function parseRateLimitsFromConfig() {
   const text = fs.readFileSync(configPath, "utf8");
   const hostedText = readHostedConfigText();
   const hostedSectionRoot = hostedSection(hostedText, "[auth_hosted]");
-  const hostedSessionsSection = hostedSection(hostedText, "[auth_hosted.sessions]");
+  const hostedSessionsSection = hostedSection(
+    hostedText,
+    "[auth_hosted.sessions]"
+  );
   const emailSection = section(text, "[auth.email]");
   const rateSection = section(text, "[auth.rate_limit]");
 
@@ -133,7 +136,10 @@ function parseRateLimitsFromConfig() {
       hostedSectionRoot,
       "sb_forwarded_for_enabled"
     ),
-    sessions_single_per_user: readBool(hostedSessionsSection, "single_per_user"),
+    sessions_single_per_user: readBool(
+      hostedSessionsSection,
+      "single_per_user"
+    ),
   };
 }
 

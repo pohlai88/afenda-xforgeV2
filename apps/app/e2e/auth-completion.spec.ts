@@ -9,6 +9,9 @@ const e2ePassword =
   process.env.E2E_ORG_ADMIN_PASSWORD ??
   "123qweasdzxc!@#";
 
+const ACCOUNT_ORGANIZATION_URL_PATTERN = /\/account\/organization$/;
+const SIGN_IN_URL_PATTERN = /\/sign-in$/;
+
 const signIn = async (page: import("@playwright/test").Page) => {
   await page.goto("/sign-in");
 
@@ -24,7 +27,7 @@ const signIn = async (page: import("@playwright/test").Page) => {
   await page.getByLabel("Email").fill(e2eEmail);
   await passwordField.fill(e2ePassword);
   await page.getByRole("button", { name: "Sign in" }).click();
-  await expect(page).not.toHaveURL(/\/sign-in$/, { timeout: 15_000 });
+  await expect(page).not.toHaveURL(SIGN_IN_URL_PATTERN, { timeout: 15_000 });
 };
 
 test.describe("Auth E2E completion smoke", () => {
@@ -48,24 +51,24 @@ test.describe("Auth E2E completion smoke", () => {
     await signIn(page);
 
     if (page.url().includes("/mfa-challenge")) {
-      test.skip(true, "E2E user requires MFA step-up — run OTP manually.");
+      test(true, "E2E user requires MFA step-up — run OTP manually.");
     }
 
     await page.goto("/mfa-challenge?next=/account/organization");
-    await expect(page).toHaveURL(/\/account\/organization$/);
+    await expect(page).toHaveURL(ACCOUNT_ORGANIZATION_URL_PATTERN);
     await expect(
       page.getByRole("heading", { name: "Organization" })
     ).toBeVisible();
-    await expect(page.getByRole("button", { name: "Toggle Sidebar" })).toHaveCount(
-      0
-    );
+    await expect(
+      page.getByRole("button", { name: "Toggle Sidebar" })
+    ).toHaveCount(0);
   });
 
   test("loads organization and security account surfaces", async ({ page }) => {
     await signIn(page);
 
     if (page.url().includes("/mfa-challenge")) {
-      test.skip(true, "E2E user requires MFA step-up — run OTP manually.");
+      test(true, "E2E user requires MFA step-up — run OTP manually.");
     }
 
     await page.goto("/account/organization");

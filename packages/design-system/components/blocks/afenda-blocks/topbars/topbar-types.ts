@@ -22,7 +22,39 @@ export interface TopbarUtilityAction {
   readonly id: string;
   readonly label: string;
   readonly onSelect?: () => void;
+  readonly searchAliases?: readonly string[];
   readonly shortcut?: string;
+}
+
+export type TopbarShortcutScope = "context" | "global" | "selection";
+
+export type TopbarShortcutKeys =
+  | readonly string[]
+  | readonly (readonly string[])[];
+
+export interface TopbarShortcutDefinition {
+  readonly aliases?: readonly string[];
+  readonly category: string;
+  readonly description?: string;
+  readonly id: string;
+  readonly keys: TopbarShortcutKeys;
+  readonly label: string;
+  readonly onSelect?: () => void;
+  readonly scope: TopbarShortcutScope;
+  readonly when?: string;
+}
+
+export interface TopbarShortcutEmptyState {
+  readonly description?: string;
+  readonly title?: string;
+}
+
+export interface TopbarShortcutsDialogProps {
+  readonly contextLabel?: string;
+  readonly emptyState?: TopbarShortcutEmptyState;
+  readonly onOpenChange: (open: boolean) => void;
+  readonly open: boolean;
+  readonly shortcuts: readonly TopbarShortcutDefinition[];
 }
 
 export type TopbarNotificationScope = "following" | "inbox" | "team";
@@ -100,8 +132,10 @@ export interface TopbarUtilitiesMarketProps {
   readonly menuLabel?: string;
   readonly onEnabledChange: (id: string, enabled: boolean) => void;
   readonly onOpenChange?: (open: boolean) => void;
+  readonly onOrderChange?: (order: readonly string[]) => void;
   readonly onRequestUtility?: (request: TopbarUtilityRequest) => void;
   readonly open?: boolean;
+  readonly order?: readonly string[];
   readonly requestUtilityFeaturesLabel?: string;
   readonly requestUtilityNameLabel?: string;
   readonly requestUtilityNote?: string;
@@ -129,6 +163,7 @@ export interface TopbarActionsMenuProps {
 }
 
 export interface TopbarUtilitiesRailProps {
+  readonly actionsMenu?: TopbarActionsMenuProps;
   readonly catalog: readonly TopbarUtilitiesMarketItem[];
   readonly className?: string;
   readonly defaultEnabledIds?: readonly string[];
@@ -136,7 +171,6 @@ export interface TopbarUtilitiesRailProps {
   readonly enabledIds?: readonly string[];
   readonly maxPinnedSlots?: number;
   readonly maxTotalSlots?: number;
-  readonly actionsMenu?: TopbarActionsMenuProps;
   readonly notifications?: TopbarNotificationsProps;
   readonly onEnabledChange?: (ids: readonly string[]) => void;
   readonly onOrderChange?: (order: readonly string[]) => void;

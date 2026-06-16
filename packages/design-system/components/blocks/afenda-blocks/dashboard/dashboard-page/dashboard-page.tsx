@@ -5,12 +5,18 @@ import {
   SidebarProvider,
 } from "@repo/design-system/components/afenda-ui/sidebar";
 import { cn } from "@repo/design-system/lib/utils";
-import { memo, type CSSProperties } from "react";
-import { AppSidebar } from "../sidebar/app-sidebar";
+import { type CSSProperties, memo } from "react";
 import { ChartAreaInteractive } from "../chart/chart-area-interactive";
+import { DashboardDataTable } from "../data-table";
+import { DEMO_DASHBOARD_DATA_TABLE_ROWS } from "../data-table/dashboard-data-table-demo-data";
+import { SectionCards } from "../kpi-card/section-cards";
+import { AppSidebar } from "../sidebar/app-sidebar";
+import { SiteHeader } from "../site-header/site-header";
+import { DashboardNavTopbar } from "../topbar/dashboard-nav-topbar";
+import { DEMO_DASHBOARD_NAV_TOPBAR_PROPS } from "../topbar/dashboard-topbar-demo-catalog";
 import { DEFAULT_DASHBOARD_PAGE_PROVIDER_STYLE } from "./dashboard-page-constants";
-import { DEMO_DASHBOARD_PAGE_FOOTER_PROPS } from "./dashboard-page-footer-demo-catalog";
 import { DashboardPageFooter } from "./dashboard-page-footer";
+import { DEMO_DASHBOARD_PAGE_FOOTER_PROPS } from "./dashboard-page-footer-demo-catalog";
 import {
   dashboardAppSidebarContainClass,
   dashboardPageBodyClass,
@@ -25,12 +31,6 @@ import {
   dashboardPageProviderClass,
 } from "./dashboard-page-recipes";
 import type { DashboardPageProps } from "./dashboard-page-types";
-import { DashboardDataTable } from "../data-table";
-import { DEMO_DASHBOARD_DATA_TABLE_ROWS } from "../data-table/dashboard-data-table-demo-data";
-import { SectionCards } from "../kpi-card/section-cards";
-import { SiteHeader } from "../site-header/site-header";
-import { DashboardNavTopbar } from "../topbar/dashboard-nav-topbar";
-import { DEMO_DASHBOARD_NAV_TOPBAR_PROPS } from "../topbar/dashboard-topbar-demo-catalog";
 
 const DEFAULT_APP_SIDEBAR_VARIANT = "inset" as const;
 
@@ -72,9 +72,7 @@ export const DashboardPage = memo(function DashboardPage({
       style={
         {
           ...DEFAULT_DASHBOARD_PAGE_PROVIDER_STYLE,
-          ...(showNavTopbar
-            ? {}
-            : { "--dashboard-nav-topbar-height": "0px" }),
+          ...(showNavTopbar ? {} : { "--dashboard-nav-topbar-height": "0px" }),
           ...(showFooter ? {} : { "--dashboard-footer-height": "0px" }),
           ...style,
         } as CSSProperties

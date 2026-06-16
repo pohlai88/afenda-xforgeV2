@@ -43,7 +43,7 @@ export const ensureFirstPartyWebEndpoint = async (
 
   const config = keys();
   const url = validateWebhookUrl(
-    config.WEBHOOK_FIRST_PARTY_WEB_URL!.trim()
+    config.WEBHOOK_FIRST_PARTY_WEB_URL?.trim()
   ).toString();
   const endpointId = firstPartyEndpointId(organizationId);
   const now = new Date();

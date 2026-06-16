@@ -2,10 +2,10 @@ import { cmsLocales } from "@repo/cms/locale";
 import { cn } from "@repo/design-system/lib/utils";
 import Link from "next/link";
 
-type LocaleNavProperties = {
+interface LocaleNavProperties {
   collection: string;
   currentLocale: string;
-};
+}
 
 export const LocaleNav = ({
   collection,

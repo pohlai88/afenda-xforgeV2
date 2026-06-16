@@ -2,13 +2,12 @@
 
 import { ScrollArea } from "@repo/design-system/components/afenda-ui/scroll-area";
 import { SidebarContent } from "@repo/design-system/components/afenda-ui/sidebar";
-import { cn } from "@repo/design-system/lib/utils";
-import { useMemo } from "react";
 import { SIDEBAR_EMPTY_NAVIGATION_LABEL } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-constants";
 import {
   EMPTY_SIDEBAR_LABEL_GROUPS,
   hasOperatorSidebarNavigation,
   isSidebarNavItemActive,
+  resolveSidebarActiveCardSectionIds,
   resolveSidebarActiveItemIds,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-nav-helpers";
 import {
@@ -16,14 +15,19 @@ import {
   sidebarNavPanelEmptyClass,
   sidebarNavPanelNavClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
+import { cn } from "@repo/design-system/lib/utils";
+import { useMemo } from "react";
+import { SidebarCardSectionPanel } from "./sidebar-card-section";
 import { SidebarLabelGroupPanel } from "./sidebar-label-group";
 import { SidebarNavGroupPanel } from "./sidebar-nav-group";
 import type { SidebarNavPanelProps } from "./sidebar-types";
 
 export function SidebarNavPanel({
+  cardSections = [],
   className,
   emptyNavigationLabel = SIDEBAR_EMPTY_NAVIGATION_LABEL,
   groups,
+  isCardSectionItemActive,
   isItemActive = isSidebarNavItemActive,
   labelGroups = EMPTY_SIDEBAR_LABEL_GROUPS,
   pathname = "",
@@ -33,7 +37,18 @@ export function SidebarNavPanel({
     () => resolveSidebarActiveItemIds(groups, pathname, isItemActive),
     [groups, isItemActive, pathname]
   );
-  const hasNavigation = hasOperatorSidebarNavigation(groups, labelGroups);
+  const activeCardSectionIds = useMemo(
+    () =>
+      resolveSidebarActiveCardSectionIds(
+        cardSections,
+        pathname,
+        isCardSectionItemActive
+      ),
+    [cardSections, isCardSectionItemActive, pathname]
+  );
+  const hasCardSections = cardSections.length > 0;
+  const hasNavigation =
+    hasOperatorSidebarNavigation(groups, labelGroups) || hasCardSections;
 
   return (
     <SidebarContent
@@ -49,10 +64,7 @@ export function SidebarNavPanel({
           sidebarIconRailScrollAreaClass
         )}
       >
-        <nav
-          aria-label="Main navigation"
-          className={sidebarNavPanelNavClass}
-        >
+        <nav aria-label="Main navigation" className={sidebarNavPanelNavClass}>
           {hasNavigation ? (
             <>
               {groups.map((group) => (
@@ -61,6 +73,16 @@ export function SidebarNavPanel({
                   group={group}
                   key={group.id}
                   renderLink={renderLink}
+                />
+              ))}
+              {cardSections.map((section) => (
+                <SidebarCardSectionPanel
+                  isActive={activeCardSectionIds.has(section.id)}
+                  isItemActive={isCardSectionItemActive}
+                  key={section.id}
+                  pathname={pathname}
+                  renderLink={renderLink}
+                  section={section}
                 />
               ))}
               {labelGroups.map((group) => (

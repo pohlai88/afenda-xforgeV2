@@ -382,6 +382,7 @@ export type {
   AuditTrailPanelProps,
   AuthenticatedAppShellBlockProps,
   ContentLayoutBlockProps,
+  ContentLayoutBodyGridInput,
   ContentLayoutBottomDrawerConfig,
   ContentLayoutBottomDrawerProps,
   ContentLayoutBreadcrumbItem,

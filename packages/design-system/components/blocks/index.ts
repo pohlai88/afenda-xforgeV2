@@ -85,6 +85,7 @@ export {
 } from "./afenda-blocks/sidebars";
 export type {
   ContentLayoutBlockProps,
+  ContentLayoutBodyGridInput,
   ContentLayoutBottomDrawerConfig,
   ContentLayoutBottomDrawerProps,
   ContentLayoutBreadcrumbItem,

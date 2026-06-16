@@ -1,4 +1,6 @@
-import type { ChartAreaDataPoint } from "./chart-area-types";
+/** @internal Storybook / dashboard-01 demo only — chart area fixtures. */
+
+import type { ChartAreaDataPoint } from "../dashboard-contracts";
 
 export const DEMO_DASHBOARD_CHART_AREA_DATA: readonly ChartAreaDataPoint[] = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },

@@ -2,13 +2,19 @@ import { formatOrbitCaseActivitySummary } from "./activity-format";
 import type {
   OrbitCaseActivityDto,
   OrbitCaseActivityRecord,
+  OrbitCaseAttachmentDto,
+  OrbitCaseAttachmentRecord,
   OrbitCaseBoardColumnDto,
   OrbitCaseBoardDto,
   OrbitCaseBoardResult,
+  OrbitCaseCalendarDto,
+  OrbitCaseCalendarResult,
   OrbitCaseCommentDto,
   OrbitCaseCommentRecord,
   OrbitCaseDto,
   OrbitCaseRecord,
+  OrbitCaseTimelineDto,
+  OrbitCaseTimelineResult,
   OrbitObjectLinkDto,
   OrbitObjectLinkRecord,
 } from "./orbit-case.types";
@@ -41,6 +47,21 @@ export const toOrbitCaseCommentDto = (
   organizationId: record.organizationId,
   authorId: record.authorId,
   body: record.body,
+  createdAt: record.createdAt.toISOString(),
+});
+
+export const toOrbitCaseAttachmentDto = (
+  record: OrbitCaseAttachmentRecord
+): OrbitCaseAttachmentDto => ({
+  id: record.id,
+  caseId: record.caseId,
+  organizationId: record.organizationId,
+  uploadedBy: record.uploadedBy,
+  fileName: record.fileName,
+  contentType: record.contentType,
+  sizeBytes: record.sizeBytes,
+  blobUrl: record.blobUrl,
+  blobPathname: record.blobPathname,
   createdAt: record.createdAt.toISOString(),
 });
 
@@ -79,6 +100,26 @@ export const toOrbitCaseBoardDto = (
       cases: column.cases.map(toOrbitCaseDto),
     })
   ),
+});
+
+export const toOrbitCaseCalendarDto = (
+  calendar: OrbitCaseCalendarResult
+): OrbitCaseCalendarDto => ({
+  month: calendar.month,
+  days: calendar.days.map((day) => ({
+    date: day.date,
+    cases: day.cases.map(toOrbitCaseDto),
+  })),
+});
+
+export const toOrbitCaseTimelineDto = (
+  timeline: OrbitCaseTimelineResult
+): OrbitCaseTimelineDto => ({
+  groups: timeline.groups.map((group) => ({
+    bucket: group.bucket,
+    label: group.label,
+    cases: group.cases.map(toOrbitCaseDto),
+  })),
 });
 
 export const toJsonSafeActivityPayload = (

@@ -12,16 +12,14 @@ Afenda blocks are production ERP compositions built from `afenda-ui` primitives.
 | Full ERP workspace compositions | Workflow blocks |
 | Metadata-driven rendering from schema v1 | `MetadataPageRenderer` and metadata schemas |
 | Release evidence and quality status | `QualityGatesBlock` |
-| ERP workflow composition rules without new UI | Afenda Pattern Library |
+| ERP workflow composition rules without new UI | App-owned documentation |
 
 Do not create a new block when a foundation/operator/advanced block can be composed with app-owned data and copy.
 
-Classify proposed contributions with the contribution lifecycle before adding a shared surface:
-
-- Core: primitives, tokens, recipes, stable blocks, and metadata contracts.
-- Extended: reusable ERP patterns that are production-ready but still proving cross-domain adoption.
-- App-local: route-owned workflows, domain copy, tenant policy, and persisted behavior.
-- Out-of-scope: business logic, persistence, routing, authorization engines, and backend orchestration.
+Classify shared surfaces through the 12 `afenda-*` contracts before adding a
+new primitive, recipe, slot, variant, block, or example. App-local routing,
+domain copy, tenant policy, and persisted behavior stay outside the design
+system.
 
 ## Stable Public API
 
@@ -55,12 +53,6 @@ Use the existing recipe groups before local utility classes:
 - `blockEmpty` for no-data states
 
 Blocks must not redefine primitive focus rings, button styles, input styles, table styles, raw hex colors, marketing gradients, or oversized radii.
-
-## Pattern Library Rules
-
-Use the Afenda Pattern Library when a page needs workflow guidance rather than a new component. The catalog covers approval review, batch posting, primary-detail, audit log viewer, exception handling, bulk selection, data reconciliation, policy lock/unlock, and long-running job state.
-
-Import the typed catalog from `@repo/design-system/contracts/pattern-library` when app tooling or Storybook needs a stable list of pattern ids, required blocks, states, evidence rules, and audit rules.
 
 ## Metadata Schema v1 Rules
 

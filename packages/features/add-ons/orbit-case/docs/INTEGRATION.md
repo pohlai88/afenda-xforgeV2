@@ -45,7 +45,9 @@
 | `update.ts` | `updateCase` |
 | `delete.ts` | `deleteCase` |
 | `list.ts` | `listCases` |
-| `board.ts` | `getBoard`, `moveCaseStatus` |
+| `board.ts` | `getBoard`, `moveCaseStatus`, `getCalendarBoard`, `getTimelineBoard` |
+| `attachment/upload.ts` | `uploadAttachment` |
+| `attachment/delete.ts` | `removeAttachment` |
 | `watch.ts` | `watchCase` |
 | `comment/create.ts` | `addComment` |
 | `comment/list.ts` | `listComments` |
@@ -58,7 +60,7 @@
 - `orbit_case_watchers`
 - `orbit_case_comments`
 - `orbit_case_tags`
-- `orbit_case_activity`
+- `orbit_case_attachments` (Phase 1.1)
 
 Phase 2+: `orbit_push_destinations`, `orbit_push_templates`, `orbit_push_events`, `orbit_object_links`, `orbit_budget_requests`.
 

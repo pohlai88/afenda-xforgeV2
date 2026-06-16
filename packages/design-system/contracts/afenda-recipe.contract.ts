@@ -12,6 +12,11 @@
  * This file must not contain component logic.
  */
 
+import { afendaRecipe } from "../components/afenda-ui/recipes";
+import type { AfendaRecipeKey } from "../components/afenda-ui/recipes";
+import { afendaBlockRecipe } from "../components/blocks/block-recipes";
+import type { AfendaBlockRecipeKey } from "../components/blocks/block-recipes";
+
 export const AFENDA_RECIPE_CONTRACT_ID = "afenda.recipe" as const;
 
 export const AFENDA_RECIPE_CONTRACT_VERSION = "0.1.0" as const;
@@ -29,6 +34,18 @@ export const AFENDA_RECIPE_KINDS = [
 ] as const;
 
 export type AfendaRecipeKind = (typeof AFENDA_RECIPE_KINDS)[number];
+
+export type AfendaRecipeIdentity = AfendaRecipeKey;
+
+export type AfendaBlockRecipeIdentity = AfendaBlockRecipeKey;
+
+export const AFENDA_RECIPE_IDENTITY_REGISTRY = Object.keys(
+  afendaRecipe
+) as readonly AfendaRecipeIdentity[];
+
+export const AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY = Object.keys(
+  afendaBlockRecipe
+) as readonly AfendaBlockRecipeIdentity[];
 
 export const AFENDA_RECIPE_AUTHORITY_RULES = {
   recipeOwnsStyling: true,
@@ -125,6 +142,8 @@ export const afendaRecipeContract = {
   id: AFENDA_RECIPE_CONTRACT_ID,
   version: AFENDA_RECIPE_CONTRACT_VERSION,
   kinds: AFENDA_RECIPE_KINDS,
+  recipeIdentityRegistry: AFENDA_RECIPE_IDENTITY_REGISTRY,
+  blockRecipeIdentityRegistry: AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY,
   authorityRules: AFENDA_RECIPE_AUTHORITY_RULES,
   tokenRules: AFENDA_RECIPE_TOKEN_RULES,
   variantRules: AFENDA_RECIPE_VARIANT_RULES,

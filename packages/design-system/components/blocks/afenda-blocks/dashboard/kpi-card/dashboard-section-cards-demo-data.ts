@@ -1,4 +1,6 @@
-import type { DashboardSectionCardItem } from "./dashboard-section-cards-types";
+/** @internal Storybook / dashboard-01 demo only — KPI section card fixtures. */
+
+import type { DashboardSectionCardItem } from "../dashboard-contracts";
 
 export const DEMO_DASHBOARD_SECTION_CARDS: readonly DashboardSectionCardItem[] =
   [

@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
   boolean,
+  index,
   integer,
   jsonb,
   pgSchema,
@@ -328,6 +329,35 @@ export const orbitCaseActivity = nextForge.table("orbit_case_activity", {
     .notNull(),
 });
 
+export const orbitCaseAttachment = nextForge.table(
+  "orbit_case_attachments",
+  {
+    id: text("id").primaryKey(),
+    caseId: text("caseId")
+      .notNull()
+      .references(() => orbitCase.id, { onDelete: "cascade" }),
+    organizationId: text("organizationId")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    uploadedBy: text("uploadedBy").notNull(),
+    fileName: text("fileName").notNull(),
+    contentType: text("contentType").notNull(),
+    sizeBytes: integer("sizeBytes").notNull(),
+    blobUrl: text("blobUrl").notNull(),
+    blobPathname: text("blobPathname").notNull(),
+    createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    index("orbit_case_attachments_org_case_created_idx").on(
+      table.organizationId,
+      table.caseId,
+      table.createdAt
+    ),
+  ]
+);
+
 export const orbitCaseRelations = relations(orbitCase, ({ one, many }) => ({
   organization: one(organization, {
     fields: [orbitCase.organizationId],
@@ -337,6 +367,7 @@ export const orbitCaseRelations = relations(orbitCase, ({ one, many }) => ({
   comments: many(orbitCaseComment),
   tags: many(orbitCaseTag),
   activity: many(orbitCaseActivity),
+  attachments: many(orbitCaseAttachment),
 }));
 
 export const orbitPushEventStatuses = [

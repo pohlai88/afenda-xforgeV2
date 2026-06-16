@@ -77,6 +77,12 @@ export const AFENDA_EXAMPLE_VERSION_RULES = {
   examplesMustTrackCanonicalContracts: true,
 } as const;
 
+export const AFENDA_EXAMPLE_VERSION_REGISTRY = {
+  currentContractVersion: AFENDA_EXAMPLE_CONTRACT_VERSION,
+  examplesMustUseCurrentContractVersion: true,
+  staleExamplesAreForbidden: true,
+} as const;
+
 export const AFENDA_EXAMPLE_FORBIDDEN_OWNERSHIP = {
   examplesMustNotOwnBehavior: true,
   examplesMustNotOwnStyling: true,
@@ -142,6 +148,7 @@ export const afendaExampleContract = {
   tokenRules: AFENDA_EXAMPLE_TOKEN_RULES,
   accessRules: AFENDA_EXAMPLE_ACCESS_RULES,
   versionRules: AFENDA_EXAMPLE_VERSION_RULES,
+  versionRegistry: AFENDA_EXAMPLE_VERSION_REGISTRY,
   forbiddenOwnership: AFENDA_EXAMPLE_FORBIDDEN_OWNERSHIP,
   forbiddenPatterns: AFENDA_EXAMPLE_FORBIDDEN_PATTERNS,
   warningPatterns: AFENDA_EXAMPLE_WARNING_PATTERNS,

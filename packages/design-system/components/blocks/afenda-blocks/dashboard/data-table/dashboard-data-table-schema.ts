@@ -4,6 +4,12 @@ import {
   DASHBOARD_DATA_TABLE_STATUSES,
 } from "./dashboard-data-table-constants";
 
+export type DashboardDataTableStatus =
+  (typeof DASHBOARD_DATA_TABLE_STATUSES)[number];
+
+export type DashboardDataTableSectionType =
+  (typeof DASHBOARD_DATA_TABLE_SECTION_TYPES)[number];
+
 export const dashboardDataTableSchema = z.object({
   id: z.number().int().positive(),
   header: z.string().min(1),

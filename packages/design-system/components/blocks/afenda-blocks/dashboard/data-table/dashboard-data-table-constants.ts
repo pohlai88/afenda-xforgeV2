@@ -1,6 +1,7 @@
 export const DASHBOARD_DATA_TABLE_DESCRIPTION =
   "A drag-and-drop data table with tabs, column visibility, and row detail drawer.";
 
+/** @internal Column placeholder — not part of the public dashboard contract. */
 export const DASHBOARD_DATA_TABLE_REVIEWER_PLACEHOLDER = "Assign reviewer";
 
 export const DASHBOARD_DATA_TABLE_REVIEWERS = [
@@ -51,5 +52,11 @@ export const DASHBOARD_DATA_TABLE_TAB_VIEWS = [
   { value: "key-personnel", label: "Key Personnel", badge: "2" },
   { value: "focus-documents", label: "Focus Documents" },
 ] as const;
+
+export type DashboardDataTableTabView =
+  (typeof DASHBOARD_DATA_TABLE_TAB_VIEWS)[number]["value"];
+
+export type DashboardDataTableReviewer =
+  (typeof DASHBOARD_DATA_TABLE_REVIEWERS)[number];
 
 export const DASHBOARD_DATA_TABLE_PAGE_SIZES = [10, 20, 30, 40, 50] as const;

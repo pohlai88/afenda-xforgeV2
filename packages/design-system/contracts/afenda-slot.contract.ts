@@ -23,6 +23,19 @@ export const AFENDA_SLOT_AUTHORITY_RULES = {
   slotOwnsCompositionParts: true,
 } as const;
 
+export const AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY = [
+  "^[a-z][a-z0-9]*(?:-[a-z0-9]+)+$",
+  "^app-topbar-[a-z0-9-]+$",
+  "^app-topbar-utility-[a-z0-9-]+$",
+  "^app-sidebar-[a-z0-9-]+$",
+  "^content-layout-[a-z0-9-]+$",
+  "^nav-(started|secondary|main|documents)-(item|menu)-[a-z0-9-]+$",
+  "^section-card-[a-z0-9-]+$",
+] as const;
+
+export type AfendaSlotIdentityPattern =
+  (typeof AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY)[number];
+
 export const AFENDA_SLOT_NAMING_RULES = {
   slotNamesMustUseKebabCase: true,
   dataSlotValuesMustUseKebabCase: true,
@@ -94,6 +107,7 @@ export const AFENDA_SLOT_PRINCIPLES = [
 export const afendaSlotContract = {
   id: AFENDA_SLOT_CONTRACT_ID,
   version: AFENDA_SLOT_CONTRACT_VERSION,
+  slotIdentityPatternRegistry: AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY,
   authorityRules: AFENDA_SLOT_AUTHORITY_RULES,
   namingRules: AFENDA_SLOT_NAMING_RULES,
   usageRules: AFENDA_SLOT_USAGE_RULES,

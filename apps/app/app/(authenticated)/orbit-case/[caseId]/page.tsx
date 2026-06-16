@@ -2,6 +2,7 @@ import { getOrganizationRole } from "@repo/auth/cms";
 import { requireOrg } from "@repo/auth/server";
 import {
   toOrbitCaseActivityDto,
+  toOrbitCaseAttachmentDto,
   toOrbitCaseCommentDto,
   toOrbitCaseDto,
   toOrbitObjectLinkDto,
@@ -13,6 +14,7 @@ import {
   isOrbitCaseWatcher,
   listObjectLinksForCase,
   listOrbitCaseActivity,
+  listOrbitCaseAttachments,
   listOrbitCaseComments,
   resolveOrgPushDestinations,
 } from "@repo/orbit-case/server";
@@ -56,20 +58,22 @@ export default async function OrbitCaseDetailPage({
     userId,
     orgId
   );
-  const [comments, activity, links, watching, destinations] = await Promise.all([
-    listOrbitCaseComments(orgId, caseId),
-    listOrbitCaseActivity(orgId, caseId),
-    listObjectLinksForCase(orgId, caseId),
-    isOrbitCaseWatcher(orgId, caseId, userId),
-    role
-      ? resolveOrgPushDestinations({
-          orgId,
-          userId,
-          role,
-          userCapabilities,
-        })
-      : Promise.resolve([]),
-  ]);
+  const [comments, activity, links, watching, destinations, attachments] =
+    await Promise.all([
+      listOrbitCaseComments(orgId, caseId),
+      listOrbitCaseActivity(orgId, caseId),
+      listObjectLinksForCase(orgId, caseId),
+      isOrbitCaseWatcher(orgId, caseId, userId),
+      role
+        ? resolveOrgPushDestinations({
+            orgId,
+            userId,
+            role,
+            userCapabilities,
+          })
+        : Promise.resolve([]),
+      listOrbitCaseAttachments(orgId, caseId),
+    ]);
 
   return (
     <>
@@ -80,6 +84,7 @@ export default async function OrbitCaseDetailPage({
       />
       <OrbitCaseDetailView
         activity={activity.map(toOrbitCaseActivityDto)}
+        attachments={attachments.map(toOrbitCaseAttachmentDto)}
         canHardDelete={role ? canHardDeleteOrbitCase(role) : false}
         comments={comments.map(toOrbitCaseCommentDto)}
         destinations={destinations}

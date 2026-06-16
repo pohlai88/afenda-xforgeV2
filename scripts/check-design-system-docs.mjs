@@ -19,19 +19,12 @@ const requiredDocs = [
   "block-authoring.md",
   "block-governance.md",
   "block-migration-guide.md",
-  "component-scorecards.md",
-  "contribution-lifecycle.md",
   "design-system-docs-audit.md",
-  "enterprise-screen-patterns.md",
   "mindful-operator.md",
-  "pattern-library.md",
-  "primitive-hardening.md",
 ];
 const requiredReadPaths = [
-  "App Team Building An ERP Screen",
-  "Maintainer Adding Or Changing A Primitive",
-  "Maintainer Adding A Block Or Metadata Field",
-  "Domain Team Proposing A Reusable Pattern",
+  "AI IDE Contract Wall",
+  "Primitive Or Block Change",
   "Release Reviewer",
 ];
 const requiredScaffoldLanguage = [
@@ -43,10 +36,6 @@ const requiredStoryEvidence = [
   "Blocks/Quality Gates",
   "Blocks/Block Readiness",
   "Blocks/Storybook Coverage",
-  "Blocks/Quality Gates/Afenda Pattern Library",
-  "Blocks/Quality Gates/Enterprise Screen Patterns",
-  "Blocks/Quality Gates/Component Scorecards",
-  "Blocks/Quality Gates/Contribution Lifecycle",
 ];
 const requiredRootScripts = [
   "blocks:quality",
@@ -59,10 +48,18 @@ const requiredRootScripts = [
   "ui-craft:detect",
 ];
 const requiredDesignSystemExports = [
-  "./contracts/component-scorecards",
-  "./contracts/contribution-lifecycle",
-  "./contracts/enterprise-screen-patterns",
-  "./contracts/pattern-library",
+  "./contracts/afenda-design-system",
+  "./contracts/afenda-token",
+  "./contracts/afenda-recipe",
+  "./contracts/afenda-component",
+  "./contracts/afenda-slot",
+  "./contracts/afenda-variant",
+  "./contracts/afenda-class-name-policy",
+  "./contracts/afenda-export",
+  "./contracts/afenda-accessibility",
+  "./contracts/afenda-motion",
+  "./contracts/afenda-state",
+  "./contracts/afenda-example",
 ];
 const staleReferences = [
   "components/blocks/schema",

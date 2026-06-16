@@ -19,20 +19,26 @@ import {
 import { cn } from "@repo/design-system/lib/utils";
 import type {
   OrbitCaseBoardColumnDto,
+  OrbitCaseCalendarDto,
   OrbitCaseDto,
   OrbitCaseStatus,
+  OrbitCaseTimelineDto,
 } from "@repo/orbit-case";
-import { ORBIT_CASE_STATUSES } from "@repo/orbit-case";
+import { ORBIT_CASE_STATUSES, formatOrbitCaseDueDateLabel } from "@repo/orbit-case";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { moveCaseStatus } from "@/app/actions/orbit-case/board";
 import { createCase } from "@/app/actions/orbit-case/create";
 import { listCases } from "@/app/actions/orbit-case/list";
+import { OrbitCaseCalendarView } from "./orbit-case-calendar-view";
+import { OrbitCaseTimelineView } from "./orbit-case-timeline-view";
 
 interface OrbitCaseWorkspaceProps {
   initialBoard: OrbitCaseBoardColumnDto[];
+  initialCalendar: OrbitCaseCalendarDto;
   initialCases: OrbitCaseDto[];
+  initialTimeline: OrbitCaseTimelineDto;
   showRegistryLink?: boolean;
 }
 
@@ -48,6 +54,8 @@ const statusLabel: Record<OrbitCaseStatus, string> = {
 export function OrbitCaseWorkspace({
   initialCases,
   initialBoard,
+  initialCalendar,
+  initialTimeline,
   showRegistryLink = false,
 }: OrbitCaseWorkspaceProps) {
   const router = useRouter();
@@ -160,6 +168,8 @@ export function OrbitCaseWorkspace({
         <TabsList>
           <TabsTrigger value="list">List</TabsTrigger>
           <TabsTrigger value="kanban">Kanban</TabsTrigger>
+          <TabsTrigger value="calendar">Calendar</TabsTrigger>
+          <TabsTrigger value="timeline">Timeline</TabsTrigger>
         </TabsList>
         <TabsContent className="mt-4" value="list">
           <div
@@ -219,6 +229,11 @@ export function OrbitCaseWorkspace({
                       {orbitCase.priority !== "none" ? (
                         <Badge variant="soft">{orbitCase.priority}</Badge>
                       ) : null}
+                      {orbitCase.dueAt ? (
+                        <Badge variant="outline">
+                          Due {formatOrbitCaseDueDateLabel(orbitCase.dueAt)}
+                        </Badge>
+                      ) : null}
                     </div>
                     {orbitCase.description ? (
                       <p className="text-muted-foreground text-sm">
@@ -255,6 +270,11 @@ export function OrbitCaseWorkspace({
                     >
                       {orbitCase.title}
                     </Link>
+                    {orbitCase.dueAt ? (
+                      <p className="text-muted-foreground text-xs">
+                        Due {formatOrbitCaseDueDateLabel(orbitCase.dueAt)}
+                      </p>
+                    ) : null}
                     <div className="mt-2 flex flex-wrap gap-1">
                       {column.status !== "doing" ? (
                         <Button
@@ -282,6 +302,12 @@ export function OrbitCaseWorkspace({
               </section>
             ))}
           </div>
+        </TabsContent>
+        <TabsContent className="mt-4" value="calendar">
+          <OrbitCaseCalendarView initialCalendar={initialCalendar} />
+        </TabsContent>
+        <TabsContent className="mt-4" value="timeline">
+          <OrbitCaseTimelineView timeline={initialTimeline} />
         </TabsContent>
       </Tabs>
     </div>

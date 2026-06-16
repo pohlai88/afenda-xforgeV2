@@ -2,13 +2,24 @@ import "server-only";
 
 export type {
   OrbitCaseActivityRecord,
+  OrbitCaseAttachmentRecord,
   OrbitCaseBoardColumn,
   OrbitCaseBoardResult,
+  OrbitCaseCalendarResult,
   OrbitCaseCommentRecord,
   OrbitCaseRecord,
+  OrbitCaseTimelineResult,
   OrbitCaseUpdatePatch,
 } from "./contract/orbit-case.types";
+export { getOrbitCaseCalendar } from "./engines/board/board-calendar";
 export { getOrbitCaseBoard } from "./engines/board/board-kanban";
+export { getOrbitCaseTimeline } from "./engines/board/board-timeline";
+export {
+  createOrbitCaseAttachment,
+  deleteOrbitCaseAttachment,
+  getOrbitCaseAttachmentById,
+  listOrbitCaseAttachments,
+} from "./engines/attachment/attachments";
 export {
   createOrbitCaseComment,
   listOrbitCaseComments,
@@ -25,6 +36,7 @@ export {
   updateOrbitCaseFields,
 } from "./engines/work/orbit-cases";
 export {
+  canDeleteOrbitCaseAttachment,
   canHardDeleteOrbitCase,
   canMutateOrbitCase,
   canPushToDestination,

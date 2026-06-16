@@ -1,8 +1,18 @@
 import { getOrganizationRole } from "@repo/auth/cms";
 import { requireOrg } from "@repo/auth/server";
 import type { OrbitCaseBoardDto, OrbitCaseDto } from "@repo/orbit-case";
-import { toOrbitCaseBoardDto, toOrbitCaseDto } from "@repo/orbit-case";
-import { getOrbitCaseBoard, listOrbitCases } from "@repo/orbit-case/server";
+import {
+  toOrbitCaseBoardDto,
+  toOrbitCaseCalendarDto,
+  toOrbitCaseDto,
+  toOrbitCaseTimelineDto,
+} from "@repo/orbit-case";
+import {
+  getOrbitCaseBoard,
+  getOrbitCaseCalendar,
+  getOrbitCaseTimeline,
+  listOrbitCases,
+} from "@repo/orbit-case/server";
 import type { Metadata } from "next";
 import { Header } from "../components/header";
 import { OrbitCaseWorkspace } from "./components/orbit-case-workspace";
@@ -19,9 +29,12 @@ export const metadata: Metadata = {
 export default async function OrbitCasePage() {
   const { orgId, userId } = await requireOrg();
   const role = await getOrganizationRole(userId, orgId);
-  const [cases, board] = await Promise.all([
+  const now = new Date();
+  const [cases, board, calendar, timeline] = await Promise.all([
     listOrbitCases(orgId),
     getOrbitCaseBoard(orgId),
+    getOrbitCaseCalendar(orgId, now.getUTCFullYear(), now.getUTCMonth() + 1),
+    getOrbitCaseTimeline(orgId, now),
   ]);
 
   const initialCases: OrbitCaseDto[] = cases.map(toOrbitCaseDto);
@@ -36,7 +49,9 @@ export default async function OrbitCasePage() {
       />
       <OrbitCaseWorkspace
         initialBoard={initialBoard.columns}
+        initialCalendar={toOrbitCaseCalendarDto(calendar)}
         initialCases={initialCases}
+        initialTimeline={toOrbitCaseTimelineDto(timeline)}
         showRegistryLink={role === "owner"}
       />
     </>

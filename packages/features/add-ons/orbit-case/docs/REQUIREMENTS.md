@@ -27,6 +27,8 @@ A user lands on `/orbit-case`, enters “Need RM50k for production line”, and 
 | OC-8 | Activity log: every mutation append-only |
 | OC-9 | List view with filters |
 | OC-10 | Kanban view grouped by status |
+| OC-11 | Calendar view by due date (Phase 1.1) |
+| OC-12 | Timeline view by due-date buckets (Phase 1.1) |
 
 ### Enterprise acceptance criteria
 
@@ -50,7 +52,8 @@ A user lands on `/orbit-case`, enters “Need RM50k for production line”, and 
 - [x] Storybook story for Orbit Case board
 - [x] `pnpm --filter @repo/orbit-case typecheck` + `test` green
 - [x] `pnpm --filter app typecheck` green
-- [ ] OC-7 Attachments (deferred Phase 1.1)
+- [x] OC-7 Attachments (Phase 1.1 — `@repo/storage` metadata + blob upload in app)
+- [x] Calendar + timeline board views (Phase 1.1)
 
 ---
 

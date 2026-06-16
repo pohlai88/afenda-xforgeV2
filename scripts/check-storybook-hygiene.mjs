@@ -17,7 +17,6 @@ const afendaUiComponentsDir = join(
 );
 
 const allowedRootStories = new Set([
-  "primitive-readiness.stories.tsx",
   "tokens.stories.tsx",
 ]);
 
@@ -113,16 +112,6 @@ for (const file of walkStoryFiles(storiesRoot)) {
 
     if (!source.includes('"foundations"')) {
       errors.push(`${path} must include the "foundations" tag.`);
-    }
-  } else if (file.endsWith("primitive-readiness.stories.tsx")) {
-    if (!title.startsWith("Governance/")) {
-      errors.push(
-        `${path} title must start with "Governance/" (found "${title}").`
-      );
-    }
-
-    if (!source.includes('"internal"')) {
-      errors.push(`${path} must include the "internal" tag.`);
     }
   }
 

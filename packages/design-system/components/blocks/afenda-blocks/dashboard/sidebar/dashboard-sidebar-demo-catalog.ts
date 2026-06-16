@@ -1,3 +1,5 @@
+/** @internal Storybook / dashboard-01 demo only — sidebar navigation fixtures. */
+
 import {
   CameraIcon,
   ChartBarIcon,

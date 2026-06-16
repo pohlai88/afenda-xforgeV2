@@ -6,13 +6,8 @@ The design-system docs entry point lives in [`README.md`](./README.md).
 
 Production authoring guidance lives in [`block-authoring.md`](./block-authoring.md). The Phase 1-9 compatibility and migration policy lives in [`block-migration-guide.md`](./block-migration-guide.md).
 
-Workflow composition guidance lives in [`pattern-library.md`](./pattern-library.md). Pattern contracts are typed in `contracts/pattern-library.contract.ts`.
-
-Enterprise screen guidance lives in [`enterprise-screen-patterns.md`](./enterprise-screen-patterns.md). Screen contracts are typed in `contracts/enterprise-screen-patterns.contract.ts`.
-
-Component readiness guidance lives in [`component-scorecards.md`](./component-scorecards.md). Scorecards are typed in `contracts/component-scorecards.contract.ts` and are the release-readiness record for primitives and blocks.
-
-Contribution lifecycle guidance lives in [`contribution-lifecycle.md`](./contribution-lifecycle.md). Layer contracts are typed in `contracts/contribution-lifecycle.contract.ts`.
+Contract authority lives only in the 12 `afenda-*` files under `packages/design-system/contracts`.
+Component identity, recipe identity, slot identity, variant identity, and example versioning are owned by those contracts directly.
 
 Documentation health is scored in [`design-system-docs-audit.md`](./design-system-docs-audit.md).
 
@@ -86,4 +81,4 @@ The readiness story may demonstrate composition contracts before production bloc
 
 Production stories must remain inside the release taxonomy documented in the migration guide. `pnpm blocks:quality` is the full Storybook quality gate and requires Storybook to already be running at `http://127.0.0.1:6006`.
 
-Pattern guidance must have a governance story under `Blocks/Quality Gates` so app teams can inspect the catalog in Storybook.
+Governance stories stay focused on executable quality gates, block readiness, and Storybook coverage.

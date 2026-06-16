@@ -1,4 +1,6 @@
-import type { DashboardDataTableRow } from "./dashboard-data-table-schema";
+/** @internal Storybook / dashboard-01 demo only — data table fixtures. */
+
+import type { DashboardDataTableRow } from "../dashboard-contracts";
 
 export const DEMO_DASHBOARD_DATA_TABLE_ROWS: readonly DashboardDataTableRow[] =
   [

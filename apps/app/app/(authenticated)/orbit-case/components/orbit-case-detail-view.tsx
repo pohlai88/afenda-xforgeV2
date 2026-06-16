@@ -3,8 +3,12 @@
 import {
   Badge,
   Button,
+  Calendar,
   Input,
   Label,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Select,
   SelectContent,
   SelectItem,
@@ -17,6 +21,7 @@ import {
 import { cn } from "@repo/design-system/lib/utils";
 import type {
   OrbitCaseActivityDto,
+  OrbitCaseAttachmentDto,
   OrbitCaseCommentDto,
   OrbitCaseDto,
   OrbitCasePriority,
@@ -27,10 +32,15 @@ import type {
 import {
   ORBIT_CASE_PRIORITIES,
   ORBIT_CASE_STATUSES,
+  formatOrbitCaseAttachmentSize,
+  formatOrbitCaseDueDateLabel,
 } from "@repo/orbit-case";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import type { ChangeEvent } from "react";
+import { useRef, useState, useTransition } from "react";
+import { removeAttachment } from "@/app/actions/orbit-case/attachment/delete";
+import { uploadAttachment } from "@/app/actions/orbit-case/attachment/upload";
 import { addComment } from "@/app/actions/orbit-case/comment/create";
 import { deleteCase } from "@/app/actions/orbit-case/delete";
 import { updateCase } from "@/app/actions/orbit-case/update";
@@ -42,6 +52,7 @@ import {
 
 interface OrbitCaseDetailViewProps {
   activity: OrbitCaseActivityDto[];
+  attachments: OrbitCaseAttachmentDto[];
   canHardDelete: boolean;
   comments: OrbitCaseCommentDto[];
   destinations: PushDestinationDefinition[];
@@ -62,6 +73,7 @@ const statusLabel: Record<OrbitCaseStatus, string> = {
 export function OrbitCaseDetailView({
   orbitCase: initialCase,
   comments: initialComments,
+  attachments: initialAttachments,
   activity: initialActivity,
   links: initialLinks,
   destinations: initialDestinations,
@@ -69,8 +81,10 @@ export function OrbitCaseDetailView({
   canHardDelete,
 }: OrbitCaseDetailViewProps) {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [orbitCase, setOrbitCase] = useState(initialCase);
   const [comments, setComments] = useState(initialComments);
+  const [attachments, setAttachments] = useState(initialAttachments);
   const [destinations, setDestinations] = useState(initialDestinations);
   const [watching, setWatching] = useState(initialWatching);
   const [title, setTitle] = useState(initialCase.title);
@@ -90,6 +104,7 @@ export function OrbitCaseDetailView({
     status?: OrbitCaseStatus;
     priority?: OrbitCasePriority;
     assigneeId?: string | null;
+    dueAt?: string | null;
     tags?: string[];
   }) => {
     startTransition(async () => {
@@ -208,6 +223,70 @@ export function OrbitCaseDetailView({
     });
   };
 
+  const handleUploadAttachment = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAttachmentSelected = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    startTransition(async () => {
+      setError(null);
+      const formData = new FormData();
+      formData.set("caseId", orbitCase.id);
+      formData.set("file", file);
+
+      const result = await uploadAttachment(formData);
+
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+
+      setAttachments((current) => [result.data, ...current]);
+      event.target.value = "";
+      router.refresh();
+    });
+  };
+
+  const handleDeleteAttachment = (attachmentId: string) => {
+    startTransition(async () => {
+      setError(null);
+      const result = await removeAttachment({ attachmentId });
+
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+
+      setAttachments((current) =>
+        current.filter((attachment) => attachment.id !== attachmentId)
+      );
+      router.refresh();
+    });
+  };
+
+  const selectedDueDate = orbitCase.dueAt
+    ? new Date(orbitCase.dueAt)
+    : undefined;
+
+  const handleDueDateSelect = (date: Date | undefined) => {
+    if (!date) {
+      saveFields({ dueAt: null });
+      return;
+    }
+
+    saveFields({
+      dueAt: new Date(
+        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+      ).toISOString(),
+    });
+  };
+
   return (
     <div className="flex flex-col gap-6 p-[var(--xforge-space-8)]">
       <div className="flex flex-wrap items-center gap-3">
@@ -292,6 +371,59 @@ export function OrbitCaseDetailView({
             >
               Post comment
             </Button>
+          </section>
+
+          <section
+            className={cn(
+              blockRecipe("blockPanel", "blockPanelPadding"),
+              "grid gap-4"
+            )}
+          >
+            <h2 className={blockRecipe("blockTitle")}>Attachments</h2>
+            <input
+              accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
+              aria-label="Upload attachment"
+              className="sr-only"
+              onChange={handleAttachmentSelected}
+              ref={fileInputRef}
+              type="file"
+            />
+            <Button disabled={isPending} onClick={handleUploadAttachment}>
+              Upload file
+            </Button>
+            {attachments.length === 0 ? (
+              <p className="text-muted-foreground text-sm">No attachments yet.</p>
+            ) : (
+              attachments.map((attachment) => (
+                <article
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-md border bg-background p-3 text-sm"
+                  key={attachment.id}
+                >
+                  <div>
+                    <a
+                      className="font-medium hover:underline"
+                      href={attachment.blobUrl}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {attachment.fileName}
+                    </a>
+                    <p className="text-muted-foreground text-xs">
+                      {formatOrbitCaseAttachmentSize(attachment.sizeBytes)} ·{" "}
+                      {new Date(attachment.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  <Button
+                    disabled={isPending}
+                    onClick={() => handleDeleteAttachment(attachment.id)}
+                    size="sm"
+                    variant="secondary"
+                  >
+                    Remove
+                  </Button>
+                </article>
+              ))
+            )}
           </section>
 
           <section
@@ -436,6 +568,37 @@ export function OrbitCaseDetailView({
               id="case-watch"
               onCheckedChange={handleWatchToggle}
             />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="case-due-date">Due date</Label>
+            <div className="flex flex-wrap items-center gap-2">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button id="case-due-date" variant="secondary">
+                    {formatOrbitCaseDueDateLabel(orbitCase.dueAt) ??
+                      "Set due date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    onSelect={handleDueDateSelect}
+                    selected={selectedDueDate}
+                  />
+                </PopoverContent>
+              </Popover>
+              {orbitCase.dueAt ? (
+                <Button
+                  disabled={isPending}
+                  onClick={() => saveFields({ dueAt: null })}
+                  size="sm"
+                  variant="quiet"
+                >
+                  Clear
+                </Button>
+              ) : null}
+            </div>
           </div>
 
           <div className="grid gap-2">

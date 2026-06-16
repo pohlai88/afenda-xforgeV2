@@ -1,9 +1,9 @@
 import { z } from "zod";
 import {
+  AFENDA_ACTION_VARIANTS,
   AFENDA_DENSITIES,
   AFENDA_TONES,
 } from "../../contracts/afenda-variant.contract";
-import { AFENDA_ACTION_VARIANTS } from "../../contracts/variant-identity.contract";
 import type { BlockType } from "./block-types";
 import { supportedBlockTypes } from "./block-types";
 

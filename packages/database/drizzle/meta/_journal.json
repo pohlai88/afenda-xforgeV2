@@ -183,6 +183,13 @@
       "when": 1720612800000,
       "tag": "0025_orbit_push_seed_and_claims",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1720699200000,
+      "tag": "0026_orbit_case_attachments",
+      "breakpoints": true
     }
   ]
 }

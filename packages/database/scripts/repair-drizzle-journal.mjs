@@ -25,6 +25,8 @@ const resolveDatabaseUrl = () => {
 
 /** Schema probes for migrations that introduce distinctive objects (newest first). */
 const MIGRATION_PROBES = {
+  "0026_orbit_case_attachments": `
+    SELECT to_regclass('next_forge.orbit_case_attachments') IS NOT NULL AS ok`,
   "0025_orbit_push_seed_and_claims": `
     SELECT EXISTS (
       SELECT 1

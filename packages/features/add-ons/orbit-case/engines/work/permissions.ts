@@ -10,6 +10,12 @@ export const canMutateOrbitCase = (role: OrganizationRole): boolean =>
 export const canHardDeleteOrbitCase = (role: OrganizationRole): boolean =>
   role === "owner";
 
+export const canDeleteOrbitCaseAttachment = (
+  role: OrganizationRole,
+  attachment: { uploadedBy: string },
+  actorId: string
+): boolean => attachment.uploadedBy === actorId || role === "owner";
+
 export const canPushToDestination = (
   role: OrganizationRole,
   userCapabilities: readonly OrbitPushCapability[],

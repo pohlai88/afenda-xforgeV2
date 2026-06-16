@@ -45,7 +45,12 @@ export const formatOrbitCaseActivitySummary = (
     case "case.deleted":
       return "Case deleted";
     case "case.commented":
+    case "comment.created":
       return "Added a comment";
+    case "attachment.added":
+      return `Attached ${formatValue(payload.fileName ?? "file")}`;
+    case "attachment.removed":
+      return `Removed ${formatValue(payload.fileName ?? "attachment")}`;
     case "case.pushed":
       return `Pushed to ${formatValue(payload.destinationLabel ?? payload.destinationId)}`;
     default:

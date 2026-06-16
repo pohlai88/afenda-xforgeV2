@@ -25,10 +25,6 @@ const exampleTagPattern = /\b(?:copyPasteExample|aiExample|example)\b/;
 
 export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
   const contractsDir = join(root, "packages", "design-system", "contracts");
-  const componentScorecardsPath = join(
-    contractsDir,
-    "component-scorecards.contract.ts"
-  );
   const recipePath = join(
     root,
     "packages",
@@ -49,13 +45,9 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
     contractsDir,
     "afenda-design-system.contract.ts"
   );
+  const componentContractPath = join(contractsDir, "afenda-component.contract.ts");
+  const slotContractPath = join(contractsDir, "afenda-slot.contract.ts");
   const variantContractPath = join(contractsDir, "afenda-variant.contract.ts");
-  const slotIdentityPath = join(contractsDir, "slot-identity.contract.ts");
-  const variantIdentityPath = join(contractsDir, "variant-identity.contract.ts");
-  const componentIdentityPath = join(
-    contractsDir,
-    "component-identity.contract.ts"
-  );
   const afendaUiIndexPath = join(
     root,
     "packages",
@@ -73,23 +65,26 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
     "index.ts"
   );
 
-  const componentSource = readIfExists(componentScorecardsPath);
   const contractSource = readIfExists(designSystemContractPath);
+  const componentContractSource = readIfExists(componentContractPath);
+  const slotContractSource = readIfExists(slotContractPath);
   const variantContractSource = readIfExists(variantContractPath);
-  const variantSource = readIfExists(variantIdentityPath);
 
   const primitiveComponentIds = extractStringArray(
-    componentSource,
-    "primitiveComponentIds"
+    componentContractSource,
+    "AFENDA_PRIMITIVE_COMPONENT_IDS"
   );
-  const blockComponentIds = extractStringArray(componentSource, "blockComponentIds");
+  const blockComponentIds = extractStringArray(
+    componentContractSource,
+    "AFENDA_BLOCK_COMPONENT_IDS"
+  );
   const publicComponentExports = [
     ...extractBarrelExportNames(readIfExists(afendaUiIndexPath)),
     ...extractBarrelExportNames(readIfExists(blockIndexPath)),
   ];
   const internalComponentIdentities = extractStringArray(
-    readIfExists(componentIdentityPath),
-    "AFENDA_INTERNAL_COMPONENT_IDENTITY_REGISTRY"
+    componentContractSource,
+    "AFENDA_INTERNAL_COMPONENT_IDS"
   );
   const recipeIds = extractObjectKeys(readIfExists(recipePath), "afendaRecipe");
   const blockRecipeIds = extractObjectKeys(
@@ -98,11 +93,11 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
   );
   const tones = extractStringArray(variantContractSource, "AFENDA_TONES");
   const actionVariants = extractStringArray(
-    variantSource,
+    variantContractSource,
     "AFENDA_ACTION_VARIANTS"
   );
   const structuralVariants = extractStringArray(
-    variantSource,
+    variantContractSource,
     "AFENDA_STRUCTURAL_VARIANTS"
   );
   const forbiddenSemanticAliases = extractObjectStringArrays(
@@ -114,7 +109,7 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
     "AFENDA_AI_HARD_FAIL_RULES"
   );
   const slotPatternSources = extractStringArray(
-    readIfExists(slotIdentityPath),
+    slotContractSource,
     "AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY"
   );
   const exactSlots = new Set([

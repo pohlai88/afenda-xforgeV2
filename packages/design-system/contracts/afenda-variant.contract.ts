@@ -42,6 +42,42 @@ export const AFENDA_SIZES = ["xs", "sm", "md", "lg", "xl"] as const;
 
 export type AfendaSize = (typeof AFENDA_SIZES)[number];
 
+export const AFENDA_ACTION_VARIANTS = [
+  "primary",
+  "secondary",
+  "quiet",
+  "critical",
+  "link",
+] as const;
+
+export type AfendaActionVariant = (typeof AFENDA_ACTION_VARIANTS)[number];
+
+export const AFENDA_STRUCTURAL_VARIANTS = [
+  "default",
+  "icon",
+  "icon-sm",
+  "label",
+  "legend",
+  "panel",
+  "plain",
+  "sidebar",
+  "floating",
+  "inset",
+  "outline",
+  "soft",
+  "solid",
+] as const;
+
+export type AfendaStructuralVariant =
+  (typeof AFENDA_STRUCTURAL_VARIANTS)[number];
+
+export const AFENDA_VARIANT_IDENTITY_REGISTRY = {
+  actionVariants: AFENDA_ACTION_VARIANTS,
+  densities: AFENDA_DENSITIES,
+  structuralVariants: AFENDA_STRUCTURAL_VARIANTS,
+  tones: AFENDA_TONES,
+} as const;
+
 export const AFENDA_VARIANT_AUTHORITY_RULES = {
   variantOwnsMeaning: true,
   variantOwnsSemanticVocabulary: true,
@@ -113,8 +149,6 @@ export const AFENDA_VARIANT_FORBIDDEN_PATTERNS = [
   "positive",
   "caution",
   "pending",
-  "primary",
-  "secondary",
 ] as const;
 
 export const AFENDA_VARIANT_SOURCE_OF_TRUTH = [
@@ -140,6 +174,9 @@ export const afendaVariantContract = {
   densities: AFENDA_DENSITIES,
   emphasis: AFENDA_EMPHASIS,
   sizes: AFENDA_SIZES,
+  actionVariants: AFENDA_ACTION_VARIANTS,
+  structuralVariants: AFENDA_STRUCTURAL_VARIANTS,
+  variantIdentityRegistry: AFENDA_VARIANT_IDENTITY_REGISTRY,
   authorityRules: AFENDA_VARIANT_AUTHORITY_RULES,
   forbiddenOwnership: AFENDA_VARIANT_FORBIDDEN_OWNERSHIP,
   recipeRules: AFENDA_VARIANT_RECIPE_RULES,

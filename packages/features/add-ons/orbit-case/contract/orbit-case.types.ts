@@ -49,6 +49,26 @@ export type OrbitCaseCommentDto = Omit<OrbitCaseCommentRecord, "createdAt"> & {
   createdAt: string;
 };
 
+export interface OrbitCaseAttachmentRecord {
+  blobPathname: string;
+  blobUrl: string;
+  caseId: string;
+  contentType: string;
+  createdAt: Date;
+  fileName: string;
+  id: string;
+  organizationId: string;
+  sizeBytes: number;
+  uploadedBy: string;
+}
+
+export type OrbitCaseAttachmentDto = Omit<
+  OrbitCaseAttachmentRecord,
+  "createdAt"
+> & {
+  createdAt: string;
+};
+
 export interface OrbitCaseActivityRecord {
   action: string;
   actorId: string;
@@ -110,6 +130,53 @@ export interface OrbitCaseBoardColumnDto {
 
 export interface OrbitCaseBoardDto {
   columns: OrbitCaseBoardColumnDto[];
+}
+
+export interface OrbitCaseCalendarDay {
+  cases: OrbitCaseRecord[];
+  date: string;
+}
+
+export interface OrbitCaseCalendarResult {
+  days: OrbitCaseCalendarDay[];
+  month: string;
+}
+
+export interface OrbitCaseCalendarDayDto {
+  cases: OrbitCaseDto[];
+  date: string;
+}
+
+export interface OrbitCaseCalendarDto {
+  days: OrbitCaseCalendarDayDto[];
+  month: string;
+}
+
+export type OrbitCaseTimelineBucket =
+  | "later"
+  | "no_due_date"
+  | "overdue"
+  | "this_week"
+  | "today";
+
+export interface OrbitCaseTimelineGroup {
+  bucket: OrbitCaseTimelineBucket;
+  cases: OrbitCaseRecord[];
+  label: string;
+}
+
+export interface OrbitCaseTimelineResult {
+  groups: OrbitCaseTimelineGroup[];
+}
+
+export interface OrbitCaseTimelineGroupDto {
+  bucket: OrbitCaseTimelineBucket;
+  cases: OrbitCaseDto[];
+  label: string;
+}
+
+export interface OrbitCaseTimelineDto {
+  groups: OrbitCaseTimelineGroupDto[];
 }
 
 export interface OrbitCaseUpdatePatch {

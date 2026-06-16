@@ -1,9 +1,5 @@
 export { ChartAreaInteractive } from "./chart/chart-area-interactive";
-export type {
-  ChartAreaDataPoint,
-  ChartAreaInteractiveProps,
-} from "./chart/chart-area-types";
-export type { ChartAreaTimeRange } from "./chart/chart-area-types";
+export type { ChartAreaInteractiveProps } from "./chart/chart-area-types";
 export {
   CHART_AREA_DEFAULT_DESCRIPTION,
   CHART_AREA_DEFAULT_DESCRIPTION_MOBILE,
@@ -13,12 +9,20 @@ export {
   CHART_AREA_SELECT_LABEL,
   CHART_AREA_TIME_RANGE_OPTIONS,
 } from "./chart/dashboard-chart-constants";
+export type { ChartAreaTimeRangeOption } from "./chart/dashboard-chart-constants";
 export { DEMO_DASHBOARD_CHART_AREA_DATA } from "./chart/dashboard-chart-data";
 export {
   filterChartAreaDataByTimeRange,
   formatChartAreaAxisDate,
   formatChartAreaTooltipLabel,
 } from "./chart/dashboard-chart-utils";
+export type {
+  ChartAreaDataPoint,
+  ChartAreaTimeRange,
+  DashboardSectionCardItem,
+  DashboardSectionCardTrend,
+} from "./dashboard-contracts";
+export { CHART_AREA_TIME_RANGES } from "./dashboard-contracts";
 export { DashboardPage } from "./dashboard-page/dashboard-page";
 export {
   DASHBOARD_PAGE_DESCRIPTION,
@@ -33,30 +37,28 @@ export type { DashboardPageProps } from "./dashboard-page/dashboard-page-types";
 export { DashboardDataTable } from "./data-table";
 export {
   DASHBOARD_DATA_TABLE_DESCRIPTION,
-  DASHBOARD_DATA_TABLE_PAGE_SIZES,
-  DASHBOARD_DATA_TABLE_REVIEWER_PLACEHOLDER,
   DASHBOARD_DATA_TABLE_REVIEWERS,
   DASHBOARD_DATA_TABLE_SECTION_TYPES,
   DASHBOARD_DATA_TABLE_STATUSES,
-  DASHBOARD_DATA_TABLE_TAB_VIEWS,
+} from "./data-table/dashboard-data-table-constants";
+export type {
+  DashboardDataTableReviewer,
+  DashboardDataTableTabView,
 } from "./data-table/dashboard-data-table-constants";
 export { DEMO_DASHBOARD_DATA_TABLE_ROWS } from "./data-table/dashboard-data-table-demo-data";
-export type { DashboardDataTableRow } from "./data-table/dashboard-data-table-schema";
+export type {
+  DashboardDataTableRow,
+  DashboardDataTableSectionType,
+  DashboardDataTableStatus,
+} from "./data-table/dashboard-data-table-schema";
 export { dashboardDataTableSchema } from "./data-table/dashboard-data-table-schema";
 export type {
   DashboardDataTableProps,
-  DashboardDataTableReviewer,
-  DashboardDataTableSectionType,
-  DashboardDataTableStatus,
-  DashboardDataTableTabView,
+  DashboardDataTableTabViewOption,
 } from "./data-table/dashboard-data-table-types";
 export { DASHBOARD_SECTION_CARDS_DESCRIPTION } from "./kpi-card/dashboard-section-cards-constants";
 export { DEMO_DASHBOARD_SECTION_CARDS } from "./kpi-card/dashboard-section-cards-demo-data";
-export type {
-  DashboardSectionCardItem,
-  DashboardSectionCardTrend,
-  SectionCardsProps,
-} from "./kpi-card/dashboard-section-cards-types";
+export type { SectionCardsProps } from "./kpi-card/dashboard-section-cards-types";
 export { SectionCards } from "./kpi-card/section-cards";
 export {
   NAV_DOCUMENTS_DEFAULT_GROUP_LABEL,

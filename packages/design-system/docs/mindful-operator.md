@@ -65,8 +65,8 @@ Brand green and success green must never be aliased. Afenda identity and healthy
 
 - Token values and metadata: `tokens/tokens.json`
 - Token schema: `tokens/tokens.schema.json`
-- Color contract: `contracts/color.contract.ts`
-- Token layer contract: `contracts/token-layer.contract.ts`
+- Token contract: `contracts/afenda-token.contract.ts`
+- Variant contract: `contracts/afenda-variant.contract.ts`
 - Global CSS variables: `styles/globals.css`
 - Token design-data tests: `test/token-design-data.test.ts`
 

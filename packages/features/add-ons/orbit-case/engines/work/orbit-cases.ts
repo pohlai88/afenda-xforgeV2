@@ -9,7 +9,7 @@ import {
   orbitCaseWatcher,
 } from "@repo/database/schema";
 import { log } from "@repo/observability/log";
-import { and, desc, eq, inArray, isNull } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, isNull, lte } from "drizzle-orm";
 import type {
   CreateOrbitCaseInput,
   ListOrbitCasesFilter,
@@ -180,6 +180,8 @@ export const listOrbitCases = async (
         filters.assigneeId
           ? eq(orbitCase.assigneeId, filters.assigneeId)
           : undefined,
+        filters.dueFrom ? gte(orbitCase.dueAt, filters.dueFrom) : undefined,
+        filters.dueTo ? lte(orbitCase.dueAt, filters.dueTo) : undefined,
         filters.includeCancelled
           ? undefined
           : inArray(orbitCase.status, [...ORBIT_CASE_ACTIVE_STATUSES])

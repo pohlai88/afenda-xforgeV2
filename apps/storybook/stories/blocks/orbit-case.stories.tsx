@@ -118,3 +118,74 @@ export const CaseDetail: Story = {
   name: "Case Detail",
   render: () => <OrbitCaseDetailPreview />,
 };
+
+function OrbitCaseTimelinePreview() {
+  const groups = [
+    {
+      label: "Overdue",
+      cases: [{ id: "1", title: "Renew vendor contract", status: "doing" as const, dueAt: "2026-06-10T00:00:00.000Z" }],
+    },
+    {
+      label: "Today",
+      cases: [{ id: "2", title: "Approve PO batch", status: "ready" as const, dueAt: "2026-06-17T00:00:00.000Z" }],
+    },
+    {
+      label: "No due date",
+      cases: [{ id: "3", title: "Research ERP module", status: "backlog" as const, dueAt: null }],
+    },
+  ];
+
+  return (
+    <div className="grid gap-4 p-6">
+      {groups.map((group) => (
+        <section
+          className={cn(
+            blockRecipe("blockPanel", "blockPanelPadding"),
+            "grid gap-2"
+          )}
+          key={group.label}
+        >
+          <h3 className="font-medium text-sm">{group.label}</h3>
+          {group.cases.map((orbitCase) => (
+            <div className="rounded-md border bg-background p-3 text-sm" key={orbitCase.id}>
+              <p className="font-medium">{orbitCase.title}</p>
+              <Badge className="mt-2" variant="outline">
+                {statusLabel[orbitCase.status]}
+              </Badge>
+            </div>
+          ))}
+        </section>
+      ))}
+    </div>
+  );
+}
+
+export const TimelineView: Story = {
+  name: "Timeline View",
+  render: () => <OrbitCaseTimelinePreview />,
+};
+
+function OrbitCaseCalendarPreview() {
+  return (
+    <div className="grid gap-4 p-6 lg:grid-cols-2">
+      <section className={cn(blockRecipe("blockPanel", "blockPanelPadding"), "text-sm")}>
+        <p className="font-medium">June 2026</p>
+        <p className="mt-2 text-muted-foreground">Days with due dates highlighted.</p>
+      </section>
+      <section className={cn(blockRecipe("blockPanel", "blockPanelPadding"), "grid gap-2")}>
+        <h3 className="font-medium text-sm">Due 17 Jun 2026</h3>
+        <div className="rounded-md border bg-background p-3 text-sm">
+          <p className="font-medium">Approve PO batch</p>
+          <Badge className="mt-2" variant="outline">
+            Ready
+          </Badge>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+export const CalendarView: Story = {
+  name: "Calendar View",
+  render: () => <OrbitCaseCalendarPreview />,
+};

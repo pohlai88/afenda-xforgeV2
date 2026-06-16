@@ -1,3 +1,5 @@
+/** @internal Storybook / dashboard-01 demo only — nav topbar fixtures. */
+
 import {
   DEFAULT_ERP_ACTIONS_MENU_ITEMS,
   DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
@@ -55,12 +57,6 @@ const demoDashboardScopeSwitchers = [
     ],
   },
 ] as const;
-
-const _DEMO_DASHBOARD_NAV_TOPBAR_USER = {
-  avatarFallback: "AF",
-  displayName: "Afenda Operator",
-  email: "operator@afenda.example",
-} as const;
 
 const demoDashboardNotifications = [
   {

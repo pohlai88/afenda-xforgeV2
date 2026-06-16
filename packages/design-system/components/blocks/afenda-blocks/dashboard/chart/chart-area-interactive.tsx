@@ -31,9 +31,9 @@ import { memo, useId, useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import type {
   ChartAreaDataPoint,
-  ChartAreaInteractiveProps,
   ChartAreaTimeRange,
-} from "./chart-area-types";
+} from "../dashboard-contracts";
+import type { ChartAreaInteractiveProps } from "./chart-area-types";
 import {
   CHART_AREA_DEFAULT_DESCRIPTION,
   CHART_AREA_DEFAULT_DESCRIPTION_MOBILE,

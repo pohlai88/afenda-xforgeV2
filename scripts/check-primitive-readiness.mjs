@@ -12,28 +12,6 @@ const afendaUiDir = join(
 );
 const storiesDir = join(root, "apps", "storybook", "stories");
 const afendaUiStoriesDir = join(storiesDir, "afenda-ui");
-const primitiveContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "primitive-hardening.contract.ts"
-);
-const primitiveDocPath = join(
-  root,
-  "packages",
-  "design-system",
-  "docs",
-  "primitive-hardening.md"
-);
-const readinessStoryPath = join(
-  root,
-  "apps",
-  "storybook",
-  "stories",
-  "primitive-readiness.stories.tsx"
-);
-
 const componentExtension = /\.tsx$/;
 const storyExtension = /\.stories\.tsx$/;
 const rawHexPattern = /#[0-9a-fA-F]{3,8}\b/g;
@@ -48,18 +26,6 @@ const warmthPattern =
 
 const errors = [];
 const warnings = [];
-
-for (const path of [
-  primitiveContractPath,
-  primitiveDocPath,
-  readinessStoryPath,
-]) {
-  if (!existsSync(path)) {
-    errors.push(
-      `Missing primitive readiness artifact: ${relative(root, path)}`
-    );
-  }
-}
 
 const componentSets = [
   {

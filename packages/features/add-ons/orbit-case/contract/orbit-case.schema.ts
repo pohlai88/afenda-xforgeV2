@@ -37,6 +37,8 @@ export const listOrbitCasesFilterSchema = z.object({
   assigneeId: z.string().min(1).optional(),
   tag: z.string().trim().min(1).optional(),
   includeCancelled: z.boolean().optional(),
+  dueFrom: z.coerce.date().optional(),
+  dueTo: z.coerce.date().optional(),
   limit: z.number().int().positive().max(200).optional(),
 });
 
@@ -68,4 +70,26 @@ export const getOrbitCaseSchema = z.object({
 
 export const listOrbitCaseActivitySchema = z.object({
   caseId: z.string().min(1),
+});
+
+export const createOrbitCaseAttachmentSchema = z.object({
+  caseId: z.string().min(1),
+  fileName: z.string().trim().min(1).max(255),
+  contentType: z.string().trim().min(1).max(200),
+  sizeBytes: z.number().int().positive().max(5 * 1024 * 1024),
+  blobUrl: z.string().url(),
+  blobPathname: z.string().trim().min(1).max(500),
+});
+
+export const deleteOrbitCaseAttachmentSchema = z.object({
+  attachmentId: z.string().min(1),
+});
+
+export const listOrbitCaseAttachmentsSchema = z.object({
+  caseId: z.string().min(1),
+});
+
+export const orbitCaseCalendarBoardSchema = z.object({
+  year: z.number().int().min(2000).max(2100),
+  month: z.number().int().min(1).max(12),
 });

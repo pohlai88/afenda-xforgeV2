@@ -1,4 +1,7 @@
-import type { ChartAreaDataPoint, ChartAreaTimeRange } from "./chart-area-types";
+import type {
+  ChartAreaDataPoint,
+  ChartAreaTimeRange,
+} from "../dashboard-contracts";
 
 const CHART_AREA_TIME_RANGE_DAYS: Record<ChartAreaTimeRange, number> = {
   "7d": 7,
@@ -34,5 +37,9 @@ export function formatChartAreaTooltipLabel(value: unknown): string {
     return formatChartAreaAxisDate(value);
   }
 
-  return String(value ?? "");
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value);
 }

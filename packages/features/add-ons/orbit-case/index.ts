@@ -6,12 +6,16 @@ export type {
 } from "./contract/orbit-case.schema";
 export {
   assignOrbitCaseSchema,
+  createOrbitCaseAttachmentSchema,
   createOrbitCaseCommentSchema,
   createOrbitCaseSchema,
+  deleteOrbitCaseAttachmentSchema,
   deleteOrbitCaseSchema,
   getOrbitCaseSchema,
   listOrbitCaseActivitySchema,
+  listOrbitCaseAttachmentsSchema,
   listOrbitCasesFilterSchema,
+  orbitCaseCalendarBoardSchema,
   orbitCasePrioritySchema,
   orbitCaseStatusSchema,
   updateOrbitCaseSchema,
@@ -19,14 +23,21 @@ export {
 } from "./contract/orbit-case.schema";
 export type {
   OrbitCaseActivityDto,
+  OrbitCaseAttachmentDto,
   OrbitCaseBoardColumnDto,
   OrbitCaseBoardDto,
+  OrbitCaseCalendarDto,
   OrbitCaseCommentDto,
   OrbitCaseDto,
+  OrbitCaseTimelineDto,
   OrbitObjectLinkDto,
   PushResultDto,
 } from "./contract/orbit-case.types";
 export { formatOrbitCaseActivitySummary } from "./contract/activity-format";
+export {
+  formatOrbitCaseAttachmentSize,
+  formatOrbitCaseDueDateLabel,
+} from "./contract/format-display";
 export { parseOrbitCasePriority, parseOrbitCaseStatus } from "./contract/parse";
 export type {
   ExecutePushInput,
@@ -42,9 +53,12 @@ export {
 export {
   toJsonSafeActivityPayload,
   toOrbitCaseActivityDto,
+  toOrbitCaseAttachmentDto,
   toOrbitCaseBoardDto,
+  toOrbitCaseCalendarDto,
   toOrbitCaseCommentDto,
   toOrbitCaseDto,
+  toOrbitCaseTimelineDto,
   toOrbitObjectLinkDto,
 } from "./contract/serialize";
 export type { OrbitCasePriority, OrbitCaseStatus } from "./contract/status";

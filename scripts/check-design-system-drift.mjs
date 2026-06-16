@@ -53,27 +53,6 @@ const designSystemDocsCheckPath = join(
   "scripts",
   "check-design-system-docs.mjs"
 );
-const patternLibraryContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "pattern-library.contract.ts"
-);
-const patternLibraryDocPath = join(
-  root,
-  "packages",
-  "design-system",
-  "docs",
-  "pattern-library.md"
-);
-const componentScorecardsContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "component-scorecards.contract.ts"
-);
 const accessibilityContractPath = join(
   root,
   "packages",
@@ -94,41 +73,6 @@ const componentContractPath = join(
   "design-system",
   "contracts",
   "afenda-component.contract.ts"
-);
-const componentIdentityContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "component-identity.contract.ts"
-);
-const recipeIdentityContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "recipe-identity.contract.ts"
-);
-const slotIdentityContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "slot-identity.contract.ts"
-);
-const variantIdentityContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "variant-identity.contract.ts"
-);
-const exampleIdentityContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "example-identity.contract.ts"
 );
 const exampleContractPath = join(
   root,
@@ -186,41 +130,6 @@ const variantContractPath = join(
   "contracts",
   "afenda-variant.contract.ts"
 );
-const componentScorecardsDocPath = join(
-  root,
-  "packages",
-  "design-system",
-  "docs",
-  "component-scorecards.md"
-);
-const contributionLifecycleContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "contribution-lifecycle.contract.ts"
-);
-const contributionLifecycleDocPath = join(
-  root,
-  "packages",
-  "design-system",
-  "docs",
-  "contribution-lifecycle.md"
-);
-const enterpriseScreenPatternsContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "enterprise-screen-patterns.contract.ts"
-);
-const enterpriseScreenPatternsDocPath = join(
-  root,
-  "packages",
-  "design-system",
-  "docs",
-  "enterprise-screen-patterns.md"
-);
 const storiesDir = join(root, "apps", "storybook", "stories");
 const blockStoriesDir = join(storiesDir, "blocks");
 const releaseBlockStoryGroups = [
@@ -244,47 +153,12 @@ const globalsPath = join(
   "styles",
   "globals.css"
 );
-const colorContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "color.contract.ts"
-);
 const mindfulOperatorPath = join(
   root,
   "packages",
   "design-system",
   "docs",
   "mindful-operator.md"
-);
-const primitiveHardeningContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "primitive-hardening.contract.ts"
-);
-const primitiveHardeningPath = join(
-  root,
-  "packages",
-  "design-system",
-  "docs",
-  "primitive-hardening.md"
-);
-const primitiveReadinessStoryPath = join(
-  root,
-  "apps",
-  "storybook",
-  "stories",
-  "primitive-readiness.stories.tsx"
-);
-const tokenLayerContractPath = join(
-  root,
-  "packages",
-  "design-system",
-  "contracts",
-  "token-layer.contract.ts"
 );
 const tokenUsagePolicyPath = join(
   root,
@@ -439,42 +313,24 @@ const globals = readFileSync(globalsPath, "utf8");
 const aiDriftRegistry = createDesignSystemAiDriftRegistry(root);
 
 for (const path of [
-  colorContractPath,
   mindfulOperatorPath,
-  primitiveHardeningContractPath,
-  primitiveHardeningPath,
-  primitiveReadinessStoryPath,
-  tokenLayerContractPath,
   tokenUsagePolicyPath,
   tokenSchemaPath,
   blockGovernancePath,
   designSystemDocsReadmePath,
   designSystemDocsAuditPath,
   designSystemDocsCheckPath,
-  patternLibraryContractPath,
-  patternLibraryDocPath,
   accessibilityContractPath,
   classNamePolicyContractPath,
   componentContractPath,
-  componentScorecardsContractPath,
-  componentIdentityContractPath,
   exampleContractPath,
   exportContractPath,
   motionContractPath,
   recipeContractPath,
-  recipeIdentityContractPath,
   slotContractPath,
-  slotIdentityContractPath,
   stateContractPath,
   tokenContractPath,
   variantContractPath,
-  variantIdentityContractPath,
-  exampleIdentityContractPath,
-  componentScorecardsDocPath,
-  contributionLifecycleContractPath,
-  contributionLifecycleDocPath,
-  enterpriseScreenPatternsContractPath,
-  enterpriseScreenPatternsDocPath,
 ]) {
   if (!existsSync(path)) {
     errors.push(

@@ -1,14 +1,6 @@
 import type { ChartConfig } from "@repo/design-system/components/afenda-ui/chart";
 import type { ReactNode } from "react";
-import type { ChartAreaTimeRange } from "./dashboard-chart-constants";
-
-export type { ChartAreaTimeRange };
-
-export interface ChartAreaDataPoint {
-  readonly date: string;
-  readonly desktop: number;
-  readonly mobile: number;
-}
+import type { ChartAreaDataPoint } from "../dashboard-contracts";
 
 export interface ChartAreaInteractiveProps {
   readonly className?: string;

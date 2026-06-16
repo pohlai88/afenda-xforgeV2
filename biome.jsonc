@@ -66,6 +66,29 @@
           }
         }
       }
+    },
+    {
+      "includes": [
+        "**/test/**",
+        "**/test-support/**",
+        "**/*.test.ts",
+        "**/*.test.tsx",
+        "apps/app/e2e/**"
+      ],
+      "linter": {
+        "rules": {
+          "performance": {
+            "useTopLevelRegex": "off"
+          },
+          "style": {
+            "noNonNullAssertion": "off"
+          },
+          "suspicious": {
+            "noMisplacedAssertion": "off",
+            "noNonNullAssertedOptionalChain": "off"
+          }
+        }
+      }
     }
   ],
   "files": {

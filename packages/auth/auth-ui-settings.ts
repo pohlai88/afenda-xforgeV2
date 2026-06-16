@@ -380,6 +380,7 @@ const buildSessionSettings = (
   };
 };
 
+// biome-ignore-start lint/complexity/noExcessiveCognitiveComplexity: Merge matrix intentionally maps public and management auth settings field-by-field.
 export const mergeAuthUiSettings = (
   publicSettings: SupabaseAuthSettingsResponse,
   management: SupabaseManagementAuthConfig | null
@@ -472,6 +473,7 @@ export const mergeAuthUiSettings = (
     },
   };
 };
+// biome-ignore-end lint/complexity/noExcessiveCognitiveComplexity: End auth settings merge suppression.
 
 export const parseAuthUiSettings = (
   payload: SupabaseAuthSettingsResponse

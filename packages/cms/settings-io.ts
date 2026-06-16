@@ -90,7 +90,7 @@ const writeSettingsLocally = async (
   return { path: filePath };
 };
 
-export const readSettingsRaw = async (): Promise<string> => {
+export const readSettingsRaw = (): Promise<string> => {
   if (getReadMode() === "github") {
     return readSettingsFromGitHub();
   }
@@ -98,7 +98,7 @@ export const readSettingsRaw = async (): Promise<string> => {
   return readFile(settingsFilePath(), "utf8");
 };
 
-export const writeSettingsRaw = async (
+export const writeSettingsRaw = (
   content: string,
   message = "chore(cms): update site settings"
 ): Promise<{ path: string }> => {

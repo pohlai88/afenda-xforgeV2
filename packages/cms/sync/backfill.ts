@@ -21,6 +21,7 @@ const parsePublishedAt = (
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 };
 
+// biome-ignore-start lint/complexity/noExcessiveCognitiveComplexity: Backfill intentionally walks collections, locales, and documents in one transactional pass.
 export const backfillDocumentMirror =
   async (): Promise<MirrorBackfillResult> => {
     await ensureCmsMirrorSchema();
@@ -80,3 +81,4 @@ export const backfillDocumentMirror =
 
     return { upserted, skipped };
   };
+// biome-ignore-end lint/complexity/noExcessiveCognitiveComplexity: End CMS mirror backfill suppression.

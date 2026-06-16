@@ -61,7 +61,7 @@ export const PasskeyManager = () => {
       return;
     }
 
-    void loadPasskeys();
+    loadPasskeys().catch(() => undefined);
   }, [loadPasskeys, settings.passkey.enabled]);
 
   const handleRegister = async () => {
@@ -116,6 +116,50 @@ export const PasskeyManager = () => {
   }
 
   const passkeyOriginSupported = isPasskeyOriginSupported(settings.passkey);
+  let passkeysContent = (
+    <ul className="flex flex-col gap-2">
+      {passkeys.map((passkey) => (
+        <li
+          className="flex items-center justify-between gap-3 rounded-[var(--xforge-radius-md)] border border-border-default px-3 py-2"
+          key={passkey.id}
+        >
+          <div className="flex min-w-0 items-center gap-2">
+            <PasskeyIcon className="size-4 shrink-0 text-text-secondary" />
+            <div className="min-w-0">
+              <p className={cn("truncate", recipe("bodyMediumText"))}>
+                {passkey.friendly_name ?? "Passkey"}
+              </p>
+              {passkey.last_used_at ? (
+                <p className={recipe("captionText")}>
+                  Last used{" "}
+                  {new Date(passkey.last_used_at).toLocaleDateString()}
+                </p>
+              ) : null}
+            </div>
+          </div>
+          <Button
+            disabled={action !== null}
+            onClick={() => handleDelete(passkey.id)}
+            size="sm"
+            type="button"
+            variant="quiet"
+          >
+            Remove
+          </Button>
+        </li>
+      ))}
+    </ul>
+  );
+  if (passkeys.length === 0) {
+    passkeysContent = (
+      <p className={recipe("captionText")}>
+        No passkeys registered for this account yet.
+      </p>
+    );
+  }
+  if (loading) {
+    passkeysContent = <AuthLoadingState label="Loading passkeys…" />;
+  }
 
   return (
     <AuthSection aria-busy={loading} aria-labelledby={titleId}>
@@ -138,52 +182,15 @@ export const PasskeyManager = () => {
           message={error}
           onRetry={
             passkeys.length === 0 && action === null
-              ? () => void loadPasskeys()
+              ? () => {
+                  loadPasskeys().catch(() => undefined);
+                }
               : undefined
           }
         />
       ) : null}
       {message ? <AuthSuccessAlert message={message} /> : null}
-      {loading ? (
-        <AuthLoadingState label="Loading passkeys…" />
-      ) : passkeys.length === 0 ? (
-        <p className={recipe("captionText")}>
-          No passkeys registered for this account yet.
-        </p>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {passkeys.map((passkey) => (
-            <li
-              className="flex items-center justify-between gap-3 rounded-[var(--xforge-radius-md)] border border-border-default px-3 py-2"
-              key={passkey.id}
-            >
-              <div className="flex min-w-0 items-center gap-2">
-                <PasskeyIcon className="size-4 shrink-0 text-text-secondary" />
-                <div className="min-w-0">
-                  <p className={cn("truncate", recipe("bodyMediumText"))}>
-                    {passkey.friendly_name ?? "Passkey"}
-                  </p>
-                  {passkey.last_used_at ? (
-                    <p className={recipe("captionText")}>
-                      Last used{" "}
-                      {new Date(passkey.last_used_at).toLocaleDateString()}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
-              <Button
-                disabled={action !== null}
-                onClick={() => handleDelete(passkey.id)}
-                size="sm"
-                type="button"
-                variant="quiet"
-              >
-                Remove
-              </Button>
-            </li>
-          ))}
-        </ul>
-      )}
+      {passkeysContent}
       <AuthPendingButton
         className="w-fit"
         disabled={

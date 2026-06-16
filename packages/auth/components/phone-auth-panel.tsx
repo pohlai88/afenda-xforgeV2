@@ -40,6 +40,10 @@ export const PhoneAuthPanel = ({ mode, onError }: PhoneAuthPanelProperties) => {
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const captchaOptions = useCaptchaOptions(captchaToken);
+  const otpSlots = Array.from({ length: settings.otp.length }, (_, index) => ({
+    id: `phone-otp-slot-${index + 1}`,
+    index,
+  }));
 
   if (!settings.phone) {
     return null;
@@ -182,8 +186,8 @@ export const PhoneAuthPanel = ({ mode, onError }: PhoneAuthPanelProperties) => {
               value={otpCode}
             >
               <InputOTPGroup>
-                {Array.from({ length: settings.otp.length }, (_, index) => (
-                  <InputOTPSlot index={index} key={`phone-otp-${index}`} />
+                {otpSlots.map((slot) => (
+                  <InputOTPSlot index={slot.index} key={slot.id} />
                 ))}
               </InputOTPGroup>
             </InputOTP>

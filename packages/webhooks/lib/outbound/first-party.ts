@@ -8,13 +8,13 @@ import {
   CMS_WEBHOOK_EVENTS,
   type CmsWebhookEventType,
 } from "../registry/events";
-import {
+import { FIRST_PARTY_ENDPOINT_KIND } from "./endpoint-kinds";
+import { validateWebhookUrl } from "./url-validation";
+
+export {
   CUSTOMER_ENDPOINT_KIND,
   FIRST_PARTY_ENDPOINT_KIND,
 } from "./endpoint-kinds";
-import { validateWebhookUrl } from "./url-validation";
-
-export { CUSTOMER_ENDPOINT_KIND, FIRST_PARTY_ENDPOINT_KIND };
 
 const firstPartyEndpointId = (organizationId: string): string =>
   `fp-web-${organizationId}`;
@@ -42,14 +42,17 @@ export const ensureFirstPartyWebEndpoint = async (
   }
 
   const config = keys();
-  const url = validateWebhookUrl(
-    config.WEBHOOK_FIRST_PARTY_WEB_URL?.trim()
-  ).toString();
+  const firstPartyWebUrl = config.WEBHOOK_FIRST_PARTY_WEB_URL;
+  const firstPartyWebSecret = config.WEBHOOK_FIRST_PARTY_WEB_SECRET;
+
+  if (!(firstPartyWebUrl && firstPartyWebSecret)) {
+    return null;
+  }
+
+  const url = validateWebhookUrl(firstPartyWebUrl.trim()).toString();
   const endpointId = firstPartyEndpointId(organizationId);
   const now = new Date();
-  const storedSecret = normalizeStoredSecret(
-    config.WEBHOOK_FIRST_PARTY_WEB_SECRET!
-  );
+  const storedSecret = normalizeStoredSecret(firstPartyWebSecret);
 
   const [existing] = await database
     .select({ id: webhookEndpoint.id })

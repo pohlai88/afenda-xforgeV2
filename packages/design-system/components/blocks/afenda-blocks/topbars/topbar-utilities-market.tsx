@@ -19,6 +19,8 @@ import { TopbarTooltip } from "./topbar-tooltip";
 import type { TopbarUtilitiesMarketProps } from "./topbar-types";
 import { TopbarUtilitiesRequestForm } from "./topbar-utilities-request-form";
 
+const WHITESPACE_PATTERN = /\s+/;
+
 function reorderUtilityIds(
   order: readonly string[],
   draggedId: string,
@@ -69,7 +71,7 @@ function catalogRowMatchesFilter(
   ]
     .join(" ")
     .toLowerCase();
-  const tokens = trimmed.split(/\s+/).filter(Boolean);
+  const tokens = trimmed.split(WHITESPACE_PATTERN).filter(Boolean);
 
   return tokens.every((token) => haystack.includes(token));
 }
@@ -89,49 +91,53 @@ const MarketCatalogRow = memo(function MarketCatalogRow({
   isDropTarget,
 }: MarketCatalogRowProps) {
   return (
-    <div
-      className={cn(
-        "group relative rounded-md transition-[opacity,box-shadow,transform] duration-120 ease-out motion-reduce:transition-none",
-        draggable && "cursor-move active:cursor-move",
-        isDragging && "opacity-60",
-        isDropTarget &&
-          "after:absolute after:inset-y-1 after:-right-0.5 after:w-0.5 after:rounded-full after:bg-brand-primary/70"
-      )}
-      draggable={draggable}
-      onDragEnd={onDragEnd}
-      onDragLeave={onDragLeave}
-      onDragOver={onDragOver}
-      onDragStart={onDragStart}
-      onDrop={onDrop}
-    >
-      <div className="flex items-center gap-2 rounded-md px-2 py-1.5">
-        <span className="grid size-5 shrink-0 place-items-center text-text-tertiary">
-          <GripVerticalIcon aria-hidden="true" className="size-3.5" />
-        </span>
-        <span className="grid size-7 shrink-0 place-items-center rounded-md border border-border-subtle bg-surface-muted/40">
-          {item.icon}
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="truncate font-medium text-[12px]">{item.label}</p>
-          {item.description ? (
-            <p className="truncate text-[10px] text-text-tertiary">
-              {item.description}
-            </p>
-          ) : null}
+    <>
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: Native drag/drop events live on the draggable catalog row while selection remains on child controls. */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: Draggable catalog row needs drag/drop handlers for pointer reordering. */}
+      <div
+        className={cn(
+          "group relative rounded-md transition-[opacity,box-shadow,transform] duration-120 ease-out motion-reduce:transition-none",
+          draggable && "cursor-move active:cursor-move",
+          isDragging && "opacity-60",
+          isDropTarget &&
+            "after:absolute after:inset-y-1 after:-right-0.5 after:w-0.5 after:rounded-full after:bg-brand-primary/70"
+        )}
+        draggable={draggable}
+        onDragEnd={onDragEnd}
+        onDragLeave={onDragLeave}
+        onDragOver={onDragOver}
+        onDragStart={onDragStart}
+        onDrop={onDrop}
+      >
+        <div className="flex items-center gap-2 rounded-md px-2 py-1.5">
+          <span className="grid size-5 shrink-0 place-items-center text-text-tertiary">
+            <GripVerticalIcon aria-hidden="true" className="size-3.5" />
+          </span>
+          <span className="grid size-7 shrink-0 place-items-center rounded-md border border-border-subtle bg-surface-muted/40">
+            {item.icon}
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-medium text-[12px]">{item.label}</p>
+            {item.description ? (
+              <p className="truncate text-[10px] text-text-tertiary">
+                {item.description}
+              </p>
+            ) : null}
+          </div>
+          <Switch
+            aria-label={`${enabled ? "Remove" : "Pin"} ${item.label}`}
+            checked={enabled}
+            disabled={atPinLimit}
+            onCheckedChange={(checked) => {
+              onEnabledChange(item.id, checked);
+            }}
+            onPointerDown={(event) => {
+              event.stopPropagation();
+            }}
+          />
         </div>
-        <Switch
-          aria-label={`${enabled ? "Remove" : "Pin"} ${item.label}`}
-          checked={enabled}
-          disabled={atPinLimit}
-          onCheckedChange={(checked) => {
-            onEnabledChange(item.id, checked);
-          }}
-          onPointerDown={(event) => {
-            event.stopPropagation();
-          }}
-        />
       </div>
-    </div>
+    </>
   );
 });
 

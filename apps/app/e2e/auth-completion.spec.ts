@@ -51,7 +51,8 @@ test.describe("Auth E2E completion smoke", () => {
     await signIn(page);
 
     if (page.url().includes("/mfa-challenge")) {
-      test(true, "E2E user requires MFA step-up — run OTP manually.");
+      // biome-ignore lint/suspicious/noSkippedTests: MFA step-up requires manual OTP in this E2E account.
+      test.skip(true, "E2E user requires MFA step-up - run OTP manually.");
     }
 
     await page.goto("/mfa-challenge?next=/account/organization");
@@ -68,7 +69,8 @@ test.describe("Auth E2E completion smoke", () => {
     await signIn(page);
 
     if (page.url().includes("/mfa-challenge")) {
-      test(true, "E2E user requires MFA step-up — run OTP manually.");
+      // biome-ignore lint/suspicious/noSkippedTests: MFA step-up requires manual OTP in this E2E account.
+      test.skip(true, "E2E user requires MFA step-up - run OTP manually.");
     }
 
     await page.goto("/account/organization");

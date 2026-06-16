@@ -24,8 +24,7 @@ const baseURL = getPlaywrightBaseUrl();
 
 const ACCOUNT_EXISTS_COPY_PATTERN = /If an account exists for that address/i;
 const APP_ROOT_URL_PATTERN = /\/($|\?)/;
-const CHECK_EMAIL_SIGN_IN_COPY_PATTERN =
-  /Check your email for a sign-in link/i;
+const CHECK_EMAIL_SIGN_IN_COPY_PATTERN = /Check your email for a sign-in link/i;
 const EMAIL_NOT_CONFIRMED_COPY_PATTERN = /email not confirmed/i;
 const PASSWORD_REQUIREMENT_COPY_PATTERN = /At least \d+ characters/i;
 const SIGN_IN_PATH_PATTERN = /\/sign-in/;
@@ -48,9 +47,7 @@ test.describe("Email authentication UI", () => {
   }) => {
     await page.goto("/sign-up");
 
-    await expect(
-      page.getByText(VERIFICATION_LINK_COPY_PATTERN)
-    ).toBeVisible();
+    await expect(page.getByText(VERIFICATION_LINK_COPY_PATTERN)).toBeVisible();
     await expect(page.getByLabel("Password requirements")).toBeVisible();
     await expect(
       page.getByText(PASSWORD_REQUIREMENT_COPY_PATTERN)
@@ -120,7 +117,8 @@ test.describe("Email authentication UI", () => {
 });
 
 test.describe("Email authentication (Supabase integration)", () => {
-  test(
+  // biome-ignore lint/suspicious/noSkippedTests: Supabase admin credentials are optional for local E2E runs.
+  test.skip(
     !hasSupabaseAdminEnv(),
     "Requires NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY from .env.local / .env.secret (run pnpm test:e2e:env)"
   );
@@ -162,7 +160,9 @@ test.describe("Email authentication (Supabase integration)", () => {
       await page.locator("#sign-in-password").fill(password);
       await page.getByRole("button", { name: "Sign in" }).click();
 
-      await expect(page.getByText(EMAIL_NOT_CONFIRMED_COPY_PATTERN)).toBeVisible();
+      await expect(
+        page.getByText(EMAIL_NOT_CONFIRMED_COPY_PATTERN)
+      ).toBeVisible();
       await expect(page).toHaveURL(SIGN_IN_PATH_PATTERN);
     } finally {
       await deleteUserByEmail(email);
@@ -239,9 +239,7 @@ test.describe("Email authentication (Supabase integration)", () => {
         .click();
 
       await expect(page.getByText("Email sent")).toBeVisible();
-      await expect(
-        page.getByText(ACCOUNT_EXISTS_COPY_PATTERN)
-      ).toBeVisible();
+      await expect(page.getByText(ACCOUNT_EXISTS_COPY_PATTERN)).toBeVisible();
     } finally {
       await deleteUserByEmail(email);
     }

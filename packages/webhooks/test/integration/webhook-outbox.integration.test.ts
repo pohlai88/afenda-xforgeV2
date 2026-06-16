@@ -60,7 +60,7 @@ describe.skipIf(!hasDatabase)("webhook outbox integration", () => {
   });
 
   beforeEach(() => {
-    setIntegrationFetchHandler(async (input, init) => {
+    setIntegrationFetchHandler((input, init) => {
       const url = String(input);
       const headers = Object.fromEntries(new Headers(init?.headers).entries());
       const body = typeof init?.body === "string" ? init.body : "";
@@ -320,7 +320,7 @@ describe.skipIf(!hasDatabase)("webhook outbox integration", () => {
     expect(queued?.status).toBe("pending");
     expect(queued?.attempts).toBe(0);
 
-    setIntegrationFetchHandler(async (input, init) => {
+    setIntegrationFetchHandler((input, init) => {
       const url = String(input);
       const headers = Object.fromEntries(new Headers(init?.headers).entries());
       const body = typeof init?.body === "string" ? init.body : "";

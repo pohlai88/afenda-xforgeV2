@@ -48,7 +48,7 @@ describe.skipIf(!hasDatabase)("first-party webhook fan-out integration", () => {
 
   beforeEach(() => {
     capturedUrls.length = 0;
-    setIntegrationFetchHandler(async (input) => {
+    setIntegrationFetchHandler((input) => {
       capturedUrls.push(String(input));
       return new Response("ok", { status: 200 });
     });

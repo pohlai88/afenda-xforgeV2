@@ -1,15 +1,22 @@
 import {
-  sidebarIconRailAvatarClass,
   sidebarIconRailBlockItemClass,
   sidebarIconRailFooterClass,
   sidebarIconRailFooterMenuClass,
   sidebarIconRailHiddenClass,
-  sidebarIconRailIconClass,
   sidebarIconRailNavClass,
-  sidebarIconRailScrollAreaClass,
   sidebarIconRailShellClass,
 } from "@repo/design-system/components/afenda-ui/sidebar-rail-recipes";
 import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+
+export {
+  sidebarIconRailAvatarClass,
+  sidebarIconRailHiddenClass,
+  sidebarIconRailIconClass,
+  sidebarIconRailScrollAreaClass,
+  sidebarIconRailShellClass,
+} from "@repo/design-system/components/afenda-ui/sidebar-rail-recipes";
+
+const WHITESPACE_PATTERN = /\s+/;
 
 const operatorAppSidebarShellClass = [
   blockRecipe("blockShell"),
@@ -107,7 +114,7 @@ const sidebarAvatarFallbackClass =
 
 function sidebarProfileInitials(label: string): string {
   return label
-    .split(/\s+/)
+    .split(WHITESPACE_PATTERN)
     .filter(Boolean)
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase() ?? "")
@@ -130,11 +137,6 @@ export {
   sidebarFooterClass,
   sidebarFooterMenuClass,
   sidebarGroupLabelClass,
-  sidebarIconRailAvatarClass,
-  sidebarIconRailHiddenClass,
-  sidebarIconRailIconClass,
-  sidebarIconRailScrollAreaClass,
-  sidebarIconRailShellClass,
   sidebarLabelRowClass,
   sidebarNavGroupShellClass,
   sidebarNavPanelEmptyClass,

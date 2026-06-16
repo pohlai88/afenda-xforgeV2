@@ -28,6 +28,9 @@ import {
   CUSTOMER_ENDPOINT_KIND,
   FIRST_PARTY_ENDPOINT_KIND,
 } from "./endpoint-kinds";
+
+export { FIRST_PARTY_ENDPOINT_KIND } from "./endpoint-kinds";
+
 import {
   ENDPOINT_CLIENT_ERROR_STRIKE_LIMIT,
   getEndpointTransientCooldownMs,
@@ -412,15 +415,17 @@ export const listWebhookDeliveries = async (
       .limit(1);
 
     if (cursorRow) {
-      filters.push(
-        or(
-          lt(webhookDelivery.createdAt, cursorRow.createdAt),
-          and(
-            eq(webhookDelivery.createdAt, cursorRow.createdAt),
-            lt(webhookDelivery.id, cursorRow.id)
-          )
-        )!
+      const cursorFilter = or(
+        lt(webhookDelivery.createdAt, cursorRow.createdAt),
+        and(
+          eq(webhookDelivery.createdAt, cursorRow.createdAt),
+          lt(webhookDelivery.id, cursorRow.id)
+        )
       );
+
+      if (cursorFilter) {
+        filters.push(cursorFilter);
+      }
     }
   }
 
@@ -497,5 +502,3 @@ export const pruneOldWebhookDeliveries = async (): Promise<{
 
   return { deleted: deleted.length };
 };
-
-export { FIRST_PARTY_ENDPOINT_KIND };

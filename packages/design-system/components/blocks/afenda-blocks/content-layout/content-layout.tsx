@@ -21,7 +21,7 @@ import {
 } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
 import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 import { cn } from "@repo/design-system/lib/utils";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { useMemo, useRef } from "react";
 import { ContentLayoutBottomDrawer } from "./content-layout-bottom-drawer";
 import { ContentLayoutBreadcrumbsTopbar } from "./content-layout-breadcrumbs-topbar";
@@ -112,17 +112,19 @@ export function ContentLayoutBlock({
   );
 
   const showFooter = footer !== null;
-  const footerNode = showFooter ? (
-    footer !== undefined ? (
-      footer
-    ) : (
+  let footerNode: ReactNode = null;
+  if (footer !== undefined) {
+    footerNode = footer;
+  }
+  if (showFooter && footer === undefined) {
+    footerNode = (
       <ContentLayoutFooter
         className={contentLayoutStageFooterPlacementClass}
         copyright={footerCopyright}
         links={footerLinks}
       />
-    )
-  ) : null;
+    );
+  }
 
   const panel = (
     <div

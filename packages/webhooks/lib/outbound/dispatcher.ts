@@ -15,9 +15,10 @@ import {
 import {
   classifyHttpFailure,
   getNextAttemptAt,
-  MAX_TRANSIENT_ATTEMPTS,
   type WebhookFailureClass,
 } from "./retry";
+
+export { MAX_TRANSIENT_ATTEMPTS as MAX_WEBHOOK_ATTEMPTS } from "./retry";
 
 export interface DeliveryProcessResult {
   delivered: number;
@@ -302,31 +303,25 @@ export const processWebhookDeliveries = async (
       (accumulator, outcome) => {
         switch (outcome) {
           case "delivered":
-            return {
-              ...accumulator,
-              processed: accumulator.processed + 1,
-              delivered: accumulator.delivered + 1,
-            };
+            accumulator.processed += 1;
+            accumulator.delivered += 1;
+            break;
           case "retrying":
-            return {
-              ...accumulator,
-              processed: accumulator.processed + 1,
-              retrying: accumulator.retrying + 1,
-            };
+            accumulator.processed += 1;
+            accumulator.retrying += 1;
+            break;
           case "failed":
-            return {
-              ...accumulator,
-              processed: accumulator.processed + 1,
-              failed: accumulator.failed + 1,
-            };
+            accumulator.processed += 1;
+            accumulator.failed += 1;
+            break;
           case "skipped":
-            return {
-              ...accumulator,
-              skipped: accumulator.skipped + 1,
-            };
+            accumulator.skipped += 1;
+            break;
           default:
-            return accumulator;
+            break;
         }
+
+        return accumulator;
       },
       { processed: 0, delivered: 0, retrying: 0, failed: 0, skipped: 0 }
     );
@@ -341,5 +336,3 @@ export const processWebhookDeliveries = async (
 export const processPendingDeliveries = async (
   limit = 50
 ): Promise<DeliveryProcessResult> => processWebhookDeliveries({ limit });
-
-export { MAX_TRANSIENT_ATTEMPTS as MAX_WEBHOOK_ATTEMPTS };

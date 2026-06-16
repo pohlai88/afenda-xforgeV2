@@ -84,6 +84,8 @@ const TopbarUtilityPin = memo(function TopbarUtilityPin({
       label={action.label}
       shortcut={action.shortcut}
     >
+      {/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: Native drag/drop events live on the draggable utility wrapper while click remains on the child button. */}
+      {/* biome-ignore lint/a11y/noStaticElementInteractions: Draggable wrapper needs drag/drop handlers for pointer reordering. */}
       <div
         aria-grabbed={draggable ? isDragging : undefined}
         className={cn(
@@ -190,6 +192,7 @@ export function TopbarUtilitiesBar({
       }
       className={cn("flex items-center gap-0.5", className)}
       data-slot="app-topbar-utilities-bar"
+      role="toolbar"
     >
       {orderedActions.map((action) => {
         const isPinDraggable = draggable && action.draggable !== false;

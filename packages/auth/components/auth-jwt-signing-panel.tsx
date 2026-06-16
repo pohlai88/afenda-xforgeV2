@@ -77,10 +77,7 @@ export const AuthJwtSigningPanel = ({
           label="Server admin key"
           value={describeServerKeyMode(report.apiKeys.server)}
         />
-        <AuthConfigRow
-          label="Legacy anon API key"
-          value={legacyAnonKeyLabel}
-        />
+        <AuthConfigRow label="Legacy anon API key" value={legacyAnonKeyLabel} />
         <AuthConfigRow
           label="JWKS discovery"
           value={report.jwksUrl || "Not configured"}

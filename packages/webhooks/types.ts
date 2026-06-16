@@ -2,39 +2,31 @@ import type {
   CmsDocumentEvent,
   CmsSettingsUpdatedEvent,
 } from "@repo/cms/events";
-import {
-  type WebhookDeliveryStatus,
-  webhookDeliveryStatuses,
-} from "@repo/database/schema";
+import type { WebhookDeliveryStatus } from "@repo/database/schema";
+import { webhookDeliveryStatuses } from "@repo/database/schema";
 import { z } from "zod";
 import {
+  CMS_WEBHOOK_EVENTS,
+  OUTBOUND_WEBHOOK_EVENT_TYPES,
+} from "./lib/registry/events";
+
+export type { WebhookDeliveryStatus } from "@repo/database/schema";
+export type {
+  CmsWebhookEventType,
+  InboundStripeEventType,
+} from "./lib/registry/events";
+
+export {
   CMS_EVENT_PUBLISHED,
   CMS_EVENT_SETTINGS_UPDATED,
   CMS_EVENT_UNPUBLISHED,
   CMS_WEBHOOK_EVENTS,
-  type CmsWebhookEventType,
   INBOUND_STRIPE_EVENT_TYPES,
-  type InboundStripeEventType,
   OUTBOUND_WEBHOOK_EVENT_TYPES,
   STRIPE_EVENT_CHECKOUT_COMPLETED,
   STRIPE_EVENT_SUBSCRIPTION_SCHEDULE_CANCELED,
   WEBHOOK_TEST_EVENT,
 } from "./lib/registry/events";
-
-export type { WebhookDeliveryStatus };
-export type { CmsWebhookEventType, InboundStripeEventType };
-
-export {
-  CMS_EVENT_PUBLISHED,
-  CMS_EVENT_UNPUBLISHED,
-  CMS_EVENT_SETTINGS_UPDATED,
-  CMS_WEBHOOK_EVENTS,
-  WEBHOOK_TEST_EVENT,
-  OUTBOUND_WEBHOOK_EVENT_TYPES,
-  INBOUND_STRIPE_EVENT_TYPES,
-  STRIPE_EVENT_CHECKOUT_COMPLETED,
-  STRIPE_EVENT_SUBSCRIPTION_SCHEDULE_CANCELED,
-};
 
 export const WEBHOOK_DELIVERY_STATUSES = webhookDeliveryStatuses;
 

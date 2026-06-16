@@ -25,7 +25,7 @@ const formatZodError = (error: ZodError): string =>
     .map((issue) => `${issue.path.join(".") || "root"}: ${issue.message}`)
     .join("; ");
 
-const persistDocument = async (
+const persistDocument = (
   collection: string,
   locale: string,
   slug: string,
@@ -39,7 +39,7 @@ const persistDocument = async (
   return writeLocalDocument(collection, locale, slug, content);
 };
 
-const removeDocument = async (
+const removeDocument = (
   collection: string,
   locale: string,
   slug: string,

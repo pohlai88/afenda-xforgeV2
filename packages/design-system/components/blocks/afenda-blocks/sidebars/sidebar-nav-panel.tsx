@@ -90,9 +90,9 @@ export function SidebarNavPanel({
               ))}
             </>
           ) : (
-            <div className={sidebarNavPanelEmptyClass} role="status">
+            <output className={sidebarNavPanelEmptyClass}>
               {emptyNavigationLabel}
-            </div>
+            </output>
           )}
         </nav>
       </ScrollArea>

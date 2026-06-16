@@ -68,6 +68,40 @@ const focusField = (field: keyof AuthFieldErrors) => {
   document.getElementById(id)?.focus();
 };
 
+const getFirstSignInErrorField = (
+  errors: AuthFieldErrors
+): keyof AuthFieldErrors => {
+  if (errors.email) {
+    return "email";
+  }
+
+  if (errors.password) {
+    return "password";
+  }
+
+  return "email";
+};
+
+const getSubmitLabel = (mode: SignInMode, magicLinkSent: boolean): string => {
+  if (mode === "password") {
+    return "Sign in";
+  }
+
+  return magicLinkSent ? "Verify code" : "Send sign-in email";
+};
+
+const getSubmitPendingLabel = (
+  mode: SignInMode,
+  magicLinkSent: boolean
+): string => {
+  if (mode === "password") {
+    return "Signing in…";
+  }
+
+  return magicLinkSent ? "Verifying code…" : "Sending email…";
+};
+
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Existing sign-in state machine covers password, magic link, OTP, CAPTCHA, and developer credentials.
 export const SignIn = ({ initialError = null }: SignInProperties) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -123,13 +157,7 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
       setFieldErrors(validated.fieldErrors);
       setFormError(validated.formError ?? null);
       setLoading(false);
-      focusField(
-        validated.fieldErrors.email
-          ? "email"
-          : validated.fieldErrors.password
-            ? "password"
-            : "email"
-      );
+      focusField(getFirstSignInErrorField(validated.fieldErrors));
       return;
     }
 
@@ -281,18 +309,19 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
   const passwordInvalid = Boolean(fieldErrors.password);
   const otpInvalid = Boolean(fieldErrors.token);
 
-  const submitLabel =
-    mode === "password"
-      ? "Sign in"
-      : magicLinkSent
-        ? "Verify code"
-        : "Send sign-in email";
-  const submitPendingLabel =
-    mode === "password"
-      ? "Signing in…"
-      : magicLinkSent
-        ? "Verifying code…"
-        : "Sending email…";
+  const submitLabel = getSubmitLabel(mode, magicLinkSent);
+  const submitPendingLabel = getSubmitPendingLabel(mode, magicLinkSent);
+  let submitHandler = handleMagicLinkSignIn;
+  if (magicLinkSent) {
+    submitHandler = handleVerifyEmailOtp;
+  }
+  if (mode === "password") {
+    submitHandler = handlePasswordSignIn;
+  }
+  const otpSlots = Array.from({ length: settings.otp.length }, (_, index) => ({
+    id: `sign-in-otp-slot-${index + 1}`,
+    index,
+  }));
 
   return (
     <div className={cn("flex flex-col", recipe("sectionGap"))}>
@@ -311,13 +340,7 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
       <form
         className={cn("flex flex-col", recipe("sectionGap"))}
         noValidate
-        onSubmit={
-          mode === "password"
-            ? handlePasswordSignIn
-            : magicLinkSent
-              ? handleVerifyEmailOtp
-              : handleMagicLinkSignIn
-        }
+        onSubmit={submitHandler}
       >
         {magicLinkSent ? (
           <AuthSuccessAlert
@@ -428,11 +451,8 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
               value={otpCode}
             >
               <InputOTPGroup>
-                {Array.from({ length: settings.otp.length }, (_, index) => (
-                  <InputOTPSlot
-                    index={index}
-                    key={`sign-in-otp-slot-${index}`}
-                  />
+                {otpSlots.map((slot) => (
+                  <InputOTPSlot index={slot.index} key={slot.id} />
                 ))}
               </InputOTPGroup>
             </InputOTP>

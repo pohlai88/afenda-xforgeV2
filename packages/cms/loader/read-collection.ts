@@ -104,8 +104,10 @@ export const createCollectionReader = <
       return documents;
     }
 
+    const sortMeta = config.sortMeta;
+
     return [...documents].sort((left, right) =>
-      config.sortMeta?.(left.meta, right.meta)
+      sortMeta(left.meta, right.meta)
     );
   };
 

@@ -21,6 +21,8 @@ import {
 
 const INVITE_ORGANIZATION_ID_KEY = "inviteOrganizationId";
 const INVITE_ORGANIZATION_ROLE_KEY = "inviteOrganizationRole";
+const SUPABASE_HOST_SUFFIX_PATTERN = /\.supabase\.co$/;
+const TRAILING_SLASH_PATTERN = /\/$/;
 
 export interface OrganizationMemberRecord {
   displayName: string | null;
@@ -273,7 +275,10 @@ export const inviteOrganizationMember = async (
   const admin = createAdminClient();
   const siteUrl =
     process.env.NEXT_PUBLIC_APP_URL ??
-    process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\.supabase\.co$/, "") ??
+    process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(
+      SUPABASE_HOST_SUFFIX_PATTERN,
+      ""
+    ) ??
     "http://localhost:3000";
 
   const { error } = await admin.auth.admin.inviteUserByEmail(normalizedEmail, {
@@ -281,7 +286,7 @@ export const inviteOrganizationMember = async (
       [INVITE_ORGANIZATION_ID_KEY]: organizationId,
       [INVITE_ORGANIZATION_ROLE_KEY]: role,
     },
-    redirectTo: `${siteUrl.replace(/\/$/, "")}/auth/confirm`,
+    redirectTo: `${siteUrl.replace(TRAILING_SLASH_PATTERN, "")}/auth/confirm`,
   });
 
   if (error) {

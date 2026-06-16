@@ -102,11 +102,14 @@ export const DEMO_DASHBOARD_NAV_TOPBAR_PROPS = {
     className:
       "size-7 place-items-stretch overflow-hidden border-0 bg-transparent p-0",
     icon: (
+      // biome-ignore lint/performance/noImgElement: Design-system demo renders a static public asset without a Next runtime.
       <img
         alt=""
         aria-hidden="true"
         className="block size-full object-contain"
+        height={180}
         src="/afenda-brand/afenda-icon-180-transparent.png"
+        width={180}
       />
     ),
   },

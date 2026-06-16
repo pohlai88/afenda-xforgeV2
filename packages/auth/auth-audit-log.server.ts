@@ -7,7 +7,7 @@ import type { AuthAuditLogEntry } from "./auth-audit-log.shared";
 export type { AuthAuditLogEntry } from "./auth-audit-log.shared";
 export { formatAuthAuditAction } from "./auth-audit-log.shared";
 
-interface AuditLogRow {
+interface AuditLogRow extends Record<string, unknown> {
   action: string | null;
   audit_ip: string | null;
   created_at: string;

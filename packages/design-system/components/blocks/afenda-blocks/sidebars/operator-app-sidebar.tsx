@@ -47,7 +47,7 @@ export function OperatorAppSidebar({
   );
 
   return (
-    <div
+    <nav
       aria-label="Operator navigation"
       className={cn(operatorAppSidebarShellClass, className)}
       data-empty={
@@ -91,6 +91,6 @@ export function OperatorAppSidebar({
         renderLink={linkRenderer}
       />
       {footer}
-    </div>
+    </nav>
   );
 }

@@ -84,133 +84,140 @@ const NavMainItemRow = memo(function NavMainItemRow({
   );
 });
 
-export const NavMain = memo(function NavMain({
-  className,
-  groupClassName,
-  inbox = DEFAULT_INBOX,
-  items,
-  quickCreate = DEFAULT_QUICK_CREATE,
-  renderLink,
-}: NavMainProps) {
-  const linkRenderer = resolveSidebarLinkRenderer(renderLink);
-  const showQuickCreate = quickCreate !== false;
-  const showInbox = inbox !== false;
-  const showActionRow = showQuickCreate || showInbox;
+export const NavMain = memo(
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Dashboard demo nav coordinates quick-create, inbox, grouped links, active state, and custom link rendering.
+  function NavMain({
+    className,
+    groupClassName,
+    inbox = DEFAULT_INBOX,
+    items,
+    quickCreate = DEFAULT_QUICK_CREATE,
+    renderLink,
+  }: NavMainProps) {
+    const linkRenderer = resolveSidebarLinkRenderer(renderLink);
+    const showQuickCreate = quickCreate !== false;
+    const showInbox = inbox !== false;
+    const showActionRow = showQuickCreate || showInbox;
 
-  const quickCreateConfig = showQuickCreate ? quickCreate : null;
-  const inboxConfig = showInbox ? inbox : null;
-  const QuickCreateIcon = quickCreateConfig?.icon ?? CirclePlusIcon;
-  const InboxIcon = inboxConfig?.icon ?? MailIcon;
+    const quickCreateConfig = showQuickCreate ? quickCreate : null;
+    const inboxConfig = showInbox ? inbox : null;
+    const QuickCreateIcon = quickCreateConfig?.icon ?? CirclePlusIcon;
+    const InboxIcon = inboxConfig?.icon ?? MailIcon;
 
-  return (
-    <SidebarGroup className={cn(className)} data-slot="nav-main">
-      <SidebarGroupContent
-        className={cn(navMainGroupContentClass, groupClassName)}
-      >
-        {showActionRow ? (
-          <SidebarMenu data-slot="nav-main-actions">
-            <SidebarMenuItem className={navMainActionRowClass}>
-              {quickCreateConfig ? (
-                <SidebarMenuButton
-                  asChild={Boolean(quickCreateConfig.href)}
-                  className={navMainQuickCreateClass}
-                  onClick={
-                    quickCreateConfig.href
-                      ? undefined
-                      : quickCreateConfig.onSelect
-                  }
-                  tooltip={{
-                    description: quickCreateConfig.description,
-                    label:
-                      quickCreateConfig.label ??
-                      NAV_MAIN_DEFAULT_QUICK_CREATE_LABEL,
-                  }}
-                >
-                  {quickCreateConfig.href ? (
-                    linkRenderer({
-                      className: "",
-                      href: quickCreateConfig.href,
-                      children: (
-                        <>
-                          <QuickCreateIcon
-                            aria-hidden="true"
-                            className={sidebarIconRailIconClass}
-                          />
-                          <span
-                            className={cn(
-                              "min-w-0 flex-1 truncate",
-                              sidebarIconRailHiddenClass
-                            )}
-                          >
-                            {quickCreateConfig.label ??
-                              NAV_MAIN_DEFAULT_QUICK_CREATE_LABEL}
-                          </span>
-                        </>
-                      ),
-                    })
-                  ) : (
-                    <>
-                      <QuickCreateIcon
-                        aria-hidden="true"
-                        className={sidebarIconRailIconClass}
-                      />
-                      <span
-                        className={cn(
-                          "min-w-0 flex-1 truncate",
-                          sidebarIconRailHiddenClass
-                        )}
-                      >
-                        {quickCreateConfig.label ??
-                          NAV_MAIN_DEFAULT_QUICK_CREATE_LABEL}
-                      </span>
-                    </>
-                  )}
-                </SidebarMenuButton>
-              ) : null}
-              {inboxConfig ? (
-                <Button
-                  aria-label={inboxConfig.label ?? NAV_MAIN_DEFAULT_INBOX_LABEL}
-                  asChild={Boolean(inboxConfig.href)}
-                  className={navMainInboxButtonClass}
-                  onClick={inboxConfig.href ? undefined : inboxConfig.onSelect}
-                  size="icon-sm"
-                  type="button"
-                  variant="secondary"
-                >
-                  {inboxConfig.href ? (
-                    linkRenderer({
-                      className:
-                        "inline-flex size-8 items-center justify-center",
-                      href: inboxConfig.href,
-                      children: (
+    return (
+      <SidebarGroup className={cn(className)} data-slot="nav-main">
+        <SidebarGroupContent
+          className={cn(navMainGroupContentClass, groupClassName)}
+        >
+          {showActionRow ? (
+            <SidebarMenu data-slot="nav-main-actions">
+              <SidebarMenuItem className={navMainActionRowClass}>
+                {quickCreateConfig ? (
+                  <SidebarMenuButton
+                    asChild={Boolean(quickCreateConfig.href)}
+                    className={navMainQuickCreateClass}
+                    onClick={
+                      quickCreateConfig.href
+                        ? undefined
+                        : quickCreateConfig.onSelect
+                    }
+                    tooltip={{
+                      description: quickCreateConfig.description,
+                      label:
+                        quickCreateConfig.label ??
+                        NAV_MAIN_DEFAULT_QUICK_CREATE_LABEL,
+                    }}
+                  >
+                    {quickCreateConfig.href ? (
+                      linkRenderer({
+                        className: "",
+                        href: quickCreateConfig.href,
+                        children: (
+                          <>
+                            <QuickCreateIcon
+                              aria-hidden="true"
+                              className={sidebarIconRailIconClass}
+                            />
+                            <span
+                              className={cn(
+                                "min-w-0 flex-1 truncate",
+                                sidebarIconRailHiddenClass
+                              )}
+                            >
+                              {quickCreateConfig.label ??
+                                NAV_MAIN_DEFAULT_QUICK_CREATE_LABEL}
+                            </span>
+                          </>
+                        ),
+                      })
+                    ) : (
+                      <>
+                        <QuickCreateIcon
+                          aria-hidden="true"
+                          className={sidebarIconRailIconClass}
+                        />
+                        <span
+                          className={cn(
+                            "min-w-0 flex-1 truncate",
+                            sidebarIconRailHiddenClass
+                          )}
+                        >
+                          {quickCreateConfig.label ??
+                            NAV_MAIN_DEFAULT_QUICK_CREATE_LABEL}
+                        </span>
+                      </>
+                    )}
+                  </SidebarMenuButton>
+                ) : null}
+                {inboxConfig ? (
+                  <Button
+                    aria-label={
+                      inboxConfig.label ?? NAV_MAIN_DEFAULT_INBOX_LABEL
+                    }
+                    asChild={Boolean(inboxConfig.href)}
+                    className={navMainInboxButtonClass}
+                    onClick={
+                      inboxConfig.href ? undefined : inboxConfig.onSelect
+                    }
+                    size="icon-sm"
+                    type="button"
+                    variant="secondary"
+                  >
+                    {inboxConfig.href ? (
+                      linkRenderer({
+                        className:
+                          "inline-flex size-8 items-center justify-center",
+                        href: inboxConfig.href,
+                        children: (
+                          <InboxIcon aria-hidden="true" className="size-4" />
+                        ),
+                      })
+                    ) : (
+                      <>
                         <InboxIcon aria-hidden="true" className="size-4" />
-                      ),
-                    })
-                  ) : (
-                    <>
-                      <InboxIcon aria-hidden="true" className="size-4" />
-                      <span className="sr-only">
-                        {inboxConfig.label ?? NAV_MAIN_DEFAULT_INBOX_LABEL}
-                      </span>
-                    </>
-                  )}
-                </Button>
-              ) : null}
-            </SidebarMenuItem>
-          </SidebarMenu>
-        ) : null}
-        {items.length > 0 ? (
-          <SidebarMenu data-slot="nav-main-items">
-            {items.map((item) => (
-              <NavMainItemRow
-                item={item}
-                key={item.id}
-                renderLink={linkRenderer}
-              />
-            ))}
-          </SidebarMenu>
-        ) : null}
-      </SidebarGroupContent>
-    </SidebarGroup>
-  );
-});
+                        <span className="sr-only">
+                          {inboxConfig.label ?? NAV_MAIN_DEFAULT_INBOX_LABEL}
+                        </span>
+                      </>
+                    )}
+                  </Button>
+                ) : null}
+              </SidebarMenuItem>
+            </SidebarMenu>
+          ) : null}
+          {items.length > 0 ? (
+            <SidebarMenu data-slot="nav-main-items">
+              {items.map((item) => (
+                <NavMainItemRow
+                  item={item}
+                  key={item.id}
+                  renderLink={linkRenderer}
+                />
+              ))}
+            </SidebarMenu>
+          ) : null}
+        </SidebarGroupContent>
+      </SidebarGroup>
+    );
+  }
+);

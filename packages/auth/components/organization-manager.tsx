@@ -91,7 +91,7 @@ export const OrganizationManager = ({
 
   useEffect(() => {
     setRenameName(activeOrganization?.name ?? "");
-    void loadMembers();
+    loadMembers().catch(() => undefined);
   }, [activeOrganization?.name, loadMembers]);
 
   const handleCreate = (event: React.FormEvent) => {
@@ -169,6 +169,32 @@ export const OrganizationManager = ({
       router.refresh();
     });
   };
+
+  let membersContent = (
+    <ul className="flex flex-col gap-2">
+      {members.map((member) => (
+        <li
+          className="flex items-center justify-between gap-3 rounded-[var(--xforge-radius-md)] border border-border-default px-3 py-2"
+          key={member.id}
+        >
+          <div>
+            <p className={recipe("bodyMediumText")}>
+              {member.displayName ?? member.email ?? member.userId}
+            </p>
+            <p className={recipe("captionText")}>
+              {member.email ?? "No email"} · {member.role}
+            </p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+  if (members.length === 0) {
+    membersContent = <p className={recipe("captionText")}>No members yet.</p>;
+  }
+  if (loadingMembers) {
+    membersContent = <AuthLoadingState label="Loading members…" />;
+  }
 
   return (
     <div className={cn("flex flex-col", recipe("sectionGap"))}>
@@ -255,29 +281,7 @@ export const OrganizationManager = ({
             titleId={membersTitleId}
           />
 
-          {loadingMembers ? (
-            <AuthLoadingState label="Loading members…" />
-          ) : members.length === 0 ? (
-            <p className={recipe("captionText")}>No members yet.</p>
-          ) : (
-            <ul className="flex flex-col gap-2">
-              {members.map((member) => (
-                <li
-                  className="flex items-center justify-between gap-3 rounded-[var(--xforge-radius-md)] border border-border-default px-3 py-2"
-                  key={member.id}
-                >
-                  <div>
-                    <p className={recipe("bodyMediumText")}>
-                      {member.displayName ?? member.email ?? member.userId}
-                    </p>
-                    <p className={recipe("captionText")}>
-                      {member.email ?? "No email"} · {member.role}
-                    </p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+          {membersContent}
 
           {canManageActiveOrganization ? (
             <form

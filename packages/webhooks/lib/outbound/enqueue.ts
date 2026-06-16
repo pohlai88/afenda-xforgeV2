@@ -79,27 +79,25 @@ export const enqueueWebhookEvent = async <TType extends WebhookEventType>(
   const payload = buildWebhookPayload(eventType, organizationId, data);
   const now = new Date();
 
-  const deliveryIds = endpointsToDeliver.map(() => newDeliveryId());
+  const deliveries = endpointsToDeliver.map((endpoint) => ({
+    id: newDeliveryId(),
+    eventId,
+    organizationId,
+    endpointId: endpoint.id,
+    eventType,
+    payload,
+    status: "pending" as const,
+    attempts: 0,
+    nextAttemptAt: now,
+    createdAt: now,
+  }));
 
-  await database.insert(webhookDelivery).values(
-    endpointsToDeliver.map((endpoint, index) => ({
-      id: deliveryIds[index]!,
-      eventId,
-      organizationId,
-      endpointId: endpoint.id,
-      eventType,
-      payload,
-      status: "pending" as const,
-      attempts: 0,
-      nextAttemptAt: now,
-      createdAt: now,
-    }))
-  );
+  await database.insert(webhookDelivery).values(deliveries);
 
   return {
     eventId,
     deliveryCount: endpointsToDeliver.length,
-    deliveryIds,
+    deliveryIds: deliveries.map((delivery) => delivery.id),
   };
 };
 

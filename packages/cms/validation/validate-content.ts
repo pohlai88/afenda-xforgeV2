@@ -25,12 +25,25 @@ const formatZodError = (error: ZodError): string =>
     .map((issue) => `${issue.path.join(".") || "root"}: ${issue.message}`)
     .join("; ");
 
+const formatValidationError = (error: unknown): string => {
+  if (error instanceof ZodError) {
+    return formatZodError(error);
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return "Unknown validation error";
+};
+
 const localeFromFilePath = (collection: string, file: string): string => {
   const relative = path.relative(path.join(contentRoot, collection), file);
   const [locale] = relative.split(path.sep);
   return normalizeLocale(locale ?? DEFAULT_LOCALE);
 };
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Validation walks settings, locale directories, MDX files, and frontmatter in one deterministic pass.
 export const validateAllContent = async (): Promise<ValidationResult> => {
   const errors: ValidationError[] = [];
   let fileCount = 0;
@@ -43,12 +56,7 @@ export const validateAllContent = async (): Promise<ValidationResult> => {
     siteSettingsSchema.parse(JSON.parse(settingsRaw));
     fileCount += 1;
   } catch (error) {
-    const message =
-      error instanceof ZodError
-        ? formatZodError(error)
-        : error instanceof Error
-          ? error.message
-          : "Unknown validation error";
+    const message = formatValidationError(error);
 
     errors.push({
       file: path.join(contentRoot, "settings.json"),
@@ -90,12 +98,7 @@ export const validateAllContent = async (): Promise<ValidationResult> => {
             });
           }
         } catch (error) {
-          const message =
-            error instanceof ZodError
-              ? formatZodError(error)
-              : error instanceof Error
-                ? error.message
-                : "Unknown validation error";
+          const message = formatValidationError(error);
 
           errors.push({ file, message });
         }

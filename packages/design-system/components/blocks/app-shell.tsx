@@ -280,7 +280,7 @@ function AppShellAppSidebarColumn({
   );
 
   return (
-    <div
+    <aside
       aria-label="Application sidebar"
       className={cn(
         blockRecipe("blockRail"),
@@ -298,7 +298,7 @@ function AppShellAppSidebarColumn({
       {appSidebarConfig?.wrapper
         ? appSidebarConfig.wrapper(sidebarNode)
         : sidebarNode}
-    </div>
+    </aside>
   );
 }
 
@@ -407,7 +407,7 @@ function AppShellSiteContainer({
             {siteSidebarLeft}
           </aside>
         ) : null}
-        <div
+        <section
           aria-label="Main content"
           className={cn(
             blockRecipe("blockShell", "blockStack"),
@@ -418,11 +418,10 @@ function AppShellSiteContainer({
             contentClassName
           )}
           data-slot="site-main"
-          role="region"
         >
           {auditEvidenceScopeSync}
           {children}
-        </div>
+        </section>
         {siteRightSidebar ? (
           <aside
             aria-label="Site right sidebar"

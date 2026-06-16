@@ -16,7 +16,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@repo/design-system/design-system";
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import {
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from "react";
 import { fromSupabaseError } from "../auth-result";
 import { createClient } from "../client";
 import { completeAuthNavigation } from "../client-navigation";
@@ -69,13 +76,50 @@ export const MfaLoginChallenge = ({
   }, [supabase.auth.mfa, supabase]);
 
   useEffect(() => {
-    void loadFactors();
+    loadFactors().catch(() => undefined);
   }, [loadFactors]);
 
   const selectedFactor = useMemo(
     () => factors.find((factor) => factor.id === factorId) ?? null,
     [factorId, factors]
   );
+  const otpSlots = Array.from({ length: settings.otp.length }, (_, index) => ({
+    id: `mfa-login-otp-slot-${index + 1}`,
+    index,
+  }));
+
+  let factorSelectionContent: ReactNode = null;
+  if (selectedFactor) {
+    factorSelectionContent = (
+      <p className={recipe("captionText")}>
+        Using {selectedFactor.friendly_name ?? "Authenticator app"}.
+      </p>
+    );
+  }
+  if (factors.length > 1) {
+    factorSelectionContent = (
+      <Field>
+        <FieldLabel htmlFor={`${titleId}-factor`}>Authenticator</FieldLabel>
+        <Select onValueChange={setFactorId} value={factorId ?? undefined}>
+          <SelectTrigger id={`${titleId}-factor`}>
+            <SelectValue placeholder="Select authenticator" />
+          </SelectTrigger>
+          <SelectContent>
+            {factors.map((factor) => (
+              <SelectItem key={factor.id} value={factor.id}>
+                {factor.friendly_name ?? "Authenticator app"}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
+    );
+  }
+  if (loading) {
+    factorSelectionContent = (
+      <p className={recipe("captionText")}>Loading verification methods…</p>
+    );
+  }
 
   const handleVerify = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -125,33 +169,17 @@ export const MfaLoginChallenge = ({
       {error ? (
         <AuthErrorAlert
           message={error}
-          onRetry={factors.length === 0 ? () => void loadFactors() : undefined}
+          onRetry={
+            factors.length === 0
+              ? () => {
+                  loadFactors().catch(() => undefined);
+                }
+              : undefined
+          }
         />
       ) : null}
 
-      {loading ? (
-        <p className={recipe("captionText")}>Loading verification methods…</p>
-      ) : factors.length > 1 ? (
-        <Field>
-          <FieldLabel htmlFor={`${titleId}-factor`}>Authenticator</FieldLabel>
-          <Select onValueChange={setFactorId} value={factorId ?? undefined}>
-            <SelectTrigger id={`${titleId}-factor`}>
-              <SelectValue placeholder="Select authenticator" />
-            </SelectTrigger>
-            <SelectContent>
-              {factors.map((factor) => (
-                <SelectItem key={factor.id} value={factor.id}>
-                  {factor.friendly_name ?? "Authenticator app"}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Field>
-      ) : selectedFactor ? (
-        <p className={recipe("captionText")}>
-          Using {selectedFactor.friendly_name ?? "Authenticator app"}.
-        </p>
-      ) : null}
+      {factorSelectionContent}
 
       {factors.length > 0 ? (
         <form
@@ -169,11 +197,8 @@ export const MfaLoginChallenge = ({
               value={verifyCode}
             >
               <InputOTPGroup>
-                {Array.from({ length: settings.otp.length }, (_, index) => (
-                  <InputOTPSlot
-                    index={index}
-                    key={`mfa-login-otp-slot-${index}`}
-                  />
+                {otpSlots.map((slot) => (
+                  <InputOTPSlot index={slot.index} key={slot.id} />
                 ))}
               </InputOTPGroup>
             </InputOTP>

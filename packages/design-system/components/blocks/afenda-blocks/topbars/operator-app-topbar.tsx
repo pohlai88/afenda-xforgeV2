@@ -25,7 +25,6 @@ export function OperatorAppTopbar({
   return (
     <TooltipProvider delayDuration={350} skipDelayDuration={100}>
       <header
-        aria-label="Operator topbar"
         className={cn(operatorAppTopbarShellClass, className)}
         data-slot="workspace-app-nav-topbar"
         {...properties}

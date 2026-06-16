@@ -32,6 +32,7 @@ interface MfaFactor {
   status: string;
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Existing MFA enrollment state machine spans TOTP and phone factors.
 export const MfaManager = () => {
   const { settings } = useAuthUiConfig();
   const supabase = createClient();
@@ -67,7 +68,7 @@ export const MfaManager = () => {
   }, [supabase.auth.mfa]);
 
   useEffect(() => {
-    void loadFactors();
+    loadFactors().catch(() => undefined);
   }, [loadFactors]);
 
   const startEnrollment = async (mode: "totp" | "phone") => {
@@ -206,6 +207,49 @@ export const MfaManager = () => {
     settings.mfa.totpEnrollEnabled || settings.mfa.totpVerifyEnabled;
   const showPhoneActions =
     settings.mfa.phoneEnrollEnabled || settings.mfa.phoneVerifyEnabled;
+  const showTotpEnrollDisabledNotice =
+    !settings.mfa.totpEnrollEnabled && showTotpActions;
+  const showPhoneEnrollDisabledNotice =
+    !settings.mfa.phoneEnrollEnabled && showPhoneActions;
+
+  let factorsContent = (
+    <ul className="flex flex-col gap-2">
+      {factors.map((factor) => (
+        <li
+          className="flex items-center justify-between gap-3 rounded-[var(--xforge-radius-md)] border border-border-default px-3 py-2"
+          key={factor.id}
+        >
+          <div>
+            <p className={recipe("bodyMediumText")}>
+              {factor.friendly_name ?? factor.factor_type}
+            </p>
+            <p className={recipe("captionText")}>{factor.status}</p>
+          </div>
+          <Button
+            disabled={
+              factor.factor_type === "totp"
+                ? !settings.mfa.totpEnrollEnabled
+                : !settings.mfa.phoneEnrollEnabled
+            }
+            onClick={() => removeFactor(factor.id)}
+            size="sm"
+            type="button"
+            variant="quiet"
+          >
+            Remove
+          </Button>
+        </li>
+      ))}
+    </ul>
+  );
+  if (factors.length === 0) {
+    factorsContent = (
+      <p className={recipe("captionText")}>No MFA factors enrolled yet.</p>
+    );
+  }
+  if (loading) {
+    factorsContent = <AuthLoadingState label="Loading factors…" />;
+  }
 
   return (
     <AuthSection aria-busy={loading} aria-labelledby={titleId}>
@@ -224,14 +268,14 @@ export const MfaManager = () => {
         </AuthConfigNotice>
       )}
 
-      {settings.mfa.totpEnrollEnabled ? null : showTotpActions ? (
+      {showTotpEnrollDisabledNotice ? (
         <AuthConfigNotice>
           TOTP enrollment is disabled in Supabase. Existing authenticator apps
           can still verify sign-in when verify is enabled.
         </AuthConfigNotice>
       ) : null}
 
-      {settings.mfa.phoneEnrollEnabled ? null : showPhoneActions ? (
+      {showPhoneEnrollDisabledNotice ? (
         <AuthConfigNotice>
           Phone MFA enrollment is disabled in Supabase. Enable phone auth and
           SMS in the dashboard to add phone factors.
@@ -243,47 +287,16 @@ export const MfaManager = () => {
           message={error}
           onRetry={
             factors.length === 0 && !enrolling && !factorId
-              ? () => void loadFactors()
+              ? () => {
+                  loadFactors().catch(() => undefined);
+                }
               : undefined
           }
         />
       ) : null}
       {message ? <AuthSuccessAlert message={message} /> : null}
 
-      {loading ? (
-        <AuthLoadingState label="Loading factors…" />
-      ) : factors.length === 0 ? (
-        <p className={recipe("captionText")}>No MFA factors enrolled yet.</p>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {factors.map((factor) => (
-            <li
-              className="flex items-center justify-between gap-3 rounded-[var(--xforge-radius-md)] border border-border-default px-3 py-2"
-              key={factor.id}
-            >
-              <div>
-                <p className={recipe("bodyMediumText")}>
-                  {factor.friendly_name ?? factor.factor_type}
-                </p>
-                <p className={recipe("captionText")}>{factor.status}</p>
-              </div>
-              <Button
-                disabled={
-                  factor.factor_type === "totp"
-                    ? !settings.mfa.totpEnrollEnabled
-                    : !settings.mfa.phoneEnrollEnabled
-                }
-                onClick={() => removeFactor(factor.id)}
-                size="sm"
-                type="button"
-                variant="quiet"
-              >
-                Remove
-              </Button>
-            </li>
-          ))}
-        </ul>
-      )}
+      {factorsContent}
 
       {settings.mfa.totpEnrollEnabled && !factorId && enrollMode !== "phone" ? (
         <AuthPendingButton

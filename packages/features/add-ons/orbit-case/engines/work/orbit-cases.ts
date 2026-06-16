@@ -194,8 +194,9 @@ export const listOrbitCases = async (
     .map((row) => toOrbitCaseRecord(row, tagMap.get(row.id) ?? []))
     .filter((record): record is OrbitCaseRecord => record !== null);
 
-  if (filters.tag) {
-    records = records.filter((record) => record.tags.includes(filters.tag!));
+  const tagFilter = filters.tag;
+  if (tagFilter) {
+    records = records.filter((record) => record.tags.includes(tagFilter));
   }
 
   return records;
@@ -361,7 +362,7 @@ export const setOrbitCaseWatcher = async (
     );
 };
 
-export const listOrbitCaseActivity = async (
+export const listOrbitCaseActivity = (
   organizationId: string,
   caseId: string
 ) => {

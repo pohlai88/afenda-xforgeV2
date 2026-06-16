@@ -141,9 +141,12 @@ export const useAuthUser = () => {
       setName(getUserDisplayName(user?.user_metadata ?? undefined));
     };
 
-    void supabase.auth.getSession().then(({ data: { session } }) => {
-      applyUser(session?.user);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        applyUser(session?.user);
+      })
+      .catch(() => undefined);
 
     const {
       data: { subscription },

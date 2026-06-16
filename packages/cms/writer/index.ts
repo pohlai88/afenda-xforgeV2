@@ -62,7 +62,7 @@ export const collectionLabels: Record<keyof typeof collections, string> = {
 
 export type CmsCollectionName = keyof typeof collections;
 
-export const saveCmsDocument = async (
+export const saveCmsDocument = (
   collection: CmsCollectionName,
   input: {
     slug?: string;

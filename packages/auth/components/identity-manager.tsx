@@ -61,7 +61,7 @@ export const IdentityManager = () => {
   }, [supabase.auth]);
 
   useEffect(() => {
-    void loadIdentities();
+    loadIdentities().catch(() => undefined);
   }, [loadIdentities]);
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export const IdentityManager = () => {
       linkedHandled.current = true;
       setMessage("Google account linked successfully.");
       router.replace("/account/security");
-      void loadIdentities();
+      loadIdentities().catch(() => undefined);
     }
   }, [loadIdentities, router, searchParams]);
 
@@ -113,6 +113,36 @@ export const IdentityManager = () => {
     }
   };
 
+  let googleLinkingAction = (
+    <p className={recipe("captionText")}>
+      Manual linking is disabled — Google will link automatically when the email
+      matches a verified address on sign-in.
+    </p>
+  );
+  if (settings.security.manualLinkingEnabled) {
+    googleLinkingAction = (
+      <p className={recipe("captionText")}>
+        Google is already linked or unavailable for this account.
+      </p>
+    );
+  }
+  if (canLinkGoogle) {
+    googleLinkingAction = (
+      <AuthPendingButton
+        className="w-fit"
+        disabled={action !== null && action !== "link"}
+        leading={<GoogleIcon className="size-4" />}
+        onClick={handleLinkGoogle}
+        pending={action === "link"}
+        pendingLabel="Redirecting to Google…"
+        type="button"
+        variant="secondary"
+      >
+        Link Google account
+      </AuthPendingButton>
+    );
+  }
+
   const handleUnlink = async (identity: UserIdentity) => {
     if (isSsoIdentity(identity)) {
       setError("SAML SSO sign-in methods cannot be unlinked here.");
@@ -142,6 +172,55 @@ export const IdentityManager = () => {
     setAction(null);
     await loadIdentities();
   };
+
+  let identitiesContent = (
+    <ul className="flex flex-col gap-2">
+      {identities.map((identity) => {
+        const email = getIdentityDisplayEmail(identity);
+        const lastUsed = formatIdentityLastUsed(identity.last_sign_in_at);
+
+        return (
+          <li
+            className="flex items-center justify-between gap-3 rounded-[var(--xforge-radius-md)] border border-border-default px-3 py-2"
+            key={identity.id}
+          >
+            <div className="min-w-0">
+              <p className={cn("truncate", recipe("bodyMediumText"))}>
+                {getIdentityProviderLabel(identity.provider)}
+              </p>
+              {email ? (
+                <p className={cn("truncate", recipe("captionText"))}>{email}</p>
+              ) : null}
+              {lastUsed ? (
+                <p className={recipe("captionText")}>Last used {lastUsed}</p>
+              ) : null}
+            </div>
+            {canUnlink && !isSsoIdentity(identity) ? (
+              <Button
+                disabled={action !== null}
+                onClick={() => handleUnlink(identity)}
+                size="sm"
+                type="button"
+                variant="quiet"
+              >
+                Unlink
+              </Button>
+            ) : null}
+          </li>
+        );
+      })}
+    </ul>
+  );
+  if (identities.length === 0) {
+    identitiesContent = (
+      <p className={recipe("captionText")}>
+        No identities found. Sign out and back in if this looks wrong.
+      </p>
+    );
+  }
+  if (loading) {
+    identitiesContent = <AuthLoadingState label="Loading identities…" />;
+  }
 
   return (
     <AuthSection aria-busy={loading} aria-labelledby={titleId}>
@@ -175,29 +254,7 @@ export const IdentityManager = () => {
               address.
             </p>
           </div>
-          {canLinkGoogle ? (
-            <AuthPendingButton
-              className="w-fit"
-              disabled={action !== null && action !== "link"}
-              leading={<GoogleIcon className="size-4" />}
-              onClick={handleLinkGoogle}
-              pending={action === "link"}
-              pendingLabel="Redirecting to Google…"
-              type="button"
-              variant="secondary"
-            >
-              Link Google account
-            </AuthPendingButton>
-          ) : settings.security.manualLinkingEnabled ? (
-            <p className={recipe("captionText")}>
-              Google is already linked or unavailable for this account.
-            </p>
-          ) : (
-            <p className={recipe("captionText")}>
-              Manual linking is disabled — Google will link automatically when
-              the email matches a verified address on sign-in.
-            </p>
-          )}
+          {googleLinkingAction}
         </div>
       ) : null}
       {error && !loading ? (
@@ -205,60 +262,15 @@ export const IdentityManager = () => {
           message={error}
           onRetry={
             identities.length === 0 && action === null
-              ? () => void loadIdentities()
+              ? () => {
+                  loadIdentities().catch(() => undefined);
+                }
               : undefined
           }
         />
       ) : null}
       {message ? <AuthSuccessAlert message={message} /> : null}
-      {loading ? (
-        <AuthLoadingState label="Loading identities…" />
-      ) : identities.length === 0 ? (
-        <p className={recipe("captionText")}>
-          No identities found. Sign out and back in if this looks wrong.
-        </p>
-      ) : (
-        <ul className="flex flex-col gap-2">
-          {identities.map((identity) => {
-            const email = getIdentityDisplayEmail(identity);
-            const lastUsed = formatIdentityLastUsed(identity.last_sign_in_at);
-
-            return (
-              <li
-                className="flex items-center justify-between gap-3 rounded-[var(--xforge-radius-md)] border border-border-default px-3 py-2"
-                key={identity.id}
-              >
-                <div className="min-w-0">
-                  <p className={cn("truncate", recipe("bodyMediumText"))}>
-                    {getIdentityProviderLabel(identity.provider)}
-                  </p>
-                  {email ? (
-                    <p className={cn("truncate", recipe("captionText"))}>
-                      {email}
-                    </p>
-                  ) : null}
-                  {lastUsed ? (
-                    <p className={recipe("captionText")}>
-                      Last used {lastUsed}
-                    </p>
-                  ) : null}
-                </div>
-                {canUnlink && !isSsoIdentity(identity) ? (
-                  <Button
-                    disabled={action !== null}
-                    onClick={() => handleUnlink(identity)}
-                    size="sm"
-                    type="button"
-                    variant="quiet"
-                  >
-                    Unlink
-                  </Button>
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
-      )}
+      {identitiesContent}
       {!canUnlink && identities.length === 1 ? (
         <p className={recipe("captionText")}>
           Link another provider before unlinking your only sign-in method.

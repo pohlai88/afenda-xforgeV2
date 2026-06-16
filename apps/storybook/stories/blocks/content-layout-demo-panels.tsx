@@ -126,9 +126,7 @@ export function DemoContentLayoutScrollPanels({
           className={cn(blockRecipe("blockPanel", "blockPanelPadding"))}
           key={section.id}
         >
-          <div className={blockRecipe("blockDescription")}>
-            {section.label}
-          </div>
+          <div className={blockRecipe("blockDescription")}>{section.label}</div>
           <p
             className={cn(blockRecipe("blockDescription"), "mt-1 max-w-prose")}
           >

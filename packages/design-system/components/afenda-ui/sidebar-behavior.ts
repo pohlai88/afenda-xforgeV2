@@ -73,7 +73,7 @@ export function resolveInitialSidebarOpen(
 export function resolveEffectiveSidebarOpen({
   behaviorMode,
   hoverPeek,
-  open,
+  open: _open,
 }: {
   readonly behaviorMode: SidebarBehaviorMode;
   readonly hoverPeek: boolean;

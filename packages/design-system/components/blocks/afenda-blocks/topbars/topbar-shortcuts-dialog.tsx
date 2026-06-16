@@ -39,6 +39,8 @@ const DEFAULT_EMPTY_STATE = {
     "Try another keyword or open a different screen for local shortcuts.",
 } as const;
 
+const WHITESPACE_PATTERN = /\s+/;
+
 const shortcutsPaletteShellClass = cn(
   recipe("modalSurface"),
   "max-w-[46rem] overflow-hidden border-border-subtle/38 bg-surface-overlay/98 p-0 shadow-[0_18px_60px_rgba(0,0,0,0.34)]"
@@ -124,7 +126,7 @@ function matchesShortcutQuery(
   }
 
   const haystack = buildShortcutSearchValue(shortcut);
-  const tokens = trimmed.split(/\s+/).filter(Boolean);
+  const tokens = trimmed.split(WHITESPACE_PATTERN).filter(Boolean);
 
   return tokens.every((token) => haystack.includes(token));
 }
@@ -153,29 +155,31 @@ function sortShortcuts(
 
 function renderShortcutChords(shortcut: TopbarShortcutDefinition) {
   const normalizedKeys = normalizeShortcutKeys(shortcut.keys);
+  const keyGroups = normalizedKeys.map((keyGroup, index) => ({
+    id: keyGroup.join("+"),
+    isLast: index === normalizedKeys.length - 1,
+    keys: keyGroup,
+  }));
 
   return (
     <div className="flex flex-wrap items-center justify-end gap-1">
-      {normalizedKeys.map((keyGroup, keyGroupIndex) => (
-        <div
-          className="flex items-center gap-1"
-          key={`${shortcut.id}-${keyGroupIndex}`}
-        >
+      {keyGroups.map((keyGroup) => (
+        <div className="flex items-center gap-1" key={keyGroup.id}>
           <KbdSequence>
-            {keyGroup.map((key) => (
+            {keyGroup.keys.map((key) => (
               <Kbd
                 className={cn(
                   recipe("shortcutText"),
                   "h-[18px] min-w-[18px] rounded-[calc(var(--xforge-radius-sm)-1px)] border-border-subtle/22 bg-surface-muted/6 px-1.5 font-mono text-[9px] text-text-tertiary/72 tabular-nums shadow-none"
                 )}
-                key={`${shortcut.id}-${keyGroupIndex}-${key}`}
+                key={`${keyGroup.id}-${key}`}
                 size="sm"
               >
                 {key}
               </Kbd>
             ))}
           </KbdSequence>
-          {keyGroupIndex < normalizedKeys.length - 1 ? (
+          {keyGroup.isLast ? null : (
             <span
               className={cn(
                 recipe("metadataText"),
@@ -184,7 +188,7 @@ function renderShortcutChords(shortcut: TopbarShortcutDefinition) {
             >
               or
             </span>
-          ) : null}
+          )}
         </div>
       ))}
     </div>

@@ -52,6 +52,29 @@ const focusField = (field: keyof AuthFieldErrors) => {
   document.getElementById(ids[field] ?? passwordFieldId)?.focus();
 };
 
+const getFirstUpdatePasswordErrorField = (
+  errors: AuthFieldErrors
+): keyof AuthFieldErrors => {
+  if (errors.currentPassword) {
+    return "currentPassword";
+  }
+
+  if (errors.nonce) {
+    return "nonce";
+  }
+
+  if (errors.password) {
+    return "password";
+  }
+
+  if (errors.confirmPassword) {
+    return "confirmPassword";
+  }
+
+  return "password";
+};
+
+// biome-ignore-start lint/complexity/noExcessiveCognitiveComplexity: Existing password update state machine spans recovery, account change, and reauth modes.
 export const UpdatePasswordForm = ({
   variant = "recovery",
   onSuccess,
@@ -136,16 +159,7 @@ export const UpdatePasswordForm = ({
       setFieldErrors(validated.fieldErrors);
       setFormError(validated.formError ?? null);
       setLoading(false);
-      const firstField = validated.fieldErrors.currentPassword
-        ? "currentPassword"
-        : validated.fieldErrors.nonce
-          ? "nonce"
-          : validated.fieldErrors.password
-            ? "password"
-            : validated.fieldErrors.confirmPassword
-              ? "confirmPassword"
-              : "password";
-      focusField(firstField);
+      focusField(getFirstUpdatePasswordErrorField(validated.fieldErrors));
       return;
     }
 
@@ -270,7 +284,9 @@ export const UpdatePasswordForm = ({
       {requireReauthentication && needsReauth && !reauthSent ? (
         <AuthPendingButton
           className="w-full"
-          onClick={() => void handleRequestReauth()}
+          onClick={() => {
+            handleRequestReauth().catch(() => undefined);
+          }}
           pending={reauthLoading}
           pendingLabel="Sending…"
           type="button"
@@ -348,3 +364,4 @@ export const UpdatePasswordForm = ({
     </form>
   );
 };
+// biome-ignore-end lint/complexity/noExcessiveCognitiveComplexity: End password update state-machine suppression.

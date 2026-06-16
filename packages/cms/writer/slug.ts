@@ -1,6 +1,7 @@
 import GithubSlugger from "github-slugger";
 
 const slugger = new GithubSlugger();
+const VALID_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export const slugifyTitle = (title: string): string => {
   slugger.reset();
@@ -10,4 +11,4 @@ export const slugifyTitle = (title: string): string => {
 };
 
 export const isValidSlug = (slug: string): boolean =>
-  /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug);
+  VALID_SLUG_PATTERN.test(slug);

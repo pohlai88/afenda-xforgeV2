@@ -165,105 +165,108 @@ export const EndpointsTable = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {endpoints.map((endpoint) => (
-            <TableRow key={endpoint.id}>
-              <TableCell>
-                <p className="font-medium text-sm">{endpoint.url}</p>
-                {endpoint.description ? (
-                  <p className="text-muted-foreground text-xs">
-                    {endpoint.description}
-                  </p>
-                ) : null}
-              </TableCell>
-              <TableCell className="text-xs">
-                {endpoint.events.join(", ")}
-              </TableCell>
-              <TableCell>
-                <div className="flex flex-col gap-1">
-                  {endpoint.isAutoDisabled ? (
-                    <Badge tone="critical" variant="soft">
-                      Auto-disabled
-                    </Badge>
+          {endpoints.map(
+            // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Endpoint row branches reflect health, owner actions, and auto-disable state.
+            (endpoint) => (
+              <TableRow key={endpoint.id}>
+                <TableCell>
+                  <p className="font-medium text-sm">{endpoint.url}</p>
+                  {endpoint.description ? (
+                    <p className="text-muted-foreground text-xs">
+                      {endpoint.description}
+                    </p>
                   ) : null}
-                  <Badge
-                    tone={endpoint.enabled ? "positive" : "neutral"}
-                    variant="soft"
-                  >
-                    {endpoint.enabled ? "Enabled" : "Disabled"}
-                  </Badge>
-                </div>
-              </TableCell>
-              <TableCell>
-                {endpoint.lastDeliveryStatus ? (
+                </TableCell>
+                <TableCell className="text-xs">
+                  {endpoint.events.join(", ")}
+                </TableCell>
+                <TableCell>
                   <div className="flex flex-col gap-1">
-                    <Badge {...healthVariant(endpoint.lastDeliveryStatus)}>
-                      {endpoint.lastDeliveryStatus}
-                    </Badge>
-                    {endpoint.lastDeliveryError ? (
-                      <p className="text-destructive text-xs">
-                        {endpoint.lastDeliveryError}
-                      </p>
+                    {endpoint.isAutoDisabled ? (
+                      <Badge tone="critical" variant="soft">
+                        Auto-disabled
+                      </Badge>
                     ) : null}
+                    <Badge
+                      tone={endpoint.enabled ? "positive" : "neutral"}
+                      variant="soft"
+                    >
+                      {endpoint.enabled ? "Enabled" : "Disabled"}
+                    </Badge>
                   </div>
-                ) : (
-                  <span className="text-muted-foreground text-xs">—</span>
-                )}
-              </TableCell>
-              {isOwner ? (
-                <TableCell className="space-x-2">
-                  <Button
-                    disabled={isPending}
-                    onClick={() => handleTest(endpoint.id)}
-                    size="sm"
-                    type="button"
-                    variant="secondary"
-                  >
-                    Test
-                  </Button>
-                  <Button
-                    disabled={isPending}
-                    onClick={() => handleRotate(endpoint.id)}
-                    size="sm"
-                    type="button"
-                    variant="secondary"
-                  >
-                    Rotate secret
-                  </Button>
-                  <Button
-                    disabled={isPending}
-                    onClick={() => handleToggle(endpoint)}
-                    size="sm"
-                    type="button"
-                    variant="secondary"
-                  >
-                    {endpoint.enabled ? "Disable" : "Enable"}
-                  </Button>
-                  {endpoint.isAutoDisabled ? (
+                </TableCell>
+                <TableCell>
+                  {endpoint.lastDeliveryStatus ? (
+                    <div className="flex flex-col gap-1">
+                      <Badge {...healthVariant(endpoint.lastDeliveryStatus)}>
+                        {endpoint.lastDeliveryStatus}
+                      </Badge>
+                      {endpoint.lastDeliveryError ? (
+                        <p className="text-destructive text-xs">
+                          {endpoint.lastDeliveryError}
+                        </p>
+                      ) : null}
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground text-xs">—</span>
+                  )}
+                </TableCell>
+                {isOwner ? (
+                  <TableCell className="space-x-2">
                     <Button
                       disabled={isPending}
-                      onClick={() =>
-                        runAction(() => resetEndpointHealth(endpoint.id))
-                      }
+                      onClick={() => handleTest(endpoint.id)}
                       size="sm"
                       type="button"
                       variant="secondary"
                     >
-                      Re-enable
+                      Test
                     </Button>
-                  ) : null}
-                  <Button
-                    disabled={isPending}
-                    onClick={() => handleDelete(endpoint.id)}
-                    size="sm"
-                    type="button"
-                    variant="destructive"
-                  >
-                    Delete
-                  </Button>
-                </TableCell>
-              ) : null}
-            </TableRow>
-          ))}
+                    <Button
+                      disabled={isPending}
+                      onClick={() => handleRotate(endpoint.id)}
+                      size="sm"
+                      type="button"
+                      variant="secondary"
+                    >
+                      Rotate secret
+                    </Button>
+                    <Button
+                      disabled={isPending}
+                      onClick={() => handleToggle(endpoint)}
+                      size="sm"
+                      type="button"
+                      variant="secondary"
+                    >
+                      {endpoint.enabled ? "Disable" : "Enable"}
+                    </Button>
+                    {endpoint.isAutoDisabled ? (
+                      <Button
+                        disabled={isPending}
+                        onClick={() =>
+                          runAction(() => resetEndpointHealth(endpoint.id))
+                        }
+                        size="sm"
+                        type="button"
+                        variant="secondary"
+                      >
+                        Re-enable
+                      </Button>
+                    ) : null}
+                    <Button
+                      disabled={isPending}
+                      onClick={() => handleDelete(endpoint.id)}
+                      size="sm"
+                      type="button"
+                      variant="destructive"
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                ) : null}
+              </TableRow>
+            )
+          )}
         </TableBody>
       </Table>
     </div>

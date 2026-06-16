@@ -10,7 +10,8 @@ const e2ePassword =
   "123qweasdzxc!@#";
 
 const INVALID_AUTH_LINK_COPY_PATTERN = /invalid or has expired/i;
-const PASSWORD_POLICY_COPY_PATTERN = /At least \d+ characters|uppercase|symbol/i;
+const PASSWORD_POLICY_COPY_PATTERN =
+  /At least \d+ characters|uppercase|symbol/i;
 const ROOT_URL_PATTERN = /\/$/;
 const SIGN_IN_ERROR_URL_PATTERN = /\/sign-in\?error=/;
 const SIGN_IN_PATH_PATTERN = /\/sign-in/;
@@ -130,9 +131,7 @@ test.describe("Supabase auth flows", () => {
     await page.getByRole("button", { name: "Create account" }).click();
 
     await expect(page).toHaveURL(SIGN_UP_PATH_PATTERN);
-    await expect(
-      page.getByText(PASSWORD_POLICY_COPY_PATTERN)
-    ).toBeVisible();
+    await expect(page.getByText(PASSWORD_POLICY_COPY_PATTERN)).toBeVisible();
   });
 
   test("loads authenticated search results from the database", async ({

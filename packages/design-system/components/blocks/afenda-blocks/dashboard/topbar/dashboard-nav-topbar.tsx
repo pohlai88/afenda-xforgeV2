@@ -9,7 +9,6 @@ import { TopbarSidebarControl } from "@repo/design-system/components/blocks/afen
 import { TopbarUtilitiesRail } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-utilities-rail";
 import { cn } from "@repo/design-system/lib/utils";
 import { memo } from "react";
-import { DEFAULT_DASHBOARD_NAV_TOPBAR_ARIA_LABEL } from "./dashboard-topbar-constants";
 import {
   dashboardNavTopbarLeftClass,
   dashboardNavTopbarRightClass,
@@ -31,7 +30,6 @@ export const DashboardNavTopbar = memo(function DashboardNavTopbar({
   return (
     <TooltipProvider delayDuration={350} skipDelayDuration={100}>
       <header
-        aria-label={DEFAULT_DASHBOARD_NAV_TOPBAR_ARIA_LABEL}
         className={cn(dashboardNavTopbarShellClass, className)}
         data-slot="dashboard-nav-topbar"
         {...properties}

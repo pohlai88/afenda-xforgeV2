@@ -200,67 +200,70 @@ export const getDocument = async (
 export const saveDocument = async (
   input: z.infer<typeof saveDocumentSchema>
 ): Promise<AuthActionResult<SaveResult>> =>
-  withEditor(async ({ orgId }) => {
-    const parsed = saveDocumentSchema.parse(input);
+  withEditor(
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Save coordinates CMS write, mirror sync, revalidation, and publish/unpublish webhook side effects.
+    async ({ orgId }) => {
+      const parsed = saveDocumentSchema.parse(input);
 
-    if (!isCmsCollection(parsed.collection)) {
-      throw new Error("Unknown collection");
-    }
-
-    const locale = parsed.locale;
-    const priorRaw = parsed.slug
-      ? await readRawDocument(parsed.collection, parsed.slug, locale)
-      : null;
-    const wasPublished = priorRaw?.frontmatter.status === "published";
-
-    const result = await saveCmsDocument(parsed.collection, {
-      slug: parsed.slug,
-      locale,
-      frontmatter: parsed.frontmatter,
-      body: parsed.body,
-    });
-
-    if (result.ok) {
-      revalidateCmsPaths(parsed.collection, locale, result.slug);
-
-      await syncDocumentMirror(
-        parsed.collection,
-        locale,
-        result.slug,
-        parsed.frontmatter,
-        parsed.body,
-        isPublishedStatus(parsed.frontmatter) ? "published" : "updated"
-      );
-
-      if (isPublishedStatus(parsed.frontmatter)) {
-        await enqueueCmsWebhook(orgId, CMS_EVENT_PUBLISHED, {
-          collection: parsed.collection,
-          locale,
-          slug: result.slug,
-          title: String(parsed.frontmatter.title ?? ""),
-          status: "published",
-          publishedAt:
-            typeof parsed.frontmatter.date === "string"
-              ? parsed.frontmatter.date
-              : undefined,
-        });
-      } else if (wasPublished) {
-        await enqueueCmsWebhook(orgId, CMS_EVENT_UNPUBLISHED, {
-          collection: parsed.collection,
-          locale,
-          slug: result.slug,
-          title: String(
-            parsed.frontmatter.title ??
-              priorRaw?.frontmatter.title ??
-              result.slug
-          ),
-          status: "draft",
-        });
+      if (!isCmsCollection(parsed.collection)) {
+        throw new Error("Unknown collection");
       }
-    }
 
-    return result;
-  });
+      const locale = parsed.locale;
+      const priorRaw = parsed.slug
+        ? await readRawDocument(parsed.collection, parsed.slug, locale)
+        : null;
+      const wasPublished = priorRaw?.frontmatter.status === "published";
+
+      const result = await saveCmsDocument(parsed.collection, {
+        slug: parsed.slug,
+        locale,
+        frontmatter: parsed.frontmatter,
+        body: parsed.body,
+      });
+
+      if (result.ok) {
+        revalidateCmsPaths(parsed.collection, locale, result.slug);
+
+        await syncDocumentMirror(
+          parsed.collection,
+          locale,
+          result.slug,
+          parsed.frontmatter,
+          parsed.body,
+          isPublishedStatus(parsed.frontmatter) ? "published" : "updated"
+        );
+
+        if (isPublishedStatus(parsed.frontmatter)) {
+          await enqueueCmsWebhook(orgId, CMS_EVENT_PUBLISHED, {
+            collection: parsed.collection,
+            locale,
+            slug: result.slug,
+            title: String(parsed.frontmatter.title ?? ""),
+            status: "published",
+            publishedAt:
+              typeof parsed.frontmatter.date === "string"
+                ? parsed.frontmatter.date
+                : undefined,
+          });
+        } else if (wasPublished) {
+          await enqueueCmsWebhook(orgId, CMS_EVENT_UNPUBLISHED, {
+            collection: parsed.collection,
+            locale,
+            slug: result.slug,
+            title: String(
+              parsed.frontmatter.title ??
+                priorRaw?.frontmatter.title ??
+                result.slug
+            ),
+            status: "draft",
+          });
+        }
+      }
+
+      return result;
+    }
+  );
 
 export const deleteDocument = async (
   collection: string,

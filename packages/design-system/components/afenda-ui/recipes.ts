@@ -126,7 +126,7 @@ const afendaRecipe = {
     scope: "global",
     description: "Shared invalid state for field primitives.",
     className:
-      "aria-invalid:border-danger aria-invalid:ring-danger/20 dark:aria-invalid:ring-danger/40",
+      "aria-invalid:border-critical aria-invalid:ring-critical/20 dark:aria-invalid:ring-critical/40",
   },
   disabledAction: {
     owner: "state",
@@ -268,13 +268,13 @@ const afendaRecipe = {
     description: "Disabled row behavior.",
     className: "data-[disabled]:pointer-events-none data-[disabled]:opacity-45",
   },
-  rowDestructive: {
+  rowCritical: {
     owner: "row",
     kind: "interaction",
     scope: "global",
-    description: "Destructive row tone for mutating or removing data.",
+    description: "Critical row tone for mutating or removing data.",
     className:
-      "data-[variant=destructive]:text-danger data-[variant=destructive]:focus:bg-danger-muted/25 data-[variant=destructive]:data-[highlighted]:bg-danger-muted/25 data-[variant=destructive]:focus:text-danger data-[variant=destructive]:data-[highlighted]:text-danger",
+      "data-[variant=critical]:text-critical data-[variant=critical]:focus:bg-critical-muted/25 data-[variant=critical]:data-[highlighted]:bg-critical-muted/25 data-[variant=critical]:focus:text-critical data-[variant=critical]:data-[highlighted]:text-critical",
   },
   rowCheckboxPadding: {
     owner: "row",
@@ -291,13 +291,13 @@ const afendaRecipe = {
     className:
       "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 [&_svg:not([class*='text-'])]:text-text-secondary",
   },
-  rowDestructiveIcon: {
+  rowCriticalIcon: {
     owner: "icon",
     kind: "interaction",
     scope: "global",
-    description: "Icon tone inheritance for destructive rows.",
+    description: "Icon tone inheritance for critical rows.",
     className:
-      "data-[variant=destructive]:[&_svg:not([class*='text-'])]:text-danger",
+      "data-[variant=critical]:[&_svg:not([class*='text-'])]:text-critical",
   },
   controlIcon: {
     owner: "icon",

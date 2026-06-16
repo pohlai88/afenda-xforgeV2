@@ -59,6 +59,41 @@ export interface OrbitCaseActivityRecord {
   payload: Record<string, unknown>;
 }
 
+export type OrbitCaseActivityDto = Omit<OrbitCaseActivityRecord, "createdAt"> & {
+  createdAt: string;
+  summary: string;
+};
+
+export interface OrbitObjectLinkRecord {
+  createdAt: Date;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  payload: Record<string, unknown>;
+  pushEventId: string;
+  targetId: string;
+  targetType: string;
+}
+
+export type OrbitObjectLinkDto = Omit<OrbitObjectLinkRecord, "createdAt"> & {
+  createdAt: string;
+};
+
+export type PushResultDto =
+  | {
+      ok: true;
+      pushEventId: string;
+      targetType: string;
+      targetId: string;
+      linkId: string;
+      cached: boolean;
+    }
+  | {
+      ok: false;
+      code: "destination_not_registered" | "missing_fields" | "forbidden";
+      missingFields?: string[];
+    };
+
 export interface OrbitCaseBoardColumn {
   cases: OrbitCaseRecord[];
   status: OrbitCaseStatus;

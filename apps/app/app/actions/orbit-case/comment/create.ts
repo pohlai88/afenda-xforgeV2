@@ -22,5 +22,6 @@ export const addComment = async (
       parsed.body
     );
     revalidatePath("/orbit-case");
+    revalidatePath(`/orbit-case/${parsed.caseId}`);
     return toOrbitCaseCommentDto(comment);
   });

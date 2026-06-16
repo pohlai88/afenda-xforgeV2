@@ -1,8 +1,13 @@
 import { z } from "zod";
+import {
+  AFENDA_DENSITIES,
+  AFENDA_TONES,
+} from "../../contracts/afenda-design-system.contract";
+import { AFENDA_ACTION_VARIANTS } from "../../contracts/variant-identity.contract";
 import type { BlockType } from "./block-types";
 import { supportedBlockTypes } from "./block-types";
 
-const blockDensityValues = ["compact", "default", "comfortable"] as const;
+const blockDensityValues = AFENDA_DENSITIES;
 const blockIntentValues = [
   "approval",
   "audit",
@@ -12,7 +17,7 @@ const blockIntentValues = [
   "risk",
   "setup",
 ] as const;
-const blockRuntimeStateValues = [
+const blockRuntimeStateOptions = [
   "empty",
   "error",
   "forbidden",
@@ -20,20 +25,8 @@ const blockRuntimeStateValues = [
   "readonly",
   "ready",
 ] as const;
-const blockToneValues = [
-  "critical",
-  "info",
-  "neutral",
-  "success",
-  "warning",
-] as const;
-const blockActionVariantValues = [
-  "destructive",
-  "link",
-  "primary",
-  "quiet",
-  "secondary",
-] as const;
+const blockToneValues = AFENDA_TONES;
+const blockActionVariantValues = AFENDA_ACTION_VARIANTS;
 
 const metadataBlockTypeSchema = z.enum(supportedBlockTypes);
 
@@ -157,7 +150,7 @@ const metadataBlockActionSchema = z
     auditScope: z.string().min(1).optional(),
     capability: z.string().min(1).optional(),
     confirmationLabel: z.string().min(1).optional(),
-    destructive: z.boolean().optional(),
+    critical: z.boolean().optional(),
     disabled: z.union([z.boolean(), metadataDataBindingSchema]).optional(),
     href: metadataValueSchema.optional(),
     iconKey: z.string().min(1).optional(),
@@ -191,14 +184,14 @@ const metadataBlockBaseSchema = z.object({
       isOffline: z.boolean().optional(),
       isReadonly: z.boolean().optional(),
       riskLevel: metadataErpRiskLevelSchema.optional(),
-      runtimeState: z.enum(blockRuntimeStateValues).optional(),
+      runtimeState: z.enum(blockRuntimeStateOptions).optional(),
       saveState: metadataErpSaveStateSchema.optional(),
     })
     .strict()
     .optional(),
   permission: z.string().min(1).optional(),
   roles: z.array(z.string().min(1)).min(1).optional(),
-  state: z.enum(blockRuntimeStateValues).optional(),
+  state: z.enum(blockRuntimeStateOptions).optional(),
   tone: metadataBlockToneSchema.optional(),
 });
 
@@ -332,7 +325,7 @@ const metadataRuntimeStateBlockSchema = metadataBlockBaseSchema
   .extend({
     actions: metadataBlockActionListSchema.optional(),
     description: metadataValueSchema.optional(),
-    state: z.enum(blockRuntimeStateValues),
+    state: z.enum(blockRuntimeStateOptions),
     title: metadataValueSchema,
     type: z.literal("runtimeState"),
   })
@@ -732,7 +725,7 @@ export {
   blockActionVariantValues,
   blockDensityValues,
   blockIntentValues,
-  blockRuntimeStateValues,
+  blockRuntimeStateOptions as blockRuntimeStateValues,
   blockToneValues,
   metadataBindingExpectedTypeSchema,
   metadataBlockActionSchema,

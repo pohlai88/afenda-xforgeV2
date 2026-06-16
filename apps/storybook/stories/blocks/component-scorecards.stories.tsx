@@ -39,10 +39,10 @@ type Story = StoryObj<typeof meta>;
 
 const statusTone: Record<
   ComponentScorecardStatus,
-  "info" | "neutral" | "positive" | "warning"
+  "info" | "neutral" | "success" | "warning"
 > = {
   "needs-work": "warning",
-  ready: "positive",
+  ready: "success",
   watch: "info",
 };
 
@@ -73,7 +73,7 @@ export const ReleaseReadiness: Story = {
           </p>
         </div>
         <div className="flex flex-wrap justify-end gap-1.5">
-          <Badge tone="positive" variant="outline">
+          <Badge tone="success" variant="outline">
             Ready {readinessSummary.ready}
           </Badge>
           <Badge tone="info" variant="outline">

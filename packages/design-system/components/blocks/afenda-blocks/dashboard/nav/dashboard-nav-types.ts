@@ -79,7 +79,7 @@ export interface NavDocumentsMenuItem {
   readonly label: string;
   readonly onSelect?: () => void;
   readonly separatorBefore?: boolean;
-  readonly variant?: "default" | "destructive";
+  readonly variant?: "default" | "critical";
 }
 
 export interface NavDocumentsItem {

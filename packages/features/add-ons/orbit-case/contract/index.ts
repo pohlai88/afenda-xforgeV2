@@ -8,6 +8,8 @@ export {
   createOrbitCaseCommentSchema,
   createOrbitCaseSchema,
   deleteOrbitCaseSchema,
+  getOrbitCaseSchema,
+  listOrbitCaseActivitySchema,
   listOrbitCasesFilterSchema,
   orbitCasePrioritySchema,
   orbitCaseStatusSchema,
@@ -15,6 +17,7 @@ export {
   watchOrbitCaseSchema,
 } from "./orbit-case.schema";
 export type {
+  OrbitCaseActivityDto,
   OrbitCaseActivityRecord,
   OrbitCaseBoardColumn,
   OrbitCaseBoardColumnDto,
@@ -25,7 +28,11 @@ export type {
   OrbitCaseDto,
   OrbitCaseRecord,
   OrbitCaseUpdatePatch,
+  OrbitObjectLinkDto,
+  OrbitObjectLinkRecord,
+  PushResultDto,
 } from "./orbit-case.types";
+export { formatOrbitCaseActivitySummary } from "./activity-format";
 export { parseOrbitCasePriority, parseOrbitCaseStatus } from "./parse";
 export type {
   ExecutePushInput,
@@ -41,9 +48,11 @@ export {
 export type { Serializable } from "./serializable";
 export {
   toJsonSafeActivityPayload,
+  toOrbitCaseActivityDto,
   toOrbitCaseBoardDto,
   toOrbitCaseCommentDto,
   toOrbitCaseDto,
+  toOrbitObjectLinkDto,
 } from "./serialize";
 export type { OrbitCasePriority, OrbitCaseStatus } from "./status";
 export {
@@ -57,3 +66,12 @@ export {
   pushTemplateSchema,
   templateFieldSchema,
 } from "./template.schema";
+export {
+  ORBIT_EVENT_CASE_CREATED,
+  ORBIT_EVENT_CASE_PUSHED,
+  buildOrbitCaseCreatedEvent,
+  buildOrbitCasePushedEvent,
+  orbitCaseCreatedEventSchema,
+  orbitCasePushedEventSchema,
+} from "./events";
+export type { OrbitCaseCreatedEvent, OrbitCasePushedEvent } from "./events";

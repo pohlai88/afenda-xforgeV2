@@ -92,7 +92,7 @@ export const ScreenPatternCatalog: Story = {
                   <BadgeList items={pattern.states} tone="info" />
                 </TableCell>
                 <TableCell className="min-w-72 align-top">
-                  <BadgeList items={pattern.gates} tone="positive" />
+                  <BadgeList items={pattern.gates} tone="success" />
                 </TableCell>
                 <TableCell className="min-w-80 align-top text-text-secondary">
                   {pattern.do[0]}
@@ -114,7 +114,7 @@ function BadgeList({
   tone,
 }: {
   readonly items: readonly string[];
-  readonly tone: "info" | "neutral" | "positive";
+  readonly tone: "info" | "neutral" | "success";
 }) {
   return (
     <div className="flex flex-wrap gap-1.5">

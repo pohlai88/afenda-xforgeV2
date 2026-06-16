@@ -15,7 +15,7 @@ const textVariants = cva("min-w-0", {
       primary: "text-text-primary",
       secondary: "text-text-secondary",
       tertiary: "text-text-tertiary",
-      danger: "text-danger",
+      critical: "text-critical",
       success: "text-success",
       warning: "text-warning",
       info: "text-info",

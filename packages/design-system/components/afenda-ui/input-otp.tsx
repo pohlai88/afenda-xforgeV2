@@ -60,7 +60,7 @@ function InputOTPSlot({
         "relative flex size-11 items-center justify-center rounded-[var(--button-radius)] border border-border-default bg-surface font-medium text-base text-text-primary tabular-nums tracking-[0.05em] outline-none",
         "data-[active=true]:z-10 data-[active=true]:border-border-active data-[active=true]:bg-surface-raised data-[active=true]:ring-2 data-[active=true]:ring-ring/30",
         "focus-visible:ring-2 focus-visible:ring-ring/30",
-        "aria-invalid:border-danger aria-invalid:bg-danger/5 data-[active=true]:aria-invalid:border-danger data-[active=true]:aria-invalid:ring-danger/20 dark:data-[active=true]:aria-invalid:ring-danger/40",
+        "aria-invalid:border-critical aria-invalid:bg-critical/5 data-[active=true]:aria-invalid:border-critical data-[active=true]:aria-invalid:ring-critical/20 dark:data-[active=true]:aria-invalid:ring-critical/40",
         recipe("colorTransition", "motionReduce"),
         className
       )}

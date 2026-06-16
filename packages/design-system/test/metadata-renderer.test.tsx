@@ -5,7 +5,7 @@ import {
   ApprovalControlCenter,
   ApprovalQueueBlock,
   AuditEvidenceWorkspace,
-  AuditSafeDestructiveAction,
+  AuditSafeCriticalAction,
   AuditTrailPanel,
   BatchPostingReview,
   BulkActionBar,
@@ -341,14 +341,14 @@ describe("metadata renderer contract", () => {
     expect(context.baseProps.tone).toBe("warning");
   });
 
-  it("normalizes reversible destructive bulk action confirmation", () => {
+  it("normalizes reversible critical bulk action confirmation", () => {
     const block = parseBlock({
       actions: [
         {
-          destructive: true,
+          critical: true,
           key: "archive",
           label: "Archive selected",
-          variant: "destructive",
+          variant: "critical",
         },
       ],
       blockId: "bulk-action-confirmation",
@@ -363,7 +363,7 @@ describe("metadata renderer contract", () => {
     );
 
     expect(actions?.[0]?.confirmationLabel).toBe("Archive selected");
-    expect(actions?.[0]?.destructive).toBe(true);
+    expect(actions?.[0]?.critical).toBe(true);
     expect(actions?.[0]?.disabled).toBe(false);
     expect(actions?.[0]?.reason).toBe(
       "Requires confirmation and audit logging."
@@ -1414,7 +1414,7 @@ const documentedStableValueExports = [
   ["ApprovalControlCenter", ApprovalControlCenter],
   ["ApprovalQueueBlock", ApprovalQueueBlock],
   ["AuditEvidenceWorkspace", AuditEvidenceWorkspace],
-  ["AuditSafeDestructiveAction", AuditSafeDestructiveAction],
+  ["AuditSafeCriticalAction", AuditSafeCriticalAction],
   ["AuditTrailPanel", AuditTrailPanel],
   ["BatchPostingReview", BatchPostingReview],
   ["blockRegistryEntries", blockRegistryEntries],

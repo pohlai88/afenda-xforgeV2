@@ -19,7 +19,7 @@ const metricTextVariants = cva(
       tone: {
         primary: "text-text-primary",
         secondary: "text-text-secondary",
-        danger: "text-danger",
+        critical: "text-critical",
         success: "text-success",
         warning: "text-warning",
         info: "text-info",

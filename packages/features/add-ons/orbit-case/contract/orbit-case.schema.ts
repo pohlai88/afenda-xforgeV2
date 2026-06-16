@@ -61,3 +61,11 @@ export const deleteOrbitCaseSchema = z.object({
   caseId: z.string().min(1),
   hard: z.boolean().optional(),
 });
+
+export const getOrbitCaseSchema = z.object({
+  caseId: z.string().min(1),
+});
+
+export const listOrbitCaseActivitySchema = z.object({
+  caseId: z.string().min(1),
+});

@@ -38,7 +38,7 @@ Status tokens communicate operational state only:
 
 - `info`
 - `warning`
-- `danger`
+- `critical`
 - `success`
 
 Warning amber is preserved as a palette and fill token. Operational warning text uses an accessible warning foreground so contrast gates stay strict.

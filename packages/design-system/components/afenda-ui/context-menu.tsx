@@ -123,7 +123,7 @@ function ContextMenuItem({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Item> & {
   inset?: boolean;
-  variant?: "default" | "destructive";
+  variant?: "default" | "critical";
 }) {
   return (
     <ContextMenuPrimitive.Item
@@ -133,9 +133,9 @@ function ContextMenuItem({
           "rowInset",
           "rowHighlight",
           "rowDisabled",
-          "rowDestructive",
+          "rowCritical",
           "rowIcon",
-          "rowDestructiveIcon"
+          "rowCriticalIcon"
         ),
         className
       )}

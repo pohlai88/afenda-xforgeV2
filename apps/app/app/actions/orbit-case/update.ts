@@ -23,5 +23,6 @@ export const updateCase = async (
     }
 
     revalidatePath("/orbit-case");
+    revalidatePath(`/orbit-case/${parsed.caseId}`);
     return toOrbitCaseDto(updated);
   });

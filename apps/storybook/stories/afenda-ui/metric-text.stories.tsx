@@ -54,7 +54,7 @@ export const MetricSizes: Story = {
           <Text tone="secondary" variant="caption">
             Failed sync
           </Text>
-          <MetricText size="sm" tone="danger">
+          <MetricText size="sm" tone="critical">
             2
           </MetricText>
         </div>

@@ -56,7 +56,7 @@ interface BlockAction {
   readonly auditScope?: string;
   readonly capability?: string;
   readonly confirmationLabel?: string;
-  readonly destructive?: boolean;
+  readonly critical?: boolean;
   readonly disabled?: boolean;
   readonly governanceCode?: string;
   readonly governanceStatus?: "allowed" | "denied" | "hidden";
@@ -309,7 +309,7 @@ const metricToneClassName: Record<BlockTone, string> = {
   info: "text-info",
   success: "text-success",
   warning: "text-warning",
-  critical: "text-danger",
+  critical: "text-critical",
 };
 
 const filterChipClassName: Record<BlockTone, string> = {
@@ -317,7 +317,7 @@ const filterChipClassName: Record<BlockTone, string> = {
   info: "border-info/50 bg-surface text-info",
   success: "border-success/50 bg-surface text-success",
   warning: "border-warning/60 bg-surface text-warning",
-  critical: "border-danger/60 bg-surface text-danger",
+  critical: "border-critical/60 bg-surface text-critical",
 };
 
 const blockDensityClassName: Record<BlockDensity, string> = {
@@ -333,7 +333,7 @@ const blockToneToBadgeTone: Record<
   critical: "critical",
   info: "info",
   neutral: "neutral",
-  success: "positive",
+  success: "success",
   warning: "warning",
 };
 
@@ -443,7 +443,7 @@ function EmptyPanel({
         className={cn(
           blockRecipe("blockEmpty"),
           blockDensityClassName[density],
-          tone === "critical" && "border-danger/40 bg-danger-muted/40",
+          tone === "critical" && "border-critical/40 bg-critical-muted/40",
           tone === "success" && "border-success/40 bg-success-muted/30",
           tone === "warning" && "border-warning/40 bg-warning-muted/30"
         )}
@@ -589,8 +589,8 @@ function BlockActionButton({ action }: { readonly action: BlockAction }) {
   );
 
   const resolvedVariant =
-    action.destructive && !action.disabled
-      ? "destructive"
+    action.critical && !action.disabled
+      ? "critical"
       : (action.variant ?? "secondary");
 
   if (action.href && !action.disabled) {

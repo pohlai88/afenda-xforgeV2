@@ -174,7 +174,7 @@ export const ValidPageContract: Story = {
         }
         status={result.success ? "Valid" : "Invalid"}
         title="Approval page metadata"
-        tone={result.success ? "positive" : "critical"}
+        tone={result.success ? "success" : "critical"}
       />
     );
   },
@@ -189,7 +189,7 @@ export const DuplicateBlockIdRejected: Story = {
         details={result.success ? duplicateBlockPage : result.error.issues}
         status={result.success ? "Valid" : "Rejected"}
         title="Duplicate blockId guard"
-        tone={result.success ? "positive" : "critical"}
+        tone={result.success ? "success" : "critical"}
       />
     );
   },
@@ -204,7 +204,7 @@ export const MalformedActionRejected: Story = {
         details={result.success ? malformedActionBlock : result.error.issues}
         status={result.success ? "Valid" : "Rejected"}
         title="Governed action guard"
-        tone={result.success ? "positive" : "critical"}
+        tone={result.success ? "success" : "critical"}
       />
     );
   },
@@ -219,7 +219,7 @@ export const DuplicateNestedKeyRejected: Story = {
         details={result.success ? duplicateColumnBlock : result.error.issues}
         status={result.success ? "Valid" : "Rejected"}
         title="Duplicate nested key guard"
-        tone={result.success ? "positive" : "critical"}
+        tone={result.success ? "success" : "critical"}
       />
     );
   },
@@ -234,7 +234,7 @@ function SchemaResultPanel({
   readonly details: unknown;
   readonly status: string;
   readonly title: string;
-  readonly tone: "critical" | "positive";
+  readonly tone: "critical" | "success";
 }) {
   return (
     <section className="grid w-[min(920px,calc(100vw-32px))] min-w-0 gap-3 rounded-[var(--card-radius)] border border-border-default bg-surface-raised p-4">

@@ -60,7 +60,7 @@ Action normalization is stable:
 - Default `capability`: `<blockType>:<surface>:<actionKey>`
 - Default `auditEvent`: `<blockType>.<surface>.<actionKey>`
 - Default `auditScope`: block id
-- Destructive actions default `confirmationLabel` to the action label.
+- Critical actions default `confirmationLabel` to the action label.
 - Readonly, forbidden, denied, and disabled states emit visible reasons.
 
 App teams should still provide explicit permission, capability, reason, audit event, and audit scope when actions are tenant or policy sensitive.

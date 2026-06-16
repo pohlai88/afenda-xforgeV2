@@ -78,7 +78,7 @@ const metricToneClassName: Record<BlockTone, string> = {
   info: "text-info",
   success: "text-success",
   warning: "text-warning",
-  critical: "text-danger",
+  critical: "text-critical",
 };
 
 const tableSkeletonRows = [
@@ -611,7 +611,7 @@ type RiskEvidencePanelProps = ComponentProps<"section"> & {
   readonly metrics: readonly StatsMetric[];
   readonly progress?: {
     readonly label: string;
-    readonly tone?: "brand" | "success" | "warning" | "danger" | "neutral";
+    readonly tone?: "brand" | "success" | "warning" | "critical" | "neutral";
     readonly value: number;
   };
   readonly title?: ReactNode;
@@ -920,7 +920,7 @@ function StatusDot({ tone }: { readonly tone: BlockTone }) {
         tone === "info" && "bg-info",
         tone === "success" && "bg-success",
         tone === "warning" && "bg-warning",
-        tone === "critical" && "bg-danger"
+        tone === "critical" && "bg-critical"
       )}
     />
   );
@@ -933,7 +933,7 @@ const blockToneToBadgeTone: Record<
   critical: "critical",
   info: "info",
   neutral: "neutral",
-  success: "positive",
+  success: "success",
   warning: "warning",
 };
 

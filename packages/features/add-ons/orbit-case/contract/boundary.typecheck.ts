@@ -3,12 +3,16 @@
  * Fails typecheck when Record/Dto drift apart.
  */
 import type {
+  OrbitCaseActivityDto,
+  OrbitCaseActivityRecord,
   OrbitCaseBoardDto,
   OrbitCaseBoardResult,
   OrbitCaseCommentDto,
   OrbitCaseCommentRecord,
   OrbitCaseDto,
   OrbitCaseRecord,
+  OrbitObjectLinkDto,
+  OrbitObjectLinkRecord,
 } from "./orbit-case.types";
 import type { Serializable } from "./serializable";
 
@@ -30,4 +34,15 @@ type _OrbitCaseCommentDtoMatchesSerializableRecord = AssertTrue<
 
 type _OrbitCaseBoardDtoMatchesSerializableResult = AssertTrue<
   AssertEqual<OrbitCaseBoardDto, Serializable<OrbitCaseBoardResult>>
+>;
+
+type _OrbitCaseActivityDtoMatchesSerializableRecord = AssertTrue<
+  AssertEqual<
+    Omit<OrbitCaseActivityDto, "summary">,
+    Serializable<OrbitCaseActivityRecord>
+  >
+>;
+
+type _OrbitObjectLinkDtoMatchesSerializableRecord = AssertTrue<
+  AssertEqual<OrbitObjectLinkDto, Serializable<OrbitObjectLinkRecord>>
 >;

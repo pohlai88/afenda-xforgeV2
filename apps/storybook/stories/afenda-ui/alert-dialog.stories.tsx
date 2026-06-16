@@ -61,7 +61,7 @@ export const Default: Story = {
         </Badge>
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <Button variant="destructive">
+            <Button variant="critical">
               <Trash2Icon className="size-4" />
               Remove access
             </Button>

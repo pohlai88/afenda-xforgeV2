@@ -379,7 +379,7 @@ function DemoSiteTopbar() {
           <h1 className={cn(blockRecipe("blockTitle"), "tracking-tight")}>
             Approval control center
           </h1>
-          <Badge tone="positive" variant="outline">
+          <Badge tone="success" variant="outline">
             Controlled
           </Badge>
         </div>

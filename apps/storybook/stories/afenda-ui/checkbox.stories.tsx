@@ -321,8 +321,8 @@ export const ToneMatrix: Story = {
           <CheckboxRow
             checked
             hint="Approval or beneficial outcome."
-            id="tone-positive"
-            tone="positive"
+            id="tone-success"
+            tone="success"
           >
             Positive
           </CheckboxRow>

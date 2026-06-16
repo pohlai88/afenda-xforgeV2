@@ -26,10 +26,19 @@ export const clearPushDestinations = (): void => {
 export const resolvePushDestinations = ({
   role,
   userCapabilities,
-}: ResolvePushDestinationsInput): PushDestinationDefinition[] => {
+}: ResolvePushDestinationsInput): PushDestinationDefinition[] =>
+  resolvePushDestinationsWithList(
+    { orgId: "", role, userCapabilities, userId: "" },
+    [...destinations.values()]
+  );
+
+export const resolvePushDestinationsWithList = (
+  { role, userCapabilities }: ResolvePushDestinationsInput,
+  destinationList: PushDestinationDefinition[]
+): PushDestinationDefinition[] => {
   const capabilitySet = new Set(userCapabilities);
 
-  return [...destinations.values()].filter((destination) => {
+  return destinationList.filter((destination) => {
     if (!destination.visibleToRoles.includes(role)) {
       return false;
     }
@@ -46,3 +55,7 @@ export const getPushDestination = (
 
 export const isPushDestinationRegistered = (destinationId: string): boolean =>
   destinations.has(destinationId);
+
+export const listInMemoryPushDestinations = (): PushDestinationDefinition[] => [
+  ...destinations.values(),
+];

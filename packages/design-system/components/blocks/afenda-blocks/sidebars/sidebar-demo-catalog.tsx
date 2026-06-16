@@ -107,7 +107,7 @@ export const DEMO_ERP_SIDEBAR_LABEL_GROUPS: readonly SidebarLabelGroup[] = [
     id: "workflow-labels",
     label: "Labels",
     items: [
-      { id: "live", label: "Live", tone: "positive" },
+      { id: "live", label: "Live", tone: "success" },
       { id: "review", label: "Review", tone: "warning" },
       { id: "blocked", label: "Blocked", tone: "critical" },
       { id: "sync", label: "Sync pending", tone: "info" },

@@ -149,7 +149,7 @@ function DemoAppSidebar() {
 }
 
 const meta = {
-  title: "Blocks/Afenda/Content Layout",
+  title: "Blocks/Foundation/Content Layout",
   tags: ["autodocs", "block"],
   parameters: {
     ...layoutStoryParameters,

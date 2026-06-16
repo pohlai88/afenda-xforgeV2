@@ -102,7 +102,7 @@ function PermissionActionToolbar({
   );
 }
 
-type AuditSafeDestructiveActionProps = ComponentProps<"section"> &
+type AuditSafeCriticalActionProps = ComponentProps<"section"> &
   Pick<BlockBaseProps, "blockId" | "density" | "intent" | "state" | "tone"> & {
     readonly action: PermissionAwareAction;
     readonly currentRole?: string;
@@ -111,7 +111,7 @@ type AuditSafeDestructiveActionProps = ComponentProps<"section"> &
     readonly title: ReactNode;
   };
 
-function AuditSafeDestructiveAction({
+function AuditSafeCriticalAction({
   action,
   blockId,
   className,
@@ -124,17 +124,17 @@ function AuditSafeDestructiveAction({
   title,
   tone = "critical",
   ...props
-}: AuditSafeDestructiveActionProps) {
+}: AuditSafeCriticalActionProps) {
   const missingAuditEventReason = action.auditEvent
     ? undefined
-    : "Destructive actions require an audit event before they can run.";
+    : "Critical actions require an audit event before they can run.";
   const auditedAction = evaluatePermissionAction(
     {
       ...action,
-      destructive: true,
+      critical: true,
       disabled: action.disabled || !action.auditEvent,
       reason: missingAuditEventReason ?? action.reason,
-      variant: "destructive",
+      variant: "critical",
     },
     currentRole
   );
@@ -152,7 +152,7 @@ function AuditSafeDestructiveAction({
       data-block-id={blockId}
       data-density={density}
       data-intent={intent}
-      data-slot="audit-safe-destructive-action-block"
+      data-slot="audit-safe-critical-action-block"
       data-state={state}
       data-tone={tone}
       {...props}
@@ -177,7 +177,7 @@ function AuditSafeDestructiveAction({
 
       <Alert tone="warning">
         <AlertTriangleIcon aria-hidden="true" />
-        <AlertTitle>Destructive action guard</AlertTitle>
+        <AlertTitle>Critical action guard</AlertTitle>
         <AlertDescription>
           This action records capability, permission, role, audit event, and
           scope metadata before the application executes the mutation.
@@ -237,8 +237,8 @@ function PermissionActionButton({
     </>
   );
   const resolvedVariant =
-    action.destructive && !action.disabled
-      ? "destructive"
+    action.critical && !action.disabled
+      ? "critical"
       : (action.variant ?? "secondary");
 
   return (
@@ -329,9 +329,9 @@ const blockDensityClassName: Record<BlockDensity, string> = {
   default: blockRecipe("blockComfortable"),
 };
 
-export { AuditSafeDestructiveAction, PermissionActionToolbar };
+export { AuditSafeCriticalAction, PermissionActionToolbar };
 export type {
-  AuditSafeDestructiveActionProps,
+  AuditSafeCriticalActionProps,
   PermissionActionAuditItem,
   PermissionActionToolbarProps,
   PermissionAwareAction,

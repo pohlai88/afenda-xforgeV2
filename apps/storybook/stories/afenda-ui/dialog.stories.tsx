@@ -139,7 +139,7 @@ export const Warning: Story = {
         </Badge>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="destructive">Remove access</Button>
+            <Button variant="critical">Remove access</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
@@ -150,8 +150,8 @@ export const Warning: Story = {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="flex items-start gap-3 rounded-md border border-danger/30 bg-danger-muted px-4 py-3 text-[13px]">
-              <CircleAlertIcon className="mt-0.5 size-4 text-danger" />
+            <div className="flex items-start gap-3 rounded-md border border-critical/30 bg-critical-muted px-4 py-3 text-[13px]">
+              <CircleAlertIcon className="mt-0.5 size-4 text-critical" />
               <p className="text-text-primary">
                 Samir will lose access to active workflows, saved reports, and
                 approval history. The audit trail remains retained.
@@ -162,7 +162,7 @@ export const Warning: Story = {
               <DialogClose asChild>
                 <Button variant="quiet">Cancel</Button>
               </DialogClose>
-              <Button variant="destructive">Remove access</Button>
+              <Button variant="critical">Remove access</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

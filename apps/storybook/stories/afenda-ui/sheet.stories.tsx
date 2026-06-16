@@ -86,7 +86,7 @@ export const Default: Story = {
               <div className="grid gap-2">
                 <Label>Status</Label>
                 <div className="flex flex-wrap gap-2">
-                  <Badge tone="positive">Passed</Badge>
+                  <Badge tone="success">Passed</Badge>
                   <Badge tone="warning" variant="outline">
                     Needs review
                   </Badge>

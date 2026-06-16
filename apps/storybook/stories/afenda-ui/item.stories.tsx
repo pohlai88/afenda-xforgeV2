@@ -54,7 +54,7 @@ export const Default: Story = {
               "Payroll evidence",
               "Generated report with operator, approval chain, and lock status.",
               "Ready",
-              "positive",
+              "success",
             ],
             [
               ShieldCheckIcon,
@@ -82,7 +82,7 @@ export const Default: Story = {
                 </ItemContent>
                 <ItemActions>
                   <Badge
-                    tone={tone as "positive" | "neutral" | "warning"}
+                    tone={tone as "success" | "neutral" | "warning"}
                     variant="outline"
                   >
                     {state as string}

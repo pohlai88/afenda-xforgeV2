@@ -116,7 +116,7 @@ function DemoOperatorSidebarStory({
 }
 
 const meta = {
-  title: "Blocks/Afenda/Sidebars",
+  title: "Blocks/Operator/Sidebars",
   tags: ["autodocs", "block"],
   parameters: {
     ...layoutStoryParameters,

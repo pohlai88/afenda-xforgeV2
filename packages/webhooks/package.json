@@ -19,6 +19,7 @@
     "@paralleldrive/cuid2": "^3.3.0",
     "@repo/cms": "workspace:*",
     "@repo/database": "workspace:*",
+    "@repo/orbit-case": "workspace:*",
     "@t3-oss/env-nextjs": "^0.13.10",
     "drizzle-orm": "^0.45.1",
     "server-only": "^0.0.1",

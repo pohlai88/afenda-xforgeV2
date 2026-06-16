@@ -5,6 +5,11 @@ import {
   Button,
   blockRecipe,
   Input,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
   Tabs,
   TabsContent,
   TabsList,
@@ -17,10 +22,13 @@ import type {
   OrbitCaseDto,
   OrbitCaseStatus,
 } from "@repo/orbit-case";
+import { ORBIT_CASE_STATUSES } from "@repo/orbit-case";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { moveCaseStatus } from "@/app/actions/orbit-case/board";
 import { createCase } from "@/app/actions/orbit-case/create";
+import { listCases } from "@/app/actions/orbit-case/list";
 
 interface OrbitCaseWorkspaceProps {
   initialBoard: OrbitCaseBoardColumnDto[];
@@ -45,6 +53,9 @@ export function OrbitCaseWorkspace({
   const [board, setBoard] = useState(initialBoard);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterAssignee, setFilterAssignee] = useState("");
+  const [filterTag, setFilterTag] = useState("");
   const [isPending, startTransition] = useTransition();
 
   const handleCreate = () => {
@@ -63,16 +74,9 @@ export function OrbitCaseWorkspace({
       }
 
       const created = result.data;
-      setCases((current) => [created, ...current]);
-      setBoard((current) =>
-        current.map((column) =>
-          column.status === created.status
-            ? { ...column, cases: [created, ...column.cases] }
-            : column
-        )
-      );
       setTitle("");
       setDescription("");
+      router.push(`/orbit-case/${created.id}`);
       router.refresh();
     });
   };
@@ -88,6 +92,24 @@ export function OrbitCaseWorkspace({
       setBoard(result.data.columns);
       setCases(result.data.columns.flatMap((column) => column.cases));
       router.refresh();
+    });
+  };
+
+  const applyFilters = () => {
+    startTransition(async () => {
+      const result = await listCases({
+        ...(filterStatus !== "all"
+          ? { status: filterStatus as OrbitCaseStatus }
+          : {}),
+        ...(filterAssignee.trim()
+          ? { assigneeId: filterAssignee.trim() }
+          : {}),
+        ...(filterTag.trim() ? { tag: filterTag.trim() } : {}),
+      });
+
+      if (result.ok) {
+        setCases(result.data);
+      }
     });
   };
 
@@ -129,6 +151,41 @@ export function OrbitCaseWorkspace({
           <TabsTrigger value="kanban">Kanban</TabsTrigger>
         </TabsList>
         <TabsContent className="mt-4" value="list">
+          <div
+            className={cn(
+              blockRecipe("blockPanel", "blockPanelPadding"),
+              "mb-4 grid gap-3 md:grid-cols-[160px_1fr_1fr_auto]"
+            )}
+          >
+            <Select onValueChange={setFilterStatus} value={filterStatus}>
+              <SelectTrigger aria-label="Filter by status">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All statuses</SelectItem>
+                {ORBIT_CASE_STATUSES.map((status) => (
+                  <SelectItem key={status} value={status}>
+                    {statusLabel[status]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input
+              aria-label="Filter by assignee"
+              onChange={(event) => setFilterAssignee(event.target.value)}
+              placeholder="Assignee ID"
+              value={filterAssignee}
+            />
+            <Input
+              aria-label="Filter by tag"
+              onChange={(event) => setFilterTag(event.target.value)}
+              placeholder="Tag"
+              value={filterTag}
+            />
+            <Button disabled={isPending} onClick={applyFilters} variant="secondary">
+              Apply filters
+            </Button>
+          </div>
           <div className="grid gap-3">
             {cases.length === 0 ? (
               <p className="text-muted-foreground text-sm">
@@ -136,28 +193,29 @@ export function OrbitCaseWorkspace({
               </p>
             ) : (
               cases.map((orbitCase) => (
-                <article
-                  className={cn(
-                    blockRecipe("blockPanel", "blockPanelPadding"),
-                    "grid gap-2"
-                  )}
-                  key={orbitCase.id}
-                >
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-medium">{orbitCase.title}</h3>
-                    <Badge variant="outline">
-                      {statusLabel[orbitCase.status]}
-                    </Badge>
-                    {orbitCase.priority !== "none" ? (
-                      <Badge variant="soft">{orbitCase.priority}</Badge>
+                <Link href={`/orbit-case/${orbitCase.id}`} key={orbitCase.id}>
+                  <article
+                    className={cn(
+                      blockRecipe("blockPanel", "blockPanelPadding"),
+                      "grid gap-2 transition-colors hover:bg-muted/30"
+                    )}
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="font-medium">{orbitCase.title}</h3>
+                      <Badge variant="outline">
+                        {statusLabel[orbitCase.status]}
+                      </Badge>
+                      {orbitCase.priority !== "none" ? (
+                        <Badge variant="soft">{orbitCase.priority}</Badge>
+                      ) : null}
+                    </div>
+                    {orbitCase.description ? (
+                      <p className="text-muted-foreground text-sm">
+                        {orbitCase.description}
+                      </p>
                     ) : null}
-                  </div>
-                  {orbitCase.description ? (
-                    <p className="text-muted-foreground text-sm">
-                      {orbitCase.description}
-                    </p>
-                  ) : null}
-                </article>
+                  </article>
+                </Link>
               ))
             )}
           </div>
@@ -180,7 +238,12 @@ export function OrbitCaseWorkspace({
                     className="rounded-md border bg-background p-3 text-sm"
                     key={orbitCase.id}
                   >
-                    <p className="font-medium">{orbitCase.title}</p>
+                    <Link
+                      className="font-medium hover:underline"
+                      href={`/orbit-case/${orbitCase.id}`}
+                    >
+                      {orbitCase.title}
+                    </Link>
                     <div className="mt-2 flex flex-wrap gap-1">
                       {column.status !== "doing" ? (
                         <Button

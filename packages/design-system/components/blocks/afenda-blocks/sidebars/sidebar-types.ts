@@ -4,7 +4,7 @@ export type SidebarLabelTone =
   | "critical"
   | "info"
   | "neutral"
-  | "positive"
+  | "success"
   | "warning";
 
 export type SidebarMatchStrategy = "exact" | "prefix";

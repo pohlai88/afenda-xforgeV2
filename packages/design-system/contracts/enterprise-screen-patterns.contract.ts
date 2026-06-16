@@ -299,7 +299,7 @@ const enterpriseScreenPatterns = {
       "FilterBar",
       "AdvancedDataTable",
       "RiskEvidencePanel",
-      "AuditSafeDestructiveAction",
+      "AuditSafeCriticalAction",
     ],
     density: "dense",
     description:

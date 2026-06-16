@@ -20,7 +20,7 @@ const tokenGroups = [
   },
   {
     description: "Operational decisions only.",
-    names: ["info", "warning", "danger", "success"],
+    names: ["info", "warning", "critical", "success"],
     title: "Status",
   },
 ] as const;

@@ -7,7 +7,7 @@ import {
 } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
-import { createOrbitCase, getOrbitCaseById } from "../engines/work/orbit-cases";
+import { createOrbitCase, getOrbitCaseById } from "../../engines/work/orbit-cases";
 
 const createdOrgIds: string[] = [];
 const createdCaseIds: string[] = [];

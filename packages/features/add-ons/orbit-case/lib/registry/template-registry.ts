@@ -16,6 +16,10 @@ export const getPushTemplate = (
   templateId: string
 ): PushTemplateDefinition | null => templates.get(templateId) ?? null;
 
+export const listInMemoryPushTemplates = (): PushTemplateDefinition[] => [
+  ...templates.values(),
+];
+
 export const listPushTemplatesForDestination = (
   destinationId: string
 ): PushTemplateDefinition[] =>

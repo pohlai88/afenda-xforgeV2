@@ -45,7 +45,7 @@ const afendaBlockLayoutContracts = {
     allowedPrimitiveFamilies: ["button", "input", "select", "popover", "badge"],
     notes: [
       "Filters are quiet actions, not primary decisions.",
-      "Do not embed destructive actions in filter bars.",
+      "Do not embed critical actions in filter bars.",
     ],
   },
   "data-table-shell": {

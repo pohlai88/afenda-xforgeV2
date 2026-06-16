@@ -216,7 +216,7 @@ export const dashboardDataTableColumns: ColumnDef<DashboardDataTableRow>[] = [
           <DropdownMenuItem>Make a copy</DropdownMenuItem>
           <DropdownMenuItem>Favorite</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          <DropdownMenuItem variant="critical">Delete</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),

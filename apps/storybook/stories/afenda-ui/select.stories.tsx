@@ -147,7 +147,7 @@ export const Invalid: Story = {
               Invalid state is attached to the select trigger.
             </p>
           </div>
-          <span className="text-status-danger text-xs">1 missing value</span>
+          <span className="text-status-critical text-xs">1 missing value</span>
         </div>
         <Field className="max-w-lg">
           <FieldLabel htmlFor="afenda-select-status">

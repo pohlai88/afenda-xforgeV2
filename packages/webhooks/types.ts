@@ -2,6 +2,10 @@ import type {
   CmsDocumentEvent,
   CmsSettingsUpdatedEvent,
 } from "@repo/cms/events";
+import type {
+  OrbitCaseCreatedEvent,
+  OrbitCasePushedEvent,
+} from "@repo/orbit-case";
 import type { WebhookDeliveryStatus } from "@repo/database/schema";
 import { webhookDeliveryStatuses } from "@repo/database/schema";
 import { z } from "zod";
@@ -50,6 +54,8 @@ export interface WebhookEventDataMap {
   "cms.document.published": CmsDocumentEvent;
   "cms.document.unpublished": CmsDocumentEvent;
   "cms.settings.updated": CmsSettingsUpdatedEvent;
+  "orbit.case.created": OrbitCaseCreatedEvent;
+  "orbit.case.pushed": OrbitCasePushedEvent;
   "webhook.test": { message: string };
 }
 

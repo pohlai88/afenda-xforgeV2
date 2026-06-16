@@ -200,7 +200,7 @@ function FieldError({
 
   return (
     <div
-      className={cn(recipe("captionText"), "text-danger", className)}
+      className={cn(recipe("captionText"), "text-critical", className)}
       data-slot="field-error"
       role="alert"
       {...props}
@@ -214,7 +214,7 @@ function FieldRequired({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
       aria-hidden="true"
-      className={cn("text-danger", className)}
+      className={cn("text-critical", className)}
       data-slot="field-required"
       {...props}
     >

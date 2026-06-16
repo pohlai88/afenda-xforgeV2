@@ -105,7 +105,7 @@ export const Default: Story = {
           </CardHeader>
           <CardContent className="grid gap-2 text-[13px]">
             {[
-              ["MFA coverage", "98.4%", "positive"],
+              ["MFA coverage", "98.4%", "success"],
               ["Privileged users", "7", "neutral"],
               ["Policy exceptions", "2", "warning"],
             ].map(([label, value, tone]) => (
@@ -115,7 +115,7 @@ export const Default: Story = {
               >
                 <span className="text-text-secondary">{label}</span>
                 <Badge
-                  tone={tone as "positive" | "neutral" | "warning"}
+                  tone={tone as "success" | "neutral" | "warning"}
                   variant="outline"
                 >
                   {value}

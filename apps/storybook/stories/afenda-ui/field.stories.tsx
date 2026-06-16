@@ -143,7 +143,7 @@ export const Invalid: Story = {
               Error copy remains scoped to the specific field.
             </p>
           </div>
-          <span className="text-status-danger text-xs">Blocked</span>
+          <span className="text-status-critical text-xs">Blocked</span>
         </div>
         <Field className="max-w-lg">
           <FieldLabel htmlFor="afenda-field-email-invalid">

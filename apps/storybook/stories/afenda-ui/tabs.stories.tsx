@@ -41,7 +41,7 @@ export const RecordViews: Story = {
             Switch between summary, audit, and access without leaving context.
           </p>
         </div>
-        <Badge tone="positive" variant="outline">
+        <Badge tone="success" variant="outline">
           Active
         </Badge>
       </div>

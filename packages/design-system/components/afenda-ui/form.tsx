@@ -105,7 +105,7 @@ function FormLabel({
   return (
     <Label
       className={cn(
-        "data-[error=true]:text-danger",
+        "data-[error=true]:text-critical",
         recipe("labelText"),
         className
       )}
@@ -154,7 +154,7 @@ function FormMessage({ className, ...props }: ComponentProps<"p">) {
 
   return (
     <p
-      className={cn("text-danger", recipe("captionText"), className)}
+      className={cn("text-critical", recipe("captionText"), className)}
       data-slot="form-message"
       id={formMessageId}
       {...props}

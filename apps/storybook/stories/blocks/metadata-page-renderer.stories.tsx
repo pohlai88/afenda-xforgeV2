@@ -110,10 +110,10 @@ const metadataPage = {
       blockId: "approval-table",
       bulkActions: [
         {
-          destructive: true,
+          critical: true,
           key: "void",
           label: "Void selected",
-          variant: "destructive",
+          variant: "critical",
         },
       ],
       columns: [

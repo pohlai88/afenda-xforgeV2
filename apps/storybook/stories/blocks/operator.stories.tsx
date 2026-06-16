@@ -369,7 +369,7 @@ function OperatorPagination() {
 }
 
 const statusDotClassName = {
-  critical: "bg-danger",
+  critical: "bg-critical",
   info: "bg-info",
   neutral: "bg-muted-foreground",
   success: "bg-success",

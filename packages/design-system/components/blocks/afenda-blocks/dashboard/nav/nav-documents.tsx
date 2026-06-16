@@ -53,7 +53,7 @@ const DEFAULT_DOCUMENT_MENU_ITEMS: readonly NavDocumentsMenuItem[] = [
     icon: TrashIcon,
     label: "Delete",
     separatorBefore: true,
-    variant: "destructive",
+    variant: "critical",
   },
 ];
 

@@ -43,7 +43,7 @@ export const Default: Story = {
               </MenubarItem>
               <MenubarItem>Export current view</MenubarItem>
               <MenubarSeparator />
-              <MenubarItem variant="destructive">Archive selection</MenubarItem>
+              <MenubarItem variant="critical">Archive selection</MenubarItem>
             </MenubarContent>
           </MenubarMenu>
           <MenubarMenu>

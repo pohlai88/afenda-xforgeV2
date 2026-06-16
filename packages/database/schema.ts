@@ -338,3 +338,119 @@ export const orbitCaseRelations = relations(orbitCase, ({ one, many }) => ({
   tags: many(orbitCaseTag),
   activity: many(orbitCaseActivity),
 }));
+
+export const orbitPushEventStatuses = [
+  "pending",
+  "completed",
+  "failed",
+] as const;
+
+export type OrbitPushEventStatusDb =
+  (typeof orbitPushEventStatuses)[number];
+
+export const orbitPushDestination = nextForge.table(
+  "orbit_push_destinations",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organizationId").references(() => organization.id, {
+      onDelete: "cascade",
+    }),
+    destinationId: text("destinationId").notNull(),
+    label: text("label").notNull(),
+    templateId: text("templateId").notNull(),
+    requiredCapabilities: jsonb("requiredCapabilities")
+      .notNull()
+      .default([]),
+    visibleToRoles: jsonb("visibleToRoles").notNull().default([]),
+    enabled: boolean("enabled").notNull().default(true),
+    createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updatedAt", { precision: 3, mode: "date" }).notNull(),
+  },
+  (table) => [
+    unique("orbit_push_destinations_org_destination_unique").on(
+      table.organizationId,
+      table.destinationId
+    ),
+  ]
+);
+
+export const orbitPushTemplate = nextForge.table("orbit_push_templates", {
+  id: text("id").primaryKey(),
+  organizationId: text("organizationId").references(() => organization.id, {
+    onDelete: "cascade",
+  }),
+  destinationId: text("destinationId").notNull(),
+  label: text("label").notNull(),
+  fields: jsonb("fields").notNull().default([]),
+  createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { precision: 3, mode: "date" }).notNull(),
+});
+
+export const orbitPushEvent = nextForge.table(
+  "orbit_push_events",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organizationId")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    caseId: text("caseId")
+      .notNull()
+      .references(() => orbitCase.id, { onDelete: "cascade" }),
+    destinationId: text("destinationId").notNull(),
+    actorId: text("actorId").notNull(),
+    idempotencyKey: text("idempotencyKey").notNull(),
+    status: text("status")
+      .$type<OrbitPushEventStatusDb>()
+      .notNull()
+      .default("pending"),
+    result: jsonb("result"),
+    createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updatedAt", { precision: 3, mode: "date" }).notNull(),
+  },
+  (table) => [
+    unique("orbit_push_events_idempotency_key_unique").on(
+      table.idempotencyKey
+    ),
+  ]
+);
+
+export const orbitObjectLink = nextForge.table("orbit_object_links", {
+  id: text("id").primaryKey(),
+  organizationId: text("organizationId")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  originCaseId: text("originCaseId")
+    .notNull()
+    .references(() => orbitCase.id, { onDelete: "cascade" }),
+  pushEventId: text("pushEventId")
+    .notNull()
+    .references(() => orbitPushEvent.id, { onDelete: "cascade" }),
+  targetType: text("targetType").notNull(),
+  targetId: text("targetId").notNull(),
+  payload: jsonb("payload").notNull().default({}),
+  createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+});
+
+export const orbitBudgetRequest = nextForge.table("orbit_budget_requests", {
+  id: text("id").primaryKey(),
+  organizationId: text("organizationId")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  originCaseId: text("originCaseId")
+    .notNull()
+    .references(() => orbitCase.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  amount: text("amount"),
+  createdBy: text("createdBy").notNull(),
+  createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+});

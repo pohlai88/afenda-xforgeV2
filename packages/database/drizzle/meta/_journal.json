@@ -169,6 +169,20 @@
       "when": 1720440000000,
       "tag": "0023_orbit_case_core",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1720526400000,
+      "tag": "0024_orbit_case_push",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1720612800000,
+      "tag": "0025_orbit_push_seed_and_claims",
+      "breakpoints": true
     }
   ]
 }

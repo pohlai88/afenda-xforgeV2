@@ -12,7 +12,7 @@ export const AFENDA_COLOR_DOCTRINE = {
   paletteRoles: {
     brand: ["brandPrimary", "brandDark", "brandSoft"],
     foundation: ["canvas", "raised", "surface", "ink", "muted", "line"],
-    status: ["info", "warning", "danger", "success"],
+    status: ["info", "warning", "critical", "success"],
     warmth: ["bark", "doe", "pink"],
   },
 } as const;

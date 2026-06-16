@@ -27,7 +27,6 @@ const sidebarIconRailMenuButtonClass = [
   "group-data-[collapsible=icon]:p-0!",
   "group-data-[collapsible=icon]:shadow-none",
   "group-data-[collapsible=icon]:ring-0",
-  "group-data-[collapsible=icon]:outline-none",
   "group-data-[collapsible=icon]:text-sidebar-foreground/58",
   "group-data-[collapsible=icon]:hover:bg-transparent!",
   "group-data-[collapsible=icon]:hover:text-sidebar-foreground/88",

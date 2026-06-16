@@ -125,12 +125,12 @@ export const Invalid: Story = {
               Inline errors stay next to the affected field.
             </p>
           </div>
-          <span className="text-status-danger text-xs">1 field blocked</span>
+          <span className="text-status-critical text-xs">1 field blocked</span>
         </div>
         <label className="grid max-w-lg gap-1.5" htmlFor="afenda-email-invalid">
           <span className={labelText}>Evidence owner email</span>
           <Input {...args} id="afenda-email-invalid" />
-          <span className="text-danger text-xs" id="afenda-email-error">
+          <span className="text-critical text-xs" id="afenda-email-error">
             Enter a valid email address before assigning this audit packet.
           </span>
         </label>
@@ -207,7 +207,7 @@ export const StateMatrix: Story = {
               defaultValue="ops"
               id="matrix-invalid-email"
             />
-            <span className="text-danger text-xs" id="matrix-email-error">
+            <span className="text-critical text-xs" id="matrix-email-error">
               Use a routable tenant email address.
             </span>
           </label>

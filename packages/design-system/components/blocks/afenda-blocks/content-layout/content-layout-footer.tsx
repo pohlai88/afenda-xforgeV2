@@ -26,7 +26,7 @@ export function ContentLayoutFooter({
         >
           {links.map((link) => (
             <a
-              className="text-text-secondary transition-colors duration-150 hover:text-text-primary motion-reduce:transition-none"
+              className="text-text-secondary transition-colors duration-150 hover:text-text-primary focus-visible:text-text-primary motion-reduce:transition-none"
               href={link.href}
               key={link.id}
             >

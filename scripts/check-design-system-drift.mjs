@@ -1,5 +1,9 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import {
+  createDesignSystemAiDriftRegistry,
+  scanDesignSystemAiDriftSource,
+} from "./lib/design-system-ai-drift.mjs";
 
 const root = process.cwd();
 const afendaUiDir = join(
@@ -69,6 +73,41 @@ const componentScorecardsContractPath = join(
   "design-system",
   "contracts",
   "component-scorecards.contract.ts"
+);
+const componentIdentityContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "component-identity.contract.ts"
+);
+const recipeIdentityContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "recipe-identity.contract.ts"
+);
+const slotIdentityContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "slot-identity.contract.ts"
+);
+const variantIdentityContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "variant-identity.contract.ts"
+);
+const exampleIdentityContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "example-identity.contract.ts"
 );
 const componentScorecardsDocPath = join(
   root,
@@ -320,6 +359,7 @@ const afendaComponentDriftPatterns = [
 
 const errors = [];
 const globals = readFileSync(globalsPath, "utf8");
+const aiDriftRegistry = createDesignSystemAiDriftRegistry(root);
 
 for (const path of [
   colorContractPath,
@@ -337,6 +377,11 @@ for (const path of [
   patternLibraryContractPath,
   patternLibraryDocPath,
   componentScorecardsContractPath,
+  componentIdentityContractPath,
+  recipeIdentityContractPath,
+  slotIdentityContractPath,
+  variantIdentityContractPath,
+  exampleIdentityContractPath,
   componentScorecardsDocPath,
   contributionLifecycleContractPath,
   contributionLifecycleDocPath,
@@ -940,6 +985,38 @@ for (const file of walk(rawColorRoots)) {
   }
 }
 
+const aiDriftRoots = [
+  afendaUiDir,
+  blocksDir,
+  join(root, "packages", "design-system", "docs"),
+  storiesDir,
+];
+const aiDriftAllowList = new Set([
+  normalize(join(root, "packages", "design-system", "contracts", "afenda-design-system.contract.ts")),
+  normalize(join(root, "packages", "design-system", "test", "afenda-design-system-contract.test.ts")),
+  normalize(join(root, "packages", "design-system", "components", "afenda-ui", "chart.tsx")),
+  normalize(join(root, "packages", "design-system", "components", "blocks", "afenda-blocks", "dashboard", "data-table", "dashboard-data-table-schema.ts")),
+]);
+
+for (const file of walk(aiDriftRoots)) {
+  if (
+    !/\.(md|ts|tsx)$/.test(file) ||
+    aiDriftAllowList.has(normalize(file)) ||
+    normalize(file).includes("/components/ui/")
+  ) {
+    continue;
+  }
+
+  errors.push(
+    ...scanDesignSystemAiDriftSource({
+      path: file,
+      registry: aiDriftRegistry,
+      root,
+      source: readFileSync(file, "utf8"),
+    })
+  );
+}
+
 if (errors.length) {
   console.error(errors.join("\n"));
   process.exit(1);
@@ -1040,7 +1117,10 @@ function escapeRegExp(value) {
 }
 
 function readStoryMetaTitle(source) {
-  return source.match(storyMetaTitlePattern)?.[1];
+  return (
+    source.match(/const\s+meta[\s\S]*?title:\s*["']([^"']+)["']/)?.[1] ??
+    source.match(storyMetaTitlePattern)?.[1]
+  );
 }
 
 function readStoryMetaTags(source) {

@@ -18,6 +18,7 @@ export const deleteCase = (
     return withOwner(async ({ orgId }) => {
       const deleted = await hardDeleteOrbitCase(orgId, parsed.caseId);
       revalidatePath("/orbit-case");
+      revalidatePath(`/orbit-case/${parsed.caseId}`);
       return { deleted };
     });
   }
@@ -25,6 +26,7 @@ export const deleteCase = (
   return withOrg(async ({ orgId, userId }) => {
     const deleted = await softDeleteOrbitCase(orgId, userId, parsed.caseId);
     revalidatePath("/orbit-case");
+    revalidatePath(`/orbit-case/${parsed.caseId}`);
     return { deleted };
   });
 };

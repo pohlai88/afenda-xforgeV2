@@ -61,7 +61,7 @@ function OrbitCaseKanbanPreview() {
 }
 
 const meta = {
-  title: "Blocks/Orbit Case",
+  title: "Blocks/Workflow/Orbit Case",
   tags: ["autodocs", "block"],
   parameters: { layout: "fullscreen" },
 } satisfies Meta;
@@ -73,4 +73,48 @@ type Story = StoryObj<typeof meta>;
 export const KanbanBoard: Story = {
   name: "Kanban Board",
   render: () => <OrbitCaseKanbanPreview />,
+};
+
+function OrbitCaseDetailPreview() {
+  return (
+    <div className="grid gap-6 p-6 lg:grid-cols-[minmax(0,1fr)_240px]">
+      <div className="grid gap-4">
+        <section
+          className={cn(
+            blockRecipe("blockPanel", "blockPanelPadding"),
+            "grid gap-2"
+          )}
+        >
+          <h1 className="font-medium text-lg">Need RM50k budget</h1>
+          <p className="text-muted-foreground text-sm">
+            Supplier quote exceeds current allocation.
+          </p>
+        </section>
+        <section
+          className={cn(
+            blockRecipe("blockPanel", "blockPanelPadding"),
+            "grid gap-2"
+          )}
+        >
+          <h2 className="font-medium text-sm">Activity</h2>
+          <p className="text-sm">Status changed to doing</p>
+          <p className="text-sm">Created this case</p>
+        </section>
+      </div>
+      <aside
+        className={cn(
+          blockRecipe("blockPanel", "blockPanelPadding"),
+          "grid gap-3"
+        )}
+      >
+        <Badge variant="outline">Doing</Badge>
+        <Badge variant="soft">urgent</Badge>
+      </aside>
+    </div>
+  );
+}
+
+export const CaseDetail: Story = {
+  name: "Case Detail",
+  render: () => <OrbitCaseDetailPreview />,
 };

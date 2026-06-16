@@ -50,7 +50,7 @@ export const Info: Story = {
 
 export const Success: Story = {
   args: {
-    tone: "positive",
+    tone: "success",
     children: (
       <>
         <ShieldCheckIcon className="size-3" />
@@ -122,7 +122,7 @@ export const StateMatrix: Story = {
           {[
             ["NWT-1042", "Payroll close", "Ready", "neutral"],
             ["CTR-8831", "Policy exception", "Needs review", "info"],
-            ["BLA-7620", "Invoice export", "Approved", "positive"],
+            ["BLA-7620", "Invoice export", "Approved", "success"],
             ["SNT-5521", "SLA remediation", "Pending approval", "warning"],
             ["FBH-2219", "Privileged access", "Blocked", "critical"],
           ].map(([tenant, workflow, state, tone]) => (
@@ -137,7 +137,7 @@ export const StateMatrix: Story = {
                   tone as
                     | "neutral"
                     | "info"
-                    | "positive"
+                    | "success"
                     | "warning"
                     | "critical"
                 }

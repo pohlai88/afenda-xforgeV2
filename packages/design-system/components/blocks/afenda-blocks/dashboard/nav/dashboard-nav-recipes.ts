@@ -8,7 +8,7 @@ const navMainGroupContentClass = [
 
 const navMainQuickCreateClass = [
   "min-w-8 bg-brand-primary text-primary-foreground duration-200 ease-linear",
-  "hover:bg-brand-dark hover:text-primary-foreground",
+  "hover:bg-brand-dark hover:text-primary-foreground focus-visible:bg-brand-dark focus-visible:text-primary-foreground",
   "active:bg-brand-dark/90 active:text-primary-foreground",
   sidebarIconRailBlockItemClass,
 ].join(" ");
@@ -20,7 +20,7 @@ const navMainInboxButtonClass =
 
 const navMainItemButtonClass = [
   "h-8 min-w-0 gap-2 rounded-md px-2 text-[12px] text-sidebar-foreground/88 leading-4",
-  "hover:bg-sidebar-accent hover:text-sidebar-foreground",
+  "hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:bg-sidebar-accent focus-visible:text-sidebar-foreground",
   sidebarIconRailBlockItemClass,
 ].join(" ");
 
@@ -30,7 +30,7 @@ const navStartedChevronClass =
   "ml-auto size-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90";
 
 const navStartedSubButtonClass =
-  "text-sidebar-foreground/80 hover:text-sidebar-foreground";
+  "text-sidebar-foreground/80 hover:text-sidebar-foreground focus-visible:text-sidebar-foreground";
 
 const navDocumentsGroupClass = "group-data-[collapsible=icon]:hidden";
 

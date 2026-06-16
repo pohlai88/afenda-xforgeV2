@@ -97,7 +97,7 @@ function DropdownMenuItem({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
   inset?: boolean;
-  variant?: "default" | "destructive";
+  variant?: "default" | "critical";
 }) {
   return (
     <DropdownMenuPrimitive.Item
@@ -106,10 +106,10 @@ function DropdownMenuItem({
           "rowItem",
           "rowHighlight",
           "rowDisabled",
-          "rowDestructive",
+          "rowCritical",
           "rowInset",
           "rowIcon",
-          "rowDestructiveIcon"
+          "rowCriticalIcon"
         ),
         className
       )}

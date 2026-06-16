@@ -64,9 +64,9 @@ const rows = [
 
 const statusToneClassName: Record<string, string> = {
   Active: "bg-success",
-  Critical: "bg-danger",
+  Critical: "bg-critical",
   High: "bg-warning",
-  Locked: "bg-danger",
+  Locked: "bg-critical",
   Medium: "bg-warning",
   Pending: "bg-warning",
   Success: "bg-success",

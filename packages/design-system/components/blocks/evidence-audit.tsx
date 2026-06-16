@@ -847,7 +847,7 @@ const blockDensityClassName = {
 const denseMonoClassName = "font-mono tabular-nums slashed-zero";
 
 const toneTextClassName: Record<BlockTone, string> = {
-  critical: "text-danger",
+  critical: "text-critical",
   info: "text-info",
   neutral: "text-text-secondary",
   success: "text-success",
@@ -855,7 +855,7 @@ const toneTextClassName: Record<BlockTone, string> = {
 };
 
 const toneDotClassName: Record<BlockTone, string> = {
-  critical: "bg-danger",
+  critical: "bg-critical",
   info: "bg-info",
   neutral: "bg-text-tertiary",
   success: "bg-success",
@@ -869,7 +869,7 @@ const blockToneToBadgeTone: Record<
   critical: "critical",
   info: "info",
   neutral: "neutral",
-  success: "positive",
+  success: "success",
   warning: "warning",
 };
 

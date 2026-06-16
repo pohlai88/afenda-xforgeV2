@@ -14,10 +14,10 @@ import type {
 } from "./sidebar-types";
 
 const labelToneClassName: Record<SidebarLabelTone, string> = {
-  critical: "bg-destructive",
+  critical: "bg-critical",
   info: "bg-info",
   neutral: "bg-text-tertiary",
-  positive: "bg-success",
+  success: "bg-success",
   warning: "bg-warning",
 };
 

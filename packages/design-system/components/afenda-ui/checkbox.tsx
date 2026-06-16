@@ -24,12 +24,12 @@ const checkboxVariants = cva(
         neutral:
           "data-[state=checked]:border-brand-primary data-[state=indeterminate]:border-brand-primary data-[state=checked]:bg-brand-primary data-[state=indeterminate]:bg-brand-primary data-[state=checked]:text-text-inverse data-[state=indeterminate]:text-text-inverse",
         info: "data-[tone=info]:data-[state=checked]:border-info data-[tone=info]:data-[state=indeterminate]:border-info data-[tone=info]:data-[state=checked]:bg-info data-[tone=info]:data-[state=indeterminate]:bg-info data-[tone=info]:data-[state=checked]:text-info-foreground data-[tone=info]:data-[state=indeterminate]:text-info-foreground",
-        positive:
-          "data-[tone=positive]:data-[state=checked]:border-success data-[tone=positive]:data-[state=indeterminate]:border-success data-[tone=positive]:data-[state=checked]:bg-success data-[tone=positive]:data-[state=indeterminate]:bg-success data-[tone=positive]:data-[state=checked]:text-success-foreground data-[tone=positive]:data-[state=indeterminate]:text-success-foreground",
+        success:
+          "data-[tone=success]:data-[state=checked]:border-success data-[tone=success]:data-[state=indeterminate]:border-success data-[tone=success]:data-[state=checked]:bg-success data-[tone=success]:data-[state=indeterminate]:bg-success data-[tone=success]:data-[state=checked]:text-success-foreground data-[tone=success]:data-[state=indeterminate]:text-success-foreground",
         warning:
           "data-[tone=warning]:data-[state=checked]:border-warning data-[tone=warning]:data-[state=indeterminate]:border-warning data-[tone=warning]:data-[state=checked]:bg-warning data-[tone=warning]:data-[state=indeterminate]:bg-warning data-[tone=warning]:data-[state=checked]:text-warning-foreground data-[tone=warning]:data-[state=indeterminate]:text-warning-foreground",
         critical:
-          "data-[tone=critical]:data-[state=checked]:border-danger data-[tone=critical]:data-[state=indeterminate]:border-danger data-[tone=critical]:data-[state=checked]:bg-danger data-[tone=critical]:data-[state=indeterminate]:bg-danger data-[tone=critical]:data-[state=checked]:text-danger-foreground data-[tone=critical]:data-[state=indeterminate]:text-danger-foreground",
+          "data-[tone=critical]:data-[state=checked]:border-critical data-[tone=critical]:data-[state=indeterminate]:border-critical data-[tone=critical]:data-[state=checked]:bg-critical data-[tone=critical]:data-[state=indeterminate]:bg-critical data-[tone=critical]:data-[state=checked]:text-critical-foreground data-[tone=critical]:data-[state=indeterminate]:text-critical-foreground",
       },
     },
     defaultVariants: {

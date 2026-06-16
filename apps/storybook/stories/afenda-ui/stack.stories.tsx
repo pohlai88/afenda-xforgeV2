@@ -27,7 +27,7 @@ export const EvidenceStack: Story = {
         (label, index) => (
           <Box key={label} padding="md" radius="sm" surface="raised">
             <Stack gap="xs">
-              <Badge tone={index === 2 ? "warning" : "positive"}>
+              <Badge tone={index === 2 ? "warning" : "success"}>
                 {index === 2 ? "Missing" : "Captured"}
               </Badge>
               <Text variant="medium">{label}</Text>

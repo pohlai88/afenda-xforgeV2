@@ -84,7 +84,7 @@ export const Invalid: Story = {
               Error copy appears below the textarea and remains specific.
             </p>
           </div>
-          <span className="text-status-danger text-xs">Needs detail</span>
+          <span className="text-status-critical text-xs">Needs detail</span>
         </div>
         <Field>
           <FieldLabel htmlFor="afenda-notes-invalid">

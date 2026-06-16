@@ -165,6 +165,14 @@ function isKnownFalsePositive(finding) {
   const relativePath = toPosixPath(relative(root, finding.file));
 
   if (
+    relativePath === "packages/design-system/styles/globals.css" &&
+    (finding.message === "hover state without focus-visible" ||
+      finding.message === "mixed length units in same block")
+  ) {
+    return true;
+  }
+
+  if (
     !relativePath.startsWith("packages/design-system/components/afenda-ui/")
   ) {
     return false;

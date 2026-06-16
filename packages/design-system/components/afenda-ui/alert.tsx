@@ -15,9 +15,9 @@ const alertVariants = cva(
       tone: {
         neutral: "border-border-default bg-surface-raised text-text-primary",
         info: "border-info/30 bg-info-muted text-info",
-        positive: "border-success/30 bg-success-muted text-success",
+        success: "border-success/30 bg-success-muted text-success",
         warning: "border-warning/30 bg-warning-muted text-warning",
-        critical: "border-danger/30 bg-danger-muted text-danger",
+        critical: "border-critical/30 bg-critical-muted text-critical",
       },
     },
     defaultVariants: {

@@ -74,7 +74,7 @@ Their anatomy, allowed primitive families, and implementation notes live in `com
 - Do not redefine primitive focus rings inside blocks.
 - Do not use raw hex colors.
 - Do not use marketing gradients, glass effects, or oversized radii for ERP blocks.
-- Do not place destructive actions in filter bars.
+- Do not place critical actions in filter bars.
 - Do not use toast as a substitute for audit evidence.
 - Do not create block-local button, input, badge, or table styles.
 

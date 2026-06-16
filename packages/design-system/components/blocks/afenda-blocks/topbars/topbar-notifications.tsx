@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
 } from "@repo/design-system/components/afenda-ui/popover";
 import { ScrollArea } from "@repo/design-system/components/afenda-ui/scroll-area";
+import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
 import {
   Tabs,
   TabsContent,
@@ -17,7 +18,6 @@ import {
 import { cn } from "@repo/design-system/lib/utils";
 import { Settings2Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { topbarIconActionClass } from "./topbar-recipes";
 import { TopbarTooltip } from "./topbar-tooltip";
 import type {
   TopbarNotificationItem,

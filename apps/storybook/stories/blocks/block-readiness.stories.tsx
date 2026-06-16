@@ -111,7 +111,7 @@ export const DataTableShellContract: Story = {
                 <TableCell>{owner}</TableCell>
                 <TableCell>
                   <Badge
-                    tone={status === "Approved" ? "positive" : "warning"}
+                    tone={status === "Approved" ? "success" : "warning"}
                     variant="outline"
                   >
                     {status}
@@ -182,7 +182,7 @@ export const SupportedBlockRegistry: Story = {
             consumers.
           </p>
         </div>
-        <Badge tone="positive" variant="outline">
+        <Badge tone="success" variant="outline">
           {blockRegistryEntries.length} blocks
         </Badge>
       </header>

@@ -621,7 +621,7 @@ function ApprovalTable({
 }
 
 const statusDotClassName: Record<ApprovalTone, string> = {
-  critical: "bg-danger",
+  critical: "bg-critical",
   info: "bg-info",
   success: "bg-success",
   warning: "bg-warning",

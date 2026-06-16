@@ -5,14 +5,14 @@ import { Progress as ProgressPrimitive } from "radix-ui";
 import type * as React from "react";
 import { recipe } from "./recipes";
 
-type ProgressTone = "brand" | "success" | "warning" | "danger" | "neutral";
+type ProgressTone = "brand" | "success" | "warning" | "critical" | "neutral";
 type ProgressProps = React.ComponentProps<typeof ProgressPrimitive.Root> & {
   tone?: ProgressTone;
 };
 
 const progressToneClass: Record<ProgressTone, string> = {
   brand: "bg-brand-primary",
-  danger: "bg-status-danger",
+  critical: "bg-status-critical",
   neutral: "bg-text-secondary",
   success: "bg-status-success",
   warning: "bg-status-warning",

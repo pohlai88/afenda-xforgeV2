@@ -66,7 +66,7 @@
   --xforge-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --xforge-ease-in: cubic-bezier(0.4, 0, 1, 1);
   --xforge-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --xforge-motion-hover:
+  --xforge-motion-interactive:
     color var(--xforge-duration-fast) var(--xforge-ease-out),
     background-color var(--xforge-duration-fast) var(--xforge-ease-out),
     border-color var(--xforge-duration-fast) var(--xforge-ease-out);
@@ -126,6 +126,7 @@
   --warm-pink: var(--xforge-color-pink);
   --status-info: var(--xforge-color-info);
   --status-warning: var(--xforge-color-warning-foreground);
+  --status-critical: var(--xforge-color-danger);
   --status-danger: var(--xforge-color-danger);
   --status-success: var(--xforge-color-success);
   --border-subtle: color-mix(
@@ -169,6 +170,9 @@
   --warning: var(--xforge-color-warning);
   --warning-foreground: var(--xforge-color-ink);
   --warning-muted: #f7eddc;
+  --critical: var(--xforge-color-danger);
+  --critical-foreground: var(--xforge-color-raised);
+  --critical-muted: #f4e5e3;
   --danger: var(--xforge-color-danger);
   --danger-foreground: var(--xforge-color-raised);
   --danger-muted: #f4e5e3;
@@ -252,6 +256,7 @@
   --warm-pink: var(--xforge-color-pink);
   --status-info: var(--xforge-color-info);
   --status-warning: var(--xforge-color-warning-foreground);
+  --status-critical: var(--xforge-color-danger);
   --status-danger: var(--xforge-color-danger);
   --status-success: var(--xforge-color-success);
   --border-subtle: color-mix(
@@ -287,6 +292,9 @@
   --warning: var(--xforge-color-warning);
   --warning-foreground: var(--xforge-color-canvas);
   --warning-muted: #3d2c16;
+  --critical: var(--xforge-color-danger);
+  --critical-foreground: var(--xforge-color-canvas);
+  --critical-muted: #421f21;
   --danger: var(--xforge-color-danger);
   --danger-foreground: var(--xforge-color-canvas);
   --danger-muted: #421f21;
@@ -340,6 +348,7 @@
   --color-warm-pink: var(--warm-pink);
   --color-status-info: var(--status-info);
   --color-status-warning: var(--status-warning);
+  --color-status-critical: var(--status-critical);
   --color-status-danger: var(--status-danger);
   --color-status-success: var(--status-success);
   --color-border-subtle: var(--border-subtle);
@@ -356,6 +365,9 @@
   --color-danger: var(--danger);
   --color-danger-foreground: var(--danger-foreground);
   --color-danger-muted: var(--danger-muted);
+  --color-critical: var(--critical);
+  --color-critical-foreground: var(--critical-foreground);
+  --color-critical-muted: var(--critical-muted);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-warning-muted: var(--warning-muted);

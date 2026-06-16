@@ -121,7 +121,7 @@ function DashboardSiteHeaderDemo() {
 }
 
 const meta = {
-  title: "Blocks/Afenda/Dashboard",
+  title: "Blocks/Foundation/Dashboard",
   tags: ["autodocs", "block"],
   parameters: {
     ...layoutStoryParameters,

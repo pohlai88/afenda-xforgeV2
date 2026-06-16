@@ -584,7 +584,7 @@ const blockToneToAlertTone: Record<
   critical: "critical",
   info: "info",
   neutral: "neutral",
-  success: "positive",
+  success: "success",
   warning: "warning",
 };
 
@@ -595,7 +595,7 @@ const blockToneToBadgeTone: Record<
   critical: "critical",
   info: "info",
   neutral: "neutral",
-  success: "positive",
+  success: "success",
   warning: "warning",
 };
 
@@ -603,7 +603,7 @@ const blockToneToProgressTone: Record<
   BlockTone,
   ComponentProps<typeof Progress>["tone"]
 > = {
-  critical: "danger",
+  critical: "critical",
   info: "brand",
   neutral: "neutral",
   success: "success",
@@ -611,7 +611,7 @@ const blockToneToProgressTone: Record<
 };
 
 const toneTextClassName: Record<BlockTone, string> = {
-  critical: "text-danger",
+  critical: "text-critical",
   info: "text-info",
   neutral: "text-text-secondary",
   success: "text-success",

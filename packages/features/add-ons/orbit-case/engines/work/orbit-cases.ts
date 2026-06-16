@@ -15,6 +15,7 @@ import type {
   ListOrbitCasesFilter,
 } from "../../contract/orbit-case.schema";
 import type {
+  OrbitCaseActivityRecord,
   OrbitCaseRecord,
   OrbitCaseUpdatePatch,
 } from "../../contract/orbit-case.types";
@@ -362,11 +363,31 @@ export const setOrbitCaseWatcher = async (
     );
 };
 
-export const listOrbitCaseActivity = (
+export const isOrbitCaseWatcher = async (
+  organizationId: string,
+  caseId: string,
+  userId: string
+): Promise<boolean> => {
+  const [row] = await database
+    .select({ id: orbitCaseWatcher.id })
+    .from(orbitCaseWatcher)
+    .where(
+      and(
+        eq(orbitCaseWatcher.caseId, caseId),
+        eq(orbitCaseWatcher.organizationId, organizationId),
+        eq(orbitCaseWatcher.userId, userId)
+      )
+    )
+    .limit(1);
+
+  return row !== undefined;
+};
+
+export const listOrbitCaseActivity = async (
   organizationId: string,
   caseId: string
-) => {
-  return database
+): Promise<OrbitCaseActivityRecord[]> => {
+  const rows = await database
     .select()
     .from(orbitCaseActivity)
     .where(
@@ -376,4 +397,14 @@ export const listOrbitCaseActivity = (
       )
     )
     .orderBy(desc(orbitCaseActivity.createdAt));
+
+  return rows.map((row) => ({
+    id: row.id,
+    caseId: row.caseId,
+    organizationId: row.organizationId,
+    actorId: row.actorId,
+    action: row.action,
+    payload: (row.payload ?? {}) as Record<string, unknown>,
+    createdAt: row.createdAt,
+  }));
 };

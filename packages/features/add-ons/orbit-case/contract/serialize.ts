@@ -1,4 +1,7 @@
+import { formatOrbitCaseActivitySummary } from "./activity-format";
 import type {
+  OrbitCaseActivityDto,
+  OrbitCaseActivityRecord,
   OrbitCaseBoardColumnDto,
   OrbitCaseBoardDto,
   OrbitCaseBoardResult,
@@ -6,6 +9,8 @@ import type {
   OrbitCaseCommentRecord,
   OrbitCaseDto,
   OrbitCaseRecord,
+  OrbitObjectLinkDto,
+  OrbitObjectLinkRecord,
 } from "./orbit-case.types";
 
 const toIso = (value: Date | null): string | null =>
@@ -36,6 +41,32 @@ export const toOrbitCaseCommentDto = (
   organizationId: record.organizationId,
   authorId: record.authorId,
   body: record.body,
+  createdAt: record.createdAt.toISOString(),
+});
+
+export const toOrbitCaseActivityDto = (
+  record: OrbitCaseActivityRecord
+): OrbitCaseActivityDto => ({
+  id: record.id,
+  caseId: record.caseId,
+  organizationId: record.organizationId,
+  actorId: record.actorId,
+  action: record.action,
+  payload: record.payload,
+  createdAt: record.createdAt.toISOString(),
+  summary: formatOrbitCaseActivitySummary(record.action, record.payload),
+});
+
+export const toOrbitObjectLinkDto = (
+  record: OrbitObjectLinkRecord
+): OrbitObjectLinkDto => ({
+  id: record.id,
+  organizationId: record.organizationId,
+  originCaseId: record.originCaseId,
+  pushEventId: record.pushEventId,
+  targetType: record.targetType,
+  targetId: record.targetId,
+  payload: record.payload,
   createdAt: record.createdAt.toISOString(),
 });
 

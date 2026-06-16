@@ -18,7 +18,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<"fieldset">) {
         "has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>[data-align=block-start]]:[&>input]:pb-3",
         "has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-end]]:[&>input]:pt-3",
         "has-[[data-slot=input-group-control]:focus-visible]:border-border-active has-[[data-slot=input-group-control]:focus-visible]:ring-2 has-[[data-slot=input-group-control]:focus-visible]:ring-ring/30",
-        "has-[[data-slot=input-group-control][aria-invalid=true]]:border-danger has-[[data-slot=input-group-control][aria-invalid=true]]:ring-danger/20 dark:has-[[data-slot=input-group-control][aria-invalid=true]]:ring-danger/40",
+        "has-[[data-slot=input-group-control][aria-invalid=true]]:border-critical has-[[data-slot=input-group-control][aria-invalid=true]]:ring-critical/20 dark:has-[[data-slot=input-group-control][aria-invalid=true]]:ring-critical/40",
         "has-[[data-slot=input-group-control]:disabled]:border-border-subtle has-[[data-slot=input-group-control]:disabled]:bg-surface-muted has-[[data-slot=input-group-control]:disabled]:opacity-80",
         recipe("flatControlSurface", "colorTransition", "motionReduce"),
         className

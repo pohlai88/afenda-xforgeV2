@@ -173,7 +173,7 @@ export const ExpectedEmptyState: Story = {
         icon={<CheckCircle2Icon aria-hidden="true" />}
         title="No approvals waiting"
       >
-        <Badge tone="positive" variant="outline">
+        <Badge tone="success" variant="outline">
           Last sync 09:42
         </Badge>
       </EmptyPanel>

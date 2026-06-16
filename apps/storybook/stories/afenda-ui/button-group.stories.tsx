@@ -7,7 +7,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 interface QueueAction {
   label: string;
-  variant?: "primary" | "secondary" | "quiet" | "destructive" | "link";
+  variant?: "primary" | "secondary" | "quiet" | "critical" | "link";
 }
 
 function QueueActionGroup({
@@ -82,7 +82,7 @@ export const PrimaryDecision: Story = {
       actions={[
         { label: "Approve request", variant: "primary" },
         { label: "Edit record", variant: "secondary" },
-        { label: "Delete record", variant: "destructive" },
+        { label: "Delete record", variant: "critical" },
       ]}
       queueLabel="Queue: 3"
     />

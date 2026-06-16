@@ -20,7 +20,7 @@ const badgeVariants = cva(
       tone: {
         neutral: "",
         info: "",
-        positive: "",
+        success: "",
         warning: "",
         critical: "",
       },
@@ -42,7 +42,7 @@ const badgeVariants = cva(
         className: "border-transparent bg-info-muted text-info",
       },
       {
-        tone: "positive",
+        tone: "success",
         variant: "soft",
         className: "border-transparent bg-success-muted text-success",
       },
@@ -54,7 +54,7 @@ const badgeVariants = cva(
       {
         tone: "critical",
         variant: "soft",
-        className: "border-danger/30 bg-danger-muted text-text-primary",
+        className: "border-critical/30 bg-critical-muted text-text-primary",
       },
       {
         tone: "neutral",
@@ -67,7 +67,7 @@ const badgeVariants = cva(
         className: "border-border-default bg-transparent text-info",
       },
       {
-        tone: "positive",
+        tone: "success",
         variant: "outline",
         className: "border-border-default bg-transparent text-success",
       },
@@ -79,7 +79,7 @@ const badgeVariants = cva(
       {
         tone: "critical",
         variant: "outline",
-        className: "border-danger/40 bg-transparent text-text-primary",
+        className: "border-critical/40 bg-transparent text-text-primary",
       },
       {
         tone: "neutral",
@@ -92,7 +92,7 @@ const badgeVariants = cva(
         className: "border-transparent bg-info text-info-foreground",
       },
       {
-        tone: "positive",
+        tone: "success",
         variant: "solid",
         className: "border-transparent bg-success text-success-foreground",
       },
@@ -104,7 +104,7 @@ const badgeVariants = cva(
       {
         tone: "critical",
         variant: "solid",
-        className: "border-transparent bg-danger text-danger-foreground",
+        className: "border-transparent bg-critical text-critical-foreground",
       },
     ],
     defaultVariants: {

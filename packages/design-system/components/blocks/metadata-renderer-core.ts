@@ -183,7 +183,7 @@ function normalizeGovernedAction(
     action.permission ??
     `blocks.${context.blockType}.${context.surface}.${actionKey}`;
   const confirmationLabel =
-    action.confirmationLabel ?? (action.destructive ? label : undefined);
+    action.confirmationLabel ?? (action.critical ? label : undefined);
   const permissionDecision = permissionContext
     ? resolveMetadataPermission(
         {
@@ -220,7 +220,7 @@ function normalizeGovernedAction(
     auditScope,
     capability,
     confirmationLabel,
-    destructive: action.destructive,
+    critical: action.critical,
     governanceCode:
       permissionDecision.status === "allowed"
         ? undefined
@@ -342,7 +342,7 @@ function getGovernedActionDisabledReason(
       : "Action disabled by page metadata.";
   }
 
-  if (action.destructive && !confirmationLabel) {
+  if (action.critical && !confirmationLabel) {
     return "Destructive action requires a confirmation label.";
   }
 
@@ -365,11 +365,11 @@ function getReadonlyActionDisabledReason(
 }
 
 function isReadonlySafeAction(action: MetadataBlockAction) {
-  return Boolean(action.href && !action.destructive);
+  return Boolean(action.href && !action.critical);
 }
 
 function getDefaultGovernedActionReason(action: MetadataBlockAction) {
-  return action.destructive
+  return action.critical
     ? "Requires confirmation and audit logging."
     : undefined;
 }

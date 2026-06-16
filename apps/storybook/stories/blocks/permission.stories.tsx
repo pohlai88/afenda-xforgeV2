@@ -1,5 +1,5 @@
 import {
-  AuditSafeDestructiveAction,
+  AuditSafeCriticalAction,
   PermissionActionToolbar,
 } from "@repo/design-system/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
@@ -87,10 +87,10 @@ export const RoleScopedToolbar: Story = {
   ),
 };
 
-export const AuditSafeDestructive: Story = {
+export const AuditSafeCritical: Story = {
   render: () => (
     <main className="grid w-[min(760px,calc(100vw-32px))] min-w-0 gap-4">
-      <AuditSafeDestructiveAction
+      <AuditSafeCriticalAction
         action={{
           key: "void-posting-batch",
           label: "Void batch",
@@ -104,7 +104,7 @@ export const AuditSafeDestructive: Story = {
         }}
         blockId="void-batch-guard"
         currentRole="operator"
-        description="Destructive posting changes must declare an audit event and remain disabled for roles outside the required approval scope."
+        description="Critical posting changes must declare an audit event and remain disabled for roles outside the required approval scope."
         evidence={[
           {
             id: "batch",

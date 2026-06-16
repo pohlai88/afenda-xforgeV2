@@ -262,7 +262,7 @@ function progressTone(
   gates: readonly QualityGateItem[]
 ): ComponentProps<typeof Progress>["tone"] {
   if (gates.some((gate) => gate.state === "failed")) {
-    return "danger";
+    return "critical";
   }
 
   if (gates.some((gate) => gate.state === "blocked")) {
@@ -277,7 +277,7 @@ function progressTone(
 }
 
 const stateToneClassName = {
-  critical: "text-danger",
+  critical: "text-critical",
   info: "text-info",
   neutral: "text-text-tertiary",
   success: "text-success",
@@ -285,7 +285,7 @@ const stateToneClassName = {
 } as const;
 
 const stateDotClassName = {
-  critical: "bg-danger",
+  critical: "bg-critical",
   info: "bg-info",
   neutral: "bg-text-tertiary",
   success: "bg-success",

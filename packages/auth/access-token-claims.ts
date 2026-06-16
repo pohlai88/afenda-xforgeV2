@@ -48,6 +48,7 @@ export interface SupabaseAmrClaim {
 export interface AccessTokenAppMetadata {
   organization_id?: string;
   organization_role?: OrganizationRole;
+  orbit_push_capabilities?: string[];
   provider?: string;
   providers?: string[];
 }
@@ -141,12 +142,20 @@ export const parseAccessTokenAppMetadata = (
         (entry): entry is string => typeof entry === "string"
       )
     : undefined;
+  const orbitPushCapabilities = Array.isArray(record.orbit_push_capabilities)
+    ? record.orbit_push_capabilities.filter(
+        (entry): entry is string => typeof entry === "string"
+      )
+    : undefined;
 
   return {
     ...(provider ? { provider } : {}),
     ...(providers && providers.length > 0 ? { providers } : {}),
     ...(organizationId ? { organization_id: organizationId } : {}),
     ...(organizationRole ? { organization_role: organizationRole } : {}),
+    ...(orbitPushCapabilities && orbitPushCapabilities.length > 0
+      ? { orbit_push_capabilities: orbitPushCapabilities }
+      : {}),
   };
 };
 
@@ -154,6 +163,12 @@ export const getOrganizationIdFromAccessTokenClaims = (
   claims: Partial<SupabaseAccessTokenClaims> | null | undefined
 ): string | null =>
   parseAccessTokenAppMetadata(claims?.app_metadata).organization_id ?? null;
+
+export const getOrbitPushCapabilitiesFromAccessTokenClaims = (
+  claims: Partial<SupabaseAccessTokenClaims> | null | undefined
+): string[] =>
+  parseAccessTokenAppMetadata(claims?.app_metadata).orbit_push_capabilities ??
+  [];
 
 export const isAccessTokenExpired = (
   claims: Partial<SupabaseAccessTokenClaims> | null | undefined,

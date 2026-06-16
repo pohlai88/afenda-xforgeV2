@@ -35,7 +35,7 @@ export const Default: Story = {
               ["Payroll import", 64, "brand"],
               ["Compliance checks", 100, "success"],
               ["SLA consumed", 82, "warning"],
-              ["Failed records", 38, "danger"],
+              ["Failed records", 38, "critical"],
             ] satisfies [string, number, ProgressTone][]
           ).map(([label, value, tone]) => (
             <div

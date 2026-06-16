@@ -27,16 +27,16 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 const metrics = [
-  ["Ready", "86", "positive"],
+  ["Ready", "86", "success"],
   ["SLA risk", "14", "warning"],
   ["Policy locks", "7", "info"],
   ["Failed sync", "2", "critical"],
 ] as const;
 
 const metricTextTone = {
-  critical: "danger",
+  critical: "critical",
   info: "info",
-  positive: "success",
+  success: "success",
   warning: "warning",
 } as const;
 

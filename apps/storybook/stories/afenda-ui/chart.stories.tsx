@@ -22,7 +22,7 @@ const chartConfig = {
   },
   breaches: {
     label: "SLA breaches",
-    color: "var(--danger)",
+    color: "var(--critical)",
   },
 } satisfies ChartConfig;
 

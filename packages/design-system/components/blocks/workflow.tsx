@@ -617,7 +617,7 @@ function workflowScopeMeta(scope?: WorkflowScope): readonly PageHeaderMeta[] {
 }
 
 const workflowToneDotClassName: Record<BlockTone, string> = {
-  critical: "bg-danger",
+  critical: "bg-critical",
   info: "bg-info",
   neutral: "bg-text-tertiary",
   success: "bg-success",

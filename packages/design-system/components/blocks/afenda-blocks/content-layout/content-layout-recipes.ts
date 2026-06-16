@@ -16,7 +16,7 @@ const contentLayoutMainClass =
 
 const contentLayoutSidebarClass = [
   blockRecipe("blockRail"),
-  "flex shrink-0 flex-col overflow-hidden transition-[width] duration-200 ease-linear motion-reduce:transition-none",
+  "flex shrink-0 flex-col overflow-hidden transition-transform duration-200 ease-linear motion-reduce:transition-none",
 ].join(" ");
 
 const contentLayoutFooterClass =
@@ -28,7 +28,7 @@ const contentLayoutStageFooterPlacementClass = [
 ].join(" ");
 
 const contentLayoutDrawerClass =
-  "shrink-0 overflow-hidden border-border-default border-t bg-surface-muted/50 transition-[max-height] duration-200 ease-out motion-reduce:transition-none";
+  "shrink-0 overflow-hidden border-border-default border-t bg-surface-muted/50 transition-opacity duration-200 ease-out motion-reduce:transition-none";
 
 const contentLayoutResizeHandleClass =
   "absolute z-[var(--xforge-z-raised)] bg-transparent outline-none hover:bg-border-default/60 focus-visible:bg-ring/30";

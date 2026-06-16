@@ -103,7 +103,7 @@ export const RowActions: Story = {
               <DropdownMenuRadioItem value="high">High</DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem variant="destructive">
+            <DropdownMenuItem variant="critical">
               <Trash2Icon />
               Remove access
             </DropdownMenuItem>

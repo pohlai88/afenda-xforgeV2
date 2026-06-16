@@ -425,13 +425,13 @@ export {
   StatusTimeline,
 } from "./operator";
 export type {
-  AuditSafeDestructiveActionProps,
+  AuditSafeCriticalActionProps,
   PermissionActionAuditItem,
   PermissionActionToolbarProps,
   PermissionAwareAction,
 } from "./permission";
 export {
-  AuditSafeDestructiveAction,
+  AuditSafeCriticalAction,
   PermissionActionToolbar,
 } from "./permission";
 export type {

@@ -91,7 +91,7 @@ const TopbarUtilityPin = memo(function TopbarUtilityPin({
         className={cn(
           "group relative inline-flex shrink-0 rounded-md transition-[opacity,box-shadow,transform] duration-120 ease-out motion-reduce:transition-none",
           draggable && "cursor-move active:cursor-move",
-          "hover:scale-[1.08]",
+          "hover:scale-[1.08] focus-visible:scale-[1.08] focus-within:scale-[1.08]",
           isDragging && "z-10 opacity-55 shadow-sm",
           isDropTarget &&
             "after:absolute after:inset-y-0.5 after:-right-0.5 after:w-0.5 after:rounded-full after:bg-brand-primary/70"

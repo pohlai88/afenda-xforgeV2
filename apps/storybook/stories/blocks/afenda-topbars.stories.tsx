@@ -132,7 +132,7 @@ function DemoOperatorTopbarStory({
 }
 
 const meta = {
-  title: "Blocks/Afenda/Topbars",
+  title: "Blocks/Operator/Topbars",
   tags: ["autodocs", "block"],
   parameters: {
     ...layoutStoryParameters,

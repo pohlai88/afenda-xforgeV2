@@ -65,7 +65,7 @@ export const Default: Story = {
         <ContextMenuItem>Assign reviewer</ContextMenuItem>
         <ContextMenuItem>Copy exception ID</ContextMenuItem>
         <ContextMenuSeparator />
-        <ContextMenuItem variant="destructive">Release hold</ContextMenuItem>
+        <ContextMenuItem variant="critical">Release hold</ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   ),

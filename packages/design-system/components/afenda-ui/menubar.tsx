@@ -106,7 +106,7 @@ function MenubarItem({
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Item> & {
   inset?: boolean;
-  variant?: "default" | "destructive";
+  variant?: "default" | "critical";
 }) {
   return (
     <MenubarPrimitive.Item
@@ -116,9 +116,9 @@ function MenubarItem({
           "rowInset",
           "rowHighlight",
           "rowDisabled",
-          "rowDestructive",
+          "rowCritical",
           "rowIcon",
-          "rowDestructiveIcon"
+          "rowCriticalIcon"
         ),
         className
       )}

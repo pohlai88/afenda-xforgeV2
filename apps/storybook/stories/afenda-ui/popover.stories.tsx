@@ -74,7 +74,7 @@ export const Default: Story = {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                <Badge tone="positive">Ready</Badge>
+                <Badge tone="success">Ready</Badge>
                 <Badge tone="warning" variant="outline">
                   Needs review
                 </Badge>
@@ -118,7 +118,7 @@ export const RecordAction: Story = {
             Northwind Trading · finance connector
           </p>
         </div>
-        <Badge tone="positive" variant="soft">
+        <Badge tone="success" variant="soft">
           Healthy
         </Badge>
         <Popover>

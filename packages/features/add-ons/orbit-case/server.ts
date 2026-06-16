@@ -17,6 +17,7 @@ export {
   createOrbitCase,
   getOrbitCaseById,
   hardDeleteOrbitCase,
+  isOrbitCaseWatcher,
   listOrbitCaseActivity,
   listOrbitCases,
   setOrbitCaseWatcher,
@@ -26,15 +27,31 @@ export {
 export {
   canHardDeleteOrbitCase,
   canMutateOrbitCase,
+  canPushToDestination,
 } from "./engines/work/permissions";
+export { executePush } from "./engines/morph/push-orchestrator";
+export {
+  createObjectLink,
+  listObjectLinksForCase,
+} from "./engines/link/object-links";
 export type { ResolvePushDestinationsInput } from "./lib/registry/push-destination-registry";
 export {
   clearPushDestinations,
   getPushDestination,
   isPushDestinationRegistered,
+  listInMemoryPushDestinations,
   registerPushDestination,
   resolvePushDestinations,
+  resolvePushDestinationsWithList,
 } from "./lib/registry/push-destination-registry";
+export {
+  getMergedPushDestination,
+  getMergedPushTemplate,
+  loadMergedPushDestinations,
+  loadMergedPushTemplates,
+  resolveMissingTemplateFieldsForOrg,
+  resolveOrgPushDestinations,
+} from "./lib/registry/push-registry-store";
 export {
   clearPushTemplates,
   getPushTemplate,
@@ -42,3 +59,4 @@ export {
   registerPushTemplate,
   resolveMissingTemplateFields,
 } from "./lib/registry/template-registry";
+export { ensureSystemPushDefaults } from "./lib/registry/system-defaults";

@@ -49,7 +49,7 @@ export const PatternCatalog: Story = {
             and long-running workflow compositions.
           </p>
         </div>
-        <Badge tone="positive" variant="outline">
+        <Badge tone="success" variant="outline">
           {afendaPatternLibraryEntries.length} patterns
         </Badge>
       </header>

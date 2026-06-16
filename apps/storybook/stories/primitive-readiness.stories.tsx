@@ -227,7 +227,7 @@ function PrimitiveReadiness() {
               <DropdownMenuSeparator />
               <DropdownMenuItem>Open record</DropdownMenuItem>
               <DropdownMenuItem>Review evidence</DropdownMenuItem>
-              <DropdownMenuItem variant="destructive">
+              <DropdownMenuItem variant="critical">
                 Revoke access
               </DropdownMenuItem>
             </DropdownMenuContent>

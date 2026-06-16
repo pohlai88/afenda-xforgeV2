@@ -64,7 +64,7 @@ interface MetadataAuditEvent extends MetadataEventScope {
   readonly auditScope?: string;
   readonly capability?: string;
   readonly confirmationLabel?: string;
-  readonly destructive?: boolean;
+  readonly critical?: boolean;
   readonly disabled?: boolean;
   readonly event: MetadataAuditEventName;
   readonly permission?: string;
@@ -284,7 +284,7 @@ function emitMetadataActionDiagnostics(
     blockType: input.blockType,
     capability: input.capability,
     confirmationLabel: input.confirmationLabel,
-    destructive: input.action.destructive,
+    critical: input.action.critical,
     disabled: input.disabled,
     event: input.disabled
       ? "metadata.action.disabled"
@@ -314,7 +314,7 @@ function getMissingActionConfigFields(
     missingFields.push("capability");
   }
 
-  if (action.destructive && !action.confirmationLabel) {
+  if (action.critical && !action.confirmationLabel) {
     missingFields.push("confirmationLabel");
   }
 

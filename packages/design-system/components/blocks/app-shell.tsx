@@ -284,7 +284,7 @@ function AppShellAppSidebarColumn({
       aria-label="Application sidebar"
       className={cn(
         blockRecipe("blockRail"),
-        "relative h-full min-h-0 shrink-0 self-stretch overflow-hidden border-r transition-[width] duration-200 ease-linear motion-reduce:transition-none"
+        "relative h-full min-h-0 shrink-0 self-stretch overflow-hidden border-r transition-transform duration-200 ease-linear motion-reduce:transition-none"
       )}
       data-slot="app-sidebar"
       data-state={state}

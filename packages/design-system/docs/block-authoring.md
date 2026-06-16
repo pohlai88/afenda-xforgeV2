@@ -35,7 +35,7 @@ Stable component families:
 - Operator: `DataTableShell`, `BulkActionBar`, `EntitySummaryPanel`, `StatusTimeline`, `AuditTrailPanel`
 - Advanced: `AdvancedDataTable`, `CommandSearchBlock`, `ApprovalQueueBlock`, `RiskEvidencePanel`, `RecordEditorBlock`, `OperationalDashboardShell`
 - Workflow: `ApprovalControlCenter`, `TenantOperationsWorkspace`, `AuditEvidenceWorkspace`, `PolicyLockManager`, `BatchPostingReview`
-- State, permission, and quality: `RuntimeStateBlock`, `SaveStateStrip`, `ReversibleBulkActionBar`, `SlaRiskEscalationPanel`, `PermissionActionToolbar`, `AuditSafeDestructiveAction`, `QualityGatesBlock`
+- State, permission, and quality: `RuntimeStateBlock`, `SaveStateStrip`, `ReversibleBulkActionBar`, `SlaRiskEscalationPanel`, `PermissionActionToolbar`, `AuditSafeCriticalAction`, `QualityGatesBlock`
 - Metadata: `MetadataPageRenderer`, `metadataPageSchema`, `metadataBlockSchema`, `resolveMetadataBinding`
 - Diagnostics: `createMetadataDiagnosticsCollector`, `createMetadataDiagnosticsDispatcher`
 
@@ -74,7 +74,7 @@ Authoring rules:
 - Required bindings must not declare `fallback`.
 - Data source envelopes support `ready`, `stale`, `loading`, `idle`, `empty`, `error`, and `forbidden` states.
 - Governed actions should provide explicit `permission`, `capability`, `auditEvent`, `auditScope`, and `reason`; missing values are normalized and reported as diagnostics.
-- Destructive actions must be reversible or confirmation-gated and should provide `confirmationLabel`.
+- Critical actions must be reversible or confirmation-gated and should provide `confirmationLabel`.
 
 ## Diagnostics, Telemetry, And Audit
 

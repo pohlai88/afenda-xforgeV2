@@ -20,7 +20,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Afenda operator button. Secondary is default; primary is an intentional decision; quiet is for repeated work; destructive is semantic danger.",
+          "Afenda operator button. Secondary is default; primary is an intentional decision; quiet is for repeated work; critical is reserved for irreversible or audited risk.",
       },
     },
   },
@@ -67,7 +67,7 @@ export const DoctrineMatrix: Story = {
             ["primary", "Approve request", "True decision anchor"],
             ["secondary", "Edit record", "Default operator action"],
             ["quiet", "Refresh queue", "Repeated low-risk action"],
-            ["destructive", "Delete record", "Danger only"],
+            ["critical", "Delete record", "Danger only"],
             ["link", "View audit log", "Navigation"],
           ] as const
         ).map(([variant, label, description]) => (

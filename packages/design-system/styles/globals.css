@@ -460,9 +460,6 @@
   * {
     @apply border-border outline-ring/50;
   }
-  :focus-visible {
-    @apply outline-none ring-[3px] ring-ring/50;
-  }
   body {
     color-scheme: light;
     @apply bg-background text-foreground;

@@ -110,7 +110,7 @@ const afendaRecipe = {
     scope: "global",
     description: "Shared focus ring for controls with a visible border.",
     className:
-      "focus-visible:border-border-active focus-visible:ring-[3px] focus-visible:ring-ring/50",
+      "focus-visible:outline-none focus-visible:border-border-active focus-visible:ring-2 focus-visible:ring-ring/30",
   },
   focusRingOnly: {
     owner: "state",
@@ -118,7 +118,7 @@ const afendaRecipe = {
     scope: "global",
     description: "Shared focus ring for borderless icon controls.",
     className:
-      "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
   },
   invalidState: {
     owner: "state",

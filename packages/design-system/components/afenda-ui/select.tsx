@@ -41,7 +41,7 @@ function SelectTrigger({
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        "flex w-full min-w-0 items-center justify-between gap-2 px-[var(--button-padding-x)] outline-none data-[state=open]:border-border-active data-[placeholder]:text-text-tertiary data-[state=open]:ring-[3px] data-[state=open]:ring-ring/50",
+        "flex w-full min-w-0 items-center justify-between gap-2 px-[var(--button-padding-x)] outline-none data-[state=open]:border-border-active data-[placeholder]:text-text-tertiary data-[state=open]:ring-2 data-[state=open]:ring-ring/30",
         recipe(
           "flatControlSurface",
           "controlText",

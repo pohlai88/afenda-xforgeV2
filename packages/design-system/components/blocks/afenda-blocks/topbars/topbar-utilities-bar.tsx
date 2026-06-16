@@ -5,6 +5,7 @@ import { cn } from "@repo/design-system/lib/utils";
 import { memo, useCallback, useMemo, useRef, useState, type DragEvent } from "react";
 import { TOPBAR_MAX_PINNED_UTILITY_SLOTS } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
+import { TopbarNotifications } from "./topbar-notifications";
 import { TopbarTooltip } from "./topbar-tooltip";
 import type { TopbarUtilityAction, TopbarUtilitiesBarProps } from "./topbar-types";
 
@@ -38,6 +39,7 @@ function getUtilityTooltipDescription(
 }
 
 interface TopbarUtilityPinProps {
+  readonly children?: React.ReactNode;
   readonly action: TopbarUtilityAction;
   readonly draggable: boolean;
   readonly isDragging: boolean;
@@ -52,6 +54,7 @@ interface TopbarUtilityPinProps {
 }
 
 const TopbarUtilityPin = memo(function TopbarUtilityPin({
+  children,
   action,
   draggable,
   isDragging,
@@ -87,20 +90,22 @@ const TopbarUtilityPin = memo(function TopbarUtilityPin({
         onDragStart={onDragStart}
         onDrop={onDrop}
       >
-        <Button
-          aria-label={action.label}
-          className={cn(
-            topbarIconActionClass,
-            draggable && "touch-none select-none"
-          )}
-          data-slot={`app-topbar-utility-${action.id}`}
-          onClick={onSelect}
-          size="icon-sm"
-          type="button"
-          variant="quiet"
-        >
-          {action.icon}
-        </Button>
+        {children ?? (
+          <Button
+            aria-label={action.label}
+            className={cn(
+              topbarIconActionClass,
+              draggable && "touch-none select-none"
+            )}
+            data-slot={`app-topbar-utility-${action.id}`}
+            onClick={onSelect}
+            size="icon-sm"
+            type="button"
+            variant="quiet"
+          >
+            {action.icon}
+          </Button>
+        )}
       </div>
     </TopbarTooltip>
   );
@@ -111,6 +116,7 @@ export function TopbarUtilitiesBar({
   className,
   draggable = true,
   maxActions = TOPBAR_MAX_PINNED_UTILITY_SLOTS,
+  notifications,
   onOrderChange,
   order,
 }: TopbarUtilitiesBarProps) {
@@ -244,7 +250,11 @@ export function TopbarUtilitiesBar({
               action.onSelect?.();
             }}
             tooltipsDisabled={tooltipsDisabled}
-          />
+          >
+            {action.id === "notifications" && notifications ? (
+              <TopbarNotifications action={action} notifications={notifications} />
+            ) : undefined}
+          </TopbarUtilityPin>
         );
       })}
     </div>

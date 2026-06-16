@@ -9,6 +9,7 @@ import {
   DEFAULT_CONTENT_LAYOUT_MIN_WIDTH,
   DEFAULT_CONTENT_LAYOUT_RIGHT_SIDEBAR_WIDTH,
   DEFAULT_CONTENT_LAYOUT_TOPBAR_HEIGHT,
+  DEFAULT_CONTENT_LAYOUT_FOOTER_HEIGHT,
   EMPTY_CONTENT_LAYOUT_BREADCRUMBS,
 } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
 import {
@@ -20,6 +21,7 @@ import {
   contentLayoutBlockShellClass,
   contentLayoutBodyClass,
   contentLayoutMainClass,
+  contentLayoutStageFooterPlacementClass,
 } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
 import { ContentLayoutBottomDrawer } from "./content-layout-bottom-drawer";
 import { ContentLayoutBreadcrumbsTopbar } from "./content-layout-breadcrumbs-topbar";
@@ -102,11 +104,25 @@ export function ContentLayoutBlock({
     () =>
       ({
         "--content-layout-topbar-height": DEFAULT_CONTENT_LAYOUT_TOPBAR_HEIGHT,
+        "--content-layout-footer-height": DEFAULT_CONTENT_LAYOUT_FOOTER_HEIGHT,
         ...style,
         ...insetStyle,
       }) as CSSProperties,
     [insetStyle, style]
   );
+
+  const showFooter = footer !== null;
+  const footerNode = showFooter ? (
+    footer !== undefined ? (
+      footer
+    ) : (
+      <ContentLayoutFooter
+        className={contentLayoutStageFooterPlacementClass}
+        copyright={footerCopyright}
+        links={footerLinks}
+      />
+    )
+  ) : null;
 
   const panel = (
     <div
@@ -159,11 +175,6 @@ export function ContentLayoutBlock({
           {bottomDrawer}
         </ContentLayoutBottomDrawer>
       ) : null}
-      {footer !== undefined ? (
-        footer
-      ) : (
-        <ContentLayoutFooter copyright={footerCopyright} links={footerLinks} />
-      )}
       {isResizable ? (
         <ContentLayoutResizeHandles onResizeStart={startResize} />
       ) : null}
@@ -171,7 +182,12 @@ export function ContentLayoutBlock({
   );
 
   if (externalStageRef) {
-    return panel;
+    return (
+      <>
+        {panel}
+        {footerNode}
+      </>
+    );
   }
 
   return (
@@ -181,6 +197,7 @@ export function ContentLayoutBlock({
       ref={localStageRef}
     >
       {panel}
+      {footerNode}
     </section>
   );
 }

@@ -53,10 +53,12 @@ function ChartContainer({
   className,
   children,
   config,
+  useResponsiveContainer = true,
   ...props
 }: ComponentProps<"div"> & {
   config: ChartConfig;
-  children: ComponentProps<typeof ResponsiveContainer>["children"];
+  children: ReactNode;
+  useResponsiveContainer?: boolean;
 }) {
   const uniqueId = useId();
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
@@ -67,7 +69,7 @@ function ChartContainer({
       <div
         aria-label={props["aria-label"] ?? "Chart"}
         className={cn(
-          "flex min-h-[240px] w-full justify-center",
+          "flex min-h-[240px] min-w-0 w-full justify-center",
           "[&_.recharts-cartesian-axis-tick_text]:fill-text-secondary",
           "[&_.recharts-cartesian-grid_line]:stroke-border-subtle",
           "[&_.recharts-cartesian-axis-line]:stroke-border-default",
@@ -87,7 +89,13 @@ function ChartContainer({
         {...props}
       >
         <ChartStyle config={config} id={chartId} />
-        <ResponsiveContainer>{children}</ResponsiveContainer>
+        {useResponsiveContainer ? (
+          <ResponsiveContainer height="100%" minWidth={0} width="100%">
+            {children as ComponentProps<typeof ResponsiveContainer>["children"]}
+          </ResponsiveContainer>
+        ) : (
+          children
+        )}
       </div>
     </ChartContext.Provider>
   );

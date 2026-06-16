@@ -3,8 +3,6 @@ import {
   AuthenticatedAppShellBlock,
   DEFAULT_ERP_ACTIONS_MENU_ITEMS,
   DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   OperatorAppTopbar,
   SidebarProvider,
   type TopbarActionMenuItem,
@@ -68,20 +66,6 @@ const demoScopeSwitchers: TopbarScopeSwitcherConfig[] = [
 
 const demoDefaultEnabledUtilityIds = ["help", "feedback", "notifications"] as const;
 
-const demoUserMenu = {
-  avatarFallback: "MS",
-  displayName: "Mina Shah",
-  email: "mina.shah@northwind.example",
-  children: (
-    <>
-      <DropdownMenuItem>Security settings</DropdownMenuItem>
-      <DropdownMenuItem>Organization</DropdownMenuItem>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem>Sign out</DropdownMenuItem>
-    </>
-  ),
-} as const;
-
 function DemoOperatorTopbar() {
   const [scopeSwitchers, setScopeSwitchers] = useState(demoScopeSwitchers);
   const [enabledUtilityIds, setEnabledUtilityIds] = useState<readonly string[]>(
@@ -119,14 +103,6 @@ function DemoOperatorTopbar() {
         icon: <Building2Icon aria-hidden="true" className="size-4" />,
       }}
       sidebarControl
-      commandPalette={{
-        label: "Search workspace",
-        description: "Jump to routes, records, and recent audit activity.",
-        onOpen: () => undefined,
-        onSearch: () => undefined,
-        placeholder: "Search…",
-        shortcut: "⌘K",
-      }}
       scopeSwitchers={wiredSwitchers}
       utilitiesRail={{
         catalog: DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
@@ -138,7 +114,6 @@ function DemoOperatorTopbar() {
         onEnabledChange: setEnabledUtilityIds,
         onOrderChange: setUtilityOrder,
         order: utilityOrder,
-        userMenu: demoUserMenu,
       }}
     />
   );
@@ -161,7 +136,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Dense operator app topbar with scope switchers, command search, and a nine-slot utilities rail (six draggable pins + fixed market, account, menu).",
+          "Dense operator app topbar with scope switchers and a utilities rail with pinned icons plus fixed market and actions menu.",
       },
     },
   },
@@ -197,27 +172,16 @@ export const InAppShell: Story = {
   ),
 };
 
-export const CommandTriggerOnly: Story = {
+export const UtilitiesOnly: Story = {
   render: () => (
     <DemoOperatorTopbarStory>
       <div className="h-[var(--xforge-layout-app-topbar)] border-border-default border-b bg-surface-canvas">
         <OperatorAppTopbar
-          commandPalette={{
-            label: "Search workspace",
-            onOpen: () => undefined,
-            onSearch: () => undefined,
-            placeholder: "Search…",
-            shortcut: "⌘K",
-          }}
           utilitiesRail={{
             catalog: DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
             defaultEnabledIds: [],
             actionsMenu: {
               actions: DEFAULT_ERP_ACTIONS_MENU_ITEMS,
-            },
-            userMenu: {
-              avatarFallback: "AF",
-              displayName: "Afenda Operator",
             },
           }}
         />
@@ -237,10 +201,6 @@ export const ScopeSwitchersOnly: Story = {
             defaultEnabledIds: [],
             actionsMenu: {
               actions: DEFAULT_ERP_ACTIONS_MENU_ITEMS,
-            },
-            userMenu: {
-              avatarFallback: "AF",
-              displayName: "Afenda Operator",
             },
           }}
         />

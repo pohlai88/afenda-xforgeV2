@@ -25,6 +25,30 @@ export interface TopbarUtilityAction {
   readonly shortcut?: string;
 }
 
+export type TopbarNotificationScope = "following" | "inbox" | "team";
+
+export interface TopbarNotificationItem {
+  readonly body?: string;
+  readonly id: string;
+  readonly scope?: TopbarNotificationScope;
+  readonly timeLabel: string;
+  readonly title: string;
+  readonly unread?: boolean;
+}
+
+export interface TopbarNotificationsProps {
+  readonly description?: string;
+  readonly emptyDescription?: string;
+  readonly emptyTitle?: string;
+  readonly items: readonly TopbarNotificationItem[];
+  readonly label?: string;
+  readonly menuLabel?: string;
+  readonly onArchiveAll?: () => void;
+  readonly onMarkAllRead?: () => void;
+  readonly onOpenSettings?: () => void;
+  readonly onSelectItem?: (id: string) => void;
+}
+
 export interface TopbarBrandDiskProps {
   readonly ariaLabel?: string;
   readonly className?: string;
@@ -48,21 +72,12 @@ export interface TopbarScopeSwitchersProps {
   readonly switchers: readonly TopbarScopeSwitcherConfig[];
 }
 
-export interface TopbarCommandTriggerProps {
-  readonly className?: string;
-  readonly description?: string;
-  readonly label?: string;
-  readonly onOpen?: () => void;
-  readonly onSearch?: (query: string) => void;
-  readonly placeholder?: string;
-  readonly shortcut?: string;
-}
-
 export interface TopbarUtilitiesBarProps {
   readonly actions: readonly TopbarUtilityAction[];
   readonly className?: string;
   readonly draggable?: boolean;
   readonly maxActions?: number;
+  readonly notifications?: TopbarNotificationsProps;
   readonly onOrderChange?: (order: readonly string[]) => void;
   readonly order?: readonly string[];
 }
@@ -84,7 +99,9 @@ export interface TopbarUtilitiesMarketProps {
   readonly maxTotalSlots: number;
   readonly menuLabel?: string;
   readonly onEnabledChange: (id: string, enabled: boolean) => void;
+  readonly onOpenChange?: (open: boolean) => void;
   readonly onRequestUtility?: (request: TopbarUtilityRequest) => void;
+  readonly open?: boolean;
   readonly requestUtilityFeaturesLabel?: string;
   readonly requestUtilityNameLabel?: string;
   readonly requestUtilityNote?: string;
@@ -111,18 +128,6 @@ export interface TopbarActionsMenuProps {
   readonly menuLabel?: string;
 }
 
-export interface TopbarUserMenuProps {
-  readonly avatarFallback: string;
-  readonly avatarSrc?: string;
-  readonly children?: ReactNode;
-  readonly className?: string;
-  readonly description?: string;
-  readonly displayName: string;
-  readonly email?: string | null;
-  readonly menuLabel?: string;
-  readonly tooltip?: string;
-}
-
 export interface TopbarUtilitiesRailProps {
   readonly catalog: readonly TopbarUtilitiesMarketItem[];
   readonly className?: string;
@@ -132,6 +137,7 @@ export interface TopbarUtilitiesRailProps {
   readonly maxPinnedSlots?: number;
   readonly maxTotalSlots?: number;
   readonly actionsMenu?: TopbarActionsMenuProps;
+  readonly notifications?: TopbarNotificationsProps;
   readonly onEnabledChange?: (ids: readonly string[]) => void;
   readonly onOrderChange?: (order: readonly string[]) => void;
   readonly onRequestUtility?: (request: TopbarUtilityRequest) => void;
@@ -141,7 +147,7 @@ export interface TopbarUtilitiesRailProps {
   readonly requestUtilityNote?: string;
   readonly requestUtilitySendLabel?: string;
   readonly requestUtilityTitle?: string;
-  readonly userMenu: TopbarUserMenuProps;
+  readonly themeToggle?: ReactNode;
 }
 
 export interface TopbarSidebarControlProps {
@@ -155,7 +161,6 @@ export interface TopbarSidebarControlProps {
 export interface OperatorAppTopbarProps
   extends Omit<ComponentPropsWithoutRef<"header">, "children"> {
   readonly brand?: TopbarBrandDiskProps;
-  readonly commandPalette?: TopbarCommandTriggerProps;
   readonly scopeSwitchers?: readonly TopbarScopeSwitcherConfig[];
   readonly sidebarControl?: boolean | TopbarSidebarControlProps;
   readonly trailing?: ReactNode;

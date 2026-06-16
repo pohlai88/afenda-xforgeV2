@@ -1,0 +1,1 @@
+export const DASHBOARD_SIDEBAR_DEFAULT_BRAND_LABEL = "Acme Inc.";

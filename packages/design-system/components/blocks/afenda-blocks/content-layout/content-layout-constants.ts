@@ -24,6 +24,8 @@ export const DEFAULT_CONTENT_LAYOUT_RIGHT_SIDEBAR_WIDTH =
 export const DEFAULT_CONTENT_LAYOUT_TOPBAR_HEIGHT =
   "var(--xforge-layout-site-topbar)";
 
+export const DEFAULT_CONTENT_LAYOUT_FOOTER_HEIGHT = "3rem";
+
 export const DEFAULT_CONTENT_LAYOUT_BOTTOM_DRAWER_MAX =
   "var(--xforge-layout-site-bottom-drawer-max)";
 export const DEFAULT_CONTENT_LAYOUT_BOTTOM_DRAWER_MIN =

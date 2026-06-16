@@ -2,10 +2,12 @@ export type {
   OperatorAppTopbarProps,
   TopbarActionMenuItem,
   TopbarActionsMenuProps,
+  TopbarNotificationItem,
+  TopbarNotificationsProps,
+  TopbarNotificationScope,
   TopbarScopeOption,
   TopbarScopeSwitcherConfig,
   TopbarSidebarControlProps,
-  TopbarUserMenuProps,
   TopbarUtilitiesMarketItem,
   TopbarUtilitiesRailProps,
   TopbarUtilityAction,
@@ -33,3 +35,4 @@ export {
   resolveDefaultEnabledIds,
 } from "./topbar-utilities-helpers";
 export { OperatorAppTopbar } from "./operator-app-topbar";
+export { TopbarNotifications } from "./topbar-notifications";

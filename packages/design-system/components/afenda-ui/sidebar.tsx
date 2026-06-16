@@ -536,8 +536,8 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
   return (
     <main
       className={cn(
-        "relative flex w-full flex-1 flex-col bg-canvas",
-        "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2 md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-[var(--card-radius)] md:peer-data-[variant=inset]:shadow-panel",
+        "relative flex w-full flex-1 flex-col bg-sidebar",
+        "md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2 md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:overflow-hidden md:peer-data-[variant=inset]:rounded-[var(--card-radius)] md:peer-data-[variant=inset]:shadow-panel",
         recipe("motionReduce"),
         className
       )}
@@ -738,7 +738,7 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 
 const sidebarMenuButtonVariants = cva(
   [
-    "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-[var(--xforge-radius-sm)] p-2 text-left text-text-secondary outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+    "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-[var(--xforge-radius-sm)] p-2 text-left text-text-secondary outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
     "hover:bg-surface-hover hover:text-text-primary active:bg-surface-active active:text-text-primary",
     "disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50",
     "data-[active=true]:bg-surface-active data-[active=true]:text-text-primary",

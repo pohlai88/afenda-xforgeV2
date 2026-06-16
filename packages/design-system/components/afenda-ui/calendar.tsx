@@ -81,7 +81,7 @@ function Calendar({
           defaultClassNames.dropdowns
         ),
         dropdown_root: cn(
-          "relative rounded-[var(--button-radius)] border border-border-default bg-surface-raised has-focus:border-border-active has-focus:ring-[3px] has-focus:ring-ring/50",
+          "relative rounded-[var(--button-radius)] border border-border-default bg-surface-raised has-focus:border-border-active has-focus:ring-2 has-focus:ring-ring/30",
           defaultClassNames.dropdown_root
         ),
         dropdown: cn(
@@ -217,7 +217,7 @@ function CalendarDayButton({
     <Button
       className={cn(
         "flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 font-normal leading-none",
-        "group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-border-active group-data-[focused=true]/day:ring-[3px] group-data-[focused=true]/day:ring-ring/50",
+        "group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-border-active group-data-[focused=true]/day:ring-2 group-data-[focused=true]/day:ring-ring/30",
         "data-[selected-single=true]:bg-brand-primary data-[selected-single=true]:text-text-inverse",
         "data-[range-start=true]:rounded-l-[var(--button-radius)] data-[range-start=true]:bg-brand-primary data-[range-start=true]:text-text-inverse",
         "data-[range-end=true]:rounded-r-[var(--button-radius)] data-[range-end=true]:bg-brand-primary data-[range-end=true]:text-text-inverse",

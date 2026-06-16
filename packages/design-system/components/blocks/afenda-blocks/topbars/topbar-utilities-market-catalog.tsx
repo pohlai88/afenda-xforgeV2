@@ -1,18 +1,22 @@
 "use client";
 
 import {
+  ActivityIcon,
   BellIcon,
   CalendarDaysIcon,
-  ClipboardCheckIcon,
+  BugPlayIcon,
   FileClockIcon,
   FilesIcon,
+  HatGlassesIcon,
   HelpCircleIcon,
   KeyboardIcon,
-  LayoutDashboardIcon,
+  LightbulbIcon,
+  MessageSquareIcon,
   MessageSquareWarningIcon,
+  MonitorCogIcon,
   PlugIcon,
+  ProportionsIcon,
   ScaleIcon,
-  SearchIcon,
   SettingsIcon,
   UploadIcon,
   WorkflowIcon,
@@ -43,6 +47,12 @@ export const DEFAULT_ERP_UTILITIES_MARKET_ITEMS: readonly TopbarUtilitiesMarketI
       ),
     }),
     pinUtility({
+      id: "advisor-center",
+      label: "Advisor center",
+      description: "Guided suggestions, nudges, and operator tips.",
+      icon: <LightbulbIcon aria-hidden="true" className="size-4" />,
+    }),
+    pinUtility({
       id: "notifications",
       label: "Alerts",
       description: "Review alerts and delivery status.",
@@ -52,7 +62,7 @@ export const DEFAULT_ERP_UTILITIES_MARKET_ITEMS: readonly TopbarUtilitiesMarketI
       id: "tasks",
       label: "Tasks",
       description: "Open assigned tasks and queues.",
-      icon: <ClipboardCheckIcon aria-hidden="true" className="size-4" />,
+      icon: <BugPlayIcon aria-hidden="true" className="size-4" />,
     }),
     pinUtility({
       id: "calendar",
@@ -64,13 +74,19 @@ export const DEFAULT_ERP_UTILITIES_MARKET_ITEMS: readonly TopbarUtilitiesMarketI
       id: "reports",
       label: "Reports",
       description: "Operational and financial reports.",
-      icon: <LayoutDashboardIcon aria-hidden="true" className="size-4" />,
+      icon: <ProportionsIcon aria-hidden="true" className="size-4" />,
+    }),
+    pinUtility({
+      id: "messenger",
+      label: "Messenger",
+      description: "Team messages, handoffs, and operator chat.",
+      icon: <MessageSquareIcon aria-hidden="true" className="size-4" />,
     }),
     pinUtility({
       id: "search",
       label: "Search",
       description: "Find records, evidence, and routes.",
-      icon: <SearchIcon aria-hidden="true" className="size-4" />,
+      icon: <HatGlassesIcon aria-hidden="true" className="size-4" />,
     }),
     pinUtility({
       id: "evidence",
@@ -109,10 +125,22 @@ export const DEFAULT_ERP_UTILITIES_MARKET_ITEMS: readonly TopbarUtilitiesMarketI
       icon: <PlugIcon aria-hidden="true" className="size-4" />,
     }),
     pinUtility({
+      id: "diagnostics",
+      label: "Diagnostics",
+      description: "Service health, connectivity, and operational checks.",
+      icon: <ActivityIcon aria-hidden="true" className="size-4" />,
+    }),
+    pinUtility({
       id: "settings",
       label: "Settings",
       description: "Workspace and tenant configuration.",
       icon: <SettingsIcon aria-hidden="true" className="size-4" />,
+    }),
+    pinUtility({
+      id: "display-settings",
+      label: "Display",
+      description: "Density, theme, and operator display preferences.",
+      icon: <MonitorCogIcon aria-hidden="true" className="size-4" />,
     }),
     pinUtility({
       id: "shortcuts",

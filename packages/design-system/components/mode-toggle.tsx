@@ -2,6 +2,7 @@
 
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { useTheme } from "next-themes";
+import { cn } from "../lib/utils";
 import { Button } from "./afenda-ui/button";
 import {
   DropdownMenu,
@@ -16,15 +17,21 @@ const themes = [
   { label: "System", value: "system" },
 ];
 
-export const ModeToggle = () => {
+export const ModeToggle = ({
+  buttonClassName,
+  buttonSize = "icon",
+}: {
+  readonly buttonClassName?: string;
+  readonly buttonSize?: "icon" | "icon-sm" | "icon-lg";
+}) => {
   const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          className="shrink-0 text-foreground"
-          size="icon"
+          className={cn("shrink-0 text-foreground", buttonClassName)}
+          size={buttonSize}
           variant="quiet"
         >
           <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />

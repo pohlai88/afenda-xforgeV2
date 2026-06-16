@@ -33,7 +33,7 @@ const sidebarNavPanelNavClass = [
 const sidebarNavGroupShellClass = "min-w-0 gap-1 p-0";
 
 const sidebarQuickActionClass = [
-  "flex h-8 min-w-0 items-center gap-2 rounded-md px-2 text-[length:var(--xforge-font-caption-size)] text-sidebar-foreground/88 leading-[var(--xforge-font-caption-line-height)] hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+  "flex h-8 min-w-0 items-center gap-2 rounded-md px-2 text-[length:var(--xforge-font-caption-size)] text-sidebar-foreground/88 leading-[var(--xforge-font-caption-line-height)] hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
   sidebarIconRailBlockItemClass,
 ].join(" ");
 
@@ -46,7 +46,7 @@ const sidebarNavItemBaseClass =
   "group flex h-8 min-w-0 items-center gap-2 rounded-md px-2 text-[12px] leading-4 transition-colors duration-80";
 
 const sidebarNavItemIdleClass = [
-  "text-sidebar-foreground/88 hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+  "text-sidebar-foreground/88 hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/30",
   sidebarIconRailBlockItemClass,
 ].join(" ");
 

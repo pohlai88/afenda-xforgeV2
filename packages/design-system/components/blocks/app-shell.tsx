@@ -409,7 +409,7 @@ function AppShellSiteContainer({
           aria-label="Main content"
           className={cn(
             blockRecipe("blockShell", "blockStack"),
-            "h-full min-h-0 min-w-0 content-start overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+            "h-full min-h-0 min-w-0 content-start overflow-y-auto outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/25",
             appShellMainDensityClassName[density],
             contentPadded && blockRecipe("blockPanelPadding"),
             siteContainerConfig?.contentClassName,

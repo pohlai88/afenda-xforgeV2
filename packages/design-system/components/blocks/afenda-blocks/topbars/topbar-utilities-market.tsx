@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo } from "react";
+import { memo, useMemo, useState } from "react";
 import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
   DropdownMenu,
@@ -9,9 +9,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@repo/design-system/components/afenda-ui/dropdown-menu";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
 import { Switch } from "@repo/design-system/components/afenda-ui/switch";
 import { cn } from "@repo/design-system/lib/utils";
-import { LayoutGridIcon } from "lucide-react";
+import { SearchIcon, StoreIcon } from "lucide-react";
 import { TOPBAR_FIXED_UTILITY_SLOTS } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
 import { TopbarTooltip } from "./topbar-tooltip";
@@ -66,24 +67,38 @@ export function TopbarUtilitiesMarket({
   maxTotalSlots,
   menuLabel = "Open utilities market",
   onEnabledChange,
+  onOpenChange,
   onRequestUtility,
+  open,
   requestUtilityFeaturesLabel,
   requestUtilityNameLabel,
   requestUtilityNote,
   requestUtilitySendLabel,
   requestUtilityTitle,
 }: TopbarUtilitiesMarketProps) {
+  const [query, setQuery] = useState("");
   const enabledIdSet = useMemo(() => new Set(enabledIds), [enabledIds]);
+  const normalizedQuery = query.trim().toLowerCase();
   const enabledCount = enabledIds.length;
   const onBarTotal = enabledCount + TOPBAR_FIXED_UTILITY_SLOTS;
   const atPinLimit = enabledCount >= maxPinnedSlots;
+  const filteredCatalog = useMemo(() => {
+    if (!normalizedQuery) {
+      return catalog;
+    }
+
+    return catalog.filter((item) => {
+      const haystack = `${item.label} ${item.description ?? ""}`.toLowerCase();
+      return haystack.includes(normalizedQuery);
+    });
+  }, [catalog, normalizedQuery]);
 
   if (catalog.length === 0) {
     return null;
   }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={onOpenChange} open={open}>
       <TopbarTooltip description={description} label={label}>
         <DropdownMenuTrigger asChild>
           <Button
@@ -94,7 +109,7 @@ export function TopbarUtilitiesMarket({
             type="button"
             variant="quiet"
           >
-            <LayoutGridIcon aria-hidden="true" className="size-4" />
+            <StoreIcon aria-hidden="true" className="size-4" />
           </Button>
         </DropdownMenuTrigger>
       </TopbarTooltip>
@@ -112,20 +127,41 @@ export function TopbarUtilitiesMarket({
             {maxTotalSlots} on bar
           </p>
           <p className="text-[10px] text-text-tertiary leading-snug">
-            {enabledCount} pinned · {TOPBAR_FIXED_UTILITY_SLOTS} fixed (market, account,
+            {enabledCount} pinned · {TOPBAR_FIXED_UTILITY_SLOTS} fixed (market,
             menu)
           </p>
+          <div className="relative mt-2">
+            <SearchIcon
+              aria-hidden="true"
+              className="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-text-tertiary"
+            />
+            <Input
+              aria-label="Search utilities"
+              autoFocus
+              className="h-8 rounded-lg border-border-subtle bg-surface-muted/35 ps-8 text-[12px] shadow-none placeholder:text-text-tertiary focus-visible:border-sidebar-ring/35 focus-visible:ring-0"
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Search utilities..."
+              type="search"
+              value={query}
+            />
+          </div>
         </div>
         <div className="max-h-64 overflow-y-auto p-1">
-          {catalog.map((item) => (
-            <MarketCatalogRow
-              atPinLimit={atPinLimit && !enabledIdSet.has(item.id)}
-              enabled={enabledIdSet.has(item.id)}
-              item={item}
-              key={item.id}
-              onEnabledChange={onEnabledChange}
-            />
-          ))}
+          {filteredCatalog.length > 0 ? (
+            filteredCatalog.map((item) => (
+              <MarketCatalogRow
+                atPinLimit={atPinLimit && !enabledIdSet.has(item.id)}
+                enabled={enabledIdSet.has(item.id)}
+                item={item}
+                key={item.id}
+                onEnabledChange={onEnabledChange}
+              />
+            ))
+          ) : (
+            <div className="px-2 py-6 text-center text-[11px] text-text-tertiary">
+              No utilities match that search.
+            </div>
+          )}
         </div>
         <DropdownMenuSeparator className="my-0" />
         <TopbarUtilitiesRequestForm

@@ -15,6 +15,7 @@ import type { ReactNode } from "react";
 import { env } from "@/env";
 import { AuthenticatedAppShell } from "./components/authenticated-app-shell";
 import { MfaChallengeShell } from "./components/mfa-challenge-shell";
+import { isStandaloneAuthenticatedRoute } from "./standalone-routes";
 
 export const dynamic = "force-dynamic";
 
@@ -66,6 +67,10 @@ const AppLayout = async ({ children }: AppLayoutProperties) => {
       await switchOrganization(organizations[0].id);
       orgId = organizations[0].id;
     }
+  }
+
+  if (isStandaloneAuthenticatedRoute(pathname)) {
+    return <>{children}</>;
   }
 
   return (

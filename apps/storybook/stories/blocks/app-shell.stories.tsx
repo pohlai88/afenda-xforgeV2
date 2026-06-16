@@ -2,6 +2,8 @@ import type {
   ApprovalQueueRow,
   RiskEvidenceItem,
   StatsMetric,
+  TopbarActionMenuItem,
+  TopbarScopeSwitcherConfig,
 } from "@repo/design-system/design-system";
 import {
   ApprovalQueueBlock,
@@ -22,8 +24,6 @@ import {
   SidebarFooterProfile,
   SidebarFooterTrailingControl,
   StatsStrip,
-  type TopbarActionMenuItem,
-  type TopbarScopeSwitcherConfig,
 } from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Meta, StoryObj } from "@storybook/react";
@@ -325,13 +325,6 @@ function DemoAppTopbar() {
       brand={{
         icon: <Building2Icon aria-hidden="true" className="size-4" />,
       }}
-      commandPalette={{
-        label: "Search workspace",
-        onOpen: () => undefined,
-        onSearch: () => undefined,
-        placeholder: "Search…",
-        shortcut: "⌘K",
-      }}
       scopeSwitchers={scopeSwitchers}
       sidebarControl
       utilitiesRail={{
@@ -342,11 +335,6 @@ function DemoAppTopbar() {
           actions: actionsMenuItems,
         },
         onRequestUtility: () => undefined,
-        userMenu: {
-          avatarFallback: "MS",
-          displayName: "Mina Shah",
-          email: "mina.shah@northwind.example",
-        },
       }}
     />
   );

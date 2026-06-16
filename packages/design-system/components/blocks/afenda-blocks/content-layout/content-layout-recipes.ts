@@ -12,7 +12,7 @@ const contentLayoutTopbarClass =
 const contentLayoutBodyClass = "grid min-h-0 flex-1 overflow-hidden";
 
 const contentLayoutMainClass =
-  "min-h-0 min-w-0 overflow-x-hidden overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring";
+  "min-h-0 min-w-0 overflow-x-hidden overflow-y-auto outline-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring/25";
 
 const contentLayoutSidebarClass = [
   blockRecipe("blockRail"),
@@ -20,7 +20,12 @@ const contentLayoutSidebarClass = [
 ].join(" ");
 
 const contentLayoutFooterClass =
-  "flex shrink-0 items-center justify-between gap-4 border-border-default border-t bg-surface-raised px-[var(--xforge-space-5)] py-2.5 text-[11px] text-text-secondary";
+  "flex w-full shrink-0 items-center justify-between gap-4 px-[var(--xforge-space-5)] py-2.5 text-[11px] text-text-secondary";
+
+const contentLayoutStageFooterPlacementClass = [
+  "absolute inset-x-[var(--xforge-layout-site-inset)] bottom-0",
+  "h-[var(--content-layout-footer-height,3rem)]",
+].join(" ");
 
 const contentLayoutDrawerClass =
   "shrink-0 overflow-hidden border-border-default border-t bg-surface-muted/50 transition-[max-height] duration-200 ease-out motion-reduce:transition-none";
@@ -36,5 +41,6 @@ export {
   contentLayoutMainClass,
   contentLayoutResizeHandleClass,
   contentLayoutSidebarClass,
+  contentLayoutStageFooterPlacementClass,
   contentLayoutTopbarClass,
 };

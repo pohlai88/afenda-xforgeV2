@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { cn } from "@repo/design-system/lib/utils";
 import {
   TOPBAR_MAX_PINNED_UTILITY_SLOTS,
@@ -11,7 +12,6 @@ import {
 } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
 import { TopbarActionsMenu } from "./topbar-actions-menu";
 import type { TopbarUtilitiesRailProps } from "./topbar-types";
-import { TopbarUserMenu } from "./topbar-user-menu";
 import { TopbarUtilitiesBar } from "./topbar-utilities-bar";
 import { TopbarUtilitiesMarket } from "./topbar-utilities-market";
 import { useTopbarUtilitiesState } from "./use-topbar-utilities-state";
@@ -25,6 +25,7 @@ export function TopbarUtilitiesRail({
   maxPinnedSlots = TOPBAR_MAX_PINNED_UTILITY_SLOTS,
   maxTotalSlots = TOPBAR_MAX_TOTAL_UTILITY_SLOTS,
   actionsMenu,
+  notifications,
   onEnabledChange,
   onOrderChange,
   onRequestUtility,
@@ -34,7 +35,7 @@ export function TopbarUtilitiesRail({
   requestUtilityNote,
   requestUtilitySendLabel,
   requestUtilityTitle,
-  userMenu,
+  themeToggle,
 }: TopbarUtilitiesRailProps) {
   const {
     commitOrder,
@@ -52,22 +53,36 @@ export function TopbarUtilitiesRail({
     onOrderChange,
     order,
   });
+  const [marketOpen, setMarketOpen] = useState(false);
+  const resolvedPinnedActions = useMemo(
+    () =>
+      pinnedActions.map((action) =>
+        action.id === "search"
+          ? {
+              ...action,
+              onSelect: () => setMarketOpen(true),
+            }
+          : action
+      ),
+    [pinnedActions]
+  );
 
-  const hasPinnedUtilities = pinnedActions.length > 0;
+  const hasPinnedUtilities = resolvedPinnedActions.length > 0;
 
   return (
     <div
       aria-label="Topbar utilities"
       className={cn("flex min-w-0 items-center", className)}
       data-slot="app-topbar-utilities-rail"
-      role="toolbar"
+        role="toolbar"
     >
       {hasPinnedUtilities ? (
         <TopbarUtilitiesBar
-          actions={pinnedActions}
+          actions={resolvedPinnedActions}
           className={topbarUtilitiesPinnedClass}
           draggable
           maxActions={maxPinnedSlots}
+          notifications={notifications}
           onOrderChange={commitOrder}
           order={pinnedOrder}
         />
@@ -79,20 +94,22 @@ export function TopbarUtilitiesRail({
         )}
         data-slot="app-topbar-utilities-fixed"
       >
+        {themeToggle}
         <TopbarUtilitiesMarket
           catalog={catalog}
           enabledIds={resolvedEnabledIds}
           maxPinnedSlots={maxPinnedSlots}
           maxTotalSlots={maxTotalSlots}
           onEnabledChange={handleEnabledChange}
+          onOpenChange={setMarketOpen}
           onRequestUtility={onRequestUtility}
+          open={marketOpen}
           requestUtilityFeaturesLabel={requestUtilityFeaturesLabel}
           requestUtilityNameLabel={requestUtilityNameLabel}
           requestUtilityNote={requestUtilityNote}
           requestUtilitySendLabel={requestUtilitySendLabel}
           requestUtilityTitle={requestUtilityTitle}
         />
-        <TopbarUserMenu {...userMenu} />
         {actionsMenu ? <TopbarActionsMenu {...actionsMenu} /> : null}
       </div>
     </div>

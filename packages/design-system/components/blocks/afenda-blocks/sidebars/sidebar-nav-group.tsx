@@ -1,21 +1,24 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
-import { memo } from "react";
-import { blockRecipe } from "../../block-recipes";
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-} from "../../../afenda-ui/sidebar";
+} from "@repo/design-system/components/afenda-ui/sidebar";
+import { cn } from "@repo/design-system/lib/utils";
+import { memo } from "react";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+import {
+  sidebarGroupLabelClass,
+  sidebarNavGroupShellClass,
+} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
 import { SidebarNavItemRow } from "./sidebar-nav-item";
-import { sidebarGroupLabelClass, sidebarNavGroupShellClass } from "./sidebar-recipes";
 import type { SidebarNavGroupPanelProps } from "./sidebar-types";
 
 export const SidebarNavGroupPanel = memo(function SidebarNavGroupPanel({
   activeItemIds,
   group,
-  renderNavItemLink,
+  renderLink,
 }: SidebarNavGroupPanelProps) {
   return (
     <SidebarGroup
@@ -32,7 +35,7 @@ export const SidebarNavGroupPanel = memo(function SidebarNavGroupPanel({
           <SidebarNavItemRow
             item={item}
             key={item.id}
-            renderNavItemLink={renderNavItemLink}
+            renderLink={renderLink}
             selected={activeItemIds.has(item.id)}
           />
         ))}

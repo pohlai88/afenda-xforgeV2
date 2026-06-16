@@ -4,8 +4,8 @@ import { cn } from "@repo/design-system/lib/utils";
 import {
   DEFAULT_CONTENT_LAYOUT_FOOTER_COPYRIGHT,
   EMPTY_CONTENT_LAYOUT_FOOTER_LINKS,
-} from "./content-layout-constants";
-import { contentLayoutFooterClass } from "./content-layout-recipes";
+} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
+import { contentLayoutFooterClass } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
 import type { ContentLayoutFooterProps } from "./content-layout-types";
 
 export function ContentLayoutFooter({

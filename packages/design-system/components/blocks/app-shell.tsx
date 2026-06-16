@@ -3,6 +3,7 @@
 import {
   Sidebar,
   SidebarProvider,
+  SidebarRail,
   useSidebar,
 } from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
@@ -270,6 +271,7 @@ function AppShellAppSidebarColumn({
       variant={appSidebarConfig?.variant ?? "sidebar"}
     >
       {appSidebar}
+      <SidebarRail />
     </Sidebar>
   );
 

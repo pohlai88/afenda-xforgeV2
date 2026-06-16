@@ -20,6 +20,7 @@ import {
   OperatorAppTopbar,
   RiskEvidencePanel,
   SidebarFooterProfile,
+  SidebarFooterTrailingControl,
   StatsStrip,
   type TopbarActionMenuItem,
   type TopbarScopeSwitcherConfig,
@@ -360,7 +361,7 @@ function DemoAppSidebar() {
           href="#profile"
           primaryLabel="Mina Shah"
           secondaryLabel="Control owner"
-          showSidebarControl
+          trailingControl={<SidebarFooterTrailingControl />}
         />
       }
       groups={DEMO_ERP_SIDEBAR_NAV_GROUPS}

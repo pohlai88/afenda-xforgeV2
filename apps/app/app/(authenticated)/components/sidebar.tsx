@@ -3,6 +3,7 @@
 import {
   OperatorAppSidebar,
   SidebarFooterProfile,
+  SidebarFooterTrailingControl,
   type SidebarLinkRenderProps,
 } from "@repo/design-system/design-system";
 import Link from "next/link";
@@ -40,7 +41,7 @@ export const AppSidebarNav = () => {
         primaryLabel={meta.displayName}
         renderLink={renderSidebarLink}
         secondaryLabel="Control owner"
-        showSidebarControl
+        trailingControl={<SidebarFooterTrailingControl />}
       />
     ),
     [meta.displayName, state.userEmail]
@@ -52,8 +53,7 @@ export const AppSidebarNav = () => {
       groups={workspaceNavGroups}
       pathname={pathname}
       quickActions={workspaceQuickActions}
-      renderActionLink={renderSidebarLink}
-      renderNavItemLink={renderSidebarLink}
+      renderLink={renderSidebarLink}
     />
   );
 };

@@ -5,7 +5,6 @@ import {
   ContentLayoutBottomDrawer,
   ContentLayoutBreadcrumbsTopbar,
   ContentLayoutFooter,
-  ContentLayoutSidebar,
   DEFAULT_CONTENT_LAYOUT_FOOTER_LINKS,
   DEMO_CONTENT_LAYOUT_BREADCRUMBS,
   DEMO_CONTENT_LAYOUT_BOTTOM_DRAWER_LABEL,
@@ -15,10 +14,11 @@ import {
   DEMO_ERP_SIDEBAR_QUICK_ACTIONS,
   OperatorAppSidebar,
   SidebarFooterProfile,
+  SidebarFooterTrailingControl,
   stripSidebarNavItemSelection,
   type ContentLayoutBlockProps,
+  type SidebarLinkRenderProps,
 } from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
 import { useCallback, useState } from "react";
 
 import { layoutStoryParameters } from "../../.storybook/essentials";
@@ -44,39 +44,49 @@ function useDemoContentLayoutNav() {
   return { activeHref, onNavigate };
 }
 
-function DemoContentLayoutStage({
-  children,
-}: {
-  readonly children: React.ReactNode;
-}) {
-  return (
-    <div className="h-svh bg-surface-muted/20 p-[var(--xforge-space-6)]">
-      {children}
-    </div>
+function useDemoSidebarLinks() {
+  const [pathname, setPathname] = useState("#approval-workspace");
+
+  const renderLink = useCallback(
+    ({
+      "aria-current": ariaCurrent,
+      children,
+      className,
+      href,
+    }: SidebarLinkRenderProps) => (
+      <a
+        aria-current={ariaCurrent}
+        className={className}
+        href={href}
+        onClick={(event) => {
+          event.preventDefault();
+          setPathname(href);
+        }}
+      >
+        {children}
+      </a>
+    ),
+    []
   );
+
+  return { pathname, renderLink };
 }
 
-function DemoChromeFrame({
+function DemoContentLayoutStory({
   children,
-  className,
 }: {
   readonly children: React.ReactNode;
-  readonly className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "overflow-hidden rounded-[var(--card-radius)] border border-border-default bg-surface-raised shadow-panel",
-        className
-      )}
-    >
-      {children}
+    <div className="relative h-svh w-full bg-surface-canvas p-[var(--xforge-space-6)]">
+      <div className="relative h-full min-h-0 w-full">{children}</div>
     </div>
   );
 }
 
 function DemoContentLayoutBlock({
   children,
+  resizeConfig,
   sectionCount,
   ...props
 }: Omit<ContentLayoutBlockProps, "children"> & {
@@ -101,7 +111,7 @@ function DemoContentLayoutBlock({
           onNavigate={onNavigate}
         />
       }
-      resizeConfig={{ adjustable: true }}
+      resizeConfig={{ adjustable: false, ...resizeConfig }}
       rightSidebar={<DemoContentLayoutAuditRail />}
       {...props}
     >
@@ -111,6 +121,8 @@ function DemoContentLayoutBlock({
 }
 
 function DemoAppSidebar() {
+  const { pathname, renderLink } = useDemoSidebarLinks();
+
   return (
     <OperatorAppSidebar
       footer={
@@ -118,13 +130,16 @@ function DemoAppSidebar() {
           avatarFallback="MS"
           href="#profile"
           primaryLabel="Mina Shah"
+          renderLink={renderLink}
           secondaryLabel="Control owner"
-          showSidebarControl
+          trailingControl={<SidebarFooterTrailingControl />}
         />
       }
       groups={demoInteractiveNavGroups}
       labelGroups={DEMO_ERP_SIDEBAR_LABEL_GROUPS}
+      pathname={pathname}
       quickActions={DEMO_ERP_SIDEBAR_QUICK_ACTIONS}
+      renderLink={renderLink}
     />
   );
 }
@@ -138,7 +153,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Rounded site container with breadcrumb topbar, collapsible sidebars, bottom drawer, fixed footer, and vertical scroll confined to the main pane. Demo panels live in Storybook; catalog data is exported from the design-system package like Afenda sidebars.",
+          "Rounded site container with breadcrumb topbar, collapsible sidebars, bottom drawer, fixed footer, and vertical scroll confined to the main pane. Catalog data lives in the design-system package; Storybook owns demo panels.",
       },
     },
   },
@@ -148,27 +163,11 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const FullChrome: Story = {
+export const OperatorChrome: Story = {
   render: () => (
-    <DemoContentLayoutStage>
+    <DemoContentLayoutStory>
       <DemoContentLayoutBlock />
-    </DemoContentLayoutStage>
-  ),
-};
-
-export const DockedNoResize: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story:
-          "Docked inset without resize handles — useful inside app-shell stage.",
-      },
-    },
-  },
-  render: () => (
-    <DemoContentLayoutStage>
-      <DemoContentLayoutBlock resizeConfig={{ adjustable: false }} />
-    </DemoContentLayoutStage>
+    </DemoContentLayoutStory>
   ),
 };
 
@@ -181,54 +180,82 @@ export const InAppShell: Story = {
       intent="operation"
       siteContainerConfig={{ adjustable: false, mode: "docked" }}
     >
-      <DemoContentLayoutBlock resizeConfig={{ adjustable: false }} />
+      <DemoContentLayoutBlock />
     </AuthenticatedAppShellBlock>
   ),
 };
 
-export const BreadcrumbsOnly: Story = {
+export const ResizableContainer: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Floating site container with edge resize handles — drag to adjust width and height within the stage.",
+      },
+    },
+  },
   render: () => (
-    <DemoContentLayoutStage>
-      <ContentLayoutBlock
-        breadcrumbItems={DEMO_CONTENT_LAYOUT_BREADCRUMBS}
-        breadcrumbTrailing={<DemoContentLayoutBreadcrumbTrailing />}
-        resizeConfig={{ adjustable: false }}
-      >
-        <DemoContentLayoutScrollPanels sectionCount={4} />
-      </ContentLayoutBlock>
-    </DemoContentLayoutStage>
+    <DemoContentLayoutStory>
+      <DemoContentLayoutBlock resizeConfig={{ adjustable: true }} />
+    </DemoContentLayoutStory>
   ),
 };
 
+export const BreadcrumbsTopbarOnly: Story = {
+  render: () => (
+    <DemoContentLayoutStory>
+      <div className="overflow-hidden rounded-[var(--card-radius)] border border-border-default bg-surface-raised shadow-panel">
+        <ContentLayoutBreadcrumbsTopbar
+          items={DEMO_CONTENT_LAYOUT_BREADCRUMBS}
+          trailing={<DemoContentLayoutBreadcrumbTrailing />}
+        />
+      </div>
+    </DemoContentLayoutStory>
+  ),
+};
+
+function DemoLeftSidebarOnly() {
+  const { activeHref, onNavigate } = useDemoContentLayoutNav();
+
+  return (
+    <ContentLayoutBlock
+      leftSidebar={
+        <DemoContentLayoutSectionNav
+          activeHref={activeHref}
+          onNavigate={onNavigate}
+        />
+      }
+      resizeConfig={{ adjustable: false }}
+    >
+      <DemoContentLayoutScrollPanels sectionCount={4} />
+    </ContentLayoutBlock>
+  );
+}
+
 export const LeftSidebarOnly: Story = {
   render: () => (
-    <DemoContentLayoutStage>
-      <ContentLayoutBlock
-        leftSidebar={<DemoContentLayoutSectionNav />}
-        resizeConfig={{ adjustable: false }}
-      >
-        <DemoContentLayoutScrollPanels sectionCount={4} />
-      </ContentLayoutBlock>
-    </DemoContentLayoutStage>
+    <DemoContentLayoutStory>
+      <DemoLeftSidebarOnly />
+    </DemoContentLayoutStory>
   ),
 };
 
 export const RightSidebarOnly: Story = {
   render: () => (
-    <DemoContentLayoutStage>
+    <DemoContentLayoutStory>
       <ContentLayoutBlock
         resizeConfig={{ adjustable: false }}
         rightSidebar={<DemoContentLayoutAuditRail />}
       >
         <DemoContentLayoutScrollPanels sectionCount={4} />
       </ContentLayoutBlock>
-    </DemoContentLayoutStage>
+    </DemoContentLayoutStory>
   ),
 };
 
 export const BottomDrawerOnly: Story = {
   render: () => (
-    <DemoContentLayoutStage>
+    <DemoContentLayoutStory>
       <ContentLayoutBlock
         bottomDrawer={<DemoContentLayoutActivityDrawer />}
         bottomDrawerConfig={{
@@ -239,58 +266,24 @@ export const BottomDrawerOnly: Story = {
       >
         <DemoContentLayoutScrollPanels sectionCount={4} />
       </ContentLayoutBlock>
-    </DemoContentLayoutStage>
+    </DemoContentLayoutStory>
   ),
 };
 
 export const FooterOnly: Story = {
   render: () => (
-    <DemoContentLayoutStage>
-      <DemoChromeFrame>
+    <DemoContentLayoutStory>
+      <div className="overflow-hidden rounded-[var(--card-radius)] border border-border-default bg-surface-raised shadow-panel">
         <ContentLayoutFooter links={DEFAULT_CONTENT_LAYOUT_FOOTER_LINKS} />
-      </DemoChromeFrame>
-    </DemoContentLayoutStage>
+      </div>
+    </DemoContentLayoutStory>
   ),
-};
-
-export const TopbarComponentOnly: Story = {
-  render: () => (
-    <DemoContentLayoutStage>
-      <DemoChromeFrame>
-        <ContentLayoutBreadcrumbsTopbar
-          items={DEMO_CONTENT_LAYOUT_BREADCRUMBS}
-          trailing={<DemoContentLayoutBreadcrumbTrailing />}
-        />
-      </DemoChromeFrame>
-    </DemoContentLayoutStage>
-  ),
-};
-
-function DemoSidebarComponentStory() {
-  const { activeHref, onNavigate } = useDemoContentLayoutNav();
-
-  return (
-    <DemoContentLayoutStage>
-      <DemoChromeFrame className="h-[28rem]">
-        <ContentLayoutSidebar config={{ ariaLabel: "Demo left sidebar" }} side="left">
-          <DemoContentLayoutSectionNav
-            activeHref={activeHref}
-            onNavigate={onNavigate}
-          />
-        </ContentLayoutSidebar>
-      </DemoChromeFrame>
-    </DemoContentLayoutStage>
-  );
-}
-
-export const SidebarComponentOnly: Story = {
-  render: () => <DemoSidebarComponentStory />,
 };
 
 export const BottomDrawerComponentOnly: Story = {
   render: () => (
-    <DemoContentLayoutStage>
-      <DemoChromeFrame>
+    <DemoContentLayoutStory>
+      <div className="overflow-hidden rounded-[var(--card-radius)] border border-border-default bg-surface-raised shadow-panel">
         <ContentLayoutBottomDrawer
           config={{
             defaultOpen: true,
@@ -299,17 +292,17 @@ export const BottomDrawerComponentOnly: Story = {
         >
           <DemoContentLayoutActivityDrawer />
         </ContentLayoutBottomDrawer>
-      </DemoChromeFrame>
-    </DemoContentLayoutStage>
+      </div>
+    </DemoContentLayoutStory>
   ),
 };
 
 export const MainScrollOnly: Story = {
   render: () => (
-    <DemoContentLayoutStage>
+    <DemoContentLayoutStory>
       <ContentLayoutBlock resizeConfig={{ adjustable: false }}>
         <DemoContentLayoutScrollPanels />
       </ContentLayoutBlock>
-    </DemoContentLayoutStage>
+    </DemoContentLayoutStory>
   ),
 };

@@ -1,15 +1,19 @@
 "use client";
 
 import { cn } from "@repo/design-system/lib/utils";
+import {
+  TOPBAR_DEFAULT_BRAND_ARIA_LABEL,
+  TOPBAR_DEFAULT_BRAND_DESCRIPTION,
+} from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
+import { topbarBrandDiskClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
 import { Building2Icon } from "lucide-react";
-import { topbarBrandDiskClass } from "./topbar-recipes";
 import { TopbarTooltip } from "./topbar-tooltip";
 import type { TopbarBrandDiskProps } from "./topbar-types";
 
 export function TopbarBrandDisk({
-  ariaLabel = "Afenda workspace",
+  ariaLabel = TOPBAR_DEFAULT_BRAND_ARIA_LABEL,
   className,
-  description = "Signed-in operator workspace.",
+  description = TOPBAR_DEFAULT_BRAND_DESCRIPTION,
   icon = <Building2Icon aria-hidden="true" className="size-4" />,
   tooltip,
 }: TopbarBrandDiskProps) {

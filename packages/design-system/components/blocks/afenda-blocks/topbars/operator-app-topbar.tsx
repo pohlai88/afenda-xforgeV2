@@ -1,14 +1,29 @@
 "use client";
 
-import { TooltipProvider } from "../../../afenda-ui/tooltip";
+import { TooltipProvider } from "@repo/design-system/components/afenda-ui/tooltip";
 import { cn } from "@repo/design-system/lib/utils";
+import { resolveTopbarSidebarControl } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-helpers";
+import { operatorAppTopbarShellClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
+import { TOPBAR_DEFAULT_BRAND_TOOLTIP } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import { TopbarBrandDisk } from "./topbar-brand-disk";
 import { TopbarCommandTrigger } from "./topbar-command-trigger";
-import { topbarShellClass } from "./topbar-recipes";
 import { TopbarScopeSwitchers } from "./topbar-scope-switchers";
 import { TopbarSidebarControl } from "./topbar-sidebar-control";
-import type { OperatorAppTopbarProps, TopbarSidebarControlProps } from "./topbar-types";
+import type {
+  OperatorAppTopbarProps,
+  TopbarCommandTriggerProps,
+} from "./topbar-types";
 import { TopbarUtilitiesRail } from "./topbar-utilities-rail";
+
+function TopbarCommandPaletteSlot({
+  className,
+  commandPalette,
+}: {
+  readonly className?: string;
+  readonly commandPalette: TopbarCommandTriggerProps;
+}) {
+  return <TopbarCommandTrigger {...commandPalette} className={className} />;
+}
 
 export function OperatorAppTopbar({
   brand,
@@ -20,17 +35,13 @@ export function OperatorAppTopbar({
   utilitiesRail,
   ...properties
 }: OperatorAppTopbarProps) {
-  const sidebarControlProps: TopbarSidebarControlProps | null =
-    sidebarControl === true
-      ? {}
-      : sidebarControl === false || sidebarControl === undefined
-        ? null
-        : sidebarControl;
+  const sidebarControlProps = resolveTopbarSidebarControl(sidebarControl);
 
   return (
     <TooltipProvider delayDuration={350} skipDelayDuration={100}>
       <header
-        className={cn(topbarShellClass, className)}
+        aria-label="Operator topbar"
+        className={cn(operatorAppTopbarShellClass, className)}
         data-slot="workspace-app-nav-topbar"
         {...properties}
       >
@@ -41,7 +52,7 @@ export function OperatorAppTopbar({
           {sidebarControlProps ? (
             <TopbarSidebarControl {...sidebarControlProps} />
           ) : null}
-          <TopbarBrandDisk tooltip="Afenda workspace" {...brand} />
+          <TopbarBrandDisk tooltip={TOPBAR_DEFAULT_BRAND_TOOLTIP} {...brand} />
           <TopbarScopeSwitchers switchers={scopeSwitchers} />
         </div>
         {commandPalette ? (
@@ -49,7 +60,7 @@ export function OperatorAppTopbar({
             className="hidden min-w-0 flex-1 justify-center px-2 md:flex"
             data-slot="app-topbar-center"
           >
-            <TopbarCommandTrigger {...commandPalette} />
+            <TopbarCommandPaletteSlot commandPalette={commandPalette} />
           </div>
         ) : null}
         <div
@@ -57,9 +68,9 @@ export function OperatorAppTopbar({
           data-slot="app-topbar-right"
         >
           {commandPalette ? (
-            <TopbarCommandTrigger
-              {...commandPalette}
+            <TopbarCommandPaletteSlot
               className="md:hidden"
+              commandPalette={commandPalette}
             />
           ) : null}
           {trailing}

@@ -1,8 +1,8 @@
 "use client";
 
-import { SidebarControlMenu } from "../../../afenda-ui/sidebar";
+import { SidebarControlMenu } from "@repo/design-system/components/afenda-ui/sidebar";
 import { cn } from "@repo/design-system/lib/utils";
-import { topbarIconActionClass } from "./topbar-recipes";
+import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
 import type { TopbarSidebarControlProps } from "./topbar-types";
 
 export function TopbarSidebarControl({

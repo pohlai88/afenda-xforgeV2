@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "../../../afenda-ui/button";
-import { Input } from "../../../afenda-ui/input";
-import { Label } from "../../../afenda-ui/label";
-import { Textarea } from "../../../afenda-ui/textarea";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
+import { Label } from "@repo/design-system/components/afenda-ui/label";
+import { Textarea } from "@repo/design-system/components/afenda-ui/textarea";
 import { cn } from "@repo/design-system/lib/utils";
 import { useState } from "react";
 import type { TopbarUtilityRequest } from "./topbar-types";

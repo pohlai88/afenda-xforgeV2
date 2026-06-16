@@ -67,7 +67,7 @@ export interface TopbarUtilitiesBarProps {
   readonly order?: readonly string[];
 }
 
-export interface TopbarUtilitiesMarketItem extends TopbarUtilityAction {}
+export type TopbarUtilitiesMarketItem = TopbarUtilityAction;
 
 export interface TopbarUtilityRequest {
   readonly features: string;

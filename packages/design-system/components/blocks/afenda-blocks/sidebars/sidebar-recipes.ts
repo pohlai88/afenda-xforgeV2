@@ -1,29 +1,41 @@
 import {
   sidebarIconRailAvatarClass,
+  sidebarIconRailBlockItemClass,
   sidebarIconRailFooterClass,
-  sidebarIconRailFooterRowClass,
-  sidebarIconRailHeaderClass,
+  sidebarIconRailFooterMenuClass,
   sidebarIconRailHiddenClass,
   sidebarIconRailIconClass,
   sidebarIconRailNavClass,
+  sidebarIconRailScrollAreaClass,
   sidebarIconRailShellClass,
-} from "../../../afenda-ui/sidebar-rail-recipes";
+} from "@repo/design-system/components/afenda-ui/sidebar-rail-recipes";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 
-/** Expanded-mode shell; icon rail overrides come from `sidebar-rail-recipes`. */
-const sidebarQuickActionsHeaderClass = [
-  "border-0 p-2",
-  sidebarIconRailHeaderClass,
+const operatorAppSidebarShellClass = [
+  blockRecipe("blockShell"),
+  "flex h-full min-h-0 flex-col overscroll-y-contain",
+  sidebarIconRailShellClass,
 ].join(" ");
 
+const sidebarNavPanelEmptyClass = [
+  "grid min-h-24 place-items-center rounded-md border border-dashed border-border-default/80 bg-transparent px-3 text-center",
+  blockRecipe("blockMetricLabel"),
+].join(" ");
+
+const sidebarQuickActionsHeaderClass = "border-0";
+
 const sidebarNavPanelNavClass = [
-  "grid min-w-0 gap-4 px-2.5 py-3",
+  blockRecipe("blockStack"),
+  "min-w-0 max-w-full px-2.5 py-3",
   sidebarIconRailNavClass,
 ].join(" ");
 
 const sidebarNavGroupShellClass = "min-w-0 gap-1 p-0";
 
-const sidebarQuickActionClass =
-  "flex h-8 min-w-0 items-center gap-2 rounded-md px-2 text-[length:var(--xforge-font-caption-size)] text-sidebar-foreground/88 leading-[var(--xforge-font-caption-line-height)] hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const sidebarQuickActionClass = [
+  "flex h-8 min-w-0 items-center gap-2 rounded-md px-2 text-[length:var(--xforge-font-caption-size)] text-sidebar-foreground/88 leading-[var(--xforge-font-caption-line-height)] hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+  sidebarIconRailBlockItemClass,
+].join(" ");
 
 const sidebarQuickActionKbdClass =
   "h-4 shrink-0 border-border-default bg-sidebar-border/35 px-1 font-mono text-[9px] text-text-secondary tabular-nums leading-none shadow-none";
@@ -33,11 +45,16 @@ const sidebarGroupLabelClass = "px-2 tracking-[0.04em]";
 const sidebarNavItemBaseClass =
   "group flex h-8 min-w-0 items-center gap-2 rounded-md px-2 text-[12px] leading-4 transition-colors duration-80";
 
-const sidebarNavItemIdleClass =
-  "text-sidebar-foreground/88 hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+const sidebarNavItemIdleClass = [
+  "text-sidebar-foreground/88 hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+  sidebarIconRailBlockItemClass,
+].join(" ");
 
-const sidebarNavItemSelectedClass =
-  "relative bg-brand-primary/10 font-medium text-brand-primary before:absolute before:inset-y-1 before:left-0 before:w-0.5 before:rounded-full before:bg-brand-primary";
+const sidebarNavItemSelectedClass = [
+  "relative bg-brand-primary/10 font-medium text-brand-primary before:absolute before:inset-y-1 before:left-0 before:w-0.5 before:rounded-full before:bg-brand-primary",
+  "group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:font-normal group-data-[collapsible=icon]:text-brand-primary group-data-[collapsible=icon]:before:content-none",
+  sidebarIconRailBlockItemClass,
+].join(" ");
 
 const sidebarLabelRowClass =
   "flex h-8 min-w-0 items-center gap-2 rounded-md px-2 text-[12px] text-sidebar-foreground/88 leading-4";
@@ -47,13 +64,19 @@ const sidebarFooterClass = [
   sidebarIconRailFooterClass,
 ].join(" ");
 
-const sidebarFooterRowClass = [
-  "flex items-center gap-1 px-1",
-  sidebarIconRailFooterRowClass,
+const sidebarFooterMenuClass = [
+  "min-w-0 max-w-full",
+  sidebarIconRailFooterMenuClass,
 ].join(" ");
 
-const sidebarFooterButtonClass =
-  "h-auto gap-2.5 rounded-md px-2 py-2 hover:bg-sidebar-accent/80 data-[active=true]:bg-sidebar-accent";
+const sidebarFooterButtonClass = [
+  "h-auto gap-2.5 rounded-md px-2 py-2 hover:bg-sidebar-accent/80 data-[active=true]:bg-sidebar-accent data-[state=open]:bg-sidebar-accent",
+  "group-data-[collapsible=icon]:gap-0",
+  sidebarIconRailBlockItemClass,
+].join(" ");
+
+const sidebarAvatarFallbackClass =
+  "rounded-lg bg-sidebar-accent font-medium text-[10px] text-sidebar-foreground group-data-[collapsible=icon]:rounded-none group-data-[collapsible=icon]:bg-transparent group-data-[collapsible=icon]:text-[11px] group-data-[collapsible=icon]:text-sidebar-foreground/88";
 
 function sidebarProfileInitials(label: string): string {
   return label
@@ -65,16 +88,20 @@ function sidebarProfileInitials(label: string): string {
 }
 
 export {
+  operatorAppSidebarShellClass,
+  sidebarAvatarFallbackClass,
   sidebarFooterButtonClass,
   sidebarFooterClass,
-  sidebarFooterRowClass,
+  sidebarFooterMenuClass,
   sidebarGroupLabelClass,
   sidebarIconRailAvatarClass,
   sidebarIconRailHiddenClass,
   sidebarIconRailIconClass,
+  sidebarIconRailScrollAreaClass,
   sidebarIconRailShellClass,
   sidebarLabelRowClass,
   sidebarNavGroupShellClass,
+  sidebarNavPanelEmptyClass,
   sidebarNavItemBaseClass,
   sidebarNavItemIdleClass,
   sidebarNavItemSelectedClass,

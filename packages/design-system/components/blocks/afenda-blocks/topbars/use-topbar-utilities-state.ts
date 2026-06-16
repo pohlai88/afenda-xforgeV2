@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { TOPBAR_MAX_PINNED_UTILITY_SLOTS } from "./topbar-constants";
+import { TOPBAR_MAX_PINNED_UTILITY_SLOTS } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import {
   buildCatalogMaps,
   buildPinnedActions,
   buildPinnedOrder,
   resolveDefaultEnabledIds,
-} from "./topbar-utilities-helpers";
+} from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-utilities-helpers";
 import type { TopbarUtilitiesRailProps, TopbarUtilityAction } from "./topbar-types";
 
 interface UseTopbarUtilitiesStateOptions {
@@ -19,6 +19,27 @@ interface UseTopbarUtilitiesStateOptions {
   readonly onEnabledChange?: (ids: readonly string[]) => void;
   readonly onOrderChange?: (order: readonly string[]) => void;
   readonly order?: readonly string[];
+}
+
+interface TopbarUtilitiesInternalState {
+  readonly enabledIds: readonly string[];
+  readonly order: readonly string[];
+}
+
+function createInitialTopbarUtilitiesState(
+  catalog: TopbarUtilitiesRailProps["catalog"],
+  defaultEnabledIds?: readonly string[],
+  defaultOrder?: readonly string[]
+): TopbarUtilitiesInternalState {
+  const { catalogIds } = buildCatalogMaps(catalog);
+  const enabledIds = resolveDefaultEnabledIds(catalog, defaultEnabledIds).filter(
+    (id) => catalogIds.has(id)
+  );
+
+  return {
+    enabledIds,
+    order: defaultOrder ?? enabledIds,
+  };
 }
 
 export function useTopbarUtilitiesState({
@@ -36,27 +57,12 @@ export function useTopbarUtilitiesState({
     [catalog]
   );
 
-  const [internalEnabledIds, setInternalEnabledIds] = useState<readonly string[]>(
-    () => {
-      const { catalogIds } = buildCatalogMaps(catalog);
-
-      return resolveDefaultEnabledIds(catalog, defaultEnabledIds).filter((id) =>
-        catalogIds.has(id)
-      );
-    }
+  const [internalState, setInternalState] = useState<TopbarUtilitiesInternalState>(
+    () => createInitialTopbarUtilitiesState(catalog, defaultEnabledIds, defaultOrder)
   );
-  const [internalOrder, setInternalOrder] = useState<readonly string[]>(() => {
-    const { catalogIds } = buildCatalogMaps(catalog);
-    const initialEnabled = resolveDefaultEnabledIds(
-      catalog,
-      defaultEnabledIds
-    ).filter((id) => catalogIds.has(id));
 
-    return defaultOrder ?? initialEnabled;
-  });
-
-  const resolvedEnabledIds = controlledEnabledIds ?? internalEnabledIds;
-  const resolvedOrder = controlledOrder ?? internalOrder;
+  const resolvedEnabledIds = controlledEnabledIds ?? internalState.enabledIds;
+  const resolvedOrder = controlledOrder ?? internalState.order;
 
   const pinnedOrder = useMemo(
     () => buildPinnedOrder(resolvedOrder, resolvedEnabledIds, maxPinnedSlots),
@@ -74,7 +80,7 @@ export function useTopbarUtilitiesState({
       const capped = nextEnabledIds.slice(0, maxPinnedSlots);
 
       if (controlledEnabledIds === undefined) {
-        setInternalEnabledIds(capped);
+        setInternalState((current) => ({ ...current, enabledIds: capped }));
       }
 
       onEnabledChange?.(capped);
@@ -85,7 +91,7 @@ export function useTopbarUtilitiesState({
   const commitOrder = useCallback(
     (nextOrder: readonly string[]) => {
       if (controlledOrder === undefined) {
-        setInternalOrder(nextOrder);
+        setInternalState((current) => ({ ...current, order: nextOrder }));
       }
 
       onOrderChange?.(nextOrder);
@@ -122,8 +128,8 @@ export function useTopbarUtilitiesState({
   );
 
   return {
-    handleEnabledChange,
     commitOrder,
+    handleEnabledChange,
     pinnedActions,
     pinnedOrder,
     resolvedEnabledIds,

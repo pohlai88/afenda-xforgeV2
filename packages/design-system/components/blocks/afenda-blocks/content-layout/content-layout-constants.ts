@@ -2,6 +2,7 @@ import type {
   ContentLayoutBreadcrumbItem,
   ContentLayoutFooterLink,
   ContentLayoutInsetDefaults,
+  ContentLayoutSide,
 } from "./content-layout-types";
 
 export const DEFAULT_CONTENT_LAYOUT_INSETS: ContentLayoutInsetDefaults = {
@@ -29,6 +30,29 @@ export const DEFAULT_CONTENT_LAYOUT_BOTTOM_DRAWER_MIN =
   "var(--xforge-layout-site-bottom-drawer-min)";
 
 export const CONTENT_LAYOUT_RESIZE_HANDLE_SIZE = 8;
+
+export const CONTENT_LAYOUT_DEFAULT_BOTTOM_DRAWER_LABEL = "Bottom drawer";
+
+export const CONTENT_LAYOUT_BOTTOM_DRAWER_EXPAND_ARIA_LABEL =
+  "Expand bottom drawer";
+export const CONTENT_LAYOUT_BOTTOM_DRAWER_COLLAPSE_ARIA_LABEL =
+  "Collapse bottom drawer";
+
+export function contentLayoutSidebarAriaLabel(
+  side: ContentLayoutSide,
+  override?: string
+): string {
+  return override ?? `${side} sidebar`;
+}
+
+export function contentLayoutSidebarToggleAriaLabel(
+  side: ContentLayoutSide,
+  collapsed: boolean
+): string {
+  return collapsed
+    ? `Expand ${side} sidebar`
+    : `Collapse ${side} sidebar`;
+}
 
 export const DEFAULT_CONTENT_LAYOUT_FOOTER_COPYRIGHT = "2026© Afenda Inc.";
 

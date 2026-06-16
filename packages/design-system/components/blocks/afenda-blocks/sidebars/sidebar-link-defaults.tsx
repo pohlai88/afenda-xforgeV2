@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
-import type { SidebarLinkRenderProps } from "./sidebar-types";
+
+import type { SidebarLinkRenderer, SidebarLinkRenderProps } from "./sidebar-types";
 
 export function defaultSidebarLink({
   "aria-current": ariaCurrent,
@@ -12,4 +13,16 @@ export function defaultSidebarLink({
       {children}
     </a>
   );
+}
+
+export function resolveSidebarLinkRenderer(
+  ...candidates: (SidebarLinkRenderer | undefined)[]
+): SidebarLinkRenderer {
+  for (const candidate of candidates) {
+    if (candidate) {
+      return candidate;
+    }
+  }
+
+  return defaultSidebarLink;
 }

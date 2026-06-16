@@ -1,21 +1,19 @@
 "use client";
 
 import { memo, useMemo } from "react";
-import { Button } from "../../../afenda-ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../../../afenda-ui/dropdown-menu";
-import { Switch } from "../../../afenda-ui/switch";
+} from "@repo/design-system/components/afenda-ui/dropdown-menu";
+import { Switch } from "@repo/design-system/components/afenda-ui/switch";
 import { cn } from "@repo/design-system/lib/utils";
 import { LayoutGridIcon } from "lucide-react";
-import {
-  TOPBAR_FIXED_UTILITY_SLOTS,
-} from "./topbar-constants";
-import { topbarIconActionClass } from "./topbar-recipes";
+import { TOPBAR_FIXED_UTILITY_SLOTS } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
+import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
 import { TopbarTooltip } from "./topbar-tooltip";
 import { TopbarUtilitiesRequestForm } from "./topbar-utilities-request-form";
 import type { TopbarUtilitiesMarketProps } from "./topbar-types";

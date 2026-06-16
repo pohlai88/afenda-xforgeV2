@@ -1,5 +1,9 @@
-const topbarShellClass =
-  "flex h-full items-center justify-between gap-3 px-[var(--xforge-space-5)] text-sidebar-foreground antialiased";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+
+const operatorAppTopbarShellClass = [
+  blockRecipe("blockShell"),
+  "flex h-full items-center justify-between gap-3 px-[var(--xforge-space-5)] text-sidebar-foreground antialiased",
+].join(" ");
 
 const topbarScopeTriggerClass =
   "h-9 max-w-[9.5rem] gap-1.5 rounded-md bg-transparent px-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-foreground focus-visible:ring-sidebar-ring data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-foreground";
@@ -25,13 +29,13 @@ const topbarCommandSearchClass =
   "h-8 w-full min-w-36 max-w-52 border-border-subtle bg-sidebar-accent/35 pe-14 ps-8 text-[12px] text-sidebar-foreground shadow-none placeholder:text-sidebar-foreground/50 focus-visible:bg-sidebar-accent sm:min-w-44";
 
 export {
+  operatorAppTopbarShellClass,
   topbarBrandDiskClass,
   topbarCommandSearchClass,
   topbarIconActionClass,
   topbarScopeCaptionClass,
   topbarScopeTriggerClass,
   topbarScopeValueClass,
-  topbarShellClass,
   topbarUtilitiesFixedClusterClass,
   topbarUtilitiesPinnedClass,
 };

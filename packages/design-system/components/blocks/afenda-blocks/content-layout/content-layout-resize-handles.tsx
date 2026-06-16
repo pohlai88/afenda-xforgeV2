@@ -2,8 +2,8 @@
 
 import { cn } from "@repo/design-system/lib/utils";
 import type { CSSProperties } from "react";
-import { CONTENT_LAYOUT_RESIZE_HANDLE_SIZE } from "./content-layout-constants";
-import { contentLayoutResizeHandleClass } from "./content-layout-recipes";
+import { CONTENT_LAYOUT_RESIZE_HANDLE_SIZE } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
+import { contentLayoutResizeHandleClass } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
 import type {
   ContentLayoutResizeIntent,
   ContentLayoutResizeStartHandler,

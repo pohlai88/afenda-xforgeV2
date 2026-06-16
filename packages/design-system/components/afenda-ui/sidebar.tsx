@@ -36,6 +36,7 @@ import {
 } from "./sidebar-behavior";
 import {
   sidebarIconRailControlTriggerClass,
+  sidebarIconRailGroupLabelClass,
   sidebarIconRailInnerClass,
   sidebarIconRailMenuButtonClass,
   sidebarIconRailMenuClass,
@@ -206,8 +207,18 @@ function SidebarProvider({
   const toggleSidebar = useCallback(() => {
     if (isMobile) {
       setOpenMobile((current) => !current);
+      return;
     }
-  }, [isMobile]);
+
+    if (behaviorMode === "expanded") {
+      setBehaviorMode("icon");
+      return;
+    }
+
+    if (behaviorMode === "icon" || behaviorMode === "hover") {
+      setBehaviorMode("expanded");
+    }
+  }, [behaviorMode, isMobile, setBehaviorMode]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -258,7 +269,7 @@ function SidebarProvider({
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <TooltipProvider delayDuration={350} skipDelayDuration={100}>
+      <TooltipProvider delayDuration={0} skipDelayDuration={100}>
         <div
           className={cn(
             "group/sidebar-wrapper flex min-h-svh w-full has-data-[variant=inset]:bg-surface-muted",
@@ -458,7 +469,7 @@ function SidebarControlMenu({
         >
           <PanelLeftIcon
             aria-hidden="true"
-            className="size-[18px] stroke-[1.65] transition-opacity duration-150 ease-out"
+            className="size-4 shrink-0"
           />
         </Button>
       </DropdownMenuTrigger>
@@ -598,7 +609,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-hidden group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:overflow-hidden",
+        "flex min-h-0 flex-1 flex-col gap-2 overflow-hidden group-data-[collapsible=icon]:gap-0 group-data-[collapsible=icon]:overflow-x-hidden group-data-[collapsible=icon]:overflow-hidden",
         recipe("motionReduce"),
         className
       )}
@@ -635,7 +646,8 @@ function SidebarGroupLabel({
   return (
     <Comp
       className={cn(
-        "flex h-8 shrink-0 items-center rounded-[var(--xforge-radius-sm)] px-2 text-text-secondary outline-none transition-opacity duration-200 ease-linear group-data-[collapsible=icon]:hidden group-data-[collapsible=icon]:m-0 group-data-[collapsible=icon]:h-0 group-data-[collapsible=icon]:overflow-hidden group-data-[collapsible=icon]:p-0",
+        "flex h-8 shrink-0 items-center rounded-[var(--xforge-radius-sm)] px-2 text-text-secondary outline-none transition-opacity duration-200 ease-linear",
+        sidebarIconRailGroupLabelClass,
         recipe(
           "metadataText",
           "focusRingOnly",
@@ -749,7 +761,7 @@ const sidebarMenuButtonVariants = cva(
       size: {
         default: "h-8",
         sm: "h-7 text-[12px]",
-        lg: "h-12 group-data-[collapsible=icon]:p-0!",
+        lg: "h-12 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:bg-transparent!",
       },
     },
     defaultVariants: {

@@ -2,8 +2,12 @@
 
 import { cn } from "@repo/design-system/lib/utils";
 import { memo } from "react";
-import { blockRecipe } from "../../block-recipes";
-import { sidebarGroupLabelClass, sidebarIconRailHiddenClass, sidebarLabelRowClass } from "./sidebar-recipes";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+import {
+  sidebarGroupLabelClass,
+  sidebarIconRailHiddenClass,
+  sidebarLabelRowClass,
+} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
 import type { SidebarLabelGroupPanelProps, SidebarLabelTone } from "./sidebar-types";
 
 const labelToneClassName: Record<SidebarLabelTone, string> = {

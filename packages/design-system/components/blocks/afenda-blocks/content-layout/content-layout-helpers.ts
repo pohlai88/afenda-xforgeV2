@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
-import { blockRecipe } from "../../block-recipes";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 import type { BlockDensity } from "../../foundation";
-import { DEFAULT_CONTENT_LAYOUT_INSETS } from "./content-layout-constants";
+import { DEFAULT_CONTENT_LAYOUT_INSETS } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
 import type {
   ContentLayoutBodyGridInput,
   ContentLayoutGeometry,
@@ -64,6 +64,18 @@ function geometryToContainerStyle(geometry: ContentLayoutGeometry): CSSPropertie
     top: `${geometry.y}px`,
     width: `${geometry.width}px`,
   };
+}
+
+export function applyGeometryToElement(
+  element: HTMLElement,
+  geometry: ContentLayoutGeometry
+): void {
+  element.style.bottom = "auto";
+  element.style.height = `${geometry.height}px`;
+  element.style.left = `${geometry.x}px`;
+  element.style.right = "auto";
+  element.style.top = `${geometry.y}px`;
+  element.style.width = `${geometry.width}px`;
 }
 
 export function resolveContentLayoutInsetStyle(

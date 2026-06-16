@@ -1,48 +1,45 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
-import { memo, useMemo } from "react";
 import {
   SidebarMenuButton,
   SidebarMenuItem,
-} from "../../../afenda-ui/sidebar";
-import { defaultSidebarLink } from "./sidebar-link-defaults";
+} from "@repo/design-system/components/afenda-ui/sidebar";
+import { cn } from "@repo/design-system/lib/utils";
+import { memo } from "react";
+import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
 import {
   sidebarIconRailHiddenClass,
   sidebarIconRailIconClass,
+  sidebarNavItemBaseClass,
   sidebarNavItemIdleClass,
   sidebarNavItemSelectedClass,
-} from "./sidebar-recipes";
+} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
 import type { SidebarNavItemRowProps } from "./sidebar-types";
 
 export const SidebarNavItemRow = memo(function SidebarNavItemRow({
   item,
-  renderNavItemLink = defaultSidebarLink,
+  renderLink,
   selected,
 }: SidebarNavItemRowProps) {
   const Icon = item.icon;
-
-  const tooltip = useMemo(
-    () => ({
-      description: item.description,
-      label: item.label,
-      shortcut: item.shortcut,
-    }),
-    [item.description, item.label, item.shortcut]
-  );
+  const linkRenderer = resolveSidebarLinkRenderer(renderLink);
 
   return (
     <SidebarMenuItem data-slot={`app-sidebar-nav-item-${item.id}`}>
       <SidebarMenuButton
         asChild
         isActive={selected}
-        tooltip={tooltip}
+        tooltip={{
+          description: item.description,
+          label: item.label,
+          shortcut: item.shortcut,
+        }}
         className={cn(
-          selected ? sidebarNavItemSelectedClass : sidebarNavItemIdleClass,
-          "h-8 text-[12px] leading-4"
+          sidebarNavItemBaseClass,
+          selected ? sidebarNavItemSelectedClass : sidebarNavItemIdleClass
         )}
       >
-        {renderNavItemLink({
+        {linkRenderer({
           "aria-current": selected ? "page" : undefined,
           className: "",
           href: item.href,

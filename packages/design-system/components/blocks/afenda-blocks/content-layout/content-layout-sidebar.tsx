@@ -1,13 +1,15 @@
 "use client";
 
-import { Button } from "../../../afenda-ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import {
+  contentLayoutSidebarAriaLabel,
+  contentLayoutSidebarToggleAriaLabel,
   DEFAULT_CONTENT_LAYOUT_SIDEBAR_COLLAPSED_WIDTH,
   DEFAULT_CONTENT_LAYOUT_SIDEBAR_WIDTH,
-} from "./content-layout-constants";
-import { contentLayoutSidebarClass } from "./content-layout-recipes";
+} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
+import { contentLayoutSidebarClass } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
 import type {
   ContentLayoutSidebarPanelProps,
   ContentLayoutSidebarProps,
@@ -52,7 +54,7 @@ function ContentLayoutSidebarPanel({
 
   return (
     <aside
-      aria-label={config?.ariaLabel ?? `${side} sidebar`}
+      aria-label={contentLayoutSidebarAriaLabel(side, config?.ariaLabel)}
       className={cn(
         contentLayoutSidebarClass,
         side === "left" ? "border-r" : "border-l",
@@ -68,9 +70,7 @@ function ContentLayoutSidebarPanel({
       <div className="flex shrink-0 items-center justify-end border-border-subtle border-b px-1 py-0.5">
         <Button
           aria-expanded={!collapsed}
-          aria-label={
-            collapsed ? `Expand ${side} sidebar` : `Collapse ${side} sidebar`
-          }
+          aria-label={contentLayoutSidebarToggleAriaLabel(side, collapsed)}
           className="size-7"
           onClick={() => {
             setCollapsed((current) => !current);

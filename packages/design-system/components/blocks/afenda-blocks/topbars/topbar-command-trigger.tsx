@@ -1,22 +1,28 @@
 "use client";
 
-import { Input } from "../../../afenda-ui/input";
-import { Kbd } from "../../../afenda-ui/kbd";
+import { Input } from "@repo/design-system/components/afenda-ui/input";
+import { Kbd } from "@repo/design-system/components/afenda-ui/kbd";
 import { cn } from "@repo/design-system/lib/utils";
+import {
+  TOPBAR_DEFAULT_COMMAND_DESCRIPTION,
+  TOPBAR_DEFAULT_COMMAND_LABEL,
+  TOPBAR_DEFAULT_COMMAND_PLACEHOLDER,
+  TOPBAR_DEFAULT_COMMAND_SHORTCUT,
+} from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
+import { topbarCommandSearchClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
 import { SearchIcon } from "lucide-react";
 import { useCallback, useState, type FormEvent, type KeyboardEvent } from "react";
-import { topbarCommandSearchClass } from "./topbar-recipes";
 import { TopbarTooltip } from "./topbar-tooltip";
 import type { TopbarCommandTriggerProps } from "./topbar-types";
 
 export function TopbarCommandTrigger({
   className,
-  description = "Search records inline or open the command palette.",
-  label = "Search workspace",
+  description = TOPBAR_DEFAULT_COMMAND_DESCRIPTION,
+  label = TOPBAR_DEFAULT_COMMAND_LABEL,
   onOpen,
   onSearch,
-  placeholder = "Search…",
-  shortcut = "⌘K",
+  placeholder = TOPBAR_DEFAULT_COMMAND_PLACEHOLDER,
+  shortcut = TOPBAR_DEFAULT_COMMAND_SHORTCUT,
 }: TopbarCommandTriggerProps) {
   const [query, setQuery] = useState("");
 

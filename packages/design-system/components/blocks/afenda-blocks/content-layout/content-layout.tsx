@@ -1,35 +1,35 @@
 "use client";
 
 import { cn } from "@repo/design-system/lib/utils";
+import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
 import type { CSSProperties } from "react";
-import { useRef } from "react";
-import { blockRecipe } from "../../block-recipes";
-import { ContentLayoutBottomDrawer } from "./content-layout-bottom-drawer";
-import { ContentLayoutBreadcrumbsTopbar } from "./content-layout-breadcrumbs-topbar";
+import { useMemo, useRef } from "react";
 import {
   DEFAULT_CONTENT_LAYOUT_MIN_HEIGHT,
   DEFAULT_CONTENT_LAYOUT_MIN_WIDTH,
   DEFAULT_CONTENT_LAYOUT_RIGHT_SIDEBAR_WIDTH,
   DEFAULT_CONTENT_LAYOUT_TOPBAR_HEIGHT,
   EMPTY_CONTENT_LAYOUT_BREADCRUMBS,
-} from "./content-layout-constants";
-import { ContentLayoutFooter } from "./content-layout-footer";
+} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
 import {
   contentLayoutDensityClassName,
   getContentLayoutBodyGridClassName,
   resolveContentLayoutInsetStyle,
-} from "./content-layout-helpers";
+} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-helpers";
 import {
+  contentLayoutBlockShellClass,
   contentLayoutBodyClass,
   contentLayoutMainClass,
-  contentLayoutShellClass,
-} from "./content-layout-recipes";
+} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
+import { ContentLayoutBottomDrawer } from "./content-layout-bottom-drawer";
+import { ContentLayoutBreadcrumbsTopbar } from "./content-layout-breadcrumbs-topbar";
+import { ContentLayoutFooter } from "./content-layout-footer";
 import { ContentLayoutResizeHandles } from "./content-layout-resize-handles";
 import { ContentLayoutSidebar } from "./content-layout-sidebar";
 import type { ContentLayoutBlockProps } from "./content-layout-types";
 import { useContentLayoutResize } from "./use-content-layout-resize";
 
-function ContentLayoutBlock({
+export function ContentLayoutBlock({
   blockId,
   bottomDrawer,
   bottomDrawerConfig,
@@ -58,8 +58,10 @@ function ContentLayoutBlock({
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = externalStageRef ?? localStageRef;
   const isResizable = resizeConfig?.adjustable ?? false;
+  const hasLeftSidebar = Boolean(leftSidebar);
+  const hasRightSidebar = Boolean(rightSidebar);
 
-  const { containerStyle, startResize } = useContentLayoutResize({
+  const { containerStyle, isResizing, startResize } = useContentLayoutResize({
     containerRef,
     enabled: isResizable,
     maxHeight: resizeConfig?.maxHeight,
@@ -69,30 +71,56 @@ function ContentLayoutBlock({
     stageRef,
   });
 
-  const insetStyle = resolveContentLayoutInsetStyle(containerStyle, resizeConfig);
-  const bodyGridClassName = getContentLayoutBodyGridClassName({
-    hasLeftSidebar: Boolean(leftSidebar),
-    hasRightSidebar: Boolean(rightSidebar),
-  });
+  const insetStyle = useMemo(() => {
+    if (isResizing) {
+      return undefined;
+    }
+
+    return resolveContentLayoutInsetStyle(containerStyle, resizeConfig);
+  }, [containerStyle, isResizing, resizeConfig]);
+
+  const bodyGridClassName = useMemo(
+    () =>
+      getContentLayoutBodyGridClassName({
+        hasLeftSidebar,
+        hasRightSidebar,
+      }),
+    [hasLeftSidebar, hasRightSidebar]
+  );
+
+  const mainClassName = useMemo(
+    () =>
+      cn(
+        contentLayoutMainClass,
+        contentLayoutDensityClassName[density],
+        contentClassName
+      ),
+    [contentClassName, density]
+  );
+
+  const panelStyle = useMemo(
+    () =>
+      ({
+        "--content-layout-topbar-height": DEFAULT_CONTENT_LAYOUT_TOPBAR_HEIGHT,
+        ...style,
+        ...insetStyle,
+      }) as CSSProperties,
+    [insetStyle, style]
+  );
 
   const panel = (
     <div
-      className={cn(contentLayoutShellClass, className)}
+      className={cn(contentLayoutBlockShellClass, className)}
       data-adjustable={isResizable ? "true" : "false"}
       data-block-id={blockId}
       data-density={density}
       data-intent={intent}
+      data-resizing={isResizing ? "true" : "false"}
       data-slot="content-layout"
       data-state={state}
       data-tone={tone}
       ref={containerRef}
-      style={
-        {
-          "--content-layout-topbar-height": DEFAULT_CONTENT_LAYOUT_TOPBAR_HEIGHT,
-          ...style,
-          ...insetStyle,
-        } as CSSProperties
-      }
+      style={panelStyle}
       {...props}
     >
       <ContentLayoutBreadcrumbsTopbar
@@ -103,24 +131,20 @@ function ContentLayoutBlock({
         className={cn(contentLayoutBodyClass, bodyGridClassName)}
         data-slot="content-layout-body"
       >
-        {leftSidebar ? (
+        {hasLeftSidebar ? (
           <ContentLayoutSidebar config={leftSidebarConfig} side="left">
             {leftSidebar}
           </ContentLayoutSidebar>
         ) : null}
         <main
           aria-label="Main content"
-          className={cn(
-            contentLayoutMainClass,
-            contentLayoutDensityClassName[density],
-            contentClassName
-          )}
+          className={mainClassName}
           data-slot="content-layout-main"
           tabIndex={0}
         >
           {children}
         </main>
-        {rightSidebar ? (
+        {hasRightSidebar ? (
           <ContentLayoutSidebar
             config={rightSidebarConfig}
             defaultWidth={DEFAULT_CONTENT_LAYOUT_RIGHT_SIDEBAR_WIDTH}
@@ -135,7 +159,9 @@ function ContentLayoutBlock({
           {bottomDrawer}
         </ContentLayoutBottomDrawer>
       ) : null}
-      {footer ?? (
+      {footer !== undefined ? (
+        footer
+      ) : (
         <ContentLayoutFooter copyright={footerCopyright} links={footerLinks} />
       )}
       {isResizable ? (
@@ -158,5 +184,3 @@ function ContentLayoutBlock({
     </section>
   );
 }
-
-export { ContentLayoutBlock };

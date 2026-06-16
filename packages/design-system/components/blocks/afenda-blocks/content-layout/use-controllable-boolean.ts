@@ -22,19 +22,16 @@ export function useControllableBoolean({
 
   const setValue = useCallback<ControllableBooleanSetter>(
     (next) => {
+      const resolved =
+        typeof next === "function" ? next(controlled ?? internalValue) : next;
+
       if (controlled === undefined) {
-        setInternalValue((current) => {
-          const resolved = typeof next === "function" ? next(current) : next;
-          onChange?.(resolved);
-          return resolved;
-        });
-        return;
+        setInternalValue(resolved);
       }
 
-      const resolved = typeof next === "function" ? next(controlled) : next;
       onChange?.(resolved);
     },
-    [controlled, onChange]
+    [controlled, internalValue, onChange]
   );
 
   return [value, setValue] as const;

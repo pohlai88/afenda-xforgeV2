@@ -1,15 +1,16 @@
 "use client";
 
 import type { CSSProperties, PointerEvent as ReactPointerEvent, RefObject } from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   DEFAULT_CONTENT_LAYOUT_MIN_HEIGHT,
   DEFAULT_CONTENT_LAYOUT_MIN_WIDTH,
-} from "./content-layout-constants";
+} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
 import {
   applyContentLayoutResize,
+  applyGeometryToElement,
   geometryToContainerStyle,
-} from "./content-layout-helpers";
+} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-helpers";
 import type {
   ContentLayoutGeometry,
   ContentLayoutResizeIntent,
@@ -28,6 +29,7 @@ interface UseContentLayoutResizeOptions {
 
 interface UseContentLayoutResizeResult {
   readonly containerStyle: CSSProperties | undefined;
+  readonly isResizing: boolean;
   readonly startResize: ContentLayoutResizeStartHandler;
 }
 
@@ -41,13 +43,52 @@ function useContentLayoutResize({
   stageRef,
 }: UseContentLayoutResizeOptions): UseContentLayoutResizeResult {
   const [geometry, setGeometry] = useState<ContentLayoutGeometry | null>(null);
-  const containerStyle = geometry
-    ? geometryToContainerStyle(geometry)
-    : undefined;
+  const [isResizing, setIsResizing] = useState(false);
+  const liveGeometryRef = useRef<ContentLayoutGeometry | null>(null);
+  const optionsRef = useRef({
+    enabled,
+    maxHeight,
+    maxWidth,
+    minHeight,
+    minWidth,
+  });
+
+  optionsRef.current = {
+    enabled,
+    maxHeight,
+    maxWidth,
+    minHeight,
+    minWidth,
+  };
+
+  const containerStyle = useMemo(
+    () => (geometry ? geometryToContainerStyle(geometry) : undefined),
+    [geometry]
+  );
+
+  useLayoutEffect(() => {
+    if (!isResizing || !liveGeometryRef.current) {
+      return;
+    }
+
+    const container = containerRef.current;
+
+    if (container) {
+      applyGeometryToElement(container, liveGeometryRef.current);
+    }
+  });
 
   const startResize = useCallback<ContentLayoutResizeStartHandler>(
     (event, intent) => {
-      if (!enabled) {
+      const {
+        enabled: isEnabled,
+        maxHeight: resolvedMaxHeightOption,
+        maxWidth: resolvedMaxWidthOption,
+        minHeight: resolvedMinHeight,
+        minWidth: resolvedMinWidth,
+      } = optionsRef.current;
+
+      if (!isEnabled) {
         return;
       }
 
@@ -76,37 +117,29 @@ function useContentLayoutResize({
         x: event.clientX,
         y: event.clientY,
       };
-      const resolvedMaxWidth = maxWidth ?? stageRect.width;
-      const resolvedMaxHeight = maxHeight ?? stageRect.height;
+      const resolvedMaxWidth = resolvedMaxWidthOption ?? stageRect.width;
+      const resolvedMaxHeight = resolvedMaxHeightOption ?? stageRect.height;
 
-      let frameId: number | null = null;
-      let pendingGeometry: ContentLayoutGeometry | null = null;
+      liveGeometryRef.current = startGeometry;
+      setIsResizing(true);
+      applyGeometryToElement(container, startGeometry);
+
       let ended = false;
 
-      const flushGeometry = () => {
-        frameId = null;
-
-        if (pendingGeometry) {
-          setGeometry(pendingGeometry);
-          pendingGeometry = null;
-        }
-      };
-
       const handlePointerMove = (moveEvent: PointerEvent) => {
-        pendingGeometry = applyContentLayoutResize(
+        const nextGeometry = applyContentLayoutResize(
           intent,
           startGeometry,
           moveEvent.clientX - pointerStart.x,
           moveEvent.clientY - pointerStart.y,
-          minWidth,
-          minHeight,
+          resolvedMinWidth,
+          resolvedMinHeight,
           resolvedMaxWidth,
           resolvedMaxHeight
         );
 
-        if (frameId === null) {
-          frameId = requestAnimationFrame(flushGeometry);
-        }
+        liveGeometryRef.current = nextGeometry;
+        applyGeometryToElement(container, nextGeometry);
       };
 
       const endResize = () => {
@@ -116,11 +149,6 @@ function useContentLayoutResize({
 
         ended = true;
 
-        if (frameId !== null) {
-          cancelAnimationFrame(frameId);
-          flushGeometry();
-        }
-
         window.removeEventListener("pointermove", handlePointerMove);
         window.removeEventListener("pointerup", endResize);
         window.removeEventListener("pointercancel", endResize);
@@ -128,25 +156,26 @@ function useContentLayoutResize({
         if (captureTarget.hasPointerCapture(pointerId)) {
           captureTarget.releasePointerCapture(pointerId);
         }
+
+        const finalGeometry = liveGeometryRef.current;
+        liveGeometryRef.current = null;
+        setIsResizing(false);
+
+        if (finalGeometry) {
+          setGeometry(finalGeometry);
+        }
       };
 
       window.addEventListener("pointermove", handlePointerMove);
       window.addEventListener("pointerup", endResize, { once: true });
       window.addEventListener("pointercancel", endResize, { once: true });
     },
-    [
-      containerRef,
-      enabled,
-      maxHeight,
-      maxWidth,
-      minHeight,
-      minWidth,
-      stageRef,
-    ]
+    [containerRef, stageRef]
   );
 
   return {
     containerStyle,
+    isResizing,
     startResize,
   };
 }

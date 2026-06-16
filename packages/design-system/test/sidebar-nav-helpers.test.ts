@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   flattenSidebarNavGroups,
+  hasOperatorSidebarNavigation,
   isSidebarNavItemActive,
   resolveSidebarActiveItemIds,
   stripSidebarNavItemSelection,
@@ -105,6 +106,30 @@ describe("resolveSidebarActiveItemIds", () => {
     expect(
       [...resolveSidebarActiveItemIds(groups, "/webhooks")].sort()
     ).toEqual(["webhooks"]);
+  });
+});
+
+describe("hasOperatorSidebarNavigation", () => {
+  it("returns false when groups and labels are empty", () => {
+    expect(hasOperatorSidebarNavigation([], [])).toBe(false);
+  });
+
+  it("returns true when either nav groups or label groups exist", () => {
+    expect(
+      hasOperatorSidebarNavigation(
+        [{ id: "ops", label: "Ops", items: [baseItem] }],
+        []
+      )
+    ).toBe(true);
+    expect(
+      hasOperatorSidebarNavigation([], [
+        {
+          id: "signals",
+          label: "Signals",
+          items: [{ id: "s1", label: "Queue", tone: "warning" }],
+        },
+      ])
+    ).toBe(true);
   });
 });
 

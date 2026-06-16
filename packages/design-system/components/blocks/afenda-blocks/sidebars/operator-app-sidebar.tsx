@@ -1,41 +1,50 @@
 "use client";
 
 import { cn } from "@repo/design-system/lib/utils";
+import { SIDEBAR_EMPTY_NAVIGATION_LABEL } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-constants";
+import {
+  EMPTY_SIDEBAR_LABEL_GROUPS,
+  hasOperatorSidebarNavigation,
+} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-nav-helpers";
+import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
+import { operatorAppSidebarShellClass } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
 import { SidebarNavPanel } from "./sidebar-nav-panel";
 import { SidebarQuickActions } from "./sidebar-quick-actions";
-import { sidebarIconRailShellClass } from "./sidebar-recipes";
 import type { OperatorAppSidebarProps } from "./sidebar-types";
 
 export function OperatorAppSidebar({
+  className,
+  emptyNavigationLabel = SIDEBAR_EMPTY_NAVIGATION_LABEL,
   footer,
   groups,
   isItemActive,
-  labelGroups,
+  labelGroups = EMPTY_SIDEBAR_LABEL_GROUPS,
   pathname,
   quickActions,
-  renderActionLink,
-  renderNavItemLink,
+  renderLink,
 }: OperatorAppSidebarProps) {
+  const linkRenderer = resolveSidebarLinkRenderer(renderLink);
+  const hasNavigation = hasOperatorSidebarNavigation(groups, labelGroups);
+  const hasQuickActions = (quickActions?.length ?? 0) > 0;
+
   return (
     <div
-      className={cn(
-        "flex h-full min-h-0 w-full flex-col",
-        sidebarIconRailShellClass
-      )}
+      aria-label="Operator navigation"
+      className={cn(operatorAppSidebarShellClass, className)}
+      data-empty={!hasQuickActions && !hasNavigation && !footer ? "" : undefined}
       data-slot="operator-app-sidebar"
     >
-      {quickActions?.length ? (
-        <SidebarQuickActions
-          actions={quickActions}
-          renderActionLink={renderActionLink}
-        />
-      ) : null}
+      <SidebarQuickActions
+        actions={quickActions ?? []}
+        renderLink={linkRenderer}
+      />
       <SidebarNavPanel
+        emptyNavigationLabel={emptyNavigationLabel}
         groups={groups}
         isItemActive={isItemActive}
         labelGroups={labelGroups}
         pathname={pathname}
-        renderNavItemLink={renderNavItemLink}
+        renderLink={linkRenderer}
       />
       {footer}
     </div>

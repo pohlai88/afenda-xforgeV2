@@ -1,13 +1,17 @@
 "use client";
 
-import { Button } from "../../../afenda-ui/button";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import { cn } from "@repo/design-system/lib/utils";
 import { ChevronDownIcon } from "lucide-react";
+import { useMemo } from "react";
 import {
+  CONTENT_LAYOUT_BOTTOM_DRAWER_COLLAPSE_ARIA_LABEL,
+  CONTENT_LAYOUT_BOTTOM_DRAWER_EXPAND_ARIA_LABEL,
+  CONTENT_LAYOUT_DEFAULT_BOTTOM_DRAWER_LABEL,
   DEFAULT_CONTENT_LAYOUT_BOTTOM_DRAWER_MAX,
   DEFAULT_CONTENT_LAYOUT_BOTTOM_DRAWER_MIN,
-} from "./content-layout-constants";
-import { contentLayoutDrawerClass } from "./content-layout-recipes";
+} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
+import { contentLayoutDrawerClass } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
 import type {
   ContentLayoutBottomDrawerPanelProps,
   ContentLayoutBottomDrawerProps,
@@ -38,23 +42,26 @@ function ContentLayoutBottomDrawerPanel({
     defaultValue: config?.defaultOpen ?? false,
     onChange: config?.onOpenChange,
   });
-  const label = config?.label ?? "Bottom drawer";
+  const label = config?.label ?? CONTENT_LAYOUT_DEFAULT_BOTTOM_DRAWER_LABEL;
+  const openStyle = useMemo(
+    () =>
+      open
+        ? {
+            maxHeight:
+              config?.maxHeight ?? DEFAULT_CONTENT_LAYOUT_BOTTOM_DRAWER_MAX,
+            minHeight:
+              config?.minHeight ?? DEFAULT_CONTENT_LAYOUT_BOTTOM_DRAWER_MIN,
+          }
+        : undefined,
+    [config?.maxHeight, config?.minHeight, open]
+  );
 
   return (
     <section
       className={cn(contentLayoutDrawerClass, config?.className)}
       data-open={open ? "true" : "false"}
       data-slot="content-layout-bottom-drawer"
-      style={
-        open
-          ? {
-              maxHeight:
-                config?.maxHeight ?? DEFAULT_CONTENT_LAYOUT_BOTTOM_DRAWER_MAX,
-              minHeight:
-                config?.minHeight ?? DEFAULT_CONTENT_LAYOUT_BOTTOM_DRAWER_MIN,
-            }
-          : undefined
-      }
+      style={openStyle}
     >
       <div className="flex shrink-0 items-center justify-between gap-2 border-border-subtle border-b px-3 py-1.5">
         <span className="font-medium text-[11px] text-text-secondary">
@@ -62,7 +69,11 @@ function ContentLayoutBottomDrawerPanel({
         </span>
         <Button
           aria-expanded={open}
-          aria-label={open ? "Collapse bottom drawer" : "Expand bottom drawer"}
+          aria-label={
+            open
+              ? CONTENT_LAYOUT_BOTTOM_DRAWER_COLLAPSE_ARIA_LABEL
+              : CONTENT_LAYOUT_BOTTOM_DRAWER_EXPAND_ARIA_LABEL
+          }
           className="size-7"
           onClick={() => {
             setOpen((current) => !current);

@@ -71,14 +71,14 @@ export interface SidebarLinkRenderProps {
 
 export interface SidebarNavItemRowProps {
   readonly item: SidebarNavItem;
-  readonly renderNavItemLink?: SidebarLinkRenderer;
+  readonly renderLink?: SidebarLinkRenderer;
   readonly selected: boolean;
 }
 
 export interface SidebarNavGroupPanelProps {
   readonly activeItemIds: ReadonlySet<string>;
   readonly group: SidebarNavGroup;
-  readonly renderNavItemLink?: SidebarLinkRenderer;
+  readonly renderLink?: SidebarLinkRenderer;
 }
 
 export interface SidebarLabelGroupPanelProps {
@@ -87,17 +87,18 @@ export interface SidebarLabelGroupPanelProps {
 
 export interface SidebarNavPanelProps {
   readonly className?: string;
+  readonly emptyNavigationLabel?: string;
   readonly groups: readonly SidebarNavGroup[];
   readonly isItemActive?: SidebarItemActiveFn;
   readonly labelGroups?: readonly SidebarLabelGroup[];
   readonly pathname?: string;
-  readonly renderNavItemLink?: SidebarLinkRenderer;
+  readonly renderLink?: SidebarLinkRenderer;
 }
 
 export interface SidebarQuickActionsProps {
   readonly actions: readonly SidebarQuickAction[];
   readonly className?: string;
-  readonly renderActionLink?: SidebarLinkRenderer;
+  readonly renderLink?: SidebarLinkRenderer;
 }
 
 export interface SidebarFooterProfileProps {
@@ -109,16 +110,17 @@ export interface SidebarFooterProfileProps {
   readonly profileDescription?: string;
   readonly renderLink?: SidebarLinkRenderer;
   readonly secondaryLabel?: string;
-  readonly showSidebarControl?: boolean;
+  readonly trailingControl?: ReactNode;
 }
 
 export interface OperatorAppSidebarProps {
+  readonly className?: string;
+  readonly emptyNavigationLabel?: string;
   readonly footer?: ReactNode;
   readonly groups: readonly SidebarNavGroup[];
   readonly isItemActive?: SidebarItemActiveFn;
   readonly labelGroups?: readonly SidebarLabelGroup[];
   readonly pathname?: string;
   readonly quickActions?: readonly SidebarQuickAction[];
-  readonly renderActionLink?: SidebarLinkRenderer;
-  readonly renderNavItemLink?: SidebarLinkRenderer;
+  readonly renderLink?: SidebarLinkRenderer;
 }

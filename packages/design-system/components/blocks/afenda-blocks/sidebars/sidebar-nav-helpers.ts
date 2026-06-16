@@ -7,6 +7,13 @@ import type {
 
 export const EMPTY_SIDEBAR_LABEL_GROUPS: readonly SidebarLabelGroup[] = [];
 
+export function hasOperatorSidebarNavigation(
+  groups: readonly SidebarNavGroup[],
+  labelGroups: readonly SidebarLabelGroup[] = EMPTY_SIDEBAR_LABEL_GROUPS
+): boolean {
+  return groups.length > 0 || labelGroups.length > 0;
+}
+
 function normalizeSidebarPath(path: string): string {
   if (path.length <= 1) {
     return path;

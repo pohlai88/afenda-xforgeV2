@@ -6,14 +6,14 @@ import {
   MenubarItem,
   MenubarMenu,
   MenubarTrigger,
-} from "../../../afenda-ui/menubar";
+} from "@repo/design-system/components/afenda-ui/menubar";
 import { cn } from "@repo/design-system/lib/utils";
-import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import {
   topbarScopeCaptionClass,
   topbarScopeTriggerClass,
   topbarScopeValueClass,
-} from "./topbar-recipes";
+} from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
+import { CheckIcon, ChevronDownIcon } from "lucide-react";
 import { TopbarTooltip } from "./topbar-tooltip";
 import type { TopbarScopeSwitcherProps } from "./topbar-types";
 

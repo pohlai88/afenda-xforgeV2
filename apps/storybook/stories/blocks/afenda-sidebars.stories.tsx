@@ -7,9 +7,11 @@ import {
   OperatorAppSidebar,
   Sidebar,
   SidebarFooterProfile,
+  SidebarFooterTrailingControl,
   SidebarNavPanel,
   SidebarProvider,
   SidebarQuickActions,
+  SidebarRail,
   stripSidebarNavItemSelection,
   type SidebarLabelGroup,
   type SidebarLinkRenderProps,
@@ -64,15 +66,14 @@ function DemoOperatorSidebar() {
           primaryLabel="Mina Shah"
           renderLink={renderLink}
           secondaryLabel="Control owner"
-          showSidebarControl
+          trailingControl={<SidebarFooterTrailingControl />}
         />
       }
       groups={demoInteractiveNavGroups}
       labelGroups={DEMO_ERP_SIDEBAR_LABEL_GROUPS}
       pathname={pathname}
       quickActions={DEMO_ERP_SIDEBAR_QUICK_ACTIONS}
-      renderActionLink={renderLink}
-      renderNavItemLink={renderLink}
+      renderLink={renderLink}
     />
   );
 }
@@ -89,7 +90,7 @@ function DemoNavPanel({
       groups={demoInteractiveNavGroups}
       labelGroups={labelGroups}
       pathname={pathname}
-      renderNavItemLink={renderLink}
+      renderLink={renderLink}
     />
   );
 }
@@ -100,10 +101,11 @@ function DemoOperatorSidebarStory({
   readonly children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider defaultOpen>
+    <SidebarProvider defaultBehaviorMode="expanded" defaultOpen>
       <div className="flex h-svh w-full bg-surface-canvas">
         <Sidebar collapsible="icon" variant="sidebar">
           {children}
+          <SidebarRail />
         </Sidebar>
         <div className="grid min-w-0 flex-1 place-items-center p-8 text-[13px] text-text-secondary">
           Main workspace stage — app owns route content.
@@ -122,7 +124,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Reusable operator app sidebar with quick actions, grouped navigation, optional label rails, and footer profile slot. Inject renderLink for framework routers; defaults use anchor tags.",
+          "Operator app sidebar (shadcn sidebar-07 icon collapse). Use `collapsible=\"icon\"` on `Sidebar`, `SidebarRail`, and tooltips when collapsed. Quick actions, grouped nav, optional labels, footer profile.",
       },
     },
   },
@@ -188,7 +190,7 @@ export const FooterProfileOnly: Story = {
         href="#profile"
         primaryLabel="Mina Shah"
         secondaryLabel="Control owner"
-        showSidebarControl
+        trailingControl={<SidebarFooterTrailingControl />}
       />
     </DemoOperatorSidebarStory>
   ),
@@ -198,6 +200,27 @@ export const NavAndLabels: Story = {
   render: () => (
     <DemoOperatorSidebarStory>
       <DemoNavPanel labelGroups={DEMO_ERP_SIDEBAR_LABEL_GROUPS} />
+    </DemoOperatorSidebarStory>
+  ),
+};
+
+export const EmptyNavigation: Story = {
+  render: () => (
+    <DemoOperatorSidebarStory>
+      <OperatorAppSidebar
+        footer={
+          <SidebarFooterProfile
+            avatarFallback="MS"
+            href="#profile"
+            primaryLabel="Mina Shah"
+            secondaryLabel="Control owner"
+            trailingControl={<SidebarFooterTrailingControl />}
+          />
+        }
+        groups={[]}
+        pathname="/"
+        quickActions={DEMO_ERP_SIDEBAR_QUICK_ACTIONS}
+      />
     </DemoOperatorSidebarStory>
   ),
 };

@@ -1,14 +1,19 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "../../../afenda-ui/avatar";
-import { Button } from "../../../afenda-ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@repo/design-system/components/afenda-ui/avatar";
+import { Button } from "@repo/design-system/components/afenda-ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "../../../afenda-ui/dropdown-menu";
+} from "@repo/design-system/components/afenda-ui/dropdown-menu";
 import { cn } from "@repo/design-system/lib/utils";
+import {
+  TOPBAR_DEFAULT_USER_MENU_BUTTON_LABEL,
+  TOPBAR_DEFAULT_USER_MENU_DESCRIPTION,
+  TOPBAR_DEFAULT_USER_MENU_TOOLTIP,
+} from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import { TopbarTooltip } from "./topbar-tooltip";
 import type { TopbarUserMenuProps } from "./topbar-types";
 
@@ -17,11 +22,11 @@ export function TopbarUserMenu({
   avatarSrc,
   children,
   className,
-  description = "Account settings and sign out.",
+  description = TOPBAR_DEFAULT_USER_MENU_DESCRIPTION,
   displayName,
   email,
-  menuLabel = "Open user menu",
-  tooltip = "Account menu",
+  menuLabel = TOPBAR_DEFAULT_USER_MENU_BUTTON_LABEL,
+  tooltip = TOPBAR_DEFAULT_USER_MENU_TOOLTIP,
 }: TopbarUserMenuProps) {
   return (
     <DropdownMenu>

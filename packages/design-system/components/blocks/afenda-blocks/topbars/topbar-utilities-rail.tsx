@@ -4,12 +4,12 @@ import { cn } from "@repo/design-system/lib/utils";
 import {
   TOPBAR_MAX_PINNED_UTILITY_SLOTS,
   TOPBAR_MAX_TOTAL_UTILITY_SLOTS,
-} from "./topbar-constants";
-import { TopbarActionsMenu } from "./topbar-actions-menu";
+} from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
 import {
   topbarUtilitiesFixedClusterClass,
   topbarUtilitiesPinnedClass,
-} from "./topbar-recipes";
+} from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
+import { TopbarActionsMenu } from "./topbar-actions-menu";
 import type { TopbarUtilitiesRailProps } from "./topbar-types";
 import { TopbarUserMenu } from "./topbar-user-menu";
 import { TopbarUtilitiesBar } from "./topbar-utilities-bar";

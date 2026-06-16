@@ -1,11 +1,11 @@
 "use client";
 
-import { Kbd } from "../../../afenda-ui/kbd";
+import { Kbd } from "@repo/design-system/components/afenda-ui/kbd";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "../../../afenda-ui/tooltip";
+} from "@repo/design-system/components/afenda-ui/tooltip";
 import { cn } from "@repo/design-system/lib/utils";
 import type { ReactNode } from "react";
 

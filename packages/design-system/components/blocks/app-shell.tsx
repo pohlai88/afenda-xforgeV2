@@ -1,8 +1,9 @@
 "use client";
 
 import {
-  type Sidebar,
+  Sidebar,
   SidebarProvider,
+  useSidebar,
 } from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type {
@@ -14,23 +15,11 @@ import type {
 } from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { blockRecipe } from "./block-recipes";
-import type { BlockBaseProps } from "./foundation";
+import type { BlockBaseProps, BlockDensity } from "./foundation";
 
 type AppShellAuditDockPlacement = "bottom" | "right";
 type AppShellSiteContainerMode = "floating" | "docked";
-type AppShellSiteContainerResizeIntent =
-  | "resize-bottom"
-  | "resize-corner"
-  | "resize-right";
-
-const DEFAULT_SITE_CONTAINER_BOTTOM = "1.5rem";
-const DEFAULT_SITE_CONTAINER_LEFT = "18rem";
-const DEFAULT_SITE_CONTAINER_RIGHT = "2rem";
-const DEFAULT_SITE_CONTAINER_TOP = "3rem";
-const DEFAULT_APP_TOPBAR_HEIGHT = "2.75rem";
-const DEFAULT_SITE_CONTAINER_MIN_HEIGHT = 360;
-const DEFAULT_SITE_CONTAINER_MIN_WIDTH = 640;
-const SITE_CONTAINER_SNAP_DISTANCE = 20;
+type AppShellSiteContainerResizeIntent = "resize-bottom" | "resize-right";
 
 interface AppShellSidebarConfig {
   readonly className?: string;
@@ -89,59 +78,63 @@ type AuthenticatedAppShellBlockProps = Omit<
     readonly siteTopbar?: ReactNode;
   };
 
-function AuthenticatedAppShellBlock({
-  appSidebar: _appSidebar,
-  appSidebarConfig: _appSidebarConfig,
-  appTopbar,
-  appTopbarHeight = DEFAULT_APP_TOPBAR_HEIGHT,
-  auditDock: _auditDock,
-  auditDockPlacement: _auditDockPlacement,
-  auditEvidenceScopeSync: _auditEvidenceScopeSync,
-  blockId,
-  children: _children,
-  className,
-  contentClassName: _contentClassName,
-  contentPadded: _contentPadded,
-  defaultOpen: _defaultOpen,
-  density = "default",
-  enableSidebarKeyboardShortcut: _enableSidebarKeyboardShortcut,
-  intent = "operation",
-  siteBottomDrawer: _siteBottomDrawer,
+const DEFAULT_APP_TOPBAR_HEIGHT = "var(--xforge-layout-app-topbar)";
+const DEFAULT_SITE_CONTAINER_BOTTOM = "var(--xforge-layout-site-inset)";
+const DEFAULT_SITE_CONTAINER_LEFT = "var(--xforge-layout-site-inset)";
+const DEFAULT_SITE_CONTAINER_MIN_HEIGHT = 360;
+const DEFAULT_SITE_CONTAINER_MIN_WIDTH = 640;
+const DEFAULT_SITE_CONTAINER_RIGHT = "var(--xforge-layout-site-inset)";
+const DEFAULT_SITE_CONTAINER_TOP = "var(--xforge-layout-site-inset)";
+const DEFAULT_SITE_SIDEBAR_WIDTH = "var(--xforge-layout-site-sidebar)";
+const DEFAULT_SITE_TOPBAR_HEIGHT = "var(--xforge-layout-site-topbar)";
+const SITE_CONTAINER_SNAP_DISTANCE = 20;
+
+const appShellMainDensityClassName: Record<BlockDensity, string> = {
+  compact: blockRecipe("blockCompact"),
+  comfortable: "gap-[var(--xforge-space-6)]",
+  default: blockRecipe("blockComfortable"),
+};
+
+function getSiteBodyGridClassName({
+  hasLeftSidebar,
+  hasRightSidebar,
+}: {
+  readonly hasLeftSidebar: boolean;
+  readonly hasRightSidebar: boolean;
+}): string {
+  if (hasLeftSidebar && hasRightSidebar) {
+    return "grid-cols-[auto_minmax(0,1fr)_auto]";
+  }
+
+  if (hasLeftSidebar) {
+    return "grid-cols-[auto_minmax(0,1fr)]";
+  }
+
+  if (hasRightSidebar) {
+    return "grid-cols-[minmax(0,1fr)_auto]";
+  }
+
+  return "grid-cols-1";
+}
+
+function useSiteContainerResize({
+  desktopStageRef,
+  isResizable,
+  minHeight,
+  minWidth,
   siteContainerConfig,
-  siteRightSidebar: _siteRightSidebar,
-  siteSidebarConfig: _siteSidebarConfig,
-  siteSidebarLeft: _siteSidebarLeft,
-  siteTopbar: _siteTopbar,
-  state = "ready",
-  tone = "neutral",
-  style,
-  ...props
-}: AuthenticatedAppShellBlockProps): ReactElement {
-  const desktopPageRef = useRef<HTMLElement | null>(null);
-  const siteContainerRef = useRef<HTMLElement | null>(null);
+  siteContainerRef,
+}: {
+  readonly desktopStageRef: React.RefObject<HTMLElement | null>;
+  readonly isResizable: boolean;
+  readonly minHeight: number;
+  readonly minWidth: number;
+  readonly siteContainerConfig?: AppShellSiteContainerConfig;
+  readonly siteContainerRef: React.RefObject<HTMLDivElement | null>;
+}) {
   const [siteGeometry, setSiteGeometry] =
     useState<AppShellSiteContainerGeometry | null>(null);
-  const isResizable = siteContainerConfig?.adjustable ?? true;
-  const minWidth =
-    siteContainerConfig?.minWidth ?? DEFAULT_SITE_CONTAINER_MIN_WIDTH;
-  const minHeight =
-    siteContainerConfig?.minHeight ?? DEFAULT_SITE_CONTAINER_MIN_HEIGHT;
-  const desktopPageStyle = {
-    "--app-shell-app-topbar-height": appTopbarHeight,
-    "--app-shell-site-container-bottom":
-      siteContainerConfig?.bottom ?? DEFAULT_SITE_CONTAINER_BOTTOM,
-    "--app-shell-site-container-left":
-      siteContainerConfig?.left ?? DEFAULT_SITE_CONTAINER_LEFT,
-    "--app-shell-site-container-right":
-      siteContainerConfig?.right ?? DEFAULT_SITE_CONTAINER_RIGHT,
-    "--app-shell-site-container-top":
-      siteContainerConfig?.top ?? DEFAULT_SITE_CONTAINER_TOP,
-    ...style,
-  } as CSSProperties;
-  const isDockedSiteContainer =
-    siteContainerConfig?.mode === "docked" || siteGeometry?.snappedRight;
-  const isBottomDockedSiteContainer =
-    siteContainerConfig?.mode === "docked" || siteGeometry?.snappedBottom;
+
   const siteContainerStyle = useMemo<CSSProperties | undefined>(() => {
     if (!siteGeometry) {
       return undefined;
@@ -156,6 +149,7 @@ function AuthenticatedAppShellBlock({
       width: `${siteGeometry.width}px`,
     };
   }, [siteGeometry]);
+
   const startResize = useCallback(
     (
       event: ReactPointerEvent<HTMLButtonElement>,
@@ -165,30 +159,30 @@ function AuthenticatedAppShellBlock({
         return;
       }
 
-      const desktopPage = desktopPageRef.current;
+      const desktopStage = desktopStageRef.current;
       const siteContainer = siteContainerRef.current;
 
-      if (!(desktopPage && siteContainer)) {
+      if (!(desktopStage && siteContainer)) {
         return;
       }
 
       event.preventDefault();
       event.currentTarget.setPointerCapture(event.pointerId);
 
-      const pageRect = desktopPage.getBoundingClientRect();
+      const stageRect = desktopStage.getBoundingClientRect();
       const containerRect = siteContainer.getBoundingClientRect();
       const start = {
         height: containerRect.height,
         pointerX: event.clientX,
         pointerY: event.clientY,
         width: containerRect.width,
-        x: containerRect.left - pageRect.left,
-        y: containerRect.top - pageRect.top,
+        x: containerRect.left - stageRect.left,
+        y: containerRect.top - stageRect.top,
       };
       const maxWidth =
-        siteContainerConfig?.maxWidth ?? pageRect.width - start.x;
+        siteContainerConfig?.maxWidth ?? stageRect.width - start.x;
       const maxHeight =
-        siteContainerConfig?.maxHeight ?? pageRect.height - start.y;
+        siteContainerConfig?.maxHeight ?? stageRect.height - start.y;
 
       const handlePointerMove = (moveEvent: PointerEvent) => {
         const deltaX = moveEvent.clientX - start.pointerX;
@@ -196,14 +190,14 @@ function AuthenticatedAppShellBlock({
         let nextWidth = start.width;
         let nextHeight = start.height;
 
-        if (intent === "resize-right" || intent === "resize-corner") {
+        if (intent === "resize-right") {
           nextWidth = Math.max(
             minWidth,
             Math.min(start.width + deltaX, maxWidth)
           );
         }
 
-        if (intent === "resize-bottom" || intent === "resize-corner") {
+        if (intent === "resize-bottom") {
           nextHeight = Math.max(
             minHeight,
             Math.min(start.height + deltaY, maxHeight)
@@ -211,17 +205,16 @@ function AuthenticatedAppShellBlock({
         }
 
         const snappedRight =
-          pageRect.width - (start.x + nextWidth) <=
-          SITE_CONTAINER_SNAP_DISTANCE;
+          stageRect.width - (start.x + nextWidth) <= SITE_CONTAINER_SNAP_DISTANCE;
         const snappedBottom =
-          pageRect.height - (start.y + nextHeight) <=
+          stageRect.height - (start.y + nextHeight) <=
           SITE_CONTAINER_SNAP_DISTANCE;
 
         setSiteGeometry({
-          height: snappedBottom ? pageRect.height - start.y : nextHeight,
+          height: snappedBottom ? stageRect.height - start.y : nextHeight,
           snappedBottom,
           snappedRight,
-          width: snappedRight ? pageRect.width - start.x : nextWidth,
+          width: snappedRight ? stageRect.width - start.x : nextWidth,
           x: start.x,
           y: start.y,
         });
@@ -236,85 +229,378 @@ function AuthenticatedAppShellBlock({
       window.addEventListener("pointerup", handlePointerUp, { once: true });
     },
     [
+      desktopStageRef,
       isResizable,
       minHeight,
       minWidth,
       siteContainerConfig?.maxHeight,
       siteContainerConfig?.maxWidth,
+      siteContainerRef,
     ]
   );
 
-  return (
-    <section
-      className={cn(
-        blockRecipe("blockShell"),
-        "relative h-svh min-h-svh w-full overflow-hidden bg-[#101410] text-sidebar-foreground",
-        className
-      )}
-      data-block-id={blockId}
-      data-density={density}
-      data-intent={intent}
-      data-slot="desktop-page"
-      data-state={state}
-      data-tone={tone}
-      ref={desktopPageRef}
-      style={desktopPageStyle}
-      {...props}
+  return {
+    isBottomDocked:
+      siteContainerConfig?.mode === "docked" || siteGeometry?.snappedBottom,
+    isRightDocked:
+      siteContainerConfig?.mode === "docked" || siteGeometry?.snappedRight,
+    siteContainerStyle,
+    startResize,
+  };
+}
+
+interface AppShellAppSidebarColumnProps {
+  readonly appSidebar: ReactNode;
+  readonly appSidebarConfig?: AppShellSidebarConfig;
+}
+
+function AppShellAppSidebarColumn({
+  appSidebar,
+  appSidebarConfig,
+}: AppShellAppSidebarColumnProps): ReactElement {
+  const { state } = useSidebar();
+  const expandedWidth =
+    appSidebarConfig?.width ?? "var(--xforge-layout-sidebar)";
+  const columnWidth =
+    state === "collapsed" ? "var(--sidebar-width-icon)" : expandedWidth;
+  const sidebarNode = (
+    <Sidebar
+      className={appSidebarConfig?.className}
+      collapsible={appSidebarConfig?.collapsible ?? "icon"}
+      variant={appSidebarConfig?.variant ?? "sidebar"}
     >
-      {appTopbar ? (
+      {appSidebar}
+    </Sidebar>
+  );
+
+  return (
+    <div
+      aria-label="Application sidebar"
+      className={cn(
+        blockRecipe("blockRail"),
+        "h-full min-h-0 shrink-0 self-stretch overflow-hidden border-r transition-[width] duration-200 ease-linear motion-reduce:transition-none"
+      )}
+      data-slot="app-sidebar"
+      data-state={state}
+      style={
+        {
+          "--sidebar-width": columnWidth,
+          width: columnWidth,
+        } as CSSProperties
+      }
+    >
+      {appSidebarConfig?.wrapper
+        ? appSidebarConfig.wrapper(sidebarNode)
+        : sidebarNode}
+    </div>
+  );
+}
+
+interface AppShellSiteContainerProps {
+  readonly auditEvidenceScopeSync?: ReactNode;
+  readonly children?: ReactNode;
+  readonly contentClassName?: string;
+  readonly contentPadded?: boolean;
+  readonly density?: BlockDensity;
+  readonly desktopStageRef: React.RefObject<HTMLElement | null>;
+  readonly siteBottomDrawer?: ReactNode;
+  readonly siteContainerConfig?: AppShellSiteContainerConfig;
+  readonly siteContainerRef: React.RefObject<HTMLDivElement | null>;
+  readonly siteRightSidebar?: ReactNode;
+  readonly siteSidebarConfig?: Omit<AppShellSidebarConfig, "wrapper">;
+  readonly siteSidebarLeft?: ReactNode;
+  readonly siteTopbar?: ReactNode;
+}
+
+function AppShellSiteContainer({
+  auditEvidenceScopeSync,
+  children,
+  contentClassName,
+  contentPadded = false,
+  density = "default",
+  desktopStageRef,
+  siteBottomDrawer,
+  siteContainerConfig,
+  siteContainerRef,
+  siteRightSidebar,
+  siteSidebarConfig,
+  siteSidebarLeft,
+  siteTopbar,
+}: AppShellSiteContainerProps): ReactElement {
+  const isResizable = siteContainerConfig?.adjustable ?? false;
+  const minWidth =
+    siteContainerConfig?.minWidth ?? DEFAULT_SITE_CONTAINER_MIN_WIDTH;
+  const minHeight =
+    siteContainerConfig?.minHeight ?? DEFAULT_SITE_CONTAINER_MIN_HEIGHT;
+  const isDockedMode = siteContainerConfig?.mode === "docked";
+  const { isBottomDocked, isRightDocked, siteContainerStyle, startResize } =
+    useSiteContainerResize({
+      desktopStageRef,
+      isResizable,
+      minHeight,
+      minWidth,
+      siteContainerConfig,
+      siteContainerRef,
+    });
+
+  return (
+    <div
+      className={cn(
+        blockRecipe("blockPanel"),
+        "absolute flex min-h-0 flex-col overflow-hidden",
+        "top-[var(--app-shell-site-container-top)]",
+        "right-[var(--app-shell-site-container-right)]",
+        "bottom-[var(--app-shell-site-container-bottom)]",
+        "left-[var(--app-shell-site-container-left)]",
+        isRightDocked && "right-0 rounded-r-none border-r-0",
+        isBottomDocked && "bottom-0 rounded-b-none border-b-0",
+        isDockedMode && isRightDocked && "rounded-none shadow-none",
+        siteContainerConfig?.className
+      )}
+      data-adjustable={isResizable ? "true" : "false"}
+      data-site-container-mode={siteContainerConfig?.mode ?? "floating"}
+      data-site-snapped-bottom={isBottomDocked ? "true" : "false"}
+      data-site-snapped-right={isRightDocked ? "true" : "false"}
+      data-slot="site-container"
+      ref={siteContainerRef}
+      style={siteContainerStyle}
+    >
+      {siteTopbar ? (
         <header
-          className="absolute inset-x-0 top-0 z-layer-sticky h-[var(--app-shell-app-topbar-height)] overflow-hidden"
-          data-slot="app-topbar"
+          className={cn(blockRecipe("blockChrome"), "shrink-0 overflow-hidden")}
+          data-slot="site-topbar"
         >
-          <SidebarProvider className="contents">{appTopbar}</SidebarProvider>
+          {siteTopbar}
         </header>
       ) : null}
-      <section
-        aria-label="Site container"
+      <div
         className={cn(
-          "absolute top-[var(--app-shell-site-container-top)] right-[var(--app-shell-site-container-right)] bottom-[var(--app-shell-site-container-bottom)] left-[var(--app-shell-site-container-left)] overflow-hidden border border-border-default/70 bg-[#121812] shadow-panel",
-          "rounded-[18px]",
-          isDockedSiteContainer && "right-0 rounded-r-none border-r-0",
-          isBottomDockedSiteContainer && "bottom-0 rounded-b-none border-b-0",
-          siteContainerConfig?.className
+          "grid min-h-0 flex-1 overflow-hidden grid-rows-[minmax(0,1fr)]",
+          getSiteBodyGridClassName({
+            hasLeftSidebar: Boolean(siteSidebarLeft),
+            hasRightSidebar: Boolean(siteRightSidebar),
+          })
         )}
-        data-adjustable={isResizable ? "true" : "false"}
-        data-site-container-mode={siteContainerConfig?.mode ?? "floating"}
-        data-site-snapped-bottom={
-          isBottomDockedSiteContainer ? "true" : "false"
-        }
-        data-site-snapped-right={isDockedSiteContainer ? "true" : "false"}
-        data-slot="site-container"
-        ref={siteContainerRef}
-        style={siteContainerStyle}
+        data-slot="site-body"
       >
-        {isResizable ? (
-          <>
-            <button
-              aria-label="Resize site container width"
-              className="absolute inset-y-8 right-0 z-layer-sticky w-2 cursor-ew-resize bg-transparent outline-none hover:bg-border-default/60 focus-visible:bg-ring/30"
-              data-slot="site-container-resize-right"
-              onPointerDown={(event) => startResize(event, "resize-right")}
-              type="button"
-            />
-            <button
-              aria-label="Resize site container height"
-              className="absolute right-8 bottom-0 left-8 z-layer-sticky h-2 cursor-ns-resize bg-transparent outline-none hover:bg-border-default/60 focus-visible:bg-ring/30"
-              data-slot="site-container-resize-bottom"
-              onPointerDown={(event) => startResize(event, "resize-bottom")}
-              type="button"
-            />
-            <button
-              aria-label="Resize site container"
-              className="absolute right-1 bottom-1 z-layer-sticky size-4 cursor-nwse-resize rounded-[3px] border-border-default border-r border-b bg-transparent outline-none hover:bg-border-default/60 focus-visible:ring-2 focus-visible:ring-ring"
-              data-slot="site-container-resize-corner"
-              onPointerDown={(event) => startResize(event, "resize-corner")}
-              type="button"
-            />
-          </>
+        {siteSidebarLeft ? (
+          <aside
+            aria-label="Site sidebar"
+            className={cn(
+              blockRecipe("blockRail"),
+              "border-r",
+              siteSidebarConfig?.className
+            )}
+            data-slot="site-sidebar-left"
+            tabIndex={0}
+            style={
+              {
+                width:
+                  siteSidebarConfig?.width ?? DEFAULT_SITE_SIDEBAR_WIDTH,
+              } as CSSProperties
+            }
+          >
+            {siteSidebarLeft}
+          </aside>
         ) : null}
+        <div
+          aria-label="Main content"
+          className={cn(
+            blockRecipe("blockShell", "blockStack"),
+            "h-full min-h-0 min-w-0 content-start overflow-y-auto outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+            appShellMainDensityClassName[density],
+            contentPadded && blockRecipe("blockPanelPadding"),
+            siteContainerConfig?.contentClassName,
+            contentClassName
+          )}
+          data-slot="site-main"
+          role="region"
+          tabIndex={0}
+        >
+          {auditEvidenceScopeSync}
+          {children}
+        </div>
+        {siteRightSidebar ? (
+          <aside
+            aria-label="Site right sidebar"
+            className={cn(blockRecipe("blockRail"), "border-l")}
+            data-slot="site-right-sidebar"
+            tabIndex={0}
+            style={
+              {
+                width: "var(--xforge-layout-audit-rail)",
+              } as CSSProperties
+            }
+          >
+            {siteRightSidebar}
+          </aside>
+        ) : null}
+      </div>
+      {siteBottomDrawer ? (
+        <section
+          className={cn(
+            blockRecipe("blockSectionDivider", "blockPanelPadding"),
+            "max-h-[var(--xforge-layout-site-bottom-drawer-max)] min-h-[var(--xforge-layout-site-bottom-drawer-min)] shrink-0 overflow-hidden bg-surface-muted/50"
+          )}
+          data-slot="site-bottom-drawer"
+        >
+          {siteBottomDrawer}
+        </section>
+      ) : null}
+      {isResizable ? (
+        <>
+          <button
+            aria-label="Resize site container width"
+            className="absolute inset-y-8 right-0 z-[var(--xforge-z-sticky)] w-2 cursor-ew-resize bg-transparent outline-none hover:bg-border-default/60 focus-visible:bg-ring/30"
+            data-slot="site-container-resize-right"
+            onPointerDown={(event) => startResize(event, "resize-right")}
+            type="button"
+          />
+          <button
+            aria-label="Resize site container height"
+            className="absolute right-8 bottom-0 left-8 z-[var(--xforge-z-sticky)] h-2 cursor-ns-resize bg-transparent outline-none hover:bg-border-default/60 focus-visible:bg-ring/30"
+            data-slot="site-container-resize-bottom"
+            onPointerDown={(event) => startResize(event, "resize-bottom")}
+            type="button"
+          />
+        </>
+      ) : null}
+    </div>
+  );
+}
+
+function AuthenticatedAppShellBlock({
+  appSidebar,
+  appSidebarConfig,
+  appTopbar,
+  appTopbarHeight = DEFAULT_APP_TOPBAR_HEIGHT,
+  auditDock,
+  auditDockPlacement = "right",
+  auditEvidenceScopeSync,
+  blockId,
+  children,
+  className,
+  contentClassName,
+  contentPadded = false,
+  defaultOpen = true,
+  density = "default",
+  enableSidebarKeyboardShortcut: _enableSidebarKeyboardShortcut,
+  intent = "operation",
+  siteBottomDrawer,
+  siteContainerConfig,
+  siteRightSidebar,
+  siteSidebarConfig,
+  siteSidebarLeft,
+  siteTopbar,
+  state = "ready",
+  tone = "neutral",
+  style,
+  ...props
+}: AuthenticatedAppShellBlockProps): ReactElement {
+  const desktopStageRef = useRef<HTMLElement | null>(null);
+  const siteContainerRef = useRef<HTMLDivElement | null>(null);
+  const siteRightSidebarContent =
+    siteRightSidebar ??
+    (auditDock && auditDockPlacement === "right" ? auditDock : null);
+  const siteBottomAuditDock =
+    auditDock && auditDockPlacement === "bottom" ? auditDock : null;
+  const shellStyle = {
+    "--app-shell-app-topbar-height": appTopbarHeight,
+    "--app-shell-site-container-bottom":
+      siteContainerConfig?.bottom ?? DEFAULT_SITE_CONTAINER_BOTTOM,
+    "--app-shell-site-container-left":
+      siteContainerConfig?.left ?? DEFAULT_SITE_CONTAINER_LEFT,
+    "--app-shell-site-container-right":
+      siteContainerConfig?.right ?? DEFAULT_SITE_CONTAINER_RIGHT,
+    "--app-shell-site-container-top":
+      siteContainerConfig?.top ?? DEFAULT_SITE_CONTAINER_TOP,
+    "--workspace-app-nav-topbar-height": DEFAULT_SITE_TOPBAR_HEIGHT,
+    ...style,
+  } as CSSProperties;
+
+  return (
+    <SidebarProvider
+      className={cn(blockRecipe("blockShell"), className)}
+      defaultOpen={defaultOpen}
+    >
+      <section
+        className={cn(
+          blockRecipe("blockShell"),
+          "grid h-svh min-h-svh overflow-hidden bg-surface-canvas text-sidebar-foreground",
+          appTopbar
+            ? "grid-rows-[var(--app-shell-app-topbar-height)_minmax(0,1fr)]"
+            : "grid-rows-[minmax(0,1fr)]"
+        )}
+        data-block-id={blockId}
+        data-density={density}
+        data-intent={intent}
+        data-slot="desktop-page"
+        data-state={state}
+        data-tone={tone}
+        style={shellStyle}
+        {...props}
+      >
+        {appTopbar ? (
+          <header
+            className={cn(
+              blockRecipe("blockChrome"),
+              "z-[var(--xforge-z-sticky)] min-h-0 overflow-hidden"
+            )}
+            data-slot="app-topbar"
+          >
+            {appTopbar}
+          </header>
+        ) : null}
+        <div
+          className={cn(
+            "grid h-full min-h-0 overflow-hidden",
+            appSidebar ? "grid-cols-[auto_minmax(0,1fr)]" : "grid-cols-1"
+          )}
+          data-slot="desktop-body"
+        >
+          {appSidebar ? (
+            <AppShellAppSidebarColumn
+              appSidebar={appSidebar}
+              appSidebarConfig={appSidebarConfig}
+            />
+          ) : null}
+          <main
+            className={cn(blockRecipe("blockStage"), "h-full min-h-0")}
+            data-slot="desktop-stage"
+            ref={desktopStageRef}
+          >
+            <AppShellSiteContainer
+              auditEvidenceScopeSync={auditEvidenceScopeSync}
+              contentClassName={contentClassName}
+              contentPadded={contentPadded}
+              density={density}
+              desktopStageRef={desktopStageRef}
+              siteBottomDrawer={siteBottomDrawer}
+              siteContainerConfig={siteContainerConfig}
+              siteContainerRef={siteContainerRef}
+              siteRightSidebar={siteRightSidebarContent}
+              siteSidebarConfig={siteSidebarConfig}
+              siteSidebarLeft={siteSidebarLeft}
+              siteTopbar={siteTopbar}
+            >
+              {children}
+            </AppShellSiteContainer>
+            {siteBottomAuditDock ? (
+              <aside
+                className={cn(
+                  blockRecipe("blockPanel"),
+                  "absolute right-[var(--app-shell-site-container-right)] bottom-0 left-[var(--app-shell-site-container-left)] z-[var(--xforge-z-sticky)] max-h-[var(--xforge-layout-audit-dock-max)] overflow-hidden border-t"
+                )}
+                data-audit-dock-placement="bottom"
+                data-slot="audit-dock"
+              >
+                {siteBottomAuditDock}
+              </aside>
+            ) : null}
+          </main>
+        </div>
       </section>
-    </section>
+    </SidebarProvider>
   );
 }
 

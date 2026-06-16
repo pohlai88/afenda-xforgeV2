@@ -41,9 +41,19 @@
   --xforge-space-9: 36px;
   --xforge-layout-sidebar: 248px;
   --xforge-layout-audit-rail: 324px;
+  --xforge-layout-app-topbar: 3.5rem;
+  --xforge-layout-site-topbar: 3rem;
+  --xforge-layout-site-sidebar: 12rem;
+  --xforge-layout-site-inset: var(--xforge-space-6);
+  --xforge-layout-site-container-min-width: 640px;
+  --xforge-layout-site-container-min-height: 360px;
+  --xforge-layout-site-bottom-drawer-max: min(40%, 18rem);
+  --xforge-layout-site-bottom-drawer-min: 10rem;
+  --xforge-layout-audit-dock-max: 12rem;
   --xforge-z-base: 0;
   --xforge-z-raised: 1;
-  --xforge-z-dropdown: 10;
+  /* Popovers, dropdowns, selects — must stack above sticky chrome (topbars, docks). */
+  --xforge-z-dropdown: 25;
   --xforge-z-sticky: 20;
   --xforge-z-modal-backdrop: 30;
   --xforge-z-modal: 40;

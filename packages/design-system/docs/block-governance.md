@@ -41,6 +41,9 @@ Use these recipe groups before adding local utility classes:
 - `blockSection` and `blockSectionDivider` for internal grouping.
 - `blockMetric` and `blockMetricLabel` for counts, SLA, variance, and pressure.
 - `blockEmpty` for absence-of-data states.
+- `blockChrome`, `blockRail`, and `blockStage` for app-shell topology (chrome strips, rails, and canvas).
+
+Layout dimensions for app-shell use `--xforge-layout-*` tokens in `styles/globals.css` (topbar heights, sidebar widths, site insets, drawer bounds). Blocks reference these tokens — do not hardcode pixel or hex values.
 
 ## Density Defaults
 
@@ -62,6 +65,7 @@ The first governed block families are:
 - `stats-strip`
 - `empty-panel`
 - `form-section`
+- `app-shell`
 
 Their anatomy, allowed primitive families, and implementation notes live in `components/blocks/layout-contracts.ts`.
 

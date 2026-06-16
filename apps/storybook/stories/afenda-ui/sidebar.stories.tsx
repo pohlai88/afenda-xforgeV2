@@ -35,7 +35,7 @@ export const Default: Story = {
             Afenda Ops
           </div>
         </SidebarHeader>
-        <SidebarContent>
+        <SidebarContent className="overflow-auto" tabIndex={0}>
           <SidebarGroup>
             <SidebarGroupLabel>Workspace</SidebarGroupLabel>
             <SidebarGroupContent>

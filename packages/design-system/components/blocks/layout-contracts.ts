@@ -1,4 +1,5 @@
 type AfendaBlockFamily =
+  | "app-shell"
   | "page-header"
   | "filter-bar"
   | "data-table-shell"
@@ -128,6 +129,33 @@ const afendaBlockLayoutContracts = {
     notes: [
       "Field owns label-control-hint-error grammar.",
       "Form section owns grouping and hierarchy only.",
+    ],
+  },
+  "app-shell": {
+    purpose:
+      "Page-first authenticated workspace frame with app chrome and site container slots.",
+    anatomy: [
+      "blockShell",
+      "blockChrome",
+      "blockStage",
+      "blockPanel",
+      "blockRail",
+      "blockStack",
+      "blockToolbar",
+    ],
+    requiredRecipes: [
+      "blockShell",
+      "blockChrome",
+      "blockStage",
+      "blockPanel",
+      "blockRail",
+      "blockStack",
+    ],
+    allowedPrimitiveFamilies: ["sidebar", "button", "badge", "scroll-area"],
+    notes: [
+      "Block owns topology and overflow; apps own nav, tenant scope, and route content.",
+      "Use xforge layout tokens for topbar, rails, and site insets — no local hex or pixel hacks.",
+      "Site main content uses blockStack rhythm and blockPanelPadding when padded.",
     ],
   },
 } as const satisfies Record<AfendaBlockFamily, AfendaBlockLayoutContract>;

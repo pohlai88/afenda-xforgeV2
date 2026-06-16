@@ -317,6 +317,7 @@ export {
 export {
   Sidebar,
   SidebarContent,
+  SidebarControlMenu,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupAction,
@@ -340,6 +341,9 @@ export {
   SidebarTrigger,
   useSidebar,
 } from "./sidebar";
+export type { SidebarBehaviorMode } from "./sidebar-behavior";
+export type { SidebarMenuTooltipProps } from "./sidebar";
+export { SIDEBAR_BEHAVIOR_OPTIONS } from "./sidebar-behavior";
 export { Skeleton } from "./skeleton";
 export { Slider } from "./slider";
 export { Toaster } from "./sonner";

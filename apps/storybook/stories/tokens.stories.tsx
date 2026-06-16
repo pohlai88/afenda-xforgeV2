@@ -20,7 +20,12 @@ const tokenGroups = [
   },
   {
     description: "Operational decisions only.",
-    names: ["info", "warning", "critical", "success"],
+    names: [
+      { label: "info", token: "info" },
+      { label: "warning", token: "warning" },
+      { label: "critical", value: tokens.color.danger },
+      { label: "success", token: "success" },
+    ],
     title: "Status",
   },
 ] as const;
@@ -42,13 +47,23 @@ function TokenReference() {
             <p className="text-muted-foreground text-xs">{group.description}</p>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            {group.names.map((name) => (
+            {group.names.map((entry) => {
+              const name = typeof entry === "string" ? entry : entry.label;
+              const value =
+                typeof entry === "string"
+                  ? tokens.color[entry]
+                  : "value" in entry
+                    ? entry.value
+                    : tokens.color[entry.token];
+
+              return (
               <ColorTokenCard
                 key={name}
                 name={name}
-                value={tokens.color[name]}
+                value={value}
               />
-            ))}
+              );
+            })}
           </div>
         </section>
       ))}

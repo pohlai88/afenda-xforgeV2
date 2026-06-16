@@ -1,8 +1,8 @@
 import {
   AFENDA_DENSITIES,
-  AFENDA_STATES,
   AFENDA_TONES,
-} from "./afenda-design-system.contract";
+} from "./afenda-variant.contract";
+import { AFENDA_STATES } from "./afenda-state.contract";
 
 export const AFENDA_ACTION_VARIANTS = [
   "primary",

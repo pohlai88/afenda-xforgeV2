@@ -74,6 +74,27 @@ const componentScorecardsContractPath = join(
   "contracts",
   "component-scorecards.contract.ts"
 );
+const accessibilityContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-accessibility.contract.ts"
+);
+const classNamePolicyContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-class-name-policy.contract.ts"
+);
+const componentContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-component.contract.ts"
+);
 const componentIdentityContractPath = join(
   root,
   "packages",
@@ -108,6 +129,62 @@ const exampleIdentityContractPath = join(
   "design-system",
   "contracts",
   "example-identity.contract.ts"
+);
+const exampleContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-example.contract.ts"
+);
+const exportContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-export.contract.ts"
+);
+const motionContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-motion.contract.ts"
+);
+const recipeContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-recipe.contract.ts"
+);
+const slotContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-slot.contract.ts"
+);
+const stateContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-state.contract.ts"
+);
+const tokenContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-token.contract.ts"
+);
+const variantContractPath = join(
+  root,
+  "packages",
+  "design-system",
+  "contracts",
+  "afenda-variant.contract.ts"
 );
 const componentScorecardsDocPath = join(
   root,
@@ -376,10 +453,21 @@ for (const path of [
   designSystemDocsCheckPath,
   patternLibraryContractPath,
   patternLibraryDocPath,
+  accessibilityContractPath,
+  classNamePolicyContractPath,
+  componentContractPath,
   componentScorecardsContractPath,
   componentIdentityContractPath,
+  exampleContractPath,
+  exportContractPath,
+  motionContractPath,
+  recipeContractPath,
   recipeIdentityContractPath,
+  slotContractPath,
   slotIdentityContractPath,
+  stateContractPath,
+  tokenContractPath,
+  variantContractPath,
   variantIdentityContractPath,
   exampleIdentityContractPath,
   componentScorecardsDocPath,

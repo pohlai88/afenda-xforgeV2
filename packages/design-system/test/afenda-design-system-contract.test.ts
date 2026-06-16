@@ -1,40 +1,114 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   AFENDA_AI_DRIFT_SCORE_GATE,
   AFENDA_AI_HARD_FAIL_RULES,
-  AFENDA_AI_AUTHORITY_RULES,
   AFENDA_AI_REQUIRED_CONTRACTS,
   AFENDA_AI_VIBE_CODING_GATE,
   AFENDA_AUTHORITY_RULES,
-  AFENDA_CLASS_NAME_ESCAPE_HATCH_RULES,
-  AFENDA_COMPONENT_IDENTITY_RULES,
-  AFENDA_EXAMPLE_RULES,
-  AFENDA_EXAMPLE_VERSION_RULES,
-  AFENDA_FORBIDDEN_SEMANTIC_ALIASES,
-  AFENDA_LOCAL_VOCABULARY_RULES,
-  AFENDA_PUBLIC_EXPORTS,
-  AFENDA_RECIPE_IDENTITY_RULES,
   AFENDA_REGISTRY_AUTHORITY_RULES,
   AFENDA_REQUIRED_AI_SAFETY_CONTRACTS,
   AFENDA_REQUIRED_CORE_CONTRACTS,
-  AFENDA_SEMANTIC_ALIAS_RULES,
-  AFENDA_SLOT_IDENTITY_RULES,
   AFENDA_SOURCE_OF_TRUTH_PRIORITY,
-  AFENDA_VARIANT_GOVERNANCE_RULES,
   afendaDesignSystemContract,
-  parsedAfendaDesignSystemContract,
 } from "../contracts/afenda-design-system.contract";
+import {
+  AFENDA_ACCESSIBILITY_ARIA_RULES,
+  AFENDA_ACCESSIBILITY_AUTHORITY_RULES,
+  AFENDA_ACCESSIBILITY_COMPONENT_RULES,
+  AFENDA_ACCESSIBILITY_FORBIDDEN_PATTERNS,
+  AFENDA_ACCESSIBILITY_FOCUS_RULES,
+  AFENDA_ACCESSIBILITY_KEYBOARD_RULES,
+  AFENDA_ACCESSIBILITY_WARNING_PATTERNS,
+} from "../contracts/afenda-accessibility.contract";
+import {
+  AFENDA_CLASS_NAME_AUTHORITY_RULES,
+  AFENDA_CLASS_NAME_ESCAPE_HATCH_RULES,
+  AFENDA_CLASS_NAME_FORBIDDEN_OWNERSHIP,
+} from "../contracts/afenda-class-name-policy.contract";
+import {
+  AFENDA_COMPONENT_AUTHORITY_RULES,
+  AFENDA_COMPONENT_BOUNDARY_RULES,
+  AFENDA_COMPONENT_FORBIDDEN_OWNERSHIP,
+  AFENDA_COMPONENT_RECIPE_RULES,
+  AFENDA_COMPONENT_SLOT_RULES,
+  AFENDA_COMPONENT_VARIANT_RULES,
+} from "../contracts/afenda-component.contract";
+import {
+  AFENDA_EXAMPLE_RULES,
+  AFENDA_EXAMPLE_VERSION_RULES,
+} from "../contracts/afenda-example.contract";
+import {
+  AFENDA_EXPORT_AUTHORITY_RULES,
+  AFENDA_EXPORT_COMPATIBILITY_RULES,
+  AFENDA_EXPORT_FORBIDDEN_OWNERSHIP,
+  AFENDA_EXPORT_IMPORT_RULES,
+  AFENDA_EXPORT_NAMING_RULES,
+  AFENDA_PUBLIC_EXPORTS,
+} from "../contracts/afenda-export.contract";
+import {
+  AFENDA_RECIPE_AUTHORITY_RULES,
+  AFENDA_RECIPE_COMPONENT_RULES,
+  AFENDA_RECIPE_IMPORT_RULES,
+} from "../contracts/afenda-recipe.contract";
+import {
+  AFENDA_SLOT_AUTHORITY_RULES,
+  AFENDA_SLOT_FORBIDDEN_OWNERSHIP,
+  AFENDA_SLOT_USAGE_RULES,
+} from "../contracts/afenda-slot.contract";
+import {
+  AFENDA_FORBIDDEN_VARIANT_ALIASES,
+  AFENDA_VARIANT_ALIAS_RULES,
+  AFENDA_VARIANT_AUTHORITY_RULES,
+  AFENDA_VARIANT_COMPONENT_RULES,
+  AFENDA_VARIANT_FORBIDDEN_OWNERSHIP,
+  AFENDA_VARIANT_RECIPE_RULES,
+} from "../contracts/afenda-variant.contract";
 
 describe("afenda design-system anti-drift contract", () => {
-  it("keeps the master contract parseable at runtime", () => {
-    expect(parsedAfendaDesignSystemContract).toEqual(
-      afendaDesignSystemContract
+  it("keeps the master contract as wall authority only", () => {
+    expect(afendaDesignSystemContract.principles).toContain(
+      "design-system-owns-the-wall"
     );
+    expect(afendaDesignSystemContract).not.toHaveProperty("vocabularies");
+    expect(afendaDesignSystemContract).not.toHaveProperty("styling");
+    expect(afendaDesignSystemContract).not.toHaveProperty("slots");
+
+    const source = readFileSync(
+      join(
+        dirname(fileURLToPath(import.meta.url)),
+        "..",
+        "contracts",
+        "afenda-design-system.contract.ts"
+      ),
+      "utf8"
+    );
+    expect(source).not.toContain('from "zod"');
+    expect(source).not.toContain(".parse(");
   });
 
   it("keeps AI IDE authority rules sealed", () => {
-    expect(AFENDA_AI_AUTHORITY_RULES).toEqual(AFENDA_AUTHORITY_RULES);
+    expect(afendaDesignSystemContract.authorityRules).toBe(
+      AFENDA_AUTHORITY_RULES
+    );
+    expect(Object.keys(afendaDesignSystemContract)).toEqual([
+      "id",
+      "version",
+      "packageName",
+      "authorityRules",
+      "aiRequiredContracts",
+      "aiHardFailRules",
+      "aiVibeCodingGate",
+      "requiredContracts",
+      "aiDriftScoreGate",
+      "registryAuthority",
+      "sourceOfTruthPriority",
+      "principles",
+    ]);
     expect(Object.values(AFENDA_AUTHORITY_RULES)).toEqual([
+      true,
       true,
       true,
       true,
@@ -48,26 +122,26 @@ describe("afenda design-system anti-drift contract", () => {
 
   it("requires the full anti-drift contract wall", () => {
     expect(AFENDA_AI_REQUIRED_CONTRACTS).toEqual([
-      "design-system.contract.ts",
-      "token.contract.ts",
-      "recipe.contract.ts",
-      "component.contract.ts",
-      "slot.contract.ts",
-      "variant.contract.ts",
-      "class-name-policy.contract.ts",
-      "export.contract.ts",
-      "accessibility.contract.ts",
-      "motion.contract.ts",
-      "state.contract.ts",
-      "example.contract.ts",
+      "afenda-design-system.contract.ts",
+      "afenda-token.contract.ts",
+      "afenda-recipe.contract.ts",
+      "afenda-component.contract.ts",
+      "afenda-slot.contract.ts",
+      "afenda-variant.contract.ts",
+      "afenda-class-name-policy.contract.ts",
+      "afenda-export.contract.ts",
+      "afenda-accessibility.contract.ts",
+      "afenda-motion.contract.ts",
+      "afenda-state.contract.ts",
+      "afenda-example.contract.ts",
     ]);
-    expect(AFENDA_REQUIRED_CORE_CONTRACTS).toContain("recipe.contract.ts");
-    expect(AFENDA_REQUIRED_CORE_CONTRACTS).toContain("variant.contract.ts");
+    expect(AFENDA_REQUIRED_CORE_CONTRACTS).toContain("afenda-recipe.contract.ts");
+    expect(AFENDA_REQUIRED_CORE_CONTRACTS).toContain("afenda-variant.contract.ts");
     expect(AFENDA_REQUIRED_CORE_CONTRACTS).toContain(
-      "class-name-policy.contract.ts"
+      "afenda-class-name-policy.contract.ts"
     );
     expect(AFENDA_REQUIRED_AI_SAFETY_CONTRACTS).toContain(
-      "example.contract.ts"
+      "afenda-example.contract.ts"
     );
   });
 
@@ -117,19 +191,40 @@ describe("afenda design-system anti-drift contract", () => {
   });
 
   it("hard-fails ungoverned variants and className semantic escape hatches", () => {
-    expect(AFENDA_VARIANT_GOVERNANCE_RULES).toMatchObject({
-      unrecognizedVariantIsHardFail: true,
-      variantNamesMustUseSemanticVocabulary: true,
-      variantsMustBeDeclaredInContract: true,
+    expect(AFENDA_VARIANT_AUTHORITY_RULES).toMatchObject({
+      variantOwnsMeaning: true,
+      variantOwnsSemanticVocabulary: true,
+    });
+    expect(AFENDA_VARIANT_FORBIDDEN_OWNERSHIP).toMatchObject({
+      variantsMustNotDeclareRecipes: true,
+      variantsMustNotDeclareTokens: true,
+      variantsMustNotOwnStyling: true,
+    });
+    expect(AFENDA_VARIANT_RECIPE_RULES).toMatchObject({
       variantsMustMapToRecipes: true,
-      variantsMustNotBeInventedInAppCode: true,
-      variantsMustNotEncodeRawColor: true,
+      variantsSelectRecipeMeaning: true,
+      ungovernedVariantStylingIsHardFail: true,
+    });
+    expect(AFENDA_VARIANT_COMPONENT_RULES).toMatchObject({
+      componentsMustNotInventVariants: true,
+      componentVariantPropsMustUseContractVocabulary: true,
+      unknownVariantIsHardFail: true,
     });
     expect(AFENDA_CLASS_NAME_ESCAPE_HATCH_RULES).toMatchObject({
-      allowedPrefixesNeverOverrideSemanticIdentity: true,
+      classNameMayExtendLayoutOnly: true,
+      classNameMustNotOverrideSemanticIdentity: true,
       arbitraryValuesRequireTokenReference: true,
       bracketColorValuesAreHardFail: true,
       bracketSpacingValuesAreHardFailUnlessTokenized: true,
+    });
+    expect(AFENDA_CLASS_NAME_AUTHORITY_RULES).toMatchObject({
+      classNameOwnsLayoutOnly: true,
+      classNameOwnsResponsiveLayoutOnly: true,
+    });
+    expect(AFENDA_CLASS_NAME_FORBIDDEN_OWNERSHIP).toMatchObject({
+      classNameMustNotOwnBehavior: true,
+      classNameMustNotOwnRecipe: true,
+      classNameMustNotOwnSemanticStyling: true,
     });
   });
 
@@ -141,39 +236,72 @@ describe("afenda design-system anti-drift contract", () => {
       registryOwnsVariantIdentity: true,
       registryOwnsVocabulary: true,
     });
-    expect(AFENDA_COMPONENT_IDENTITY_RULES).toMatchObject({
-      componentNamesMustExistInRegistry: true,
-      unknownComponentNameIsHardFail: true,
+    expect(AFENDA_COMPONENT_AUTHORITY_RULES).toMatchObject({
+      componentOwnsBehavior: true,
+      componentOwnsPublicProps: true,
     });
-    expect(AFENDA_RECIPE_IDENTITY_RULES).toMatchObject({
-      recipeNamesMustExistInRegistry: true,
-      unknownRecipeIsHardFail: true,
+    expect(AFENDA_COMPONENT_FORBIDDEN_OWNERSHIP).toMatchObject({
+      componentsMustNotDeclareRecipes: true,
+      componentsMustNotDeclareVariants: true,
+      componentsMustNotOwnBusinessLogic: true,
     });
-    expect(AFENDA_SLOT_IDENTITY_RULES).toMatchObject({
-      slotNamesMustExistInContract: true,
+    expect(AFENDA_COMPONENT_RECIPE_RULES).toMatchObject({
+      componentsMustUseRecipesForStyling: true,
+      componentWithoutRecipeIsHardFail: true,
+    });
+    expect(AFENDA_COMPONENT_VARIANT_RULES).toMatchObject({
+      variantsMustComeFromVariantContract: true,
+      ungovernedVariantPropIsHardFail: true,
+    });
+    expect(AFENDA_COMPONENT_SLOT_RULES).toMatchObject({
+      componentsMustExposeDataSlot: true,
       unknownSlotIsHardFail: true,
+    });
+    expect(AFENDA_COMPONENT_BOUNDARY_RULES).toMatchObject({
+      componentsMustNotOwnDataFetching: true,
+      componentsMustNotReadEnvironmentVariables: true,
+    });
+    expect(AFENDA_RECIPE_IMPORT_RULES).toMatchObject({
+      recipeRegistryOwnsRecipeIdentity: true,
+      privateRecipeImportsAreHardFail: true,
+    });
+    expect(AFENDA_RECIPE_AUTHORITY_RULES).toMatchObject({
+      recipeOwnsStyling: true,
+      examplesMustNotOwnStyling: true,
+    });
+    expect(AFENDA_RECIPE_COMPONENT_RULES).toMatchObject({
+      componentsMustUseRecipesForStyling: true,
+      componentWithoutRecipeIsHardFail: true,
+      recipesMustNotOwnBehavior: true,
+    });
+    expect(AFENDA_SLOT_AUTHORITY_RULES).toMatchObject({
+      slotOwnsStructure: true,
+      slotOwnsDataSlotIdentity: true,
+    });
+    expect(AFENDA_SLOT_USAGE_RULES).toMatchObject({
+      componentsMustUseContractSlots: true,
+      examplesMustUseContractSlotsOnly: true,
+      unknownSlotIsHardFail: true,
+    });
+    expect(AFENDA_SLOT_FORBIDDEN_OWNERSHIP).toMatchObject({
+      componentsMustNotInventSlots: true,
+      examplesMustNotInventSlots: true,
+      slotsMustNotOwnStyling: true,
     });
   });
 
-  it("blocks semantic aliases and local vocabulary declarations", () => {
-    expect(AFENDA_SEMANTIC_ALIAS_RULES).toMatchObject({
-      aliasesMustResolveToCanonicalVocabulary: true,
+  it("blocks unregistered variant aliases", () => {
+    expect(AFENDA_VARIANT_ALIAS_RULES).toMatchObject({
+      aliasesMustResolveToCanonicalVariant: true,
       canonicalVocabularyWinsOverSynonyms: true,
-      unregisteredSemanticAliasIsHardFail: true,
+      unregisteredVariantAliasIsHardFail: true,
     });
-    expect(AFENDA_FORBIDDEN_SEMANTIC_ALIASES.critical).toEqual([
+    expect(AFENDA_FORBIDDEN_VARIANT_ALIASES.critical).toEqual([
       "danger",
       "destructive",
       "error",
       "negative",
     ]);
-    expect(AFENDA_LOCAL_VOCABULARY_RULES).toMatchObject({
-      localEnumsMustReferenceContract: true,
-      localStateArraysAreHardFail: true,
-      localToneArraysAreHardFail: true,
-      localVariantArraysAreHardFail: true,
-      localVocabularyDeclarationsAreForbidden: true,
-    });
   });
 
   it("keeps deterministic source priority and versioned examples", () => {
@@ -203,9 +331,68 @@ describe("afenda design-system anti-drift contract", () => {
     });
   });
 
+  it("keeps accessibility as usable interaction safety authority", () => {
+    expect(AFENDA_ACCESSIBILITY_AUTHORITY_RULES).toMatchObject({
+      accessibilityOwnsAriaRelationshipSafety: true,
+      accessibilityOwnsFocusSafety: true,
+      accessibilityOwnsKeyboardSafety: true,
+      accessibilityOwnsUsableInteractionSafety: true,
+    });
+    expect(AFENDA_ACCESSIBILITY_KEYBOARD_RULES).toMatchObject({
+      enterAndSpaceMustActivateButtonLikeControls: true,
+      interactiveElementsMustBeKeyboardReachable: true,
+    });
+    expect(AFENDA_ACCESSIBILITY_FOCUS_RULES).toMatchObject({
+      focusMustNotBeRemovedWithoutReplacement: true,
+      focusMustReturnToTriggerAfterDismiss: true,
+    });
+    expect(AFENDA_ACCESSIBILITY_ARIA_RULES).toMatchObject({
+      ariaDescribedByMustReferenceExistingElement: true,
+      ariaHiddenMustNotHideFocusableContent: true,
+    });
+    expect(AFENDA_ACCESSIBILITY_COMPONENT_RULES).toMatchObject({
+      componentsMustForwardAriaAttributes: true,
+      componentsMustNotBreakPrimitiveAccessibility: true,
+    });
+    expect(AFENDA_ACCESSIBILITY_FORBIDDEN_PATTERNS).toContain("outline-none");
+    expect(AFENDA_ACCESSIBILITY_FORBIDDEN_PATTERNS).not.toContain(
+      'aria-hidden="true"'
+    );
+    expect(AFENDA_ACCESSIBILITY_WARNING_PATTERNS).toEqual([
+      'aria-hidden="true"',
+      'role="button"',
+      "onClick={",
+    ]);
+  });
+
   it("publishes only the canonical design-system contract spelling", () => {
+    expect(AFENDA_EXPORT_AUTHORITY_RULES).toMatchObject({
+      exportOwnsAccess: true,
+      exportOwnsImportBoundary: true,
+      exportOwnsPublicSurface: true,
+    });
+    expect(AFENDA_EXPORT_IMPORT_RULES).toMatchObject({
+      consumersMustUsePublicExportsOnly: true,
+      deepImportsAreHardFailUnlessPubliclyDeclared: true,
+      privateImportsAreHardFail: true,
+    });
+    expect(AFENDA_EXPORT_COMPATIBILITY_RULES).toMatchObject({
+      compatibilityAliasesMustPointToCanonicalExport: true,
+      legacyExportsAreMigrationInputOnly: true,
+    });
+    expect(AFENDA_EXPORT_FORBIDDEN_OWNERSHIP).toMatchObject({
+      consumersMustNotDefineAccessSurface: true,
+      legacyContractsMustNotBecomeAuthority: true,
+    });
+    expect(AFENDA_EXPORT_NAMING_RULES).toMatchObject({
+      contractExportPathsMustUseAfendaPrefix: true,
+      publicExportNamesMustUseAfendaPrefix: true,
+    });
     expect(AFENDA_PUBLIC_EXPORTS).toContain(
       "@repo/design-system/contracts/afenda-design-system"
+    );
+    expect(AFENDA_PUBLIC_EXPORTS).not.toContain(
+      "@repo/design-system/contracts/component-scorecards"
     );
     expect(AFENDA_PUBLIC_EXPORTS).not.toContain(
       "@repo/design-system/contracts/afenda-desing-system"

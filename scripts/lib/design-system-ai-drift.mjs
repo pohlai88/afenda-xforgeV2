@@ -49,6 +49,7 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
     contractsDir,
     "afenda-design-system.contract.ts"
   );
+  const variantContractPath = join(contractsDir, "afenda-variant.contract.ts");
   const slotIdentityPath = join(contractsDir, "slot-identity.contract.ts");
   const variantIdentityPath = join(contractsDir, "variant-identity.contract.ts");
   const componentIdentityPath = join(
@@ -74,6 +75,7 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
 
   const componentSource = readIfExists(componentScorecardsPath);
   const contractSource = readIfExists(designSystemContractPath);
+  const variantContractSource = readIfExists(variantContractPath);
   const variantSource = readIfExists(variantIdentityPath);
 
   const primitiveComponentIds = extractStringArray(
@@ -94,7 +96,7 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
     readIfExists(blockRecipePath),
     "afendaBlockRecipe"
   );
-  const tones = extractStringArray(contractSource, "AFENDA_TONES");
+  const tones = extractStringArray(variantContractSource, "AFENDA_TONES");
   const actionVariants = extractStringArray(
     variantSource,
     "AFENDA_ACTION_VARIANTS"
@@ -104,8 +106,8 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
     "AFENDA_STRUCTURAL_VARIANTS"
   );
   const forbiddenSemanticAliases = extractObjectStringArrays(
-    contractSource,
-    "AFENDA_FORBIDDEN_SEMANTIC_ALIASES"
+    variantContractSource,
+    "AFENDA_FORBIDDEN_VARIANT_ALIASES"
   );
   const hardFailRules = extractStringArray(
     contractSource,

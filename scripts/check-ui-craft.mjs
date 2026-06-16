@@ -165,6 +165,26 @@ function isKnownFalsePositive(finding) {
   const relativePath = toPosixPath(relative(root, finding.file));
 
   if (
+    (relativePath ===
+      "packages/design-system/contracts/afenda-recipe.contract.ts" ||
+      relativePath ===
+        "packages/design-system/contracts/afenda-class-name-policy.contract.ts") &&
+    finding.message === "transition: all"
+  ) {
+    return true;
+  }
+
+  if (
+    (relativePath ===
+      "packages/design-system/contracts/afenda-accessibility.contract.ts" ||
+      relativePath ===
+        "packages/design-system/test/afenda-design-system-contract.test.ts") &&
+    finding.message === "outline removed without focus-visible replacement"
+  ) {
+    return true;
+  }
+
+  if (
     relativePath === "packages/design-system/styles/globals.css" &&
     (finding.message === "hover state without focus-visible" ||
       finding.message === "mixed length units in same block")

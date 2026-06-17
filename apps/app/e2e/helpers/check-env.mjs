@@ -7,13 +7,7 @@ const { loaded, status } = assertE2eSupabaseEnv();
 const blobStatus = getE2eBlobEnvStatus();
 const checkProject = process.env.E2E_CHECK_PROJECT ?? "report";
 
-const tiers = {
-  authFlows: status.readyForBrowserAuthTests,
-  authenticated: status.readyForBrowserAuthTests,
-  emailIntegration: status.readyForIntegrationTests,
-  publicBlob: blobStatus.readyForUploadTests,
-  privateBlob: blobStatus.readyForPrivateBlob,
-};
+const browserAuthReady = status.readyForBrowserAuthTests;
 
 console.log("Playwright E2E env");
 console.log("");
@@ -36,19 +30,16 @@ console.log(
 console.log("");
 console.log("Readiness tiers:");
 console.log(
-  `  auth-flows (sign-in UI): ${tiers.authFlows ? "ready" : "missing URL + anon/publishable key"}`
+  `  auth-flows / authenticated: ${browserAuthReady ? "ready" : "missing URL + anon/publishable key"}`
 );
 console.log(
-  `  authenticated (storageState + orbit-case): ${tiers.authenticated ? "ready" : "missing URL + anon/publishable key"}`
+  `  email integration (admin generate_link): ${status.readyForIntegrationTests ? "ready" : "missing URL + service role key"}`
 );
 console.log(
-  `  email integration (admin generate_link): ${tiers.emailIntegration ? "ready" : "missing URL + service role key"}`
+  `  orbit-case public blob upload: ${blobStatus.readyForUploadTests ? "ready" : "will SKIP in spec"}`
 );
 console.log(
-  `  orbit-case public blob upload: ${tiers.publicBlob ? "ready" : "will SKIP in spec"}`
-);
-console.log(
-  `  orbit-case private blob upload: ${tiers.privateBlob ? "ready" : "will SKIP in spec"}`
+  `  orbit-case private blob upload: ${blobStatus.readyForPrivateBlob ? "ready" : "will SKIP in spec"}`
 );
 console.log("");
 console.log("Vercel Blob keys present:");
@@ -63,13 +54,13 @@ console.log(`  XFORGE_STORE_ID: ${blobStatus.privateStoreId ? "yes" : "no"}`);
 
 const projectReady = {
   report: true,
-  "auth-flows": tiers.authFlows,
-  authenticated: tiers.authenticated,
+  "auth-flows": browserAuthReady,
+  authenticated: browserAuthReady,
   full:
-    tiers.authFlows &&
-    tiers.emailIntegration &&
-    tiers.publicBlob &&
-    tiers.privateBlob,
+    browserAuthReady &&
+    status.readyForIntegrationTests &&
+    blobStatus.readyForUploadTests &&
+    blobStatus.readyForPrivateBlob,
 };
 
 const ready = projectReady[checkProject] ?? true;

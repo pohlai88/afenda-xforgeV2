@@ -8,7 +8,7 @@ import {
 } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
-import { hasIntegrationDatabase } from "../../../../../../test-support/load-integration-env";
+import { hasIntegrationDatabase } from "@test-support/load-integration-env";
 import {
   createOrbitCaseAttachment,
   deleteOrbitCaseAttachment,

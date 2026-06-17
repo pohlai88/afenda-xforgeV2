@@ -1,3 +1,4 @@
+import path from "node:path";
 import { defineConfig, defineProject } from "vitest/config";
 import {
   serverOnlyAlias,
@@ -5,6 +6,10 @@ import {
   sharedUnitTestOptions,
   testSupportPaths,
 } from "../../../../vitest.shared.mts";
+
+const testSupportAlias = {
+  "@test-support": path.join(testSupportPaths.repoRoot, "test-support"),
+};
 
 export default defineConfig({
   test: {
@@ -28,7 +33,10 @@ export default defineConfig({
           setupFiles: [testSupportPaths.integrationSetup],
         },
         resolve: {
-          alias: serverOnlyAlias(),
+          alias: {
+            ...serverOnlyAlias(),
+            ...testSupportAlias,
+          },
         },
       }),
     ],

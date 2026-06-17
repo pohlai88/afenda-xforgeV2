@@ -10,7 +10,7 @@ import {
 } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
-import { hasIntegrationDatabase } from "../../../../../../test-support/load-integration-env";
+import { hasIntegrationDatabase } from "@test-support/load-integration-env";
 import { executePush } from "../../engines/morph/push-orchestrator";
 import { getBudgetRequestById } from "../../engines/budget/budget-requests";
 import { createOrbitCase } from "../../engines/work/orbit-cases";

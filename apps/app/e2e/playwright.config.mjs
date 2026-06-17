@@ -51,12 +51,12 @@ export default defineConfig({
     },
     {
       name: "auth-flows",
-      testMatch: /\/(auth|auth-completion|email-auth)\.spec\.ts$/,
+      testMatch: ["auth.spec.ts", "auth-completion.spec.ts", "email-auth.spec.ts"],
       fullyParallel: false,
     },
     {
       name: "authenticated",
-      testMatch: /\/orbit-case.*\.spec\.ts$/,
+      testMatch: ["orbit-case.spec.ts", "orbit-case-push.spec.ts"],
       dependencies: ["setup"],
       fullyParallel: true,
       use: {

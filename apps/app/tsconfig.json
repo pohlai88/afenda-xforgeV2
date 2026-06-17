@@ -17,6 +17,7 @@
   ],
   "exclude": [
     "node_modules",
+    "e2e",
     "test",
     "test-support",
     "**/*.test.ts",

@@ -1,5 +1,6 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { e2eEmail } from "./helpers/credentials";
+import { getPlaywrightBaseUrl } from "./helpers/load-env.mjs";
 import {
   buildConfirmUrl,
   createE2eEmail,
@@ -7,7 +8,6 @@ import {
   createUnconfirmedUser,
   deleteUserByEmail,
   generateAuthLink,
-  getPlaywrightBaseUrl,
   hasSupabaseAdminEnv,
   isEmailConfirmed,
 } from "./helpers/supabase-admin";
@@ -26,10 +26,7 @@ const UPDATE_PASSWORD_URL_PATTERN = /\/update-password$/;
 const VERIFICATION_LINK_COPY_PATTERN =
   /verification link to confirm your email/i;
 
-const fillSignUpPassword = async (
-  page: import("@playwright/test").Page,
-  value: string
-) => {
+const fillSignUpPassword = async (page: Page, value: string) => {
   await page.locator("#sign-up-password").fill(value);
 };
 

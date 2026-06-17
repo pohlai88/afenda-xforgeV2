@@ -1,6 +1,8 @@
-export type AuthLinkType = "signup" | "magiclink" | "recovery" | "invite";
+import { getPlaywrightBaseUrl } from "./load-env.mjs";
 
-export interface GeneratedAuthLink {
+type AuthLinkType = "signup" | "magiclink" | "recovery" | "invite";
+
+interface GeneratedAuthLink {
   actionLink: string;
   emailOtp: string;
   hashedToken: string;
@@ -31,7 +33,7 @@ const getSupabaseAdminEnv = () => ({
     process.env.SUPABASE_SECRET_KEY ??
     process.env.SUPABASE_SERVICE_ROLE_KEY ??
     "",
-  baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
+  baseURL: getPlaywrightBaseUrl(),
 });
 
 export const hasSupabaseAdminEnv = () => {
@@ -83,7 +85,7 @@ export const deleteUserByEmail = async (email: string) => {
   await adminRequest(`/auth/v1/admin/users/${user.id}`, { method: "DELETE" });
 };
 
-export const fetchAdminUserByEmail = async (email: string) => {
+const fetchAdminUserByEmail = async (email: string) => {
   const list = await adminRequest<AdminUserList>("/auth/v1/admin/users");
   const user = list.users?.find((entry) => entry.email === email);
 
@@ -171,6 +173,3 @@ export const createE2ePassword = () => `E2e-${Date.now()}!Zx9`;
 
 export const createE2eEmail = (prefix: string) =>
   `${prefix}-${Date.now()}@xforge.local`;
-
-export const getPlaywrightBaseUrl = () =>
-  process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";

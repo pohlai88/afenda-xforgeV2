@@ -23,5 +23,3 @@ export const signInWithPassword = async (page: Page) => {
   await page.getByRole("button", { name: "Sign in" }).click();
   await expect(page).not.toHaveURL(SIGN_IN_URL_PATTERN, { timeout: 15_000 });
 };
-
-export { e2eEmail, e2ePassword } from "./credentials";

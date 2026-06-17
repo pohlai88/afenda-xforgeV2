@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig, devices } from "@playwright/test";
 import {
   appDir,
+  getE2eAuthStoragePath,
   getE2eBlobWebServerEnv,
   loadE2eEnv,
 } from "./helpers/load-env.mjs";
@@ -12,10 +13,7 @@ const e2eDir = path.dirname(fileURLToPath(import.meta.url));
 loadE2eEnv();
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
-const authStorageState = path.join(
-  appDir,
-  "output/playwright/.auth/e2e-user.json"
-);
+const authStorageState = getE2eAuthStoragePath();
 const isCi = Boolean(process.env.CI);
 
 export default defineConfig({

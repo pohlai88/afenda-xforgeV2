@@ -5,5 +5,3 @@ export const test = base.extend<{ uniqueTitle: string }>({
     await use(`E2E ${Date.now()}`);
   },
 });
-
-export { expect } from "@playwright/test";

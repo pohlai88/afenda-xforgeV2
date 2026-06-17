@@ -1,5 +1,5 @@
-import type { Page } from "@playwright/test";
-import { expect, test } from "./helpers/fixtures";
+import { expect, type Page } from "@playwright/test";
+import { test } from "./helpers/fixtures";
 import { getE2eBlobEnvStatus } from "./helpers/load-env.mjs";
 import { createOrbitCaseOnDetailPage } from "./helpers/orbit-case";
 

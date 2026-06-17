@@ -1,4 +1,5 @@
-import { expect, test } from "./helpers/fixtures";
+import { expect } from "@playwright/test";
+import { test } from "./helpers/fixtures";
 import { createOrbitCaseOnDetailPage } from "./helpers/orbit-case";
 
 test.describe("Orbit Case push @orbit-case", () => {

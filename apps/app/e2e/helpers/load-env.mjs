@@ -114,6 +114,12 @@ export const getE2eBlobEnvStatus = () => {
   };
 };
 
+export const getPlaywrightBaseUrl = () =>
+  process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
+
+export const getE2eAuthStoragePath = () =>
+  path.join(appDir, "output/playwright/.auth/e2e-user.json");
+
 /** Env vars forwarded to the Next.js dev server during Playwright runs. */
 export const getE2eBlobWebServerEnv = () => {
   const entries = {

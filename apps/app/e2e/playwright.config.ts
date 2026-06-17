@@ -5,14 +5,15 @@ import {
   appDir,
   getE2eAuthStoragePath,
   getE2eBlobWebServerEnv,
+  getPlaywrightBaseUrl,
   loadE2eEnv,
-} from "./helpers/load-env.mjs";
+} from "./helpers/load-env";
 
 const e2eDir = path.dirname(fileURLToPath(import.meta.url));
 
 loadE2eEnv();
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
+const baseURL = getPlaywrightBaseUrl();
 const authStorageState = getE2eAuthStoragePath();
 const isCi = Boolean(process.env.CI);
 
@@ -25,7 +26,7 @@ export default defineConfig({
   workers: isCi ? 1 : "50%",
   globalSetup: process.env.PLAYWRIGHT_SKIP_GLOBAL_SETUP
     ? undefined
-    : path.join(appDir, "scripts/ensure-e2e-auth-user.mjs"),
+    : path.join(e2eDir, "global-setup.ts"),
   reporter: [
     ["list"],
     [
@@ -51,12 +52,26 @@ export default defineConfig({
     },
     {
       name: "auth-flows",
-      testMatch: ["auth.spec.ts", "auth-completion.spec.ts", "email-auth.spec.ts"],
+      testMatch: [
+        "auth.spec.ts",
+        "auth-completion.spec.ts",
+        "email-auth.spec.ts",
+      ],
       fullyParallel: false,
     },
     {
       name: "authenticated",
       testMatch: ["orbit-case.spec.ts", "orbit-case-push.spec.ts"],
+      dependencies: ["setup"],
+      fullyParallel: true,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: authStorageState,
+      },
+    },
+    {
+      name: "authenticated-blob",
+      testMatch: ["orbit-case-blob.spec.ts"],
       dependencies: ["setup"],
       fullyParallel: true,
       use: {
@@ -71,9 +86,7 @@ export default defineConfig({
         command: "pnpm dev",
         cwd: appDir,
         url: baseURL,
-        reuseExistingServer: process.env.PLAYWRIGHT_FORCE_FRESH_SERVER
-          ? false
-          : true,
+        reuseExistingServer: !process.env.PLAYWRIGHT_FORCE_FRESH_SERVER,
         timeout: 120_000,
         env: getE2eBlobWebServerEnv(),
       },

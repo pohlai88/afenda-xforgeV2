@@ -1,6 +1,6 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 import { e2eEmail } from "./helpers/credentials";
-import { getPlaywrightBaseUrl } from "./helpers/load-env.mjs";
+import { getPlaywrightBaseUrl } from "./helpers/load-env";
 import {
   buildConfirmUrl,
   createE2eEmail,

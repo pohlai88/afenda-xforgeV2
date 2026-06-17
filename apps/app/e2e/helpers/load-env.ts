@@ -13,20 +13,42 @@ const ENV_LOAD_ORDER = [
   path.join(repoRoot, ".env"),
   path.join(repoRoot, ".env.local"),
   path.join(appDir, ".env.local"),
-];
+] as const;
 
 const ENV_LINE_PATTERN = /^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=(.*)$/;
-const ENV_LINE_SPLIT_PATTERN = /\r?\n/;
 const ENV_VALUE_QUOTES_PATTERN = /^["']|["']$/g;
 
-export const loadEnvFile = (envPath) => {
+export interface E2eSupabaseEnvStatus {
+  anonOrPublishableKey: boolean;
+  readyForBrowserAuthTests: boolean;
+  readyForIntegrationTests: boolean;
+  serviceRoleKey: boolean;
+  url: boolean;
+}
+
+export interface E2eBlobEnvStatus {
+  privateBlobToken: boolean;
+  privateStoreId: boolean;
+  publicBlobToken: boolean;
+  publicStoreId: boolean;
+  readyForPrivateBlob: boolean;
+  readyForUploadTests: boolean;
+}
+
+export type E2eCheckProject =
+  | "report"
+  | "auth-flows"
+  | "authenticated"
+  | "orbit-case"
+  | "orbit-case-blob"
+  | "full";
+
+export const loadEnvFile = (envPath: string): boolean => {
   if (!fs.existsSync(envPath)) {
     return false;
   }
 
-  for (const line of fs
-    .readFileSync(envPath, "utf8")
-    .split(ENV_LINE_SPLIT_PATTERN)) {
+  for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
     const match = line.match(ENV_LINE_PATTERN);
     if (!match || process.env[match[1]]) {
       continue;
@@ -40,8 +62,8 @@ export const loadEnvFile = (envPath) => {
   return true;
 };
 
-export const loadE2eEnv = () => {
-  const loaded = [];
+export const loadE2eEnv = (): string[] => {
+  const loaded: string[] = [];
 
   for (const envPath of ENV_LOAD_ORDER) {
     if (loadEnvFile(envPath)) {
@@ -52,22 +74,22 @@ export const loadE2eEnv = () => {
   return loaded;
 };
 
-const resolveSupabaseUrl = () =>
+const resolveSupabaseUrl = (): string =>
   process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_API_URL ?? "";
 
-const resolveServiceRoleKey = () =>
+const resolveServiceRoleKey = (): string =>
   process.env.SUPABASE_SECRET_KEY ??
   process.env.SUPABASE_SERVICE_ROLE_KEY ??
   "";
 
-const resolveAnonOrPublishableKey = () =>
+const resolveAnonOrPublishableKey = (): string =>
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
   process.env.SUPABASE_PUBLISHABLE_KEY ??
   process.env.SUPABASE_ANON_PUBLIC ??
   "";
 
-export const getE2eSupabaseEnvStatus = () => {
+export const getE2eSupabaseEnvStatus = (): E2eSupabaseEnvStatus => {
   const url = resolveSupabaseUrl();
   const serviceRoleKey = resolveServiceRoleKey();
   const anonKey = resolveAnonOrPublishableKey();
@@ -81,24 +103,27 @@ export const getE2eSupabaseEnvStatus = () => {
   };
 };
 
-export const assertE2eSupabaseEnv = () => {
+export const assertE2eSupabaseEnv = (): {
+  loaded: string[];
+  status: E2eSupabaseEnvStatus;
+} => {
   const loaded = loadE2eEnv();
   const status = getE2eSupabaseEnvStatus();
 
   return { loaded, status };
 };
 
-const resolvePrivateBlobToken = () =>
+const resolvePrivateBlobToken = (): string | undefined =>
   process.env.XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN ??
   process.env.XFROGE_PRIVATE_READ_WRITE_TOKEN ??
   process.env.XFROGE_READ_WRITE_TOKEN;
 
-const resolvePrivateStoreId = () =>
+const resolvePrivateStoreId = (): string | undefined =>
   process.env.XFORGE_STORE_ID ??
   process.env.XFROGE_PRIVATE_STORE_ID ??
   process.env.XFROGE_STORE_ID;
 
-export const getE2eBlobEnvStatus = () => {
+export const getE2eBlobEnvStatus = (): E2eBlobEnvStatus => {
   const publicBlobToken = Boolean(process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN);
   const privateBlobToken = Boolean(resolvePrivateBlobToken());
   const publicStoreId = Boolean(process.env.XFORGE_PUB_STORE_ID);
@@ -114,14 +139,13 @@ export const getE2eBlobEnvStatus = () => {
   };
 };
 
-export const getPlaywrightBaseUrl = () =>
+export const getPlaywrightBaseUrl = (): string =>
   process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
 
-export const getE2eAuthStoragePath = () =>
+export const getE2eAuthStoragePath = (): string =>
   path.join(appDir, "output/playwright/.auth/e2e-user.json");
 
-/** Env vars forwarded to the Next.js dev server during Playwright runs. */
-export const getE2eBlobWebServerEnv = () => {
+export const getE2eBlobWebServerEnv = (): Record<string, string> => {
   const entries = {
     XFORGE_PUB_BLOB_READ_WRITE_TOKEN:
       process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN,
@@ -131,6 +155,57 @@ export const getE2eBlobWebServerEnv = () => {
   };
 
   return Object.fromEntries(
-    Object.entries(entries).filter(([, value]) => Boolean(value))
+    Object.entries(entries).filter((entry): entry is [string, string] =>
+      Boolean(entry[1])
+    )
+  );
+};
+
+export const isE2eProjectReady = (
+  project: E2eCheckProject,
+  supabase: E2eSupabaseEnvStatus,
+  blob: E2eBlobEnvStatus
+): boolean => {
+  switch (project) {
+    case "report":
+      return true;
+    case "auth-flows":
+      return supabase.readyForBrowserAuthTests;
+    case "authenticated":
+    case "orbit-case":
+      return (
+        supabase.readyForBrowserAuthTests &&
+        supabase.readyForIntegrationTests
+      );
+    case "orbit-case-blob":
+      return (
+        supabase.readyForBrowserAuthTests &&
+        blob.readyForUploadTests &&
+        blob.readyForPrivateBlob
+      );
+    case "full":
+      return (
+        supabase.readyForBrowserAuthTests &&
+        supabase.readyForIntegrationTests &&
+        blob.readyForUploadTests &&
+        blob.readyForPrivateBlob
+      );
+    default:
+      return true;
+  }
+};
+
+export const requireE2eGlobalSetupEnv = (): void => {
+  const status = getE2eSupabaseEnvStatus();
+  if (status.readyForIntegrationTests) {
+    return;
+  }
+
+  throw new Error(
+    [
+      "E2E global setup requires NEXT_PUBLIC_SUPABASE_URL and a service role key.",
+      "Run: pnpm test:e2e:env",
+      "Or set PLAYWRIGHT_SKIP_GLOBAL_SETUP=1 for auth-flow-only runs without user provisioning.",
+    ].join(" ")
   );
 };

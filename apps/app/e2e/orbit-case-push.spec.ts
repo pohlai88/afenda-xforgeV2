@@ -14,7 +14,9 @@ test.describe("Orbit Case push @orbit-case", () => {
     });
 
     await test.step("Push to budget destination", async () => {
-      await expect(page.getByRole("heading", { name: "Push to module" })).toBeVisible({
+      await expect(
+        page.getByRole("heading", { name: "Push to module" })
+      ).toBeVisible({
         timeout: 15_000,
       });
       await page.getByLabel("Destination").click();

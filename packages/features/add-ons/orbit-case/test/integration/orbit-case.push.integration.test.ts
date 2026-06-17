@@ -10,15 +10,18 @@ import {
 } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
-import { hasIntegrationDatabase } from "@test-support/load-integration-env";
-import { executePush } from "../../engines/morph/push-orchestrator";
 import { getBudgetRequestById } from "../../engines/budget/budget-requests";
+import { executePush } from "../../engines/morph/push-orchestrator";
 import { createOrbitCase } from "../../engines/work/orbit-cases";
 import {
   clearPushDestinations,
   registerPushDestination,
 } from "../../lib/registry/push-destination-registry";
-import { clearPushTemplates, registerPushTemplate } from "../../lib/registry/template-registry";
+import {
+  clearPushTemplates,
+  registerPushTemplate,
+} from "../../lib/registry/template-registry";
+import { hasIntegrationDatabase } from "./has-integration-database";
 
 const hasDatabase = hasIntegrationDatabase();
 
@@ -30,11 +33,15 @@ const createdLinkIds: string[] = [];
 
 afterEach(async () => {
   for (const linkId of createdLinkIds.splice(0)) {
-    await database.delete(orbitObjectLink).where(eq(orbitObjectLink.id, linkId));
+    await database
+      .delete(orbitObjectLink)
+      .where(eq(orbitObjectLink.id, linkId));
   }
 
   for (const pushEventId of createdPushEventIds.splice(0)) {
-    await database.delete(orbitPushEvent).where(eq(orbitPushEvent.id, pushEventId));
+    await database
+      .delete(orbitPushEvent)
+      .where(eq(orbitPushEvent.id, pushEventId));
   }
 
   for (const budgetId of createdBudgetIds.splice(0)) {
@@ -75,9 +82,7 @@ describe.skipIf(!hasDatabase)("orbit case push idempotency", () => {
       id: "budget-request-template",
       destinationId: "budget-request",
       label: "Budget Request",
-      fields: [
-        { key: "title", label: "Title", type: "text", required: true },
-      ],
+      fields: [{ key: "title", label: "Title", type: "text", required: true }],
     });
 
     const orgId = createId();
@@ -156,9 +161,7 @@ describe.skipIf(!hasDatabase)("orbit case push idempotency", () => {
       id: "budget-request-template",
       destinationId: "budget-request",
       label: "Budget Request",
-      fields: [
-        { key: "title", label: "Title", type: "text", required: true },
-      ],
+      fields: [{ key: "title", label: "Title", type: "text", required: true }],
     });
 
     const orgId = createId();

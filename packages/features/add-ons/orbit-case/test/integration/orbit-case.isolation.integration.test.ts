@@ -7,8 +7,11 @@ import {
 } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
-import { hasIntegrationDatabase } from "@test-support/load-integration-env";
-import { createOrbitCase, getOrbitCaseById } from "../../engines/work/orbit-cases";
+import {
+  createOrbitCase,
+  getOrbitCaseById,
+} from "../../engines/work/orbit-cases";
+import { hasIntegrationDatabase } from "./has-integration-database";
 
 const hasDatabase = hasIntegrationDatabase();
 

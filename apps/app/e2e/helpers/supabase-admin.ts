@@ -1,4 +1,4 @@
-import { getPlaywrightBaseUrl } from "./load-env.mjs";
+import { getPlaywrightBaseUrl } from "./load-env";
 
 type AuthLinkType = "signup" | "magiclink" | "recovery" | "invite";
 
@@ -173,3 +173,75 @@ export const createE2ePassword = () => `E2e-${Date.now()}!Zx9`;
 
 export const createE2eEmail = (prefix: string) =>
   `${prefix}-${Date.now()}@xforge.local`;
+
+interface E2eAdminUserRecord {
+  email?: string;
+  email_confirmed_at?: string | null;
+  id: string;
+  user_metadata?: {
+    activeOrganizationId?: string;
+    name?: string;
+  };
+}
+
+interface OrganizationMemberRow {
+  organizationId?: string;
+}
+
+export interface E2eUserHealth {
+  activeOrganizationId?: string;
+  email: string;
+  emailConfirmed: boolean;
+  exists: boolean;
+  organizationId?: string;
+  userId?: string;
+}
+
+export const getE2eUserHealth = async (
+  email: string
+): Promise<E2eUserHealth> => {
+  const list = await adminRequest<{ users?: E2eAdminUserRecord[] }>(
+    "/auth/v1/admin/users"
+  );
+  const user = list.users?.find((entry) => entry.email === email);
+
+  if (!user) {
+    return { email, exists: false, emailConfirmed: false };
+  }
+
+  const detail = await adminRequest<E2eAdminUserRecord>(
+    `/auth/v1/admin/users/${user.id}`
+  );
+
+  let organizationId: string | undefined;
+  try {
+    const memberships = await adminRequest<OrganizationMemberRow[]>(
+      `/rest/v1/organization_members?select=organizationId&userId=eq.${user.id}&limit=1`,
+      {
+        headers: {
+          Accept: "application/json",
+          "Accept-Profile": "next_forge",
+        },
+      }
+    );
+    organizationId = memberships[0]?.organizationId;
+  } catch {
+    // membership probe is best-effort for env reporting
+  }
+
+  return {
+    email,
+    exists: true,
+    userId: user.id,
+    emailConfirmed: Boolean(
+      detail.email_confirmed_at ?? user.email_confirmed_at
+    ),
+    activeOrganizationId: detail.user_metadata?.activeOrganizationId,
+    organizationId,
+  };
+};
+
+export const isE2eUserReadyForAuthenticatedTests = (
+  health: E2eUserHealth
+): boolean =>
+  health.exists && health.emailConfirmed && Boolean(health.organizationId);

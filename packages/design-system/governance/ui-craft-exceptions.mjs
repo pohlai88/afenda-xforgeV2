@@ -4,7 +4,8 @@ import { join, relative } from "node:path";
 // biome-ignore lint/suspicious/noControlCharactersInRegex: strips ANSI escape sequences from detector output.
 const ANSI_PATTERN = /\u001b\[[0-9;]*m/g;
 const FINDING_MESSAGE_PATTERN = /^\s*●\s+(.+?)\s+—\s+/;
-const FINDING_PATH_PATTERN = /^(packages[\\/].+?\.(?:tsx|ts|css)):(\d+)$/;
+const FINDING_PATH_PATTERN =
+  /^((?:packages|apps)[\\/].+?\.(?:tsx|ts|css)):(\d+)$/;
 const LINE_SPLIT_PATTERN = /\r?\n/;
 
 export const UI_CRAFT_FALSE_POSITIVE_BUDGET = {

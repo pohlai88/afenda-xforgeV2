@@ -6,7 +6,8 @@
     ".": "./index.ts",
     "./server": "./server.ts",
     "./contract": "./contract/index.ts",
-    "./keys": "./keys.ts"
+    "./keys": "./keys.ts",
+    "./revalidate": "./revalidate.ts"
   },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",

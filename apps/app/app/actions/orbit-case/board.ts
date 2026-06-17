@@ -21,7 +21,7 @@ import {
   getOrbitCaseTimeline,
   updateOrbitCaseFields,
 } from "@repo/orbit-case/server";
-import { revalidatePath } from "next/cache";
+import { revalidateOrbitCaseMutation } from "@/lib/orbit-case-revalidate";
 
 const moveCaseStatusSchema = updateOrbitCaseSchema.pick({
   caseId: true,
@@ -42,7 +42,10 @@ export const moveCaseStatus = async (
     const parsed = moveCaseStatusSchema.parse(input);
     const status = orbitCaseStatusSchema.parse(parsed.status);
     await updateOrbitCaseFields(orgId, userId, parsed.caseId, { status });
-    revalidatePath("/orbit-case");
+    revalidateOrbitCaseMutation({
+      organizationId: orgId,
+      caseId: parsed.caseId,
+    });
     return toOrbitCaseBoardDto(await getOrbitCaseBoard(orgId));
   });
 

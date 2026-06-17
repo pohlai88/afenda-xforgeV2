@@ -16,6 +16,7 @@ import {
   upsertOrgPushTemplate,
 } from "@repo/orbit-case/server";
 import { revalidatePath } from "next/cache";
+import { revalidateOrbitCaseMutation } from "@/lib/orbit-case-revalidate";
 
 export const getPushRegistryAdmin = async () =>
   withOwner(async ({ orgId }) => listAdminPushRegistry(orgId));
@@ -27,7 +28,7 @@ export const savePushDestination = async (
     upsertPushDestinationSchema.parse(input);
     const rowId = await upsertOrgPushDestination(orgId, input);
     revalidatePath("/orbit-case/settings");
-    revalidatePath("/orbit-case");
+    revalidateOrbitCaseMutation({ organizationId: orgId });
     return { rowId };
   });
 
@@ -38,7 +39,7 @@ export const removePushDestination = async (
     deletePushDestinationSchema.parse(input);
     const deleted = await deleteOrgPushDestination(orgId, input);
     revalidatePath("/orbit-case/settings");
-    revalidatePath("/orbit-case");
+    revalidateOrbitCaseMutation({ organizationId: orgId });
     return { deleted };
   });
 
@@ -49,7 +50,7 @@ export const savePushTemplate = async (
     upsertPushTemplateSchema.parse(input);
     const templateId = await upsertOrgPushTemplate(orgId, input);
     revalidatePath("/orbit-case/settings");
-    revalidatePath("/orbit-case");
+    revalidateOrbitCaseMutation({ organizationId: orgId });
     return { templateId };
   });
 
@@ -60,6 +61,6 @@ export const removePushTemplate = async (
     deletePushTemplateSchema.parse(input);
     const deleted = await deleteOrgPushTemplate(orgId, input);
     revalidatePath("/orbit-case/settings");
-    revalidatePath("/orbit-case");
+    revalidateOrbitCaseMutation({ organizationId: orgId });
     return { deleted };
   });

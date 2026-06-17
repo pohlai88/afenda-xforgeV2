@@ -1,4 +1,5 @@
 packages:
   - 'apps/*'
+  - 'apps/app/e2e'
   - 'packages/*'
   - 'packages/features/add-ons/*'

@@ -88,16 +88,21 @@ export const assertE2eSupabaseEnv = () => {
   return { loaded, status };
 };
 
+const resolvePrivateBlobToken = () =>
+  process.env.XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN ??
+  process.env.XFROGE_PRIVATE_READ_WRITE_TOKEN ??
+  process.env.XFROGE_READ_WRITE_TOKEN;
+
+const resolvePrivateStoreId = () =>
+  process.env.XFORGE_STORE_ID ??
+  process.env.XFROGE_PRIVATE_STORE_ID ??
+  process.env.XFROGE_STORE_ID;
+
 export const getE2eBlobEnvStatus = () => {
   const publicBlobToken = Boolean(process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN);
-  const privateBlobToken = Boolean(
-    process.env.XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN ??
-      process.env.XFROGE_READ_WRITE_TOKEN
-  );
+  const privateBlobToken = Boolean(resolvePrivateBlobToken());
   const publicStoreId = Boolean(process.env.XFORGE_PUB_STORE_ID);
-  const privateStoreId = Boolean(
-    process.env.XFORGE_STORE_ID ?? process.env.XFROGE_STORE_ID
-  );
+  const privateStoreId = Boolean(resolvePrivateStoreId());
 
   return {
     publicBlobToken,
@@ -107,4 +112,19 @@ export const getE2eBlobEnvStatus = () => {
     readyForUploadTests: publicBlobToken && publicStoreId,
     readyForPrivateBlob: privateBlobToken && privateStoreId,
   };
+};
+
+/** Env vars forwarded to the Next.js dev server during Playwright runs. */
+export const getE2eBlobWebServerEnv = () => {
+  const entries = {
+    XFORGE_PUB_BLOB_READ_WRITE_TOKEN:
+      process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN,
+    XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN: resolvePrivateBlobToken(),
+    XFORGE_PUB_STORE_ID: process.env.XFORGE_PUB_STORE_ID,
+    XFORGE_STORE_ID: resolvePrivateStoreId(),
+  };
+
+  return Object.fromEntries(
+    Object.entries(entries).filter(([, value]) => Boolean(value))
+  );
 };

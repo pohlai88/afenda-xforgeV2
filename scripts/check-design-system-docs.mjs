@@ -20,6 +20,7 @@ const requiredDocs = [
   "block-governance.md",
   "block-migration-guide.md",
   "design-system-docs-audit.md",
+  "governance.md",
   "mindful-operator.md",
 ];
 const requiredReadPaths = [
@@ -39,13 +40,31 @@ const requiredStoryEvidence = [
 ];
 const requiredRootScripts = [
   "blocks:quality",
+  "design-system:component-api",
   "design-system:check-drift",
   "design-system:check-import-boundaries",
   "design-system:docs-audit",
+  "design-system:governance",
   "design-system:primitive-readiness",
   "design-system:stabilize",
   "design-system:token-diff",
+  "enterprise:governance",
+  "governance",
+  "storybook:hygiene",
   "ui-craft:detect",
+];
+const requiredDesignSystemGovernanceSteps = [
+  "design-system:check-drift",
+  "design-system:component-api",
+  "design-system:docs-audit",
+  "design-system:token-diff",
+  "design-system:check-import-boundaries",
+  "design-system:primitive-readiness",
+  "storybook:hygiene",
+  "ui-craft:detect",
+  "--filter @repo/design-system typecheck",
+  "--filter @repo/design-system test",
+  "--filter storybook typecheck",
 ];
 const requiredDesignSystemExports = [
   "./contracts/afenda-design-system",
@@ -62,8 +81,10 @@ const requiredDesignSystemExports = [
   "./contracts/afenda-example",
 ];
 const staleReferences = [
+  "Afenda Pattern Library",
   "components/blocks/schema",
   "components/blocks/registry",
+  "pattern-library",
 ];
 const legacyUiImportReference = "@repo/design-system/components/ui";
 const contractReferencePattern = /contracts\/([a-z0-9-]+\.contract\.ts)/g;
@@ -165,6 +186,14 @@ if (
   )
 ) {
   errors.push("design-system:stabilize must include design-system:docs-audit.");
+}
+
+const designSystemGovernance =
+  rootPackage.scripts?.["design-system:governance"] ?? "";
+for (const step of requiredDesignSystemGovernanceSteps) {
+  if (!designSystemGovernance.includes(step)) {
+    errors.push(`design-system:governance must include "${step}".`);
+  }
 }
 
 const designSystemPackage = JSON.parse(

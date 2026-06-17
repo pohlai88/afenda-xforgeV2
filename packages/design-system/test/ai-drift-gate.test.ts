@@ -9,6 +9,7 @@ const registry = {
   componentIds: new Set(["Button", "PageHeader"]),
   contractVersion: "0.1.0",
   exactSlots: new Set(["button"]),
+  forbiddenSlotPatterns: new Set(['data-slot="thing"']),
   forbiddenSemanticAliases: {
     critical: ["danger", "destructive", "error", "negative"],
     success: ["approved", "good", "positive"],
@@ -56,6 +57,10 @@ describe("AI design-system drift gate", () => {
     expect(scan('<div data-slot="hero" />')).toContain("[unknown-slot]");
   });
 
+  it("hard-fails explicitly forbidden data slots even if a pattern would match", () => {
+    expect(scan('<div data-slot="thing" />')).toContain("[unknown-slot]");
+  });
+
   it("hard-fails expression data slots that resolve to unknown slots", () => {
     expect(scan("<div data-slot={'hero'} />")).toContain("[unknown-slot]");
   });
@@ -65,9 +70,13 @@ describe("AI design-system drift gate", () => {
   });
 
   it("allows registered data-slot template patterns", () => {
-    expect(
-      scan("<div data-slot={`app-sidebar-nav-item-${item.id}`} />")
-    ).not.toContain("[dynamic-slot-id]");
+    const dynamicSlotTemplate = [
+      "<div data-slot={`app-sidebar-nav-item-",
+      "$",
+      "{item.id}`} />",
+    ].join("");
+
+    expect(scan(dynamicSlotTemplate)).not.toContain("[dynamic-slot-id]");
   });
 
   it("hard-fails forbidden semantic aliases", () => {
@@ -96,6 +105,14 @@ describe("AI design-system drift gate", () => {
     );
   });
 
+  it("does not hard-fail dynamic variant values in normal workshop stories", () => {
+    expect(
+      scan(
+        'export default { tags: ["autodocs", "afenda-ui", "primitive"] };\n<Button variant={variant} />'
+      )
+    ).not.toContain("[dynamic-variant-value]");
+  });
+
   it("hard-fails local vocabulary declarations", () => {
     expect(scan('const variants = ["primary", "secondary"]')).toContain(
       "[local-vocabulary-declaration]"
@@ -120,10 +137,40 @@ describe("AI design-system drift gate", () => {
     ).not.toContain("[unknown-component-name]");
   });
 
-  it("hard-fails stale Storybook examples", () => {
-    expect(scan("export const Example = { tags: ['example'] }", true)).toContain(
+  it("hard-fails example stories without a contract version", () => {
+    expect(scan('export default { tags: ["example"] }')).toContain(
       "[stale-example]"
     );
+  });
+
+  it("allows ai-example stories with the current contract version", () => {
+    expect(
+      scan(
+        'export default { tags: ["ai-example"], parameters: { afendaContractVersion: "0.1.0" } }'
+      )
+    ).not.toContain("[stale-example]");
+  });
+
+  it("hard-fails copy-paste examples with stale contract versions", () => {
+    expect(
+      scan(
+        'export default { tags: ["copy-paste-example"], parameters: { afendaContractVersion: "0.0.1" } }'
+      )
+    ).toContain("[stale-example]");
+  });
+
+  it("allows normal stories without a contract version", () => {
+    expect(
+      scan('export default { tags: ["autodocs", "afenda-ui", "primitive"] }')
+    ).not.toContain("[stale-example]");
+  });
+
+  it("hard-fails stale contract versions even on normal stories", () => {
+    expect(
+      scan(
+        'export default { tags: ["autodocs", "block"], parameters: { afendaContractVersion: "0.0.1" } }'
+      )
+    ).toContain("[stale-example]");
   });
 
   it("hard-fails private design-system imports in examples", () => {

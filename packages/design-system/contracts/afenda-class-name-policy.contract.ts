@@ -24,8 +24,7 @@ export const AFENDA_CLASS_NAME_POLICIES = [
   "internal-only",
 ] as const;
 
-export type AfendaClassNamePolicy =
-  (typeof AFENDA_CLASS_NAME_POLICIES)[number];
+export type AfendaClassNamePolicy = (typeof AFENDA_CLASS_NAME_POLICIES)[number];
 
 export const AFENDA_CLASS_NAME_AUTHORITY_RULES = {
   classNameOwnsLayoutOnly: true,

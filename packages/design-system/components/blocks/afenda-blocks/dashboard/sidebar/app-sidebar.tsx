@@ -16,12 +16,12 @@ import type { SidebarNavGroup } from "@repo/design-system/components/blocks/afen
 import { cn } from "@repo/design-system/lib/utils";
 import { GalleryVerticalEndIcon } from "lucide-react";
 import { type ComponentPropsWithoutRef, memo, type ReactNode } from "react";
+import type { NavMainItem } from "../nav/dashboard-nav-types";
 import { NavDocuments } from "../nav/nav-documents";
 import { NavMain } from "../nav/nav-main";
 import { NavSecondary } from "../nav/nav-secondary";
 import { NavStarted } from "../nav/nav-started";
 import { NavUser } from "../nav/nav-user";
-import type { NavMainItem } from "../nav/dashboard-nav-types";
 import {
   DEMO_DASHBOARD_SIDEBAR_BRAND,
   DEMO_DASHBOARD_SIDEBAR_DOCUMENTS,

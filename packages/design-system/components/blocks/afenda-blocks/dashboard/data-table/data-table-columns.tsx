@@ -29,6 +29,7 @@ import {
   DASHBOARD_DATA_TABLE_REVIEWER_PLACEHOLDER,
   DASHBOARD_DATA_TABLE_REVIEWERS,
 } from "./dashboard-data-table-constants";
+import { demoSaveDashboardDataTableField } from "./dashboard-data-table-demo-actions";
 import {
   dashboardDataTableActionsTriggerClass,
   dashboardDataTableNumericInputClass,
@@ -37,7 +38,6 @@ import {
   dashboardDataTableTypeBadgeClass,
 } from "./dashboard-data-table-recipes";
 import type { DashboardDataTableRow } from "./dashboard-data-table-schema";
-import { demoSaveDashboardDataTableField } from "./dashboard-data-table-demo-actions";
 import { DataTableCellViewer } from "./data-table-cell-viewer";
 import { DataTableDragHandle } from "./data-table-drag-handle";
 

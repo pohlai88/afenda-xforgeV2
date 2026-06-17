@@ -5,6 +5,15 @@ import { assertE2eSupabaseEnv, getE2eBlobEnvStatus, loadE2eEnv } from "./load-en
 loadE2eEnv();
 const { loaded, status } = assertE2eSupabaseEnv();
 const blobStatus = getE2eBlobEnvStatus();
+const checkProject = process.env.E2E_CHECK_PROJECT ?? "report";
+
+const tiers = {
+  authFlows: status.readyForBrowserAuthTests,
+  authenticated: status.readyForBrowserAuthTests,
+  emailIntegration: status.readyForIntegrationTests,
+  publicBlob: blobStatus.readyForUploadTests,
+  privateBlob: blobStatus.readyForPrivateBlob,
+};
 
 console.log("Playwright E2E env");
 console.log("");
@@ -25,15 +34,21 @@ console.log(
   `  SUPABASE_SERVICE_ROLE_KEY: ${status.serviceRoleKey ? "yes" : "no"}`
 );
 console.log("");
+console.log("Readiness tiers:");
 console.log(
-  status.readyForIntegrationTests
-    ? "Integration tests (admin generate_link): will run"
-    : "Integration tests: will SKIP — need URL + service role key"
+  `  auth-flows (sign-in UI): ${tiers.authFlows ? "ready" : "missing URL + anon/publishable key"}`
 );
 console.log(
-  status.readyForBrowserAuthTests
-    ? "Browser auth tests (sign-in UI): will run"
-    : "Browser auth tests: need URL + anon/publishable key"
+  `  authenticated (storageState + orbit-case): ${tiers.authenticated ? "ready" : "missing URL + anon/publishable key"}`
+);
+console.log(
+  `  email integration (admin generate_link): ${tiers.emailIntegration ? "ready" : "missing URL + service role key"}`
+);
+console.log(
+  `  orbit-case public blob upload: ${tiers.publicBlob ? "ready" : "will SKIP in spec"}`
+);
+console.log(
+  `  orbit-case private blob upload: ${tiers.privateBlob ? "ready" : "will SKIP in spec"}`
 );
 console.log("");
 console.log("Vercel Blob keys present:");
@@ -45,17 +60,24 @@ console.log(
   `  XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN: ${blobStatus.privateBlobToken ? "yes" : "no"}`
 );
 console.log(`  XFORGE_STORE_ID: ${blobStatus.privateStoreId ? "yes" : "no"}`);
-console.log(
-  blobStatus.readyForUploadTests
-    ? "Orbit Case public upload E2E: will run"
-    : "Orbit Case public upload E2E: will SKIP — need token + public store id (pnpm env:sync)"
-);
-console.log(
-  blobStatus.readyForPrivateBlob
-    ? "Orbit Case private upload E2E: will run"
-    : "Orbit Case private upload E2E: will SKIP — need private token + XFORGE_STORE_ID"
-);
 
-if (!status.readyForIntegrationTests) {
+const projectReady = {
+  report: true,
+  "auth-flows": tiers.authFlows,
+  authenticated: tiers.authenticated,
+  full:
+    tiers.authFlows &&
+    tiers.emailIntegration &&
+    tiers.publicBlob &&
+    tiers.privateBlob,
+};
+
+const ready = projectReady[checkProject] ?? true;
+
+if (!ready) {
+  console.log("");
+  console.log(
+    `E2E_CHECK_PROJECT=${checkProject} requirements not met. Set E2E_CHECK_PROJECT=report for tiered output only.`
+  );
   process.exitCode = 1;
 }

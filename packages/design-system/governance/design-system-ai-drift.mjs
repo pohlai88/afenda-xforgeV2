@@ -6,8 +6,7 @@ const tsStringPattern = /["']([^"']+)["']/g;
 const jsxTagPattern = /<([A-Z][A-Za-z0-9]*)\b/g;
 const localComponentPattern =
   /\b(?:function|const|class)\s+([A-Z][A-Za-z0-9]*)\b/g;
-const namedImportPattern =
-  /import\s+\{([^}]+)\}\s+from\s+["']([^"']+)["']/g;
+const namedImportPattern = /import\s+\{([^}]+)\}\s+from\s+["']([^"']+)["']/g;
 const localVocabularyPattern =
   /\bconst\s+(?:variants|tones|states|densities|[A-Za-z0-9]*(?:Variant|Tone|State|Density)Values)\s*=\s*\[/g;
 const recipeCallPattern = /\b(recipe|blockRecipe)\(\s*["']([^"']+)["']/g;
@@ -22,9 +21,24 @@ const classLegacySemanticPattern =
   /\b(?:bg|text|border|ring|status)-(positive|danger|destructive|negative)\b/g;
 const propLegacySemanticPattern =
   /\b(?:tone|variant)\s*=\s*["'](positive|danger|destructive|negative)["']/g;
-const exampleTagPattern = /\b(?:copyPasteExample|aiExample|example)\b/;
+const afendaContractVersionPattern =
+  /\bafendaContractVersion\s*:\s*["']([^"']+)["']/;
+const exampleMarkerPattern =
+  /["'](?:example|ai-example|copy-paste-example)["']|\b(?:afendaExample|aiExample)\s*:\s*true\b/;
 const privateDesignSystemImportPattern =
-  /@repo\/design-system\/(?:components\/(?:ui|afenda-ui|blocks)|contracts\/(?!afenda-))/g;
+  /@repo\/design-system\/(?:components\/(?:ui|afenda-ui|blocks|mode-toggle)|contracts\/(?!afenda-))/g;
+const parseableTypeScriptFilePattern = /\.(ts|tsx)$/;
+const pascalCasePattern = /^[A-Z][A-Za-z0-9]*$/;
+const localVocabularyExactPattern = /^(variants|tones|states|densities)$/;
+const localVocabularyValuesPattern =
+  /^[A-Za-z0-9]*(?:Variant|Tone|State|Density)Values$/;
+const localVocabularyTypePattern = /^(Variant|Tone|State|Density)$/;
+const importAliasPattern = /\s+as\s+/;
+const startsWithCapitalPattern = /^[A-Z]/;
+const componentRegistryCandidatePattern =
+  /(Action|Bar|Block|Card|Chart|Dialog|Header|Footer|Metric|Panel|Shell|Sidebar|Table|Timeline|Toolbar|Topbar)$/;
+const objectStringArrayPattern =
+  /^\s*([A-Za-z][A-Za-z0-9_]*)\s*:\s*\[([^\]]*)\]/gm;
 
 export const DESIGN_SYSTEM_AI_DRIFT_RULES = {
   dynamicRecipeId: "dynamic-recipe-id",
@@ -43,27 +57,16 @@ export const DESIGN_SYSTEM_AI_DRIFT_RULES = {
 
 export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
   const contractsDir = join(root, "packages", "design-system", "contracts");
-  const recipePath = join(
-    root,
-    "packages",
-    "design-system",
-    "components",
-    "afenda-ui",
-    "recipes.ts"
-  );
-  const blockRecipePath = join(
-    root,
-    "packages",
-    "design-system",
-    "components",
-    "blocks",
-    "block-recipes.ts"
-  );
   const designSystemContractPath = join(
     contractsDir,
     "afenda-design-system.contract.ts"
   );
-  const componentContractPath = join(contractsDir, "afenda-component.contract.ts");
+  const componentContractPath = join(
+    contractsDir,
+    "afenda-component.contract.ts"
+  );
+  const exampleContractPath = join(contractsDir, "afenda-example.contract.ts");
+  const recipeContractPath = join(contractsDir, "afenda-recipe.contract.ts");
   const slotContractPath = join(contractsDir, "afenda-slot.contract.ts");
   const variantContractPath = join(contractsDir, "afenda-variant.contract.ts");
   const afendaUiIndexPath = join(
@@ -85,6 +88,8 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
 
   const contractSource = readIfExists(designSystemContractPath);
   const componentContractSource = readIfExists(componentContractPath);
+  const exampleContractSource = readIfExists(exampleContractPath);
+  const recipeContractSource = readIfExists(recipeContractPath);
   const slotContractSource = readIfExists(slotContractPath);
   const variantContractSource = readIfExists(variantContractPath);
 
@@ -104,10 +109,13 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
     componentContractSource,
     "AFENDA_INTERNAL_COMPONENT_IDS"
   );
-  const recipeIds = extractObjectKeys(readIfExists(recipePath), "afendaRecipe");
-  const blockRecipeIds = extractObjectKeys(
-    readIfExists(blockRecipePath),
-    "afendaBlockRecipe"
+  const recipeIds = extractStringArray(
+    recipeContractSource,
+    "AFENDA_RECIPE_IDENTITY_REGISTRY"
+  );
+  const blockRecipeIds = extractStringArray(
+    recipeContractSource,
+    "AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY"
   );
   const tones = extractStringArray(variantContractSource, "AFENDA_TONES");
   const actionVariants = extractStringArray(
@@ -130,12 +138,14 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
     slotContractSource,
     "AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY"
   );
-  const exactSlots = new Set([
-    ...primitiveComponentIds,
-    "alert-description",
-    "alert-title",
-    "progress-indicator",
-  ]);
+  const exactSlotSources = extractStringArray(
+    slotContractSource,
+    "AFENDA_SLOT_EXACT_IDENTITY_REGISTRY"
+  );
+  const forbiddenSlotPatterns = extractStringArray(
+    slotContractSource,
+    "AFENDA_SLOT_FORBIDDEN_PATTERNS"
+  );
 
   return {
     actionVariants: new Set(actionVariants),
@@ -147,11 +157,17 @@ export function createDesignSystemAiDriftRegistry(root = process.cwd()) {
       ...publicComponentExports,
       ...internalComponentIdentities,
     ]),
-    contractVersion: extractConstString(
-      contractSource,
-      "AFENDA_DESIGN_SYSTEM_CONTRACT_VERSION"
-    ),
-    exactSlots,
+    contractVersion:
+      extractConstString(
+        exampleContractSource,
+        "AFENDA_EXAMPLE_CONTRACT_VERSION"
+      ) ??
+      extractConstString(
+        contractSource,
+        "AFENDA_DESIGN_SYSTEM_CONTRACT_VERSION"
+      ),
+    exactSlots: new Set(exactSlotSources),
+    forbiddenSlotPatterns: new Set(forbiddenSlotPatterns),
     forbiddenSemanticAliases,
     hardFailRules: new Set(hardFailRules),
     recipeIds: new Set(recipeIds),
@@ -180,170 +196,219 @@ export function scanDesignSystemAiDriftFindings({
   requireExampleVersion = false,
 }) {
   const findingCollector = createFindingCollector();
-  const normalizedPath = normalizePath(relative(root, path));
-  const astFacts = collectDesignSystemAstFacts(
-    parseDesignSystemSource({ path, source })
-  );
-  const localComponents =
-    astFacts?.localComponents ??
-    new Set([...source.matchAll(localComponentPattern)].map((match) => match[1]));
-  const externalComponents =
-    astFacts?.externalComponents ?? extractExternalImportNames(source);
-  const isStory = normalizedPath.endsWith(".stories.tsx");
-  const requiresStaticExampleValues =
-    isStory && (requireExampleVersion || exampleTagPattern.test(source));
+  const context = createScanContext({
+    path,
+    registry,
+    requireExampleVersion,
+    requirePublicDesignSystemImports,
+    root,
+    source,
+  });
 
-  const jsxComponents =
-    astFacts?.jsxComponents ??
-    [...source.matchAll(jsxTagPattern)].map((match) => ({ name: match[1] }));
+  collectUnknownComponentFindings(context, findingCollector);
+  collectRecipeFindings(context, findingCollector);
+  collectSlotFindings(context, findingCollector);
+  collectLocalVocabularyFindings(context, findingCollector);
+  collectPrivateImportFindings(context, findingCollector);
+  collectVariantPropFindings(context, findingCollector);
+  collectSemanticAliasFindings(context, findingCollector);
+  collectVariantDataFindings(context, findingCollector);
+  collectRawTailwindFindings(context, findingCollector);
+  collectStoryVersionFindings(context, findingCollector);
 
-  for (const { name } of jsxComponents) {
+  return findingCollector.findings;
+}
+
+function collectUnknownComponentFindings(context, findingCollector) {
+  for (const { name } of context.jsxComponents) {
     if (
-      shouldCheckComponentName(name, localComponents, externalComponents) &&
-      !registry.componentIds.has(name)
+      shouldCheckComponentName(
+        name,
+        context.localComponents,
+        context.externalComponents
+      ) &&
+      !context.registry.componentIds.has(name)
     ) {
       findingCollector.push(
         createHardFailFinding(
           DESIGN_SYSTEM_AI_DRIFT_RULES.unknownComponentName,
-          normalizedPath,
+          context.normalizedPath,
           `Unknown component <${name} /> is not in the component identity registry.`
         )
       );
     }
   }
+}
 
+function collectRecipeFindings(context, findingCollector) {
   const recipeCalls =
-    astFacts?.recipeCalls ??
-    [...source.matchAll(recipeCallPattern)].map((match) => ({
+    context.astFacts?.recipeCalls ??
+    [...context.source.matchAll(recipeCallPattern)].map((match) => ({
       helper: match[1],
       name: match[2],
     }));
 
   for (const { helper, name } of recipeCalls) {
     const registrySet =
-      helper === "blockRecipe" ? registry.blockRecipeIds : registry.recipeIds;
+      helper === "blockRecipe"
+        ? context.registry.blockRecipeIds
+        : context.registry.recipeIds;
     if (!registrySet.has(name)) {
       findingCollector.push(
         createHardFailFinding(
           DESIGN_SYSTEM_AI_DRIFT_RULES.unknownRecipe,
-          normalizedPath,
+          context.normalizedPath,
           `${helper}("${name}") is not in the recipe identity registry.`
         )
       );
     }
   }
 
-  for (const { helper, text } of astFacts?.dynamicRecipeCalls ?? []) {
+  for (const { helper, text } of context.astFacts?.dynamicRecipeCalls ?? []) {
     findingCollector.push(
       createHardFailFinding(
         DESIGN_SYSTEM_AI_DRIFT_RULES.dynamicRecipeId,
-        normalizedPath,
+        context.normalizedPath,
         `${helper}(${text}) must use literal recipe ids from the recipe identity registry.`
       )
     );
   }
+}
 
+function collectSlotFindings(context, findingCollector) {
   const dataSlots =
-    astFacts?.dataSlots ??
-    [...source.matchAll(dataSlotPattern)].map((match) => ({ slot: match[1] }));
+    context.astFacts?.dataSlots ??
+    [...context.source.matchAll(dataSlotPattern)].map((match) => ({
+      slot: match[1],
+    }));
 
   for (const { slot } of dataSlots) {
-    if (!isKnownSlot(slot, registry)) {
+    if (isForbiddenSlot(slot, context.registry)) {
       findingCollector.push(
         createHardFailFinding(
           DESIGN_SYSTEM_AI_DRIFT_RULES.unknownSlot,
-          normalizedPath,
+          context.normalizedPath,
+          `data-slot="${slot}" is forbidden by the slot identity contract.`
+        )
+      );
+      continue;
+    }
+
+    if (!isKnownSlot(slot, context.registry)) {
+      findingCollector.push(
+        createHardFailFinding(
+          DESIGN_SYSTEM_AI_DRIFT_RULES.unknownSlot,
+          context.normalizedPath,
           `data-slot="${slot}" is not registered by the slot identity contract.`
         )
       );
     }
   }
 
-  for (const slot of astFacts?.templateDataSlots ?? []) {
-    if (!doesTemplateSampleMatchSlotRegistry(slot.sample, registry)) {
+  for (const slot of context.astFacts?.templateDataSlots ?? []) {
+    if (!doesTemplateSampleMatchSlotRegistry(slot.sample, context.registry)) {
       findingCollector.push(
         createHardFailFinding(
           DESIGN_SYSTEM_AI_DRIFT_RULES.dynamicSlotId,
-          normalizedPath,
+          context.normalizedPath,
           `${slot.text} must match a slot pattern from the slot identity contract.`
         )
       );
     }
   }
 
-  for (const slot of astFacts?.propertyDataSlots ?? []) {
-    const values = astFacts.propertyStringValues.get(slot.property) ?? [];
-    if (values.length === 0 || values.some((value) => !isKnownSlot(value, registry))) {
+  for (const slot of context.astFacts?.propertyDataSlots ?? []) {
+    const values =
+      context.astFacts?.propertyStringValues.get(slot.property) ?? [];
+    if (
+      values.length === 0 ||
+      values.some((value) => !isKnownSlot(value, context.registry))
+    ) {
       findingCollector.push(
         createHardFailFinding(
           DESIGN_SYSTEM_AI_DRIFT_RULES.dynamicSlotId,
-          normalizedPath,
+          context.normalizedPath,
           `${slot.text} must resolve to data-slot values owned by the slot identity contract.`
         )
       );
     }
   }
 
-  for (const slot of astFacts?.dynamicDataSlots ?? []) {
+  for (const slot of context.astFacts?.dynamicDataSlots ?? []) {
     findingCollector.push(
       createHardFailFinding(
         DESIGN_SYSTEM_AI_DRIFT_RULES.dynamicSlotId,
-        normalizedPath,
+        context.normalizedPath,
         `${slot.text} must use a literal or registered-template data-slot value.`
       )
     );
   }
+}
 
-  if (astFacts?.localVocabularyDeclarations.length) {
-    for (const declaration of astFacts.localVocabularyDeclarations) {
+function collectLocalVocabularyFindings(context, findingCollector) {
+  if (context.astFacts?.localVocabularyDeclarations.length) {
+    for (const declaration of context.astFacts.localVocabularyDeclarations) {
       findingCollector.push(
         createHardFailFinding(
           DESIGN_SYSTEM_AI_DRIFT_RULES.localVocabularyDeclaration,
-          normalizedPath,
+          context.normalizedPath,
           `${declaration} must import or reference contract vocabularies.`
         )
       );
     }
-  } else if (!astFacts && localVocabularyPattern.test(source)) {
+    return;
+  }
+
+  localVocabularyPattern.lastIndex = 0;
+  if (!context.astFacts && localVocabularyPattern.test(context.source)) {
     findingCollector.push(
       createHardFailFinding(
         DESIGN_SYSTEM_AI_DRIFT_RULES.localVocabularyDeclaration,
-        normalizedPath,
+        context.normalizedPath,
         "Local vocabulary arrays must import or reference contract vocabularies."
       )
     );
   }
+}
 
-  if (requirePublicDesignSystemImports) {
-    const privateImports =
-      astFacts?.imports
-        .map((entry) => entry.specifier)
-        .filter((specifier) => isPrivateDesignSystemImport(specifier)) ??
-      [...source.matchAll(privateDesignSystemImportPattern)].map((match) => match[0]);
-
-    for (const specifier of privateImports) {
-      findingCollector.push(
-        createHardFailFinding(
-          DESIGN_SYSTEM_AI_DRIFT_RULES.privateImport,
-          normalizedPath,
-          `${specifier} bypasses the public design-system surface.`
-        )
-      );
-    }
+function collectPrivateImportFindings(context, findingCollector) {
+  if (!context.requirePublicDesignSystemImports) {
+    return;
   }
 
-  for (const prop of astFacts?.variantProps ?? []) {
-    const known = prop.axis === "tone" ? registry.tones : registry.variants;
+  const privateImports =
+    context.astFacts?.imports
+      .map((entry) => entry.specifier)
+      .filter((specifier) => isPrivateDesignSystemImport(specifier)) ??
+    [...context.source.matchAll(privateDesignSystemImportPattern)].map(
+      (match) => match[0]
+    );
+
+  for (const specifier of privateImports) {
+    findingCollector.push(
+      createHardFailFinding(
+        DESIGN_SYSTEM_AI_DRIFT_RULES.privateImport,
+        context.normalizedPath,
+        `${specifier} bypasses the public design-system surface.`
+      )
+    );
+  }
+}
+
+function collectVariantPropFindings(context, findingCollector) {
+  for (const prop of context.astFacts?.variantProps ?? []) {
+    const known =
+      prop.axis === "tone" ? context.registry.tones : context.registry.variants;
     if (prop.value) {
       if (known.has(prop.value)) {
         continue;
       }
 
-      if (isForbiddenSemanticAlias(prop.value, registry)) {
+      if (isForbiddenSemanticAlias(prop.value, context.registry)) {
         findingCollector.push(
           createHardFailFinding(
             DESIGN_SYSTEM_AI_DRIFT_RULES.unregisteredSemanticAlias,
-            normalizedPath,
+            context.normalizedPath,
             `${prop.name}="${prop.value}" uses a forbidden semantic alias.`
           )
         );
@@ -351,121 +416,186 @@ export function scanDesignSystemAiDriftFindings({
         findingCollector.push(
           createHardFailFinding(
             DESIGN_SYSTEM_AI_DRIFT_RULES.ungovernedVariant,
-            normalizedPath,
+            context.normalizedPath,
             `${prop.name}="${prop.value}" is not registered in the variant identity contract.`
           )
         );
       }
-    } else if (requiresStaticExampleValues) {
+    } else if (context.isExampleSurface) {
       findingCollector.push(
         createHardFailFinding(
           DESIGN_SYSTEM_AI_DRIFT_RULES.dynamicVariantValue,
-          normalizedPath,
+          context.normalizedPath,
           `${prop.name}={${prop.text}} must use a literal contract variant value in AI/example surfaces.`
         )
       );
     }
   }
+}
 
-  for (const match of source.matchAll(quotedLegacySemanticPattern)) {
+function collectSemanticAliasFindings(context, findingCollector) {
+  for (const match of context.source.matchAll(quotedLegacySemanticPattern)) {
     findingCollector.push(
       createHardFailFinding(
         DESIGN_SYSTEM_AI_DRIFT_RULES.unregisteredSemanticAlias,
-        normalizedPath,
+        context.normalizedPath,
         `"${match[1]}" is a forbidden semantic alias.`
       )
     );
   }
 
-  for (const match of source.matchAll(classLegacySemanticPattern)) {
+  for (const match of context.source.matchAll(classLegacySemanticPattern)) {
     findingCollector.push(
       createHardFailFinding(
         DESIGN_SYSTEM_AI_DRIFT_RULES.unregisteredSemanticAlias,
-        normalizedPath,
+        context.normalizedPath,
         `${match[0]} uses a forbidden semantic alias.`
       )
     );
   }
 
-  for (const match of source.matchAll(propLegacySemanticPattern)) {
+  for (const match of context.source.matchAll(propLegacySemanticPattern)) {
     findingCollector.push(
       createHardFailFinding(
         DESIGN_SYSTEM_AI_DRIFT_RULES.unregisteredSemanticAlias,
-        normalizedPath,
+        context.normalizedPath,
         `${match[0]} uses a forbidden semantic alias.`
       )
     );
   }
 
-  for (const segment of astFacts?.classNameSegments ?? []) {
+  for (const segment of context.astFacts?.classNameSegments ?? []) {
     for (const aliasMatch of segment.matchAll(classLegacySemanticPattern)) {
       findingCollector.push(
         createHardFailFinding(
           DESIGN_SYSTEM_AI_DRIFT_RULES.unregisteredSemanticAlias,
-          normalizedPath,
+          context.normalizedPath,
           `${aliasMatch[0]} uses a forbidden semantic alias.`
         )
       );
     }
   }
+}
 
-  for (const match of source.matchAll(variantDataPattern)) {
+function collectVariantDataFindings(context, findingCollector) {
+  for (const match of context.source.matchAll(variantDataPattern)) {
     const [, axis, value] = match;
-    const known = axis === "tone" ? registry.tones : registry.variants;
+    const known =
+      axis === "tone" ? context.registry.tones : context.registry.variants;
     if (!known.has(value)) {
       findingCollector.push(
         createHardFailFinding(
           DESIGN_SYSTEM_AI_DRIFT_RULES.ungovernedVariant,
-          normalizedPath,
+          context.normalizedPath,
           `data-[${axis}=${value}] is not registered in the variant identity contract.`
         )
       );
     }
   }
+}
 
-  for (const match of source.matchAll(semanticTailwindPattern)) {
+function collectRawTailwindFindings(context, findingCollector) {
+  for (const match of context.source.matchAll(semanticTailwindPattern)) {
     findingCollector.push(
       createHardFailFinding(
         DESIGN_SYSTEM_AI_DRIFT_RULES.rawSemanticTailwind,
-        normalizedPath,
+        context.normalizedPath,
         `${match[0]} bypasses token and recipe ownership.`
       )
     );
   }
 
-  for (const match of source.matchAll(rawHexPattern)) {
+  for (const match of context.source.matchAll(rawHexPattern)) {
     findingCollector.push(
       createHardFailFinding(
         DESIGN_SYSTEM_AI_DRIFT_RULES.rawSemanticTailwind,
-        normalizedPath,
+        context.normalizedPath,
         `${match[0]} is a raw hex value outside token ownership.`
       )
     );
   }
+}
 
+function collectStoryVersionFindings(context, findingCollector) {
+  const declaredContractVersion = context.source.match(
+    afendaContractVersionPattern
+  )?.[1];
   if (
-    isStory &&
-    (requireExampleVersion || exampleTagPattern.test(source)) &&
-    !source.includes(`afendaContractVersion: "${registry.contractVersion}"`)
+    context.isStory &&
+    declaredContractVersion &&
+    declaredContractVersion !== context.registry.contractVersion
   ) {
     findingCollector.push(
       createHardFailFinding(
         DESIGN_SYSTEM_AI_DRIFT_RULES.staleExample,
-        normalizedPath,
-        `Storybook example must declare afendaContractVersion: "${registry.contractVersion}".`
+        context.normalizedPath,
+        `Storybook afendaContractVersion must match "${context.registry.contractVersion}" when declared.`
+      )
+    );
+  } else if (context.isExampleSurface && !declaredContractVersion) {
+    findingCollector.push(
+      createHardFailFinding(
+        DESIGN_SYSTEM_AI_DRIFT_RULES.staleExample,
+        context.normalizedPath,
+        `Storybook example must declare afendaContractVersion: "${context.registry.contractVersion}".`
       )
     );
   }
+}
 
-  return findingCollector.findings;
+function createScanContext({
+  path,
+  registry,
+  root,
+  source,
+  requirePublicDesignSystemImports,
+  requireExampleVersion,
+}) {
+  const normalizedPath = normalizePath(relative(root, path));
+  const astFacts = collectDesignSystemAstFacts(
+    parseDesignSystemSource({ path, source })
+  );
+  const localComponents =
+    astFacts?.localComponents ??
+    new Set(
+      [...source.matchAll(localComponentPattern)].map((match) => match[1])
+    );
+  const externalComponents =
+    astFacts?.externalComponents ?? extractExternalImportNames(source);
+  const isStory = normalizedPath.endsWith(".stories.tsx");
+  const isExampleSurface =
+    isStory && (requireExampleVersion || isExampleLikeStory(source));
+  const jsxComponents =
+    astFacts?.jsxComponents ??
+    [...source.matchAll(jsxTagPattern)].map((match) => ({ name: match[1] }));
+
+  return {
+    astFacts,
+    externalComponents,
+    isExampleSurface,
+    isStory,
+    jsxComponents,
+    localComponents,
+    normalizedPath,
+    registry,
+    requirePublicDesignSystemImports,
+    source,
+  };
+}
+
+function isExampleLikeStory(source) {
+  exampleMarkerPattern.lastIndex = 0;
+  return exampleMarkerPattern.test(source);
 }
 
 function parseDesignSystemSource({ path, source }) {
-  if (!/\.(ts|tsx)$/.test(path)) {
+  if (!parseableTypeScriptFilePattern.test(path)) {
     return undefined;
   }
 
-  const scriptKind = path.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS;
+  const scriptKind = path.endsWith(".tsx")
+    ? ts.ScriptKind.TSX
+    : ts.ScriptKind.TS;
   return ts.createSourceFile(
     path,
     source,
@@ -558,7 +688,10 @@ function collectImportFacts(node, facts) {
 
   facts.imports.push({ names, specifier });
 
-  if (specifier.startsWith(".") || specifier.startsWith("@repo/design-system")) {
+  if (
+    specifier.startsWith(".") ||
+    specifier.startsWith("@repo/design-system")
+  ) {
     return;
   }
 
@@ -582,7 +715,7 @@ function collectVariableFacts(node, facts) {
     }
   }
 
-  if (!ts.isIdentifier(node.name) || !node.initializer) {
+  if (!(ts.isIdentifier(node.name) && node.initializer)) {
     return;
   }
 
@@ -603,13 +736,13 @@ function collectVariableFacts(node, facts) {
 
 function collectPropertyStringValues(expression, facts) {
   const initializer = unwrapExpression(expression);
-  if (!initializer || !ts.isArrayLiteralExpression(initializer)) {
+  if (!(initializer && ts.isArrayLiteralExpression(initializer))) {
     return;
   }
 
   for (const element of initializer.elements) {
     const object = unwrapExpression(element);
-    if (!object || !ts.isObjectLiteralExpression(object)) {
+    if (!(object && ts.isObjectLiteralExpression(object))) {
       continue;
     }
 
@@ -721,14 +854,18 @@ function readJsxAttributeValue(initializer, sourceFile) {
     return { kind: "static", text: initializer.text, value: initializer.text };
   }
 
-  if (!ts.isJsxExpression(initializer) || !initializer.expression) {
+  if (!(ts.isJsxExpression(initializer) && initializer.expression)) {
     return { kind: "dynamic", text: initializer.getText(sourceFile) };
   }
 
   const expression = unwrapExpression(initializer.expression);
   const staticValue = extractStaticString(expression);
   if (staticValue) {
-    return { kind: "static", text: expression.getText(sourceFile), value: staticValue };
+    return {
+      kind: "static",
+      text: expression.getText(sourceFile),
+      value: staticValue,
+    };
   }
 
   const template = extractTemplateSample(expression, sourceFile);
@@ -781,11 +918,15 @@ function extractStaticStringSegments(expression) {
   }
 
   if (ts.isCallExpression(node)) {
-    return node.arguments.flatMap((argument) => extractStaticStringSegments(argument));
+    return node.arguments.flatMap((argument) =>
+      extractStaticStringSegments(argument)
+    );
   }
 
   if (ts.isArrayLiteralExpression(node)) {
-    return node.elements.flatMap((element) => extractStaticStringSegments(element));
+    return node.elements.flatMap((element) =>
+      extractStaticStringSegments(element)
+    );
   }
 
   if (ts.isObjectLiteralExpression(node)) {
@@ -808,7 +949,10 @@ function extractStaticStringSegments(expression) {
     ];
   }
 
-  if (ts.isBinaryExpression(node) && node.operatorToken.kind === ts.SyntaxKind.PlusToken) {
+  if (
+    ts.isBinaryExpression(node) &&
+    node.operatorToken.kind === ts.SyntaxKind.PlusToken
+  ) {
     return [
       ...extractStaticStringSegments(node.left),
       ...extractStaticStringSegments(node.right),
@@ -833,7 +977,7 @@ function extractStaticString(expression) {
 
 function extractTemplateSample(expression, sourceFile) {
   const node = unwrapExpression(expression);
-  if (!node || !ts.isTemplateExpression(node)) {
+  if (!(node && ts.isTemplateExpression(node))) {
     return undefined;
   }
 
@@ -886,7 +1030,11 @@ function getPropertyNameText(name) {
     return undefined;
   }
 
-  if (ts.isIdentifier(name) || ts.isStringLiteral(name) || ts.isNumericLiteral(name)) {
+  if (
+    ts.isIdentifier(name) ||
+    ts.isStringLiteral(name) ||
+    ts.isNumericLiteral(name)
+  ) {
     return name.text;
   }
 
@@ -894,18 +1042,20 @@ function getPropertyNameText(name) {
 }
 
 function isPascalCase(name) {
-  return /^[A-Z][A-Za-z0-9]*$/.test(name);
+  return pascalCasePattern.test(name);
 }
 
 function isLocalVocabularyName(name) {
-  return /^(variants|tones|states|densities)$/.test(name) ||
-    /^[A-Za-z0-9]*(?:Variant|Tone|State|Density)Values$/.test(name) ||
-    /^(Variant|Tone|State|Density)$/.test(name);
+  return (
+    localVocabularyExactPattern.test(name) ||
+    localVocabularyValuesPattern.test(name) ||
+    localVocabularyTypePattern.test(name)
+  );
 }
 
 function isForbiddenSemanticAlias(value, registry) {
-  return Object.values(registry.forbiddenSemanticAliases ?? {}).some((aliases) =>
-    aliases.includes(value)
+  return Object.values(registry.forbiddenSemanticAliases ?? {}).some(
+    (aliases) => aliases.includes(value)
   );
 }
 
@@ -920,18 +1070,20 @@ function isPrivateDesignSystemImport(specifier) {
 
 export function extractStringArray(source, name) {
   const body = extractConstBody(source, name, "[", "]");
-  return body ? [...body.matchAll(tsStringPattern)].map((match) => match[1]) : [];
+  return body
+    ? [...body.matchAll(tsStringPattern)].map((match) => match[1])
+    : [];
 }
 
 export function extractObjectKeys(source, name) {
-  const body = extractConstBody(source, name, "{", "}");
-  if (!body) {
-    return [];
-  }
-
-  return [...body.matchAll(/^\s*([A-Za-z][A-Za-z0-9_]*)\s*:/gm)].map(
-    (match) => match[1]
+  const sourceFile = ts.createSourceFile(
+    "object-keys.ts",
+    source,
+    ts.ScriptTarget.Latest,
+    true,
+    ts.ScriptKind.TS
   );
+  return extractObjectKeysFromSourceFile(sourceFile, name);
 }
 
 export function extractObjectStringArrays(source, name) {
@@ -941,7 +1093,7 @@ export function extractObjectStringArrays(source, name) {
     return result;
   }
 
-  for (const match of body.matchAll(/^\s*([A-Za-z][A-Za-z0-9_]*)\s*:\s*\[([^\]]*)\]/gm)) {
+  for (const match of body.matchAll(objectStringArrayPattern)) {
     result[match[1]] = [...match[2].matchAll(tsStringPattern)].map(
       (valueMatch) => valueMatch[1]
     );
@@ -954,8 +1106,8 @@ export function extractBarrelExportNames(source) {
     .flatMap((match) => match[1].split(","))
     .map((entry) => entry.trim())
     .filter((entry) => entry && !entry.startsWith("type "))
-    .map((entry) => entry.split(/\s+as\s+/)[0].trim())
-    .filter((entry) => /^[A-Z]/.test(entry));
+    .map((entry) => readExportedName(entry))
+    .filter((entry) => startsWithCapitalPattern.test(entry));
 }
 
 function shouldCheckComponentName(name, localComponents, externalComponents) {
@@ -967,9 +1119,7 @@ function shouldCheckComponentName(name, localComponents, externalComponents) {
     return false;
   }
 
-  return /(Action|Bar|Block|Card|Chart|Dialog|Header|Footer|Metric|Panel|Shell|Sidebar|Table|Timeline|Toolbar|Topbar)$/.test(
-    name
-  );
+  return componentRegistryCandidatePattern.test(name);
 }
 
 function extractExternalImportNames(source) {
@@ -985,14 +1135,19 @@ function extractExternalImportNames(source) {
     }
 
     for (const entry of namedImports.split(",")) {
-      const name = entry.trim().split(/\s+as\s+/).pop()?.trim();
-      if (name && /^[A-Z]/.test(name)) {
+      const name = entry.trim().split(importAliasPattern).pop()?.trim();
+      if (name && startsWithCapitalPattern.test(name)) {
         names.add(name);
       }
     }
   }
 
   return names;
+}
+
+function readExportedName(entry) {
+  const [localName, exportedName] = entry.split(importAliasPattern);
+  return (exportedName ?? localName).trim();
 }
 
 function isKnownSlot(slot, registry) {
@@ -1002,17 +1157,20 @@ function isKnownSlot(slot, registry) {
   );
 }
 
+function isForbiddenSlot(slot, registry) {
+  return registry.forbiddenSlotPatterns?.has(`data-slot="${slot}"`) ?? false;
+}
+
 function extractConstString(source, name) {
   return source.match(
-    new RegExp(`export\\s+const\\s+${escapeRegExp(name)}\\s*=\\s*["']([^"']+)["']`)
+    new RegExp(
+      `export\\s+const\\s+${escapeRegExp(name)}\\s*=\\s*["']([^"']+)["']`
+    )
   )?.[1];
 }
 
 function extractConstBody(source, name, open, close) {
-  const start = source.indexOf(`const ${name}`);
-  const exportStart = source.indexOf(`export const ${name}`);
-  const declarationStart =
-    start === -1 ? exportStart : exportStart === -1 ? start : Math.min(start, exportStart);
+  const declarationStart = findConstDeclarationStart(source, name);
   if (declarationStart === -1) {
     return undefined;
   }
@@ -1037,6 +1195,62 @@ function extractConstBody(source, name, open, close) {
   }
 
   return undefined;
+}
+
+function extractObjectKeysFromSourceFile(sourceFile, name) {
+  const keys = [];
+
+  const visit = (node) => {
+    if (isNamedObjectVariable(node, name)) {
+      keys.push(
+        ...extractObjectLiteralKeys(unwrapExpression(node.initializer))
+      );
+      return;
+    }
+
+    ts.forEachChild(node, visit);
+  };
+
+  visit(sourceFile);
+  return keys;
+}
+
+function isNamedObjectVariable(node, name) {
+  return (
+    ts.isVariableDeclaration(node) &&
+    ts.isIdentifier(node.name) &&
+    node.name.text === name &&
+    node.initializer
+  );
+}
+
+function extractObjectLiteralKeys(initializer) {
+  if (!(initializer && ts.isObjectLiteralExpression(initializer))) {
+    return [];
+  }
+
+  return initializer.properties
+    .map((property) =>
+      ts.isPropertyAssignment(property)
+        ? getPropertyNameText(property.name)
+        : undefined
+    )
+    .filter(Boolean);
+}
+
+function findConstDeclarationStart(source, name) {
+  const start = source.indexOf(`const ${name}`);
+  const exportStart = source.indexOf(`export const ${name}`);
+
+  if (start === -1) {
+    return exportStart;
+  }
+
+  if (exportStart === -1) {
+    return start;
+  }
+
+  return Math.min(start, exportStart);
 }
 
 function createHardFailFinding(rule, path, message) {

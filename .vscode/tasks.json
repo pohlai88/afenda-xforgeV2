@@ -2,6 +2,39 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Playwright: check E2E env",
+      "type": "shell",
+      "command": "pnpm test:e2e:env",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "group": "playwright"
+      }
+    },
+    {
+      "label": "Playwright: run E2E tests",
+      "type": "shell",
+      "command": "pnpm test:e2e",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "playwright"
+      }
+    },
+    {
+      "label": "Playwright: E2E UI mode",
+      "type": "shell",
+      "command": "pnpm test:e2e:ui",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "group": "playwright"
+      }
+    },
+    {
       "label": "Shadcn Studio: Storybook dev server",
       "type": "shell",
       "command": "pnpm --filter storybook dev",

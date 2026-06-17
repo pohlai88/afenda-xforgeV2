@@ -10,13 +10,17 @@ import {
 } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
+import { hasIntegrationDatabase } from "../../../../../../test-support/load-integration-env";
 import { executePush } from "../../engines/morph/push-orchestrator";
+import { getBudgetRequestById } from "../../engines/budget/budget-requests";
 import { createOrbitCase } from "../../engines/work/orbit-cases";
 import {
   clearPushDestinations,
   registerPushDestination,
 } from "../../lib/registry/push-destination-registry";
 import { clearPushTemplates, registerPushTemplate } from "../../lib/registry/template-registry";
+
+const hasDatabase = hasIntegrationDatabase();
 
 const createdOrgIds: string[] = [];
 const createdCaseIds: string[] = [];
@@ -54,7 +58,7 @@ afterEach(async () => {
   clearPushTemplates();
 });
 
-describe("orbit case push idempotency", () => {
+describe.skipIf(!hasDatabase)("orbit case push idempotency", () => {
   it("returns cached result for duplicate idempotency keys", async () => {
     clearPushDestinations();
     clearPushTemplates();
@@ -127,6 +131,12 @@ describe("orbit case push idempotency", () => {
       expect(second.cached).toBe(true);
       expect(second.pushEventId).toBe(first.pushEventId);
       expect(second.targetId).toBe(first.targetId);
+    }
+
+    if (first.ok) {
+      const budget = await getBudgetRequestById(orgId, first.targetId);
+      expect(budget?.originCaseId).toBe(created.id);
+      expect(budget?.title).toBe("Budget push case");
     }
   });
 

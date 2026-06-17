@@ -13,7 +13,10 @@ Documentation health is scored in [`design-system-docs-audit.md`](./design-syste
 
 ## Release-Freeze Contract
 
-The current block platform is in release-freeze hardening. App-facing imports from `@repo/design-system/components/blocks`, metadata schema `version: 1`, diagnostics payload families, governed action normalization, and fixture metadata are stable.
+The current block platform is in release-freeze hardening. App-facing imports
+must use declared `@repo/design-system` package exports. Metadata schema
+`version: 1`, diagnostics payload families, governed action normalization, and
+fixture metadata are stable.
 
 Future changes must be additive unless the migration guide documents the break and compatibility tests cover both the old and new path.
 

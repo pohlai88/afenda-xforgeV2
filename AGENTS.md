@@ -92,9 +92,9 @@ Training data for Next.js App Router and Cache Components is stale. **Docs befor
 
 ### MCP setup (`.cursor/mcp.json`)
 
-Key servers: `next-devtools`, `shadcn`, `fetch`, `supabase`, `github`, `context7`.
+Key servers: `next-devtools`, `shadcn`, `fetch`, `supabase`, `github`, `context7`, `playwright`, `storybook`.
 
-Requires Next.js 16+ and a running dev server (`/_next/mcp` on port **3000**) for runtime tools.
+Requires Next.js 16+ and a running dev server (`/_next/mcp` on port **3000**) for runtime tools. Playwright MCP targets `http://localhost:3000` via `apps/app/e2e/playwright-mcp.config.json` — run `pnpm mcp:configure:playwright` after edits.
 
 1. MCP `init` with `project_path` → absolute path of **`apps/app`** (not repo root)
 2. API / routing / cache questions → `nextjs_docs` — never answer from memory

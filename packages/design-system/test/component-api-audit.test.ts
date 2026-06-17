@@ -36,19 +36,25 @@ function audit(source: string) {
 describe("component API audit", () => {
   it("hard-fails brand as a public tone", () => {
     expect(
-      audit('export function Demo() { return <Progress data-slot="progress" tone="brand" />; } recipe("bodyText");')
+      audit(
+        'export function Demo() { return <Progress data-slot="progress" tone="brand" />; } recipe("bodyText");'
+      )
     ).toContain("[ungoverned-component-api]");
   });
 
   it("hard-fails text hierarchy values exposed as tone", () => {
     expect(
-      audit('export function Demo() { return <Text data-slot="text" tone="primary" />; } recipe("bodyText");')
+      audit(
+        'export function Demo() { return <Text data-slot="text" tone="primary" />; } recipe("bodyText");'
+      )
     ).toContain("[ungoverned-component-api]");
   });
 
   it("hard-fails unregistered color values", () => {
     expect(
-      audit('export function Demo() { return <Text color="accent" data-slot="text" />; } recipe("bodyText");')
+      audit(
+        'export function Demo() { return <Text color="accent" data-slot="text" />; } recipe("bodyText");'
+      )
     ).toContain("[ungoverned-component-api]");
   });
 
@@ -56,6 +62,26 @@ describe("component API audit", () => {
     expect(
       audit('export function Demo() { recipe("bodyText"); return <div />; }')
     ).toContain("[missing-data-slot]");
+  });
+
+  it("hard-fails one exported wrapper without data-slot even when another wrapper has one", () => {
+    expect(
+      audit(`
+        export function Demo() { recipe("bodyText"); return <div data-slot="demo" />; }
+        export function DemoPanel() { recipe("bodyText"); return <section />; }
+      `)
+    ).toContain("DemoPanel");
+  });
+
+  it("hard-fails exported public prop type unions with ungoverned vocabulary", () => {
+    expect(
+      audit(`
+        export type DemoProps = {
+          tone?: "brand" | "critical";
+        };
+        export function Demo() { recipe("bodyText"); return <div data-slot="demo" />; }
+      `)
+    ).toContain("[ungoverned-component-api]");
   });
 
   it("hard-fails local vocabulary arrays and enums", () => {
@@ -71,7 +97,9 @@ describe("component API audit", () => {
 
   it("passes registered structural and action variants", () => {
     expect(
-      audit('export function Demo() { recipe("bodyText"); return <Button color="secondary" data-slot="button" size="icon-sm" variant="primary" />; }')
+      audit(
+        'export function Demo() { recipe("bodyText"); return <Button color="secondary" data-slot="button" size="icon-sm" variant="primary" />; }'
+      )
     ).toBe("");
   });
 

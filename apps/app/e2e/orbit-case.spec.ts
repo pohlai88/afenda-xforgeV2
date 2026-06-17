@@ -1,17 +1,7 @@
-import { expect, test, type Page } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { expect, test } from "./helpers/fixtures";
 import { getE2eBlobEnvStatus } from "./helpers/load-env.mjs";
-import { signInWithPassword } from "./helpers/sign-in";
-
-const createOrbitCaseOnDetailPage = async (
-  page: Page,
-  uniqueTitle: string
-): Promise<void> => {
-  await page.goto("/orbit-case");
-  await page.getByLabel("Orbit Case title").fill(uniqueTitle);
-  await expect(page.getByRole("button", { name: "Create case" })).toBeEnabled();
-  await page.getByRole("button", { name: "Create case" }).click();
-  await expect(page).toHaveURL(/\/orbit-case\/[^/]+$/, { timeout: 15_000 });
-};
+import { createOrbitCaseOnDetailPage } from "./helpers/orbit-case";
 
 const setAttachmentPrivacy = async (
   page: Page,
@@ -40,13 +30,13 @@ const uploadTextAttachment = async (
   });
 };
 
-test.describe("Orbit Case lifecycle", () => {
+test.describe("Orbit Case lifecycle @orbit-case", () => {
   test.setTimeout(60_000);
 
-  test("create, detail, comment, status change, archive", async ({ page }) => {
-    const uniqueTitle = `E2E Orbit ${Date.now()}`;
-
-    await signInWithPassword(page);
+  test("create, detail, comment, status change, archive", async ({
+    page,
+    uniqueTitle,
+  }) => {
     await createOrbitCaseOnDetailPage(page, uniqueTitle);
     await expect(page.getByLabel("Case title")).toHaveValue(uniqueTitle);
 
@@ -60,31 +50,28 @@ test.describe("Orbit Case lifecycle", () => {
       timeout: 15_000,
     });
     await page.getByRole("button", { name: "Archive case" }).click();
-    await expect(page).toHaveURL(/\/orbit-case$/);
+    await expect(page).toHaveURL(/\/orbit-case$/, { timeout: 15_000 });
   });
 
-  test("due date appears on calendar and timeline tabs", async ({ page }) => {
-    const uniqueTitle = `E2E Due ${Date.now()}`;
-    const today = new Date();
-    const dayLabel = String(today.getDate());
-
-    await signInWithPassword(page);
+  test("due date appears on calendar and timeline tabs", async ({
+    page,
+    uniqueTitle,
+  }) => {
     await createOrbitCaseOnDetailPage(page, uniqueTitle);
 
-    await page.getByRole("button", { name: "Set due date" }).click();
+    await page.locator("#case-due-date").click();
     await page
-      .getByRole("gridcell", { name: dayLabel, exact: true })
-      .first()
+      .getByRole("dialog")
+      .getByRole("button", { name: /today/i })
       .click();
-    await expect(page.getByRole("button", { name: "Set due date" })).toHaveCount(
-      0,
-      { timeout: 15_000 }
-    );
+    await expect(page.locator("#case-due-date")).not.toHaveText("Set due date", {
+      timeout: 15_000,
+    });
 
     await page.goto("/orbit-case");
     await page.getByRole("tab", { name: "Calendar" }).click();
     await page
-      .getByRole("gridcell", { name: dayLabel, exact: true })
+      .getByRole("button", { name: /today/i })
       .first()
       .click();
     await expect(page.getByText(uniqueTitle)).toBeVisible({ timeout: 15_000 });
@@ -93,7 +80,10 @@ test.describe("Orbit Case lifecycle", () => {
     await expect(page.getByText(uniqueTitle)).toBeVisible({ timeout: 15_000 });
   });
 
-  test("uploads public attachment via client blob upload", async ({ page }) => {
+  test("uploads public attachment via client blob upload", async ({
+    page,
+    uniqueTitle,
+  }) => {
     const blobEnv = getE2eBlobEnvStatus();
     if (!blobEnv.readyForUploadTests) {
       test.skip(
@@ -102,10 +92,8 @@ test.describe("Orbit Case lifecycle", () => {
       );
     }
 
-    const uniqueTitle = `E2E Public Attach ${Date.now()}`;
     const fileName = "e2e-orbit-public.txt";
 
-    await signInWithPassword(page);
     await createOrbitCaseOnDetailPage(page, uniqueTitle);
     await setAttachmentPrivacy(page, "public");
     await uploadTextAttachment(page, fileName, "orbit case public e2e attachment");
@@ -119,7 +107,10 @@ test.describe("Orbit Case lifecycle", () => {
     expect(href).not.toMatch(/\/api\/orbit-case\/attachments\//);
   });
 
-  test("uploads private attachment via client blob upload", async ({ page }) => {
+  test("uploads private attachment via client blob upload", async ({
+    page,
+    uniqueTitle,
+  }) => {
     const blobEnv = getE2eBlobEnvStatus();
     if (!blobEnv.readyForPrivateBlob) {
       test.skip(
@@ -128,10 +119,8 @@ test.describe("Orbit Case lifecycle", () => {
       );
     }
 
-    const uniqueTitle = `E2E Private Attach ${Date.now()}`;
     const fileName = "e2e-orbit-private.txt";
 
-    await signInWithPassword(page);
     await createOrbitCaseOnDetailPage(page, uniqueTitle);
     await setAttachmentPrivacy(page, "private");
     await uploadTextAttachment(page, fileName, "orbit case private e2e attachment");

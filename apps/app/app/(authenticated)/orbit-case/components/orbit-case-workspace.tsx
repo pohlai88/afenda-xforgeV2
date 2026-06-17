@@ -33,6 +33,7 @@ import { createCase } from "@/app/actions/orbit-case/create";
 import { listCases } from "@/app/actions/orbit-case/list";
 import { OrbitCaseCalendarView } from "./orbit-case-calendar-view";
 import { OrbitCaseTimelineView } from "./orbit-case-timeline-view";
+import { OrgMemberCombobox } from "./org-member-combobox";
 
 interface OrbitCaseWorkspaceProps {
   initialBoard: OrbitCaseBoardColumnDto[];
@@ -64,7 +65,7 @@ export function OrbitCaseWorkspace({
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
-  const [filterAssignee, setFilterAssignee] = useState("");
+  const [filterAssignee, setFilterAssignee] = useState<string | null>(null);
   const [filterTag, setFilterTag] = useState("");
   const [isPending, startTransition] = useTransition();
 
@@ -110,8 +111,8 @@ export function OrbitCaseWorkspace({
         ...(filterStatus !== "all"
           ? { status: filterStatus as OrbitCaseStatus }
           : {}),
-        ...(filterAssignee.trim()
-          ? { assigneeId: filterAssignee.trim() }
+        ...(filterAssignee
+          ? { assigneeId: filterAssignee }
           : {}),
         ...(filterTag.trim() ? { tag: filterTag.trim() } : {}),
       });
@@ -191,11 +192,11 @@ export function OrbitCaseWorkspace({
                 ))}
               </SelectContent>
             </Select>
-            <Input
+            <OrgMemberCombobox
               aria-label="Filter by assignee"
-              onChange={(event) => setFilterAssignee(event.target.value)}
-              placeholder="Assignee ID"
-              value={filterAssignee}
+              onValueChange={setFilterAssignee}
+              placeholder="Filter by assignee"
+              value={filterAssignee || null}
             />
             <Input
               aria-label="Filter by tag"

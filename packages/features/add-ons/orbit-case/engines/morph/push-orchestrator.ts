@@ -1,16 +1,12 @@
 import "server-only";
 
 import { createId } from "@paralleldrive/cuid2";
-import type { OrganizationRole } from "@repo/auth/organization-roles";
+import { log } from "@repo/observability/log";
 import { database } from "@repo/database";
-import {
-  orbitBudgetRequest,
-  orbitPushEvent,
-} from "@repo/database/schema";
+import { orbitPushEvent } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import type { PushResultDto } from "../../contract/orbit-case.types";
 import type { ExecutePushInput } from "../../contract/push.schema";
-import type { OrbitPushCapability } from "../../contract/push.schema";
 import {
   getMergedPushDestination,
   getMergedPushTemplate,
@@ -22,13 +18,10 @@ import { recordOrbitCaseActivity } from "../activity/record-activity";
 import { createObjectLink } from "../link/object-links";
 import { getOrbitCaseById } from "../work/orbit-cases";
 import { canPushToDestination } from "../work/permissions";
+import { resolvePushDestinationHandler } from "./push-handlers";
+import type { ExecutePushContext } from "./push-types";
 
-export interface ExecutePushContext {
-  organizationId: string;
-  actorId: string;
-  role: OrganizationRole;
-  userCapabilities: readonly OrbitPushCapability[];
-}
+export type { ExecutePushContext } from "./push-types";
 
 const parseStoredPushResult = (value: unknown): PushResultDto | null => {
   if (!value || typeof value !== "object") {
@@ -81,6 +74,12 @@ export const executePush = async (
   );
 
   if (!destination) {
+    return { ok: false, code: "destination_not_registered" };
+  }
+
+  const handler = resolvePushDestinationHandler(input.destinationId);
+
+  if (!handler) {
     return { ok: false, code: "destination_not_registered" };
   }
 
@@ -184,32 +183,19 @@ export const executePush = async (
 
   const claimedEventId = claimResult.pushEventId;
 
-  const title =
-    typeof input.fieldValues.title === "string" && input.fieldValues.title
-      ? input.fieldValues.title
-      : orbitCase.title;
-  const amount =
-    typeof input.fieldValues.amount === "string"
-      ? input.fieldValues.amount
-      : null;
-
-  const budgetId = createId();
-  await database.insert(orbitBudgetRequest).values({
-    id: budgetId,
-    organizationId: context.organizationId,
-    originCaseId: input.caseId,
-    title,
-    amount,
-    createdBy: context.actorId,
-    createdAt: now,
+  const { targetId, targetType } = await handler(context, input, {
+    destination,
+    orbitCase,
+    pushEventId: claimedEventId,
+    template,
   });
 
   const link = await createObjectLink({
     organizationId: context.organizationId,
     originCaseId: input.caseId,
     pushEventId: claimedEventId,
-    targetType: "budget-request",
-    targetId: budgetId,
+    targetType,
+    targetId,
     payload: {
       external_source: "orbit-case",
       external_id: input.caseId,
@@ -220,8 +206,8 @@ export const executePush = async (
   const successResult: PushResultDto = {
     ok: true,
     pushEventId: claimedEventId,
-    targetType: "budget-request",
-    targetId: budgetId,
+    targetType,
+    targetId,
     linkId: link.id,
     cached: false,
   };
@@ -243,10 +229,20 @@ export const executePush = async (
     payload: {
       destinationId: input.destinationId,
       destinationLabel: destination.label,
-      targetType: "budget-request",
-      targetId: budgetId,
+      targetType,
+      targetId,
       pushEventId: claimedEventId,
     },
+  });
+
+  log.info("orbit.case.pushed", {
+    actorId: context.actorId,
+    caseId: input.caseId,
+    destinationId: input.destinationId,
+    organizationId: context.organizationId,
+    pushEventId: claimedEventId,
+    targetId,
+    targetType,
   });
 
   return successResult;

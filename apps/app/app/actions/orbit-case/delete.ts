@@ -7,7 +7,7 @@ import {
   hardDeleteOrbitCase,
   softDeleteOrbitCase,
 } from "@repo/orbit-case/server";
-import { revalidatePath } from "next/cache";
+import { revalidateOrbitCaseMutation } from "@/lib/orbit-case-revalidate";
 
 export const deleteCase = async (
   input: unknown
@@ -17,16 +17,20 @@ export const deleteCase = async (
   if (parsed.hard) {
     return withOwner(async ({ orgId }) => {
       const deleted = await hardDeleteOrbitCase(orgId, parsed.caseId);
-      revalidatePath("/orbit-case");
-      revalidatePath(`/orbit-case/${parsed.caseId}`);
+      revalidateOrbitCaseMutation({
+        organizationId: orgId,
+        caseId: parsed.caseId,
+      });
       return { deleted };
     });
   }
 
   return withOrg(async ({ orgId, userId }) => {
     const deleted = await softDeleteOrbitCase(orgId, userId, parsed.caseId);
-    revalidatePath("/orbit-case");
-    revalidatePath(`/orbit-case/${parsed.caseId}`);
+    revalidateOrbitCaseMutation({
+      organizationId: orgId,
+      caseId: parsed.caseId,
+    });
     return { deleted };
   });
 };

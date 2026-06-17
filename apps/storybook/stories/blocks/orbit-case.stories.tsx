@@ -189,3 +189,77 @@ export const CalendarView: Story = {
   name: "Calendar View",
   render: () => <OrbitCaseCalendarPreview />,
 };
+
+function OrbitCasePushPanelPreview() {
+  return (
+    <section
+      className={cn(
+        blockRecipe("blockPanel", "blockPanelPadding"),
+        "grid max-w-xl gap-4 p-6"
+      )}
+    >
+      <h2 className="font-medium text-sm">Push to module</h2>
+      <div className="grid gap-2">
+        <p className="text-muted-foreground text-xs">Destination</p>
+        <Badge variant="outline">Budget Request</Badge>
+      </div>
+      <div className="grid gap-2">
+        <p className="text-muted-foreground text-xs">Title *</p>
+        <div className="rounded-md border px-3 py-2 text-sm">Need RM50k budget</div>
+      </div>
+      <div className="grid gap-2">
+        <p className="text-muted-foreground text-xs">Amount</p>
+        <div className="rounded-md border px-3 py-2 text-sm">RM50000</div>
+      </div>
+      <Badge variant="soft">Push</Badge>
+    </section>
+  );
+}
+
+export const PushPanel: Story = {
+  name: "Push Panel",
+  render: () => <OrbitCasePushPanelPreview />,
+};
+
+function OrbitCaseLinksPreview() {
+  return (
+    <section
+      className={cn(
+        blockRecipe("blockPanel", "blockPanelPadding"),
+        "grid max-w-xl gap-3 p-6"
+      )}
+    >
+      <h2 className="font-medium text-sm">Links</h2>
+      <div className="text-sm">
+        <p className="font-medium text-primary">Budget Request</p>
+        <p className="text-muted-foreground text-xs">17 Jun 2026, 10:30</p>
+      </div>
+    </section>
+  );
+}
+
+export const LinkedProjections: Story = {
+  name: "Linked Projections",
+  render: () => <OrbitCaseLinksPreview />,
+};
+
+function OrbitCaseMemberPickerPreview() {
+  return (
+    <section
+      className={cn(
+        blockRecipe("blockPanel", "blockPanelPadding"),
+        "grid max-w-sm gap-3 p-6"
+      )}
+    >
+      <p className="text-muted-foreground text-xs">Assignee</p>
+      <div className="rounded-md border px-3 py-2 text-sm">Alex Morgan</div>
+      <p className="text-muted-foreground text-xs">Owner</p>
+      <div className="rounded-md border px-3 py-2 text-sm">Jordan Lee</div>
+    </section>
+  );
+}
+
+export const MemberPicker: Story = {
+  name: "Member Picker",
+  render: () => <OrbitCaseMemberPickerPreview />,
+};

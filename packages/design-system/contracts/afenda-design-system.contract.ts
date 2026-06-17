@@ -6,13 +6,11 @@
  * export, accessibility, motion, state, and example rules.
  */
 
-export const AFENDA_DESIGN_SYSTEM_CONTRACT_ID =
-  "afenda.design-system" as const;
+export const AFENDA_DESIGN_SYSTEM_CONTRACT_ID = "afenda.design-system" as const;
 
 export const AFENDA_DESIGN_SYSTEM_CONTRACT_VERSION = "0.1.0" as const;
 
-export const AFENDA_DESIGN_SYSTEM_PACKAGE_NAME =
-  "@repo/design-system" as const;
+export const AFENDA_DESIGN_SYSTEM_PACKAGE_NAME = "@repo/design-system" as const;
 
 export const AFENDA_AUTHORITY_RULES = {
   tokenOwnsValue: true,
@@ -52,6 +50,7 @@ export const AFENDA_AI_REQUIRED_CONTRACTS = [
 export const AFENDA_AI_HARD_FAIL_RULES = [
   "raw-semantic-tailwind",
   "ungoverned-variant",
+  "ungoverned-component-api",
   "missing-data-slot",
   "private-import",
   "business-logic-in-design-system",

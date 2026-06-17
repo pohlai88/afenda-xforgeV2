@@ -1,5 +1,7 @@
 import { formatOrbitCaseActivitySummary } from "./activity-format";
 import type {
+  OrbitBudgetRequestDto,
+  OrbitBudgetRequestRecord,
   OrbitCaseActivityDto,
   OrbitCaseActivityRecord,
   OrbitCaseAttachmentDto,
@@ -91,6 +93,20 @@ export const toOrbitObjectLinkDto = (
   payload: record.payload,
   createdAt: record.createdAt.toISOString(),
 });
+
+export const toOrbitBudgetRequestDto = (
+  record: OrbitBudgetRequestRecord
+): OrbitBudgetRequestDto => ({
+  amount: record.amount,
+  createdAt: record.createdAt.toISOString(),
+  createdBy: record.createdBy,
+  id: record.id,
+  organizationId: record.organizationId,
+  originCaseId: record.originCaseId,
+  title: record.title,
+});
+
+export { toOrbitObjectLinkProjectionDto } from "./link-projection";
 
 export const toOrbitCaseBoardDto = (
   board: OrbitCaseBoardResult

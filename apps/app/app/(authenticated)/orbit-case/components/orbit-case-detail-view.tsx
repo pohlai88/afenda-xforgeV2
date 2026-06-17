@@ -28,8 +28,9 @@ import type {
   OrbitCaseDto,
   OrbitCasePriority,
   OrbitCaseStatus,
-  OrbitObjectLinkDto,
+  OrbitObjectLinkProjectionDto,
   PushDestinationDefinition,
+  PushTemplateDefinition,
 } from "@repo/orbit-case";
 import {
   ORBIT_CASE_ATTACHMENT_MAX_BYTES,
@@ -58,6 +59,8 @@ import {
   executeCasePush,
   listPushDestinations,
 } from "@/app/actions/orbit-case/push/execute";
+import { OrbitCasePushForm } from "./orbit-case-push-form";
+import { OrgMemberCombobox } from "./org-member-combobox";
 import {
   getOrbitCaseAttachmentDownloadHref,
   readOrbitCaseAttachmentAccessPreference,
@@ -67,10 +70,12 @@ import {
 interface OrbitCaseDetailViewProps {
   activity: OrbitCaseActivityDto[];
   attachments: OrbitCaseAttachmentDto[];
+  canEditOwner: boolean;
   canHardDelete: boolean;
   comments: OrbitCaseCommentDto[];
   destinations: PushDestinationDefinition[];
-  links: OrbitObjectLinkDto[];
+  linkProjections: OrbitObjectLinkProjectionDto[];
+  pushTemplatesByDestinationId: Record<string, PushTemplateDefinition>;
   orbitCase: OrbitCaseDto;
   watching: boolean;
 }
@@ -89,9 +94,11 @@ export function OrbitCaseDetailView({
   comments: initialComments,
   attachments: initialAttachments,
   activity: initialActivity,
-  links: initialLinks,
   destinations: initialDestinations,
+  linkProjections: initialLinkProjections,
+  pushTemplatesByDestinationId,
   watching: initialWatching,
+  canEditOwner,
   canHardDelete,
 }: OrbitCaseDetailViewProps) {
   const router = useRouter();
@@ -107,8 +114,9 @@ export function OrbitCaseDetailView({
   const [pushDestinationId, setPushDestinationId] = useState(
     initialDestinations[0]?.id ?? ""
   );
-  const [pushTitle, setPushTitle] = useState(initialCase.title);
-  const [pushAmount, setPushAmount] = useState("");
+  const [pushFieldValues, setPushFieldValues] = useState<
+    Record<string, string | number | boolean | null>
+  >({});
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [attachmentAccess, setAttachmentAccess] =
@@ -119,12 +127,35 @@ export function OrbitCaseDetailView({
     setAttachmentAccess(readOrbitCaseAttachmentAccessPreference());
   }, []);
 
+  const activePushTemplate =
+    pushTemplatesByDestinationId[pushDestinationId] ?? null;
+
+  useEffect(() => {
+    if (!activePushTemplate) {
+      setPushFieldValues({});
+      return;
+    }
+
+    const defaults: Record<string, string | number | boolean | null> = {};
+
+    for (const field of activePushTemplate.fields) {
+      if (field.key === "title") {
+        defaults[field.key] = orbitCase.title;
+      } else {
+        defaults[field.key] = null;
+      }
+    }
+
+    setPushFieldValues(defaults);
+  }, [activePushTemplate, orbitCase.title]);
+
   const saveFields = (patch: {
     title?: string;
     description?: string | null;
     status?: OrbitCaseStatus;
     priority?: OrbitCasePriority;
     assigneeId?: string | null;
+    ownerId?: string | null;
     dueAt?: string | null;
     tags?: string[];
   }) => {
@@ -215,10 +246,7 @@ export function OrbitCaseDetailView({
         caseId: orbitCase.id,
         destinationId: pushDestinationId,
         idempotencyKey: crypto.randomUUID(),
-        fieldValues: {
-          title: pushTitle.trim() || orbitCase.title,
-          amount: pushAmount.trim() || null,
-        },
+        fieldValues: pushFieldValues,
       });
 
       if (!result.ok) {
@@ -594,25 +622,19 @@ export function OrbitCaseDetailView({
                   </SelectContent>
                 </Select>
               </div>
-              <Input
-                aria-label="Push title"
-                onChange={(event) => setPushTitle(event.target.value)}
-                placeholder="Title"
-                value={pushTitle}
+              <OrbitCasePushForm
+                disabled={isPending || !pushDestinationId}
+                fieldValues={pushFieldValues}
+                onFieldChange={(key, value) =>
+                  setPushFieldValues((current) => ({ ...current, [key]: value }))
+                }
+                onSubmit={handlePush}
+                template={activePushTemplate}
               />
-              <Input
-                aria-label="Push amount"
-                onChange={(event) => setPushAmount(event.target.value)}
-                placeholder="Amount (optional)"
-                value={pushAmount}
-              />
-              <Button disabled={isPending || !pushDestinationId} onClick={handlePush}>
-                Push
-              </Button>
             </section>
           ) : null}
 
-          {initialLinks.length > 0 ? (
+          {initialLinkProjections.length > 0 ? (
             <section
               className={cn(
                 blockRecipe("blockPanel", "blockPanelPadding"),
@@ -620,11 +642,17 @@ export function OrbitCaseDetailView({
               )}
             >
               <h2 className={blockRecipe("blockTitle")}>Links</h2>
-              {initialLinks.map((link) => (
+              {initialLinkProjections.map((link) => (
                 <div className="text-sm" key={link.id}>
-                  <p className="font-medium">
-                    {link.targetType} · {link.targetId}
-                  </p>
+                  {link.href ? (
+                    <Link className="font-medium hover:underline" href={link.href}>
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <p className="font-medium">
+                      {link.label} · {link.targetId}
+                    </p>
+                  )}
                   <p className="text-muted-foreground text-xs">
                     {new Date(link.createdAt).toLocaleString()}
                   </p>
@@ -721,6 +749,28 @@ export function OrbitCaseDetailView({
               ) : null}
             </div>
           </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="case-assignee">Assignee</Label>
+            <OrgMemberCombobox
+              aria-label="Assignee"
+              id="case-assignee"
+              onValueChange={(assigneeId) => saveFields({ assigneeId })}
+              value={orbitCase.assigneeId}
+            />
+          </div>
+
+          {canEditOwner ? (
+            <div className="grid gap-2">
+              <Label htmlFor="case-owner">Owner</Label>
+              <OrgMemberCombobox
+                aria-label="Owner"
+                id="case-owner"
+                onValueChange={(ownerId) => saveFields({ ownerId })}
+                value={orbitCase.ownerId}
+              />
+            </div>
+          ) : null}
 
           <div className="grid gap-2">
             <Label htmlFor="case-tags">Tags (comma-separated)</Label>

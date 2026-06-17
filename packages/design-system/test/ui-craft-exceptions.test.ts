@@ -67,6 +67,22 @@ describe("ui-craft exception governance", () => {
     ]);
   });
 
+  it("parses app and Storybook detector paths", () => {
+    const storyPath = "apps/storybook/stories/afenda-ui/demo.stories.tsx";
+    const findings = parseUiCraftFindings(
+      [`${storyPath}:7`, `  ● ${hoverMessage} — details`].join("\n"),
+      root
+    );
+
+    expect(findings).toEqual([
+      {
+        file: join(root, storyPath),
+        line: 7,
+        message: hoverMessage,
+      },
+    ]);
+  });
+
   it("ignores a known finding only when matching evidence exists", () => {
     const result = evaluate();
 

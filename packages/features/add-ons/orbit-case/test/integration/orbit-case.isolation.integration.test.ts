@@ -7,7 +7,10 @@ import {
 } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
+import { hasIntegrationDatabase } from "../../../../../../test-support/load-integration-env";
 import { createOrbitCase, getOrbitCaseById } from "../../engines/work/orbit-cases";
+
+const hasDatabase = hasIntegrationDatabase();
 
 const createdOrgIds: string[] = [];
 const createdCaseIds: string[] = [];
@@ -25,7 +28,7 @@ afterEach(async () => {
   }
 });
 
-describe("orbit case org isolation", () => {
+describe.skipIf(!hasDatabase)("orbit case org isolation", () => {
   it("does not return a case from another organization", async () => {
     const orgA = createId();
     const orgB = createId();

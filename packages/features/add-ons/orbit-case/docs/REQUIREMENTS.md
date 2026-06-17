@@ -83,15 +83,17 @@ A user lands on `/orbit-case`, enters “Need RM50k for production line”, and 
 
 Destinations (incremental): Approval, Meeting, Budget, Purchase, Lead, Complaint, Risk, Project, Investigation, CAPA, Contract Review.
 
-### Per-destination DoD
+### Per-destination DoD (Budget Request)
 
-- [ ] Template in registry
-- [ ] Target owned by destination module
-- [ ] Push creates target + `orbit_object_links`
-- [ ] UI shows linked projection from case detail
-- [ ] E2E: case → push → open target → origin visible
+- [x] Template in registry
+- [x] Target owned by destination module (`engines/budget/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/budget-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
 
-*(Budget request stub satisfies Phase 2; remaining destinations are Phase 3.)*
+### Remaining Phase 3 destinations
+
+Approval, Meeting, Purchase, Lead, Complaint, Risk, Project, Investigation, CAPA, Contract Review — repeat the Budget pattern (handler + read engine + routes + origin + E2E).
 
 ---
 

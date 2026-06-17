@@ -5,21 +5,23 @@ This guide freezes the Phase 1-9 block platform as a documented stable API. App 
 ## Compatibility Policy
 
 - Metadata schema `version: 1` remains the current stable wire format.
-- Public block imports come from `@repo/design-system/components/blocks`.
+- Public design-system imports come only from declared `@repo/design-system`
+  package exports.
 - Existing exported component names, metadata schemas, diagnostics contracts, fixtures, and quality-gate helpers must not be removed without a migration note.
 - New block props, schema fields, diagnostics, and exports should be additive.
 - Breaking changes require a migration note, compatibility tests, and updated Storybook examples.
 - Public barrels must stay explicit; wildcard exports are not allowed for release-freeze surfaces.
-- The Afenda Pattern Library is additive guidance; removing or renaming a pattern id requires a migration note and updated Storybook coverage.
+- Governed block patterns are owned by the 12 `afenda-*` contracts and Storybook coverage; removing or renaming a stable pattern requires a migration note and updated Storybook coverage.
 
 ## Public API Checklist
 
 Before changing a public design-system surface, verify:
 
-- App-facing blocks are imported from `@repo/design-system/components/blocks`.
-- App-facing primitives are imported from `@repo/design-system/components/afenda-ui`.
-- Stable governance contracts are imported from `@repo/design-system/contracts/*`
-  package exports, not deep implementation paths.
+- App-facing blocks and primitives are imported only from declared
+  `@repo/design-system` package exports.
+- Stable governance contracts are imported only from explicit
+  `@repo/design-system/contracts/afenda-*` package exports, not wildcard or deep
+  implementation paths.
 - `components/blocks/index.ts` keeps explicit exports and does not add wildcard barrels.
 - Compatibility tests cover existing fixture metadata, metadata schema v1, and documented stable exports.
 - Internal modules such as `metadata-renderer-core.ts`, `metadata-diagnostics.ts`,

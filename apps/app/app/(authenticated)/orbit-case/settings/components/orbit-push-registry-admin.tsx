@@ -19,6 +19,7 @@ import {
   savePushDestination,
   savePushTemplate,
 } from "@/app/actions/orbit-case/registry/admin";
+import { OrbitPushTemplateFieldsEditor } from "./orbit-push-template-fields-editor";
 
 interface OrbitPushRegistryAdminProps {
   destinations: Array<{
@@ -48,6 +49,12 @@ export function OrbitPushRegistryAdmin({
   const [templateId, setTemplateId] = useState("");
   const [capabilities, setCapabilities] = useState("budget");
   const [roles, setRoles] = useState("owner,editor");
+  const [templateFields, setTemplateFields] = useState<
+    PushTemplateDefinition["fields"]
+  >([
+    { key: "title", label: "Title", type: "text", required: true },
+    { key: "amount", label: "Amount", type: "text", required: false },
+  ]);
 
   const handleSaveDestination = () => {
     if (!destinationId.trim() || !destinationLabel.trim() || !templateId.trim()) {
@@ -107,9 +114,9 @@ export function OrbitPushRegistryAdmin({
         id: templateId.trim(),
         destinationId: destinationId.trim(),
         label: destinationLabel.trim(),
-        fields: [
-          { key: "title", label: "Title", type: "text", required: true },
-        ],
+        fields: templateFields.filter(
+          (field) => field.key.trim() && field.label.trim()
+        ),
       });
 
       if (!result.ok) {
@@ -238,6 +245,10 @@ export function OrbitPushRegistryAdmin({
             />
           </div>
         </div>
+        <OrbitPushTemplateFieldsEditor
+          fields={templateFields}
+          onChange={setTemplateFields}
+        />
         <div className="flex flex-wrap gap-2">
           <Button disabled={isPending} onClick={handleSaveDestination}>
             Save destination

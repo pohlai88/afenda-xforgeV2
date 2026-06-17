@@ -2,6 +2,8 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import {
   createDesignSystemAiDriftRegistry,
+  extractObjectKeys,
+  extractStringArray,
   scanDesignSystemAiDriftSource,
 } from "../packages/design-system/governance/design-system-ai-drift.mjs";
 
@@ -311,6 +313,21 @@ const afendaComponentDriftPatterns = [
 const errors = [];
 const globals = readFileSync(globalsPath, "utf8");
 const aiDriftRegistry = createDesignSystemAiDriftRegistry(root);
+
+assertRegistryMatchesImplementation({
+  contractName: "AFENDA_RECIPE_IDENTITY_REGISTRY",
+  contractSource: readIfExists(recipeContractPath),
+  implementationName: "afendaRecipe",
+  implementationSource: readIfExists(afendaRecipePath),
+  label: "Afenda recipe identity registry",
+});
+assertRegistryMatchesImplementation({
+  contractName: "AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY",
+  contractSource: readIfExists(recipeContractPath),
+  implementationName: "afendaBlockRecipe",
+  implementationSource: readIfExists(blockRecipePath),
+  label: "Afenda block recipe identity registry",
+});
 
 for (const path of [
   mindfulOperatorPath,
@@ -936,17 +953,63 @@ const aiDriftRoots = [
   storiesDir,
 ];
 const aiDriftAllowList = new Set([
-  normalize(join(root, "packages", "design-system", "contracts", "afenda-design-system.contract.ts")),
-  normalize(join(root, "packages", "design-system", "test", "afenda-design-system-contract.test.ts")),
-  normalize(join(root, "packages", "design-system", "components", "afenda-ui", "chart.tsx")),
-  normalize(join(root, "packages", "design-system", "components", "blocks", "afenda-blocks", "dashboard", "data-table", "dashboard-data-table-schema.ts")),
+  normalize(
+    join(
+      root,
+      "packages",
+      "design-system",
+      "contracts",
+      "afenda-design-system.contract.ts"
+    )
+  ),
+  normalize(
+    join(
+      root,
+      "packages",
+      "design-system",
+      "test",
+      "afenda-design-system-contract.test.ts"
+    )
+  ),
+  normalize(
+    join(
+      root,
+      "packages",
+      "design-system",
+      "components",
+      "afenda-ui",
+      "chart.tsx"
+    )
+  ),
+  normalize(
+    join(
+      root,
+      "packages",
+      "design-system",
+      "components",
+      "blocks",
+      "afenda-blocks",
+      "dashboard",
+      "data-table",
+      "dashboard-data-table-schema.ts"
+    )
+  ),
+]);
+const docsPrivateImportPolicyAllowList = new Set([
+  normalize(designSystemDocsReadmePath),
 ]);
 
 for (const file of walk(aiDriftRoots)) {
+  const normalizedFile = normalize(file);
+  const isStoryFile = normalizedFile.startsWith(normalize(storiesDir));
+  const isDocsFile = normalizedFile.startsWith(
+    normalize(join(root, "packages", "design-system", "docs"))
+  );
+
   if (
     !/\.(md|ts|tsx)$/.test(file) ||
-    aiDriftAllowList.has(normalize(file)) ||
-    normalize(file).includes("/components/ui/")
+    aiDriftAllowList.has(normalizedFile) ||
+    normalizedFile.includes("/components/ui/")
   ) {
     continue;
   }
@@ -955,9 +1018,9 @@ for (const file of walk(aiDriftRoots)) {
     ...scanDesignSystemAiDriftSource({
       path: file,
       registry: aiDriftRegistry,
-      requirePublicDesignSystemImports: normalize(file).startsWith(
-        normalize(storiesDir)
-      ),
+      requirePublicDesignSystemImports:
+        isStoryFile ||
+        (isDocsFile && !docsPrivateImportPolicyAllowList.has(normalizedFile)),
       root,
       source: readFileSync(file, "utf8"),
     })
@@ -1059,6 +1122,40 @@ function normalize(value) {
   return value.replace(/\\/g, "/").toLowerCase();
 }
 
+function readIfExists(path) {
+  return existsSync(path) ? readFileSync(path, "utf8") : "";
+}
+
+function assertRegistryMatchesImplementation({
+  contractName,
+  contractSource,
+  implementationName,
+  implementationSource,
+  label,
+}) {
+  const contractKeys = extractStringArray(contractSource, contractName);
+  const implementationKeys = extractObjectKeys(
+    implementationSource,
+    implementationName
+  );
+  const missingFromContract = implementationKeys.filter(
+    (key) => !contractKeys.includes(key)
+  );
+  const staleInContract = contractKeys.filter(
+    (key) => !implementationKeys.includes(key)
+  );
+
+  if (missingFromContract.length || staleInContract.length) {
+    errors.push(
+      `${label} must match implementation keys. Missing in contract: ${formatList(missingFromContract)}. Stale in contract: ${formatList(staleInContract)}.`
+    );
+  }
+}
+
+function formatList(values) {
+  return values.length ? values.join(", ") : "none";
+}
+
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -1095,19 +1192,39 @@ function isGovernanceBlockStoryTitle(title) {
 }
 
 function exportedTypeNames(source) {
-  return [...source.matchAll(/^export type \{([^}]+)\}/gm)]
+  const namedTypeExports = [...source.matchAll(/^export type \{([^}]+)\}/gm)]
     .flatMap((match) => match[1].split(","))
     .map((entry) => entry.trim())
-    .filter(Boolean);
+    .filter(Boolean)
+    .map((entry) => readExportedName(entry));
+  const directTypeExports = [
+    ...source.matchAll(
+      /^export\s+(?:interface|type)\s+([A-Z][A-Za-z0-9_]*)\b/gm
+    ),
+  ].map((match) => match[1]);
+
+  return [...new Set([...namedTypeExports, ...directTypeExports])];
 }
 
 function exportedValueNames(source) {
-  return [...source.matchAll(/^export \{([\s\S]*?)\}/gm)]
+  const namedValueExports = [...source.matchAll(/^export \{([\s\S]*?)\}/gm)]
     .flatMap((match) => match[1].split(","))
     .map((entry) => entry.trim())
     .filter((entry) => entry && !entry.startsWith("type "))
-    .map((entry) => entry.split(exportAliasSplitPattern)[0].trim())
+    .map((entry) => readExportedName(entry))
     .filter(Boolean);
+  const directValueExports = [
+    ...source.matchAll(
+      /^export\s+(?:class|const|enum|function)\s+([A-Za-z_$][\w$]*)\b/gm
+    ),
+  ].map((match) => match[1]);
+
+  return [...new Set([...namedValueExports, ...directValueExports])];
+}
+
+function readExportedName(entry) {
+  const [localName, exportedName] = entry.split(exportAliasSplitPattern);
+  return (exportedName ?? localName).trim();
 }
 
 function walk(paths) {

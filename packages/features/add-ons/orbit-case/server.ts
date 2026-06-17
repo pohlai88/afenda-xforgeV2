@@ -10,6 +10,7 @@ export type {
   OrbitCaseRecord,
   OrbitCaseTimelineResult,
   OrbitCaseUpdatePatch,
+  OrbitBudgetRequestRecord,
 } from "./contract/orbit-case.types";
 export { getOrbitCaseCalendar } from "./engines/board/board-calendar";
 export { getOrbitCaseBoard } from "./engines/board/board-kanban";
@@ -42,6 +43,10 @@ export {
   canPushToDestination,
 } from "./engines/work/permissions";
 export { executePush } from "./engines/morph/push-orchestrator";
+export {
+  getBudgetRequestById,
+  listBudgetRequestsForOrg,
+} from "./engines/budget/budget-requests";
 export {
   createObjectLink,
   listObjectLinksForCase,

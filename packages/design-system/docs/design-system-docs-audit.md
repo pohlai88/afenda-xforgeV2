@@ -21,14 +21,27 @@ scorecard contracts, and lifecycle contracts are intentionally removed.
 - Drift gate: `scripts/check-design-system-drift.mjs`
 - AI drift scanner: `packages/design-system/governance/design-system-ai-drift.mjs`
 
+## Storybook Example Policy
+
+Storybook workshop tags such as `autodocs`, `afenda-ui`, `block`,
+`foundations`, `primitive`, `interaction`, and `snapshot` do not automatically
+create AI copy-paste example obligations. Only explicit `example`,
+`ai-example`, `copy-paste-example`, `afendaExample: true`, or `aiExample: true`
+markers require `afendaContractVersion`. If any story declares
+`afendaContractVersion`, the drift gate requires it to match the current
+contract version.
+
 ## Required Gates
 
 ```bash
-pnpm --filter @repo/design-system typecheck
-pnpm --filter @repo/design-system test
-pnpm design-system:check-drift
-pnpm design-system:stabilize
+pnpm design-system:docs-audit
+pnpm design-system:governance
+pnpm governance
 ```
+
+Use narrower commands such as `pnpm --filter @repo/design-system typecheck`,
+`pnpm --filter @repo/design-system test`, and `pnpm design-system:check-drift`
+only for debugging a failed governance run.
 
 ## Decision
 

@@ -2,9 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { CHART_AREA_TIME_RANGE_OPTIONS } from "../components/blocks/afenda-blocks/dashboard/chart/dashboard-chart-constants";
 import { DEMO_DASHBOARD_CHART_AREA_DATA } from "../components/blocks/afenda-blocks/dashboard/chart/dashboard-chart-data";
-import {
-  CHART_AREA_TIME_RANGES,
-} from "../components/blocks/afenda-blocks/dashboard/dashboard-contracts";
+import { CHART_AREA_TIME_RANGES } from "../components/blocks/afenda-blocks/dashboard/dashboard-contracts";
 import { DEMO_DASHBOARD_DATA_TABLE_ROWS } from "../components/blocks/afenda-blocks/dashboard/data-table/dashboard-data-table-demo-data";
 import { DEMO_DASHBOARD_SECTION_CARDS } from "../components/blocks/afenda-blocks/dashboard/kpi-card/dashboard-section-cards-demo-data";
 
@@ -17,9 +15,7 @@ const dashboardContractFixtures = [
 describe("dashboard contract serializability", () => {
   it("keeps demo dashboard fixtures JSON-serializable", () => {
     for (const fixture of dashboardContractFixtures) {
-      expect(() =>
-        assertSerializable(fixture.value, fixture.id)
-      ).not.toThrow();
+      expect(() => assertSerializable(fixture.value, fixture.id)).not.toThrow();
       expect(JSON.parse(JSON.stringify(fixture.value))).toEqual(fixture.value);
     }
   });

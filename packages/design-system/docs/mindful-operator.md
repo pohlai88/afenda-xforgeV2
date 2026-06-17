@@ -81,8 +81,9 @@ pnpm ui-craft:detect
 pnpm --filter @repo/design-system test -- token-design-data.test.ts
 ```
 
-`pnpm design-system:stabilize` also verifies token metadata, CSS variable
-coverage, primitive readiness, and UI craft drift.
+`pnpm design-system:stabilize` is the fast local pass for token metadata, CSS
+variable coverage, primitive readiness, and UI craft drift. Run
+`pnpm design-system:governance` before merge or release.
 
 Any new token category must include category metadata, usage constraints,
 deprecation handling, and Figma variable mapping before release.

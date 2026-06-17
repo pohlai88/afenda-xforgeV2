@@ -15,7 +15,7 @@ import {
   getPrivateBlobDeleteOptions,
   getPublicBlobDeleteOptions,
 } from "@repo/storage";
-import { revalidatePath } from "next/cache";
+import { revalidateOrbitCaseMutation } from "@/lib/orbit-case-revalidate";
 
 export const removeAttachment = async (
   input: unknown
@@ -50,7 +50,9 @@ export const removeAttachment = async (
       // Metadata delete succeeded; blob cleanup is best-effort.
     }
 
-    revalidatePath("/orbit-case");
-    revalidatePath(`/orbit-case/${removed.caseId}`);
+    revalidateOrbitCaseMutation({
+      organizationId: orgId,
+      caseId: removed.caseId,
+    });
     return toOrbitCaseAttachmentDto(removed);
   });

@@ -56,7 +56,9 @@ describe("token design data contract", () => {
 
   it("keeps token authority explicit and free of lifecycle registry ownership", () => {
     expect(afendaTokenContract).not.toHaveProperty("status");
-    expect(afendaTokenContract.authorityRules).toBe(AFENDA_TOKEN_AUTHORITY_RULES);
+    expect(afendaTokenContract.authorityRules).toBe(
+      AFENDA_TOKEN_AUTHORITY_RULES
+    );
     expect(AFENDA_TOKEN_AUTHORITY_RULES).toEqual({
       tokenOwnsAliases: true,
       tokenOwnsCssVariables: true,

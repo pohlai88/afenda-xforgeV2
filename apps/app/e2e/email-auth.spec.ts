@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { e2eEmail } from "./helpers/credentials";
 import {
   buildConfirmUrl,
   createE2eEmail,
@@ -10,15 +11,6 @@ import {
   hasSupabaseAdminEnv,
   isEmailConfirmed,
 } from "./helpers/supabase-admin";
-
-const e2eEmail =
-  process.env.E2E_AUTH_EMAIL ??
-  process.env.E2E_ORG_ADMIN_EMAIL ??
-  "e2e-playwright@xforge.local";
-const _e2ePassword =
-  process.env.E2E_AUTH_PASSWORD ??
-  process.env.E2E_ORG_ADMIN_PASSWORD ??
-  "123qweasdzxc!@#";
 
 const baseURL = getPlaywrightBaseUrl();
 
@@ -41,7 +33,7 @@ const fillSignUpPassword = async (
   await page.locator("#sign-up-password").fill(value);
 };
 
-test.describe("Email authentication UI", () => {
+test.describe("Email authentication UI @auth", () => {
   test("sign-up shows email confirmation copy and password requirements", async ({
     page,
   }) => {
@@ -116,7 +108,7 @@ test.describe("Email authentication UI", () => {
   });
 });
 
-test.describe("Email authentication (Supabase integration)", () => {
+test.describe("Email authentication (Supabase integration) @auth", () => {
   // biome-ignore lint/suspicious/noSkippedTests: Supabase admin credentials are optional for local E2E runs.
   test.skip(
     !hasSupabaseAdminEnv(),

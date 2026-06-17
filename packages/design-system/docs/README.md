@@ -21,14 +21,17 @@ The only public contract authority is the 12-file `afenda-*` wall in
 2. Follow [`block-authoring.md`](./block-authoring.md).
 3. Check [`mindful-operator.md`](./mindful-operator.md) before changing tokens,
    status color, focus, hover, or dense ERP visual states.
-4. Run `pnpm design-system:stabilize`.
+4. Run `pnpm design-system:stabilize` for fast local stabilization, then
+   `pnpm design-system:governance` before merge or release.
 
 ### Release Reviewer
 
 1. Review [`design-system-docs-audit.md`](./design-system-docs-audit.md).
 2. Confirm [`block-migration-guide.md`](./block-migration-guide.md) reflects
    any compatibility impact.
-3. Run the static gates in [`block-authoring.md`](./block-authoring.md).
+3. Use [`governance.md`](./governance.md) to choose the narrow or repo-wide
+   governance gate.
+4. Run the static gates in [`block-authoring.md`](./block-authoring.md).
 
 ## Storybook Evidence Matrix
 
@@ -37,6 +40,21 @@ The only public contract authority is the 12-file `afenda-*` wall in
 | Block quality gates | `Blocks/Quality Gates` | [`block-authoring.md`](./block-authoring.md) |
 | Block readiness | `Blocks/Block Readiness` | [`block-governance.md`](./block-governance.md) |
 | Storybook coverage | `Blocks/Storybook Coverage` | [`block-migration-guide.md`](./block-migration-guide.md) |
+
+## Storybook Example Contract
+
+Storybook has two governed surfaces:
+
+- Workshop stories: `autodocs`, `afenda-ui`, `block`, `foundations`,
+  `primitive`, `interaction`, and `snapshot` stories. These are scanned for
+  imports, tokens, slots, variants, and drift, but they do not need
+  `afendaContractVersion`.
+- AI imitation examples: stories tagged `example`, `ai-example`, or
+  `copy-paste-example`, or stories with `afendaExample: true` / `aiExample:
+  true`. These must declare the current `afendaContractVersion`.
+
+Any story that declares `afendaContractVersion` must match the current contract
+version, even if it is not tagged as an example.
 
 ## Stable Contract Imports
 
@@ -64,7 +82,9 @@ Legacy non-`afenda-*` contracts are removed and must not be recreated as aliases
 It stays in the repo so `npx shadcn@latest add [component] -c
 packages/design-system` can update upstream primitives predictably.
 
-App teams must not import `@repo/design-system/components/ui`. Use
-`@repo/design-system/components/afenda-ui` for primitives and
-`@repo/design-system/components/blocks` for ERP blocks. The import-boundary gate
-enforces this outside the design-system package.
+App teams must not import `@repo/design-system/components/ui`,
+`@repo/design-system/components/afenda-ui`, or
+`@repo/design-system/components/blocks`. Use
+`@repo/design-system/design-system` for app-facing primitives, blocks, recipes,
+and helpers. The import-boundary gate enforces this outside the design-system
+package.

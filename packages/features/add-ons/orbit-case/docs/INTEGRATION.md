@@ -13,6 +13,7 @@
 | Domain | `packages/features/add-ons/orbit-case/` | Business logic, contracts, registries |
 | Server Actions | `apps/app/app/actions/orbit-case/` | Thin: guard → Zod → server → revalidate |
 | UI | `apps/app/app/(authenticated)/orbit-case/` | RSC page + client workspace |
+| Blob upload API | `apps/app/app/api/orbit-case/attachments/upload/route.ts` | Vercel `handleUpload` token policy |
 | Events | `apps/app/lib/emit-org-event.ts` | Phase 2: `orbit.case.created`, `orbit.case.pushed` |
 | Feature flag | `@repo/feature-flags` | Optional staged rollout |
 
@@ -46,11 +47,30 @@
 | `delete.ts` | `deleteCase` |
 | `list.ts` | `listCases` |
 | `board.ts` | `getBoard`, `moveCaseStatus`, `getCalendarBoard`, `getTimelineBoard` |
-| `attachment/upload.ts` | `uploadAttachment` |
+| `attachment/client-upload.ts` | `prepareAttachmentUpload`, `finalizeAttachmentUpload` |
 | `attachment/delete.ts` | `removeAttachment` |
+| `push/execute.ts` | `executeCasePush`, `listPushDestinations`, `getPushTemplateForDestination` |
 | `watch.ts` | `watchCase` |
 | `comment/create.ts` | `addComment` |
 | `comment/list.ts` | `listComments` |
+
+Attachment upload flow:
+
+1. Client calls `prepareAttachmentUpload` for org-scoped pathname.
+2. Client uploads via `@repo/storage/client` `upload()` to `POST /api/orbit-case/attachments/upload`.
+3. Client calls `finalizeAttachmentUpload` to persist metadata + activity.
+
+---
+
+## App routes (Phase 3)
+
+| Route | Purpose |
+|-------|---------|
+| `/orbit-case` | Workspace (list, kanban, calendar, timeline) |
+| `/orbit-case/[caseId]` | Case detail |
+| `/orbit-case/budget` | Budget request index |
+| `/orbit-case/budget/[budgetId]` | Budget detail with origin link |
+| `/orbit-case/settings` | Push registry admin (owner) |
 
 ---
 
@@ -88,7 +108,7 @@ After migration `0025`, push authorization uses live DB role with JWT claims cap
 - `orbit-case:board:{orgId}`
 - `orbit-case:detail:{caseId}`
 
-Use `updateTag` in Server Actions after successful mutations (Next.js 16 cache components).
+Use `updateTag` / `revalidateTag` in Server Actions after successful mutations (Next.js 16 cache components). Tag helpers live in `@repo/orbit-case/revalidate`; app mutations call `revalidateOrbitCaseMutation` in `apps/app/lib/orbit-case-revalidate.ts`.
 
 ---
 

@@ -26,11 +26,7 @@ export const AFENDA_TONES = [
 
 export type AfendaTone = (typeof AFENDA_TONES)[number];
 
-export const AFENDA_DENSITIES = [
-  "compact",
-  "default",
-  "comfortable",
-] as const;
+export const AFENDA_DENSITIES = ["compact", "default", "comfortable"] as const;
 
 export type AfendaDensity = (typeof AFENDA_DENSITIES)[number];
 

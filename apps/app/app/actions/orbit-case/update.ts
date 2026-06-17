@@ -8,7 +8,7 @@ import {
   updateOrbitCaseSchema,
 } from "@repo/orbit-case";
 import { updateOrbitCaseFields } from "@repo/orbit-case/server";
-import { revalidatePath } from "next/cache";
+import { revalidateOrbitCaseMutation } from "@/lib/orbit-case-revalidate";
 
 export const updateCase = async (
   input: unknown
@@ -22,7 +22,9 @@ export const updateCase = async (
       throw new Error("Orbit Case not found");
     }
 
-    revalidatePath("/orbit-case");
-    revalidatePath(`/orbit-case/${parsed.caseId}`);
+    revalidateOrbitCaseMutation({
+      organizationId: orgId,
+      caseId: parsed.caseId,
+    });
     return toOrbitCaseDto(updated);
   });

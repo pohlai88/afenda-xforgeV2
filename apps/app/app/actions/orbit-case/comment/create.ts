@@ -8,7 +8,7 @@ import {
   toOrbitCaseCommentDto,
 } from "@repo/orbit-case";
 import { createOrbitCaseComment } from "@repo/orbit-case/server";
-import { revalidatePath } from "next/cache";
+import { revalidateOrbitCaseMutation } from "@/lib/orbit-case-revalidate";
 
 export const addComment = async (
   input: unknown
@@ -21,7 +21,9 @@ export const addComment = async (
       parsed.caseId,
       parsed.body
     );
-    revalidatePath("/orbit-case");
-    revalidatePath(`/orbit-case/${parsed.caseId}`);
+    revalidateOrbitCaseMutation({
+      organizationId: orgId,
+      caseId: parsed.caseId,
+    });
     return toOrbitCaseCommentDto(comment);
   });

@@ -9,8 +9,8 @@ import {
   toOrbitCaseDto,
 } from "@repo/orbit-case";
 import { createOrbitCase } from "@repo/orbit-case/server";
-import { revalidatePath } from "next/cache";
 import { emitOrgEvent } from "@/lib/emit-org-event";
+import { revalidateOrbitCaseMutation } from "@/lib/orbit-case-revalidate";
 
 export const createCase = async (
   input: unknown
@@ -19,7 +19,7 @@ export const createCase = async (
     const parsed = createOrbitCaseSchema.parse(input);
     const created = await createOrbitCase(orgId, userId, parsed);
     const dto = toOrbitCaseDto(created);
-    revalidatePath("/orbit-case");
+    revalidateOrbitCaseMutation({ organizationId: orgId, caseId: dto.id });
     await emitOrgEvent(
       orgId,
       "orbit.case.created",

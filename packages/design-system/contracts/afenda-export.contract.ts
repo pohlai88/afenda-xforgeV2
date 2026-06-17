@@ -37,8 +37,11 @@ export const AFENDA_PUBLIC_EXPORTS = [
   "@repo/design-system/contracts/afenda-motion",
   "@repo/design-system/contracts/afenda-state",
   "@repo/design-system/contracts/afenda-example",
+  "@repo/design-system/lib/fonts",
   "@repo/design-system/lib/utils",
+  "@repo/design-system/postcss.config.mjs",
   "@repo/design-system/styles/globals.css",
+  "@repo/design-system/tokens/token-usage.policy",
   "@repo/design-system/tokens/tokens.json",
 ] as const;
 

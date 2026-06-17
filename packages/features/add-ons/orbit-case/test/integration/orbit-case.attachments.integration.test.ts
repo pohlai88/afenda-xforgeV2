@@ -8,12 +8,15 @@ import {
 } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
+import { hasIntegrationDatabase } from "../../../../../../test-support/load-integration-env";
 import {
   createOrbitCaseAttachment,
   deleteOrbitCaseAttachment,
   listOrbitCaseAttachments,
 } from "../../engines/attachment/attachments";
 import { createOrbitCase } from "../../engines/work/orbit-cases";
+
+const hasDatabase = hasIntegrationDatabase();
 
 const createdOrgIds: string[] = [];
 const createdCaseIds: string[] = [];
@@ -38,7 +41,7 @@ afterEach(async () => {
   }
 });
 
-describe("orbit case attachment isolation", () => {
+describe.skipIf(!hasDatabase)("orbit case attachment isolation", () => {
   it("does not list or delete attachments across organizations", async () => {
     const orgA = createId();
     const orgB = createId();

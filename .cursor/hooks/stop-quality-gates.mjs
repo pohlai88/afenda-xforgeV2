@@ -22,6 +22,11 @@ const GATES = [
     label: "apps/app typecheck",
   },
   {
+    scope: "apps/app",
+    command: "pnpm --filter app test",
+    label: "apps/app unit tests",
+  },
+  {
     scope: "apps/storybook",
     command: "pnpm --filter storybook typecheck",
     label: "apps/storybook typecheck",

@@ -14,15 +14,26 @@
     },
     "next-devtools": {
       "command": "npx",
-      "args": ["-y", "next-devtools-mcp@latest"]
+      "args": [
+        "-y",
+        "next-devtools-mcp@latest"
+      ]
     },
     "shadcn": {
       "command": "npx",
-      "args": ["-y", "shadcn@latest", "mcp", "-c", "packages/design-system"]
+      "args": [
+        "-y",
+        "shadcn@latest",
+        "mcp",
+        "-c",
+        "packages/design-system"
+      ]
     },
     "fetch": {
       "command": "uvx",
-      "args": ["mcp-server-fetch"],
+      "args": [
+        "mcp-server-fetch"
+      ],
       "env": {
         "PYTHONIOENCODING": "utf-8"
       }
@@ -34,6 +45,15 @@
     "storybook": {
       "type": "http",
       "url": "http://127.0.0.1:6006/mcp"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest",
+        "--config",
+        "apps/app/e2e/playwright-mcp.config.json"
+      ]
     }
   }
 }

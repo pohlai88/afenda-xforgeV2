@@ -12,8 +12,7 @@
  * This file must not contain styling values or business logic.
  */
 
-export const AFENDA_ACCESSIBILITY_CONTRACT_ID =
-  "afenda.accessibility" as const;
+export const AFENDA_ACCESSIBILITY_CONTRACT_ID = "afenda.accessibility" as const;
 
 export const AFENDA_ACCESSIBILITY_CONTRACT_VERSION = "0.1.0" as const;
 
@@ -128,5 +127,4 @@ export const afendaAccessibilityContract = {
   principles: AFENDA_ACCESSIBILITY_PRINCIPLES,
 } as const;
 
-export type AfendaAccessibilityContract =
-  typeof afendaAccessibilityContract;
+export type AfendaAccessibilityContract = typeof afendaAccessibilityContract;

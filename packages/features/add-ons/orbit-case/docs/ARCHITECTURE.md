@@ -1,7 +1,7 @@
 # Orbit Case — Architecture
 
 **Version:** 0.1  
-**Status:** Phase 1.1 complete (Orbit Core + attachments + calendar/timeline)  
+**Status:** Phase 3 in progress — Budget Request is the first full morph destination  
 **Package:** `@repo/orbit-case`  
 **Route:** `/orbit-case`
 
@@ -52,7 +52,8 @@ Orbit Case
 | Comment | 1 | `engines/work/comments.ts` |
 | Attachment | 1.1 | `engines/attachment/` |
 | Link | 2 | `engines/link/` |
-| Morph | 2–3 | `engines/morph/` |
+| Morph | 2–3 | `engines/morph/` (`push-orchestrator` + `push-handlers/`) |
+| Budget | 3 | `engines/budget/` |
 
 ---
 
@@ -66,8 +67,6 @@ Fixed set — no custom workflows in Phase 1:
 
 ## 5. Push governance (Phase 2+)
 
-Three layers:
-
 1. **Push Registry** — tenant admin catalog (`lib/registry/push-destination-registry.ts`)
 2. **Permission layer** — role visibility (`visibleToRoles`)
 3. **Capability layer** — user capabilities (`requiredCapabilities`)
@@ -77,6 +76,7 @@ Three layers:
 - No auto-push
 - No AI-generated ERP records
 - Every push writes audit + preserves `originOrbitCaseId`
+- Morph execution dispatches through `engines/morph/push-handlers/` by `destinationId`
 
 ---
 

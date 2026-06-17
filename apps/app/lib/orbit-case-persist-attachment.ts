@@ -4,7 +4,7 @@ import {
   toOrbitCaseAttachmentDto,
 } from "@repo/orbit-case";
 import { createOrbitCaseAttachment } from "@repo/orbit-case/server";
-import { revalidatePath } from "next/cache";
+import { revalidateOrbitCaseMutation } from "@/lib/orbit-case-revalidate";
 
 export interface PersistOrbitCaseAttachmentInput {
   blobAccess: "public" | "private";
@@ -45,7 +45,9 @@ export const persistOrbitCaseUploadedAttachment = async (
     throw new Error("Orbit Case not found");
   }
 
-  revalidatePath("/orbit-case");
-  revalidatePath(`/orbit-case/${input.caseId}`);
+  revalidateOrbitCaseMutation({
+    organizationId,
+    caseId: input.caseId,
+  });
   return toOrbitCaseAttachmentDto(attachment);
 };

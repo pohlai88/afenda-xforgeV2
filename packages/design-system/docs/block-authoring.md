@@ -23,9 +23,14 @@ system.
 
 ## Stable Public API
 
-Import app-facing blocks and contracts from `@repo/design-system/components/blocks`.
+Import app-facing design-system APIs only from declared `@repo/design-system`
+package exports.
 
-This barrel is the documented stable API. Keep exports explicit; do not add wildcard barrels. Additions are allowed, but removals or behavior breaks require a migration-guide entry and compatibility coverage.
+Component implementation paths under `components/blocks` are design-system
+internal unless they are explicitly added to `package.json` exports and the
+`afenda-export` contract. Keep exports explicit; do not add wildcard barrels.
+Additions are allowed, but removals or behavior breaks require a
+migration-guide entry and compatibility coverage.
 
 Stable component families:
 
@@ -37,7 +42,10 @@ Stable component families:
 - Metadata: `MetadataPageRenderer`, `metadataPageSchema`, `metadataBlockSchema`, `resolveMetadataBinding`
 - Diagnostics: `createMetadataDiagnosticsCollector`, `createMetadataDiagnosticsDispatcher`
 
-Internal implementation modules such as `metadata-binding.ts`, `metadata-diagnostics.ts`, `metadata-renderer-core.ts`, and `state-orchestration.ts` may be imported by the block barrel, but app teams should depend on the barrel exports.
+Internal implementation modules such as `metadata-binding.ts`,
+`metadata-diagnostics.ts`, `metadata-renderer-core.ts`, and
+`state-orchestration.ts` may be imported inside the design-system package, but
+app teams should depend only on declared package exports.
 
 ## Block Recipe Rules
 
@@ -101,7 +109,12 @@ pnpm --filter @repo/design-system typecheck
 pnpm --filter @repo/design-system test -- metadata-renderer.test.tsx
 pnpm --filter storybook typecheck
 pnpm design-system:stabilize
+pnpm design-system:governance
 ```
+
+`design-system:stabilize` is the fast local stabilization pass.
+`design-system:governance` is the full contract, docs, component API,
+Storybook hygiene, UI-craft, typecheck, and test gate for merge or release.
 
 With Storybook already running on `http://127.0.0.1:6006`, run:
 

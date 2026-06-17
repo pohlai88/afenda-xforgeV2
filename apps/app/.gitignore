@@ -6,5 +6,6 @@
 # Playwright
 /e2e/node_modules/
 /output/playwright/
+/output/playwright/mcp/
 
 .vercel

@@ -1,3 +1,9 @@
+import type { ThemeProviderProps } from "next-themes";
+import { createElement } from "react";
+import { Toaster } from "./components/afenda-ui/sonner";
+import { TooltipProvider } from "./components/afenda-ui/tooltip";
+import { ThemeProvider } from "./providers/theme";
+
 /**
  * Public craft surface for apps and domain packages (`@repo/auth`, `apps/*`).
  *
@@ -12,6 +18,18 @@
  * | Primitives | `Button`, `Field`, … | all UI controls |
  * | Blocks | `FormSection`, `PageHeader`, … | admin / ERP surfaces |
  */
+
+/** Root provider — includes afenda-ui `Toaster` (sonner) for toast.promise/toast.* in blocks. */
+export const DesignSystemProvider = ({
+  children,
+  ...properties
+}: ThemeProviderProps) =>
+  createElement(
+    ThemeProvider,
+    properties,
+    createElement(TooltipProvider, null, children),
+    createElement(Toaster)
+  );
 
 export type {
   AlertProps,
@@ -762,5 +780,4 @@ export {
   blockRecipe,
 } from "./components/blocks/block-recipes";
 export { ModeToggle } from "./components/mode-toggle";
-export { DesignSystemProvider } from "./index";
 export { cn } from "./lib/utils";

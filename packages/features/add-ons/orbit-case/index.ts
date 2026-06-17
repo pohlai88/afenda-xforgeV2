@@ -30,7 +30,9 @@ export type {
   OrbitCaseCommentDto,
   OrbitCaseDto,
   OrbitCaseTimelineDto,
+  OrbitBudgetRequestDto,
   OrbitObjectLinkDto,
+  OrbitObjectLinkProjectionDto,
   PushResultDto,
 } from "./contract/orbit-case.types";
 export {
@@ -83,8 +85,11 @@ export {
   toOrbitCaseCommentDto,
   toOrbitCaseDto,
   toOrbitCaseTimelineDto,
+  toOrbitBudgetRequestDto,
   toOrbitObjectLinkDto,
+  toOrbitObjectLinkProjectionDto,
 } from "./contract/serialize";
+export { ORBIT_BUDGET_REQUEST_TARGET_TYPE } from "./contract/link-projection";
 export type { OrbitCasePriority, OrbitCaseStatus } from "./contract/status";
 export {
   ORBIT_CASE_ACTIVE_STATUSES,

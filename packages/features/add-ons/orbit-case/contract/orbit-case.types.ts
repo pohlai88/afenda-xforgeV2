@@ -101,6 +101,29 @@ export type OrbitObjectLinkDto = Omit<OrbitObjectLinkRecord, "createdAt"> & {
   createdAt: string;
 };
 
+export interface OrbitObjectLinkProjectionDto {
+  createdAt: string;
+  href: string | null;
+  id: string;
+  label: string;
+  targetId: string;
+  targetType: string;
+}
+
+export interface OrbitBudgetRequestRecord {
+  amount: string | null;
+  createdAt: Date;
+  createdBy: string;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  title: string;
+}
+
+export type OrbitBudgetRequestDto = Omit<OrbitBudgetRequestRecord, "createdAt"> & {
+  createdAt: string;
+};
+
 export type PushResultDto =
   | {
       ok: true;

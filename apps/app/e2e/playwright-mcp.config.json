@@ -1,0 +1,24 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "launchOptions": {
+      "headless": false
+    },
+    "contextOptions": {
+      "viewport": { "width": 1280, "height": 800 }
+    }
+  },
+  "network": {
+    "allowedOrigins": [
+      "http://localhost:*",
+      "https://*.supabase.co",
+      "https://*.public.blob.vercel-storage.com",
+      "https://*.private.blob.vercel-storage.com"
+    ]
+  },
+  "timeouts": {
+    "action": 15000,
+    "navigation": 30000
+  },
+  "outputDir": "apps/app/output/playwright/mcp"
+}

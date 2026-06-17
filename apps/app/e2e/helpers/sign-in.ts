@@ -1,13 +1,5 @@
 import { expect, type Page } from "@playwright/test";
-
-const e2eEmail =
-  process.env.E2E_AUTH_EMAIL ??
-  process.env.E2E_ORG_ADMIN_EMAIL ??
-  "e2e-playwright@xforge.local";
-const e2ePassword =
-  process.env.E2E_AUTH_PASSWORD ??
-  process.env.E2E_ORG_ADMIN_PASSWORD ??
-  "123qweasdzxc!@#";
+import { e2eEmail, e2ePassword } from "./credentials";
 
 const SIGN_IN_URL_PATTERN = /\/sign-in$/;
 
@@ -32,4 +24,4 @@ export const signInWithPassword = async (page: Page) => {
   await expect(page).not.toHaveURL(SIGN_IN_URL_PATTERN, { timeout: 15_000 });
 };
 
-export { e2eEmail, e2ePassword };
+export { e2eEmail, e2ePassword } from "./credentials";

@@ -7,10 +7,19 @@ import {
   executePushSchema,
   type PushDestinationDefinition,
   type PushResultDto,
+  type PushTemplateDefinition,
 } from "@repo/orbit-case";
-import { executePush, resolveOrgPushDestinations } from "@repo/orbit-case/server";
-import { revalidatePath } from "next/cache";
+import {
+  executePush,
+  getMergedPushDestination,
+  getMergedPushTemplate,
+  resolveOrgPushDestinations,
+} from "@repo/orbit-case/server";
 import { getOrbitPushCapabilitiesForSession } from "@/lib/orbit-case-session";
+import {
+  revalidateOrbitCaseBudgetMutation,
+  revalidateOrbitCaseMutation,
+} from "@/lib/orbit-case-revalidate";
 import { emitOrgEvent } from "@/lib/emit-org-event";
 import { buildOrbitCasePushedEvent } from "@repo/orbit-case";
 
@@ -41,8 +50,13 @@ export const executeCasePush = async (
     );
 
     if (result.ok) {
-      revalidatePath("/orbit-case");
-      revalidatePath(`/orbit-case/${parsed.caseId}`);
+      revalidateOrbitCaseMutation({
+        organizationId: orgId,
+        caseId: parsed.caseId,
+      });
+      if (result.targetType === "budget-request") {
+        revalidateOrbitCaseBudgetMutation(result.targetId);
+      }
       await emitOrgEvent(
         orgId,
         "orbit.case.pushed",
@@ -80,4 +94,29 @@ export const listPushDestinations = async (): Promise<
       role,
       userCapabilities,
     });
+  });
+
+export const getPushTemplateForDestination = async (
+  destinationId: string
+): Promise<AuthActionResult<PushTemplateDefinition>> =>
+  withOrg(async ({ orgId, userId }) => {
+    const role = await getOrganizationRole(userId, orgId);
+
+    if (!role) {
+      throw new Error("Organization access denied");
+    }
+
+    const destination = await getMergedPushDestination(orgId, destinationId);
+
+    if (!destination) {
+      throw new Error("Destination not found");
+    }
+
+    const template = await getMergedPushTemplate(orgId, destination.templateId);
+
+    if (!template) {
+      throw new Error("Template not found");
+    }
+
+    return template;
   });

@@ -12,11 +12,6 @@
  * This file must not contain component logic.
  */
 
-import { afendaRecipe } from "../components/afenda-ui/recipes";
-import type { AfendaRecipeKey } from "../components/afenda-ui/recipes";
-import { afendaBlockRecipe } from "../components/blocks/block-recipes";
-import type { AfendaBlockRecipeKey } from "../components/blocks/block-recipes";
-
 export const AFENDA_RECIPE_CONTRACT_ID = "afenda.recipe" as const;
 
 export const AFENDA_RECIPE_CONTRACT_VERSION = "0.1.0" as const;
@@ -35,17 +30,93 @@ export const AFENDA_RECIPE_KINDS = [
 
 export type AfendaRecipeKind = (typeof AFENDA_RECIPE_KINDS)[number];
 
-export type AfendaRecipeIdentity = AfendaRecipeKey;
+export const AFENDA_RECIPE_IDENTITY_REGISTRY = [
+  "bodyText",
+  "bodyMediumText",
+  "controlText",
+  "buttonText",
+  "labelText",
+  "titleText",
+  "captionText",
+  "metadataText",
+  "badgeText",
+  "shortcutText",
+  "focusRing",
+  "focusRingOnly",
+  "invalidState",
+  "disabledAction",
+  "disabledControl",
+  "readOnlyControl",
+  "motionReduce",
+  "colorTransition",
+  "interactiveTransition",
+  "controlSurface",
+  "flatControlSurface",
+  "overlaySurface",
+  "panelSurface",
+  "modalSurface",
+  "controlDefaultSize",
+  "controlCompactSize",
+  "controlLargeSize",
+  "rowItem",
+  "rowInset",
+  "rowHighlight",
+  "rowDisabled",
+  "rowCritical",
+  "rowCheckboxPadding",
+  "rowIcon",
+  "rowCriticalIcon",
+  "controlIcon",
+  "mutedControlIcon",
+  "overlayMotion",
+  "popoverOrigin",
+  "dropdownOrigin",
+  "selectOrigin",
+  "modalBackdrop",
+  "modalHeader",
+  "modalFooter",
+  "dismissButton",
+  "menuLabelInset",
+  "menuSeparator",
+  "menuSeparatorInset",
+  "itemIndicator",
+  "itemIndicatorMuted",
+  "overlayScrollButton",
+  "overlayPadding",
+  "menuPadding",
+  "panelPadding",
+  "modalPadding",
+  "fieldGap",
+  "sectionGap",
+] as const;
 
-export type AfendaBlockRecipeIdentity = AfendaBlockRecipeKey;
+export type AfendaRecipeIdentity =
+  (typeof AFENDA_RECIPE_IDENTITY_REGISTRY)[number];
 
-export const AFENDA_RECIPE_IDENTITY_REGISTRY = Object.keys(
-  afendaRecipe
-) as readonly AfendaRecipeIdentity[];
+export const AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY = [
+  "blockShell",
+  "blockStack",
+  "blockHeader",
+  "blockHeaderContent",
+  "blockTitle",
+  "blockDescription",
+  "blockToolbar",
+  "blockPanel",
+  "blockPanelPadding",
+  "blockSection",
+  "blockSectionDivider",
+  "blockMetric",
+  "blockMetricLabel",
+  "blockEmpty",
+  "blockCompact",
+  "blockComfortable",
+  "blockChrome",
+  "blockRail",
+  "blockStage",
+] as const;
 
-export const AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY = Object.keys(
-  afendaBlockRecipe
-) as readonly AfendaBlockRecipeIdentity[];
+export type AfendaBlockRecipeIdentity =
+  (typeof AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY)[number];
 
 export const AFENDA_RECIPE_AUTHORITY_RULES = {
   recipeOwnsStyling: true,

@@ -1,25 +1,13 @@
-import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import {
-  AFENDA_AI_DRIFT_SCORE_GATE,
-  AFENDA_AI_HARD_FAIL_RULES,
-  AFENDA_AI_REQUIRED_CONTRACTS,
-  AFENDA_AI_VIBE_CODING_GATE,
-  AFENDA_AUTHORITY_RULES,
-  AFENDA_REGISTRY_AUTHORITY_RULES,
-  AFENDA_REQUIRED_AI_SAFETY_CONTRACTS,
-  AFENDA_REQUIRED_CORE_CONTRACTS,
-  AFENDA_SOURCE_OF_TRUTH_PRIORITY,
-  afendaDesignSystemContract,
-} from "../contracts/afenda-design-system.contract";
+import { describe, expect, it } from "vitest";
 import {
   AFENDA_ACCESSIBILITY_ARIA_RULES,
   AFENDA_ACCESSIBILITY_AUTHORITY_RULES,
   AFENDA_ACCESSIBILITY_COMPONENT_RULES,
-  AFENDA_ACCESSIBILITY_FORBIDDEN_PATTERNS,
   AFENDA_ACCESSIBILITY_FOCUS_RULES,
+  AFENDA_ACCESSIBILITY_FORBIDDEN_PATTERNS,
   AFENDA_ACCESSIBILITY_KEYBOARD_RULES,
   AFENDA_ACCESSIBILITY_WARNING_PATTERNS,
 } from "../contracts/afenda-accessibility.contract";
@@ -36,6 +24,18 @@ import {
   AFENDA_COMPONENT_SLOT_RULES,
   AFENDA_COMPONENT_VARIANT_RULES,
 } from "../contracts/afenda-component.contract";
+import {
+  AFENDA_AI_DRIFT_SCORE_GATE,
+  AFENDA_AI_HARD_FAIL_RULES,
+  AFENDA_AI_REQUIRED_CONTRACTS,
+  AFENDA_AI_VIBE_CODING_GATE,
+  AFENDA_AUTHORITY_RULES,
+  AFENDA_REGISTRY_AUTHORITY_RULES,
+  AFENDA_REQUIRED_AI_SAFETY_CONTRACTS,
+  AFENDA_REQUIRED_CORE_CONTRACTS,
+  AFENDA_SOURCE_OF_TRUTH_PRIORITY,
+  afendaDesignSystemContract,
+} from "../contracts/afenda-design-system.contract";
 import {
   AFENDA_EXAMPLE_ACCESS_RULES,
   AFENDA_EXAMPLE_AUTHORITY_RULES,
@@ -60,8 +60,8 @@ import {
   AFENDA_MOTION_ACCESSIBILITY_RULES,
   AFENDA_MOTION_AUTHORITY_RULES,
   AFENDA_MOTION_CLASS_NAME_RULES,
-  AFENDA_MOTION_FORBIDDEN_PATTERNS,
   AFENDA_MOTION_FORBIDDEN_OWNERSHIP,
+  AFENDA_MOTION_FORBIDDEN_PATTERNS,
   AFENDA_MOTION_RECIPE_RULES,
   AFENDA_MOTION_USAGE_RULES,
   AFENDA_MOTION_WARNING_PATTERNS,
@@ -81,8 +81,8 @@ import {
   AFENDA_STATE_AUTHORITY_RULES,
   AFENDA_STATE_COMPONENT_RULES,
   AFENDA_STATE_FORBIDDEN_ALIASES,
-  AFENDA_STATE_FORBIDDEN_PATTERNS,
   AFENDA_STATE_FORBIDDEN_OWNERSHIP,
+  AFENDA_STATE_FORBIDDEN_PATTERNS,
   AFENDA_STATE_NAMING_RULES,
   AFENDA_STATE_VARIANT_RULES,
   AFENDA_STATE_WARNING_PATTERNS,
@@ -164,8 +164,12 @@ describe("afenda design-system anti-drift contract", () => {
       "afenda-state.contract.ts",
       "afenda-example.contract.ts",
     ]);
-    expect(AFENDA_REQUIRED_CORE_CONTRACTS).toContain("afenda-recipe.contract.ts");
-    expect(AFENDA_REQUIRED_CORE_CONTRACTS).toContain("afenda-variant.contract.ts");
+    expect(AFENDA_REQUIRED_CORE_CONTRACTS).toContain(
+      "afenda-recipe.contract.ts"
+    );
+    expect(AFENDA_REQUIRED_CORE_CONTRACTS).toContain(
+      "afenda-variant.contract.ts"
+    );
     expect(AFENDA_REQUIRED_CORE_CONTRACTS).toContain(
       "afenda-class-name-policy.contract.ts"
     );
@@ -178,6 +182,7 @@ describe("afenda design-system anti-drift contract", () => {
     expect(AFENDA_AI_HARD_FAIL_RULES).toEqual([
       "raw-semantic-tailwind",
       "ungoverned-variant",
+      "ungoverned-component-api",
       "missing-data-slot",
       "private-import",
       "business-logic-in-design-system",
@@ -568,8 +573,7 @@ describe("afenda design-system anti-drift contract", () => {
     );
     expect(
       AFENDA_PUBLIC_EXPORTS.every(
-        (entry) =>
-          entry.includes("/afenda-") || !entry.includes("/contracts/")
+        (entry) => entry.includes("/afenda-") || !entry.includes("/contracts/")
       )
     ).toBe(true);
     expect(AFENDA_PUBLIC_EXPORTS).not.toContain(

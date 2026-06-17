@@ -36,14 +36,14 @@ import {
   DASHBOARD_DATA_TABLE_STATUSES,
 } from "./dashboard-data-table-constants";
 import {
-  DEMO_DATA_TABLE_CELL_VIEWER_CHART_CONFIG,
-  DEMO_DATA_TABLE_CELL_VIEWER_CHART_DATA,
-} from "./data-table-cell-viewer-demo-data";
-import {
   dashboardDataTableDrawerCopyClass,
   dashboardDataTableDrawerTrendClass,
 } from "./dashboard-data-table-recipes";
 import type { DashboardDataTableRow } from "./dashboard-data-table-schema";
+import {
+  DEMO_DATA_TABLE_CELL_VIEWER_CHART_CONFIG,
+  DEMO_DATA_TABLE_CELL_VIEWER_CHART_DATA,
+} from "./data-table-cell-viewer-demo-data";
 
 export interface DataTableCellViewerProps {
   readonly item: DashboardDataTableRow;

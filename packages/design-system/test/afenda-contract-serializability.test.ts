@@ -1,40 +1,12 @@
-import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { afendaAccessibilityContract } from "../contracts/afenda-accessibility.contract";
-import { afendaClassNamePolicyContract } from "../contracts/afenda-class-name-policy.contract";
-import { afendaComponentContract } from "../contracts/afenda-component.contract";
-import {
-  AFENDA_AI_REQUIRED_CONTRACTS,
-  afendaDesignSystemContract,
-} from "../contracts/afenda-design-system.contract";
-import { afendaExampleContract } from "../contracts/afenda-example.contract";
-import { afendaExportContract } from "../contracts/afenda-export.contract";
-import { afendaMotionContract } from "../contracts/afenda-motion.contract";
-import { afendaRecipeContract } from "../contracts/afenda-recipe.contract";
-import { afendaSlotContract } from "../contracts/afenda-slot.contract";
-import { afendaStateContract } from "../contracts/afenda-state.contract";
-import { afendaTokenContract } from "../contracts/afenda-token.contract";
-import { afendaVariantContract } from "../contracts/afenda-variant.contract";
-
-const afendaContracts = [
-  afendaAccessibilityContract,
-  afendaClassNamePolicyContract,
-  afendaComponentContract,
-  afendaDesignSystemContract,
-  afendaExampleContract,
-  afendaExportContract,
-  afendaMotionContract,
-  afendaRecipeContract,
-  afendaSlotContract,
-  afendaStateContract,
-  afendaTokenContract,
-  afendaVariantContract,
-] as const;
+import { describe, expect, it } from "vitest";
+import { AFENDA_AI_REQUIRED_CONTRACTS } from "../contracts/afenda-design-system.contract";
 
 const packageRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 const contractsDir = join(packageRoot, "contracts");
+const contractFilenamePattern = /^(.+)\.contract\.ts$/;
 const packageJson = JSON.parse(
   readFileSync(join(packageRoot, "package.json"), "utf8")
 ) as {
@@ -70,10 +42,49 @@ describe("afenda public contract serializability", () => {
     }
   });
 
-  it("keeps public contracts JSON-serializable and boundary-safe", () => {
-    for (const contract of afendaContracts) {
-      expect(() => assertSerializable(contract, contract.id)).not.toThrow();
-      expect(JSON.parse(JSON.stringify(contract))).toEqual(contract);
+  it("keeps contract modules isolated from implementation imports", () => {
+    for (const filename of AFENDA_AI_REQUIRED_CONTRACTS) {
+      const source = readFileSync(join(contractsDir, filename), "utf8");
+
+      expect(source, filename).not.toMatch(/^import\s/m);
+      expect(source, filename).not.toMatch(
+        /^\s*export\s+.*\sfrom\s+["'][^"']*\.\./m
+      );
+      expect(source, filename).not.toMatch(
+        /^\s*(?:import|export)\s+.*\sfrom\s+["'][^"']*(components|governance|lib|styles|tokens)\//m
+      );
+    }
+  });
+
+  it("keeps public contracts JSON-serializable and boundary-safe", async () => {
+    for (const contractModule of await loadAfendaContractModules()) {
+      const contracts = Object.entries(contractModule)
+        .filter(
+          ([name]) => name.startsWith("afenda") && name.endsWith("Contract")
+        )
+        .map(([, value]) => value);
+
+      for (const contract of contracts) {
+        if (!isContractObject(contract)) {
+          throw new TypeError("afenda contract export must include string id");
+        }
+
+        expect(() => assertSerializable(contract, contract.id)).not.toThrow();
+        expect(JSON.parse(JSON.stringify(contract))).toEqual(contract);
+      }
+    }
+  });
+
+  it("keeps every runtime contract export JSON-serializable", async () => {
+    for (const contractModule of await loadAfendaContractModules()) {
+      for (const [name, value] of Object.entries(contractModule)) {
+        if (!isRuntimeContractExport(name)) {
+          continue;
+        }
+
+        expect(() => assertSerializable(value, name)).not.toThrow();
+        expect(JSON.parse(JSON.stringify(value))).toEqual(value);
+      }
     }
   });
 
@@ -91,6 +102,37 @@ describe("afenda public contract serializability", () => {
     ).toThrow("afenda.invalid.parse is not JSON-serializable");
   });
 });
+
+function loadAfendaContractModules() {
+  return Promise.all(
+    AFENDA_AI_REQUIRED_CONTRACTS.map((filename) => {
+      const moduleName = filename.match(contractFilenamePattern)?.[1];
+      if (!moduleName) {
+        throw new TypeError(`Invalid afenda contract filename: ${filename}`);
+      }
+
+      return import(`../contracts/${moduleName}.contract.ts`) as Promise<
+        Record<string, unknown>
+      >;
+    })
+  );
+}
+
+function isRuntimeContractExport(name: string): boolean {
+  return (
+    name.startsWith("AFENDA_") ||
+    (name.startsWith("afenda") && name.endsWith("Contract"))
+  );
+}
+
+function isContractObject(value: unknown): value is { readonly id: string } {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    typeof value.id === "string"
+  );
+}
 
 function assertSerializable(value: unknown, path: string): void {
   const valueType = typeof value;

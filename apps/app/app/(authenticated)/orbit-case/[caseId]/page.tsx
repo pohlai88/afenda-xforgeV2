@@ -6,10 +6,13 @@ import {
   toOrbitCaseCommentDto,
   toOrbitCaseDto,
   toOrbitObjectLinkDto,
+  toOrbitObjectLinkProjectionDto,
 } from "@repo/orbit-case";
+import type { PushTemplateDefinition } from "@repo/orbit-case";
 import {
   canHardDeleteOrbitCase,
   ensureSystemPushDefaults,
+  getMergedPushTemplate,
   getOrbitCaseById,
   isOrbitCaseWatcher,
   listObjectLinksForCase,
@@ -75,6 +78,23 @@ export default async function OrbitCaseDetailPage({
       listOrbitCaseAttachments(orgId, caseId),
     ]);
 
+  const pushTemplatesByDestinationId: Record<string, PushTemplateDefinition> =
+    {};
+
+  await Promise.all(
+    destinations.map(async (destination) => {
+      const template = await getMergedPushTemplate(orgId, destination.templateId);
+
+      if (template) {
+        pushTemplatesByDestinationId[destination.id] = template;
+      }
+    })
+  );
+
+  const linkProjections = links
+    .map(toOrbitObjectLinkDto)
+    .map(toOrbitObjectLinkProjectionDto);
+
   return (
     <>
       <Header
@@ -85,10 +105,12 @@ export default async function OrbitCaseDetailPage({
       <OrbitCaseDetailView
         activity={activity.map(toOrbitCaseActivityDto)}
         attachments={attachments.map(toOrbitCaseAttachmentDto)}
+        canEditOwner={role === "owner"}
         canHardDelete={role ? canHardDeleteOrbitCase(role) : false}
         comments={comments.map(toOrbitCaseCommentDto)}
         destinations={destinations}
-        links={links.map(toOrbitObjectLinkDto)}
+        linkProjections={linkProjections}
+        pushTemplatesByDestinationId={pushTemplatesByDestinationId}
         orbitCase={toOrbitCaseDto(record)}
         watching={watching}
       />

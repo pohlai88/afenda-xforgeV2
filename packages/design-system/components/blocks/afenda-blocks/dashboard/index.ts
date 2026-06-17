@@ -1,5 +1,6 @@
 export { ChartAreaInteractive } from "./chart/chart-area-interactive";
 export type { ChartAreaInteractiveProps } from "./chart/chart-area-types";
+export type { ChartAreaTimeRangeOption } from "./chart/dashboard-chart-constants";
 export {
   CHART_AREA_DEFAULT_DESCRIPTION,
   CHART_AREA_DEFAULT_DESCRIPTION_MOBILE,
@@ -9,7 +10,6 @@ export {
   CHART_AREA_SELECT_LABEL,
   CHART_AREA_TIME_RANGE_OPTIONS,
 } from "./chart/dashboard-chart-constants";
-export type { ChartAreaTimeRangeOption } from "./chart/dashboard-chart-constants";
 export { DEMO_DASHBOARD_CHART_AREA_DATA } from "./chart/dashboard-chart-data";
 export {
   filterChartAreaDataByTimeRange,
@@ -35,15 +35,15 @@ export { DashboardPageFooter } from "./dashboard-page/dashboard-page-footer";
 export { DEMO_DASHBOARD_PAGE_FOOTER_PROPS } from "./dashboard-page/dashboard-page-footer-demo-catalog";
 export type { DashboardPageProps } from "./dashboard-page/dashboard-page-types";
 export { DashboardDataTable } from "./data-table";
+export type {
+  DashboardDataTableReviewer,
+  DashboardDataTableTabView,
+} from "./data-table/dashboard-data-table-constants";
 export {
   DASHBOARD_DATA_TABLE_DESCRIPTION,
   DASHBOARD_DATA_TABLE_REVIEWERS,
   DASHBOARD_DATA_TABLE_SECTION_TYPES,
   DASHBOARD_DATA_TABLE_STATUSES,
-} from "./data-table/dashboard-data-table-constants";
-export type {
-  DashboardDataTableReviewer,
-  DashboardDataTableTabView,
 } from "./data-table/dashboard-data-table-constants";
 export { DEMO_DASHBOARD_DATA_TABLE_ROWS } from "./data-table/dashboard-data-table-demo-data";
 export type {

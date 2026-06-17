@@ -1,21 +1,33 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { defineConfig, devices } from "@playwright/test";
-import { appDir, loadE2eEnv } from "./helpers/load-env.mjs";
+import {
+  appDir,
+  getE2eBlobWebServerEnv,
+  loadE2eEnv,
+} from "./helpers/load-env.mjs";
 
 const e2eDir = path.dirname(fileURLToPath(import.meta.url));
 
 loadE2eEnv();
 
 const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
+const authStorageState = path.join(
+  appDir,
+  "output/playwright/.auth/e2e-user.json"
+);
+const isCi = Boolean(process.env.CI);
 
 export default defineConfig({
   testDir: e2eDir,
   testMatch: "**/*.spec.ts",
   fullyParallel: false,
-  forbidOnly: Boolean(process.env.CI),
-  retries: process.env.CI ? 1 : 0,
-  workers: 1,
+  forbidOnly: isCi,
+  retries: isCi ? 1 : 0,
+  workers: isCi ? 1 : "50%",
+  globalSetup: process.env.PLAYWRIGHT_SKIP_GLOBAL_SETUP
+    ? undefined
+    : path.join(appDir, "scripts/ensure-e2e-auth-user.mjs"),
   reporter: [
     ["list"],
     [
@@ -29,14 +41,30 @@ export default defineConfig({
   outputDir: path.join(appDir, "output/playwright/test-results"),
   use: {
     baseURL,
-    trace: "on-first-retry",
+    trace: isCi ? "on-first-retry" : "retain-on-failure",
     screenshot: "only-on-failure",
     video: "off",
+    viewport: { width: 1280, height: 800 },
   },
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "setup",
+      testMatch: "auth.setup.ts",
+    },
+    {
+      name: "auth-flows",
+      testMatch: /\/(auth|auth-completion|email-auth)\.spec\.ts$/,
+      fullyParallel: false,
+    },
+    {
+      name: "authenticated",
+      testMatch: /\/orbit-case.*\.spec\.ts$/,
+      dependencies: ["setup"],
+      fullyParallel: true,
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: authStorageState,
+      },
     },
   ],
   webServer: process.env.PLAYWRIGHT_SKIP_WEBSERVER
@@ -49,15 +77,6 @@ export default defineConfig({
           ? false
           : true,
         timeout: 120_000,
-        env: {
-          BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
-          XFORGE_PUB_BLOB_READ_WRITE_TOKEN:
-            process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN,
-          XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN:
-            process.env.XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN,
-          XFORGE_PUB_STORE_ID: process.env.XFORGE_PUB_STORE_ID,
-          XFORGE_STORE_ID: process.env.XFORGE_STORE_ID,
-          XFROGE_READ_WRITE_TOKEN: process.env.XFROGE_READ_WRITE_TOKEN,
-        },
+        env: getE2eBlobWebServerEnv(),
       },
 });

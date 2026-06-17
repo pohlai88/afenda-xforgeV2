@@ -1,10 +1,12 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { basename, join, relative } from "node:path";
 import ts from "typescript";
 
 const COMPONENT_EXTENSION_PATTERN = /\.tsx$/;
 const LOCAL_VOCABULARY_NAME_PATTERN =
   /^(colors|variants|tones|densities|sizes|[A-Za-z0-9]*(?:Color|Variant|Tone|Density|Size)Values|Color|Variant|Tone|Density|Size)$/;
+const PASCAL_CASE_PATTERN = /^[A-Z][A-Za-z0-9]*$/;
+const STRING_LITERAL_PATTERN = /["']([^"']+)["']/g;
 const API_PROP_NAMES = new Set(["color", "variant", "tone", "density", "size"]);
 
 export function createComponentApiAuditRegistry(root = process.cwd()) {
@@ -56,7 +58,24 @@ export function auditAfendaUiComponentApi({
   const normalizedPath = normalizePath(relative(root, path));
   const facts = collectComponentApiFacts(sourceFile);
 
-  if (facts.exportedComponentNames.size > 0 && facts.dataSlots.length === 0) {
+  const exportedComponentsWithoutSlots = [
+    ...facts.exportedComponentSlots.entries(),
+  ].filter(([, hasDataSlot]) => !hasDataSlot);
+
+  if (exportedComponentsWithoutSlots.length > 0) {
+    findings.push(
+      createFinding(
+        "missing-data-slot",
+        normalizedPath,
+        `${basename(path)} exports ${exportedComponentsWithoutSlots
+          .map(([name]) => name)
+          .join(", ")} without data-slot.`
+      )
+    );
+  } else if (
+    facts.exportedComponentNames.size > 0 &&
+    facts.dataSlots.length === 0
+  ) {
     findings.push(
       createFinding(
         "missing-data-slot",
@@ -147,40 +166,15 @@ function collectComponentApiFacts(sourceFile) {
     apiPropValues: [],
     dataSlots: [],
     exportedComponentNames: new Set(),
+    exportedComponentSlots: new Map(),
     localVocabularyDeclarations: [],
     usesRecipe: false,
   };
 
   const visit = (node) => {
-    if (ts.isExportDeclaration(node)) {
-      collectNamedExportFacts(node, facts);
-    }
-
-    if (hasExportModifier(node)) {
-      collectExportedDeclarationFacts(node, facts);
-    }
-
-    if (ts.isCallExpression(node)) {
-      if (ts.isIdentifier(node.expression) && node.expression.text === "recipe") {
-        facts.usesRecipe = true;
-      }
-      collectApiPropValuesFromCall(node, facts);
-    }
-
-    if (ts.isVariableDeclaration(node)) {
-      collectLocalVocabularyFacts(node, facts);
-    }
-
-    if (
-      ts.isEnumDeclaration(node) &&
-      LOCAL_VOCABULARY_NAME_PATTERN.test(node.name.text)
-    ) {
-      facts.localVocabularyDeclarations.push(`enum ${node.name.text}`);
-    }
-
-    if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
-      collectJsxFacts(node, facts, sourceFile);
-    }
+    collectExportFacts(node, facts, sourceFile);
+    collectTypeVocabularyFacts(node, facts);
+    collectExpressionFacts(node, facts, sourceFile);
 
     ts.forEachChild(node, visit);
   };
@@ -189,8 +183,61 @@ function collectComponentApiFacts(sourceFile) {
   return facts;
 }
 
+function collectExportFacts(node, facts, sourceFile) {
+  if (ts.isExportDeclaration(node)) {
+    collectNamedExportFacts(node, facts);
+  }
+
+  if (hasExportModifier(node)) {
+    collectExportedDeclarationFacts(node, facts, sourceFile);
+  }
+
+  if (ts.isVariableStatement(node) && hasExportModifier(node)) {
+    collectExportedVariableStatementFacts(node, facts, sourceFile);
+  }
+}
+
+function collectTypeVocabularyFacts(node, facts) {
+  if (ts.isInterfaceDeclaration(node) && hasExportModifier(node)) {
+    collectApiPropValuesFromTypeMembers(node.members, facts);
+  }
+
+  if (ts.isTypeAliasDeclaration(node) && hasExportModifier(node)) {
+    collectApiPropValuesFromTypeNode(node.type, facts);
+  }
+
+  if (
+    ts.isEnumDeclaration(node) &&
+    LOCAL_VOCABULARY_NAME_PATTERN.test(node.name.text)
+  ) {
+    facts.localVocabularyDeclarations.push(`enum ${node.name.text}`);
+  }
+}
+
+function collectExpressionFacts(node, facts, sourceFile) {
+  if (ts.isCallExpression(node)) {
+    collectCallFacts(node, facts);
+  }
+
+  if (ts.isVariableDeclaration(node)) {
+    collectLocalVocabularyFacts(node, facts);
+  }
+
+  if (ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node)) {
+    collectJsxFacts(node, facts, sourceFile);
+  }
+}
+
+function collectCallFacts(node, facts) {
+  if (ts.isIdentifier(node.expression) && node.expression.text === "recipe") {
+    facts.usesRecipe = true;
+  }
+
+  collectApiPropValuesFromCall(node, facts);
+}
+
 function collectNamedExportFacts(node, facts) {
-  if (!node.exportClause || !ts.isNamedExports(node.exportClause)) {
+  if (!(node.exportClause && ts.isNamedExports(node.exportClause))) {
     return;
   }
 
@@ -202,13 +249,39 @@ function collectNamedExportFacts(node, facts) {
   }
 }
 
-function collectExportedDeclarationFacts(node, facts) {
-  if (!("name" in node) || !node.name || !ts.isIdentifier(node.name)) {
+function collectExportedDeclarationFacts(node, facts, sourceFile) {
+  if (!(ts.isFunctionDeclaration(node) || ts.isClassDeclaration(node))) {
+    return;
+  }
+
+  if (!("name" in node && node.name && ts.isIdentifier(node.name))) {
     return;
   }
 
   if (isPascalCase(node.name.text)) {
     facts.exportedComponentNames.add(node.name.text);
+    facts.exportedComponentSlots.set(
+      node.name.text,
+      node.getText(sourceFile).includes("data-slot")
+    );
+  }
+}
+
+function collectExportedVariableStatementFacts(node, facts, sourceFile) {
+  for (const declaration of node.declarationList.declarations) {
+    if (
+      !(
+        ts.isIdentifier(declaration.name) && isPascalCase(declaration.name.text)
+      )
+    ) {
+      continue;
+    }
+
+    facts.exportedComponentNames.add(declaration.name.text);
+    facts.exportedComponentSlots.set(
+      declaration.name.text,
+      declaration.getText(sourceFile).includes("data-slot")
+    );
   }
 }
 
@@ -222,7 +295,7 @@ function collectApiPropValuesFromCall(node, facts) {
   }
 
   const firstArgument = unwrapExpression(node.arguments[0]);
-  if (!firstArgument || !ts.isObjectLiteralExpression(firstArgument)) {
+  if (!(firstArgument && ts.isObjectLiteralExpression(firstArgument))) {
     return;
   }
 
@@ -230,7 +303,7 @@ function collectApiPropValuesFromCall(node, facts) {
 }
 
 function collectLocalVocabularyFacts(node, facts) {
-  if (!ts.isIdentifier(node.name) || !node.initializer) {
+  if (!(ts.isIdentifier(node.name) && node.initializer)) {
     return;
   }
 
@@ -242,6 +315,38 @@ function collectLocalVocabularyFacts(node, facts) {
       ts.isObjectLiteralExpression(initializer))
   ) {
     facts.localVocabularyDeclarations.push(`const ${node.name.text}`);
+  }
+}
+
+function collectApiPropValuesFromTypeMembers(members, facts) {
+  for (const member of members) {
+    if (!(ts.isPropertySignature(member) && member.type)) {
+      continue;
+    }
+
+    const name = getPropertyNameText(member.name);
+    if (!(name && API_PROP_NAMES.has(name))) {
+      continue;
+    }
+
+    for (const value of collectStringLiteralTypeValues(member.type)) {
+      facts.apiPropValues.push({ name, value });
+    }
+  }
+}
+
+function collectApiPropValuesFromTypeNode(typeNode, facts) {
+  const node = unwrapTypeNode(typeNode);
+
+  if (ts.isTypeLiteralNode(node)) {
+    collectApiPropValuesFromTypeMembers(node.members, facts);
+    return;
+  }
+
+  if (ts.isIntersectionTypeNode(node) || ts.isUnionTypeNode(node)) {
+    for (const child of node.types) {
+      collectApiPropValuesFromTypeNode(child, facts);
+    }
   }
 }
 
@@ -275,7 +380,7 @@ function collectApiPropValuesFromObject(object, facts) {
     }
 
     const name = getPropertyNameText(property.name);
-    if (!name || !API_PROP_NAMES.has(name)) {
+    if (!(name && API_PROP_NAMES.has(name))) {
       continue;
     }
 
@@ -311,7 +416,7 @@ function readStaticJsxAttributeValue(initializer) {
     return initializer.text;
   }
 
-  if (!ts.isJsxExpression(initializer) || !initializer.expression) {
+  if (!(ts.isJsxExpression(initializer) && initializer.expression)) {
     return undefined;
   }
 
@@ -330,14 +435,15 @@ function parseTsxSource(path, source) {
 
 function extractStringArray(source, name) {
   const body = extractConstBody(source, name, "[", "]");
-  return body ? [...body.matchAll(/["']([^"']+)["']/g)].map((match) => match[1]) : [];
+  return body
+    ? [...body.matchAll(STRING_LITERAL_PATTERN)].map((match) => match[1])
+    : [];
 }
 
 function extractConstBody(source, name, open, close) {
   const start = source.indexOf(`const ${name}`);
   const exportStart = source.indexOf(`export const ${name}`);
-  const declarationStart =
-    start === -1 ? exportStart : exportStart === -1 ? start : Math.min(start, exportStart);
+  const declarationStart = resolveDeclarationStart(start, exportStart);
   if (declarationStart === -1) {
     return undefined;
   }
@@ -393,6 +499,32 @@ function unwrapExpression(expression) {
   return current;
 }
 
+function unwrapTypeNode(typeNode) {
+  let current = typeNode;
+  while (
+    ts.isParenthesizedTypeNode(current) ||
+    ts.isTypeOperatorNode(current)
+  ) {
+    current = current.type;
+  }
+
+  return current;
+}
+
+function collectStringLiteralTypeValues(typeNode) {
+  const node = unwrapTypeNode(typeNode);
+
+  if (ts.isLiteralTypeNode(node) && ts.isStringLiteral(node.literal)) {
+    return [node.literal.text];
+  }
+
+  if (ts.isUnionTypeNode(node)) {
+    return node.types.flatMap((child) => collectStringLiteralTypeValues(child));
+  }
+
+  return [];
+}
+
 function getPropertyNameText(name) {
   if (ts.isIdentifier(name) || ts.isStringLiteral(name)) {
     return name.text;
@@ -403,12 +535,26 @@ function getPropertyNameText(name) {
 function hasExportModifier(node) {
   return Boolean(
     ts.canHaveModifiers(node) &&
-      ts.getModifiers(node)?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)
+      ts
+        .getModifiers(node)
+        ?.some((modifier) => modifier.kind === ts.SyntaxKind.ExportKeyword)
   );
 }
 
 function isPascalCase(name) {
-  return /^[A-Z][A-Za-z0-9]*$/.test(name);
+  return PASCAL_CASE_PATTERN.test(name);
+}
+
+function resolveDeclarationStart(start, exportStart) {
+  if (start === -1) {
+    return exportStart;
+  }
+
+  if (exportStart === -1) {
+    return start;
+  }
+
+  return Math.min(start, exportStart);
 }
 
 function createFinding(rule, path, message) {

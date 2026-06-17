@@ -1,13 +1,5 @@
 import { expect, test } from "@playwright/test";
-
-const e2eEmail =
-  process.env.E2E_AUTH_EMAIL ??
-  process.env.E2E_ORG_ADMIN_EMAIL ??
-  "e2e-playwright@xforge.local";
-const e2ePassword =
-  process.env.E2E_AUTH_PASSWORD ??
-  process.env.E2E_ORG_ADMIN_PASSWORD ??
-  "123qweasdzxc!@#";
+import { e2eEmail, e2ePassword } from "./helpers/credentials";
 
 const INVALID_AUTH_LINK_COPY_PATTERN = /invalid or has expired/i;
 const PASSWORD_POLICY_COPY_PATTERN =
@@ -18,7 +10,7 @@ const SIGN_IN_PATH_PATTERN = /\/sign-in/;
 const SIGN_IN_URL_PATTERN = /\/sign-in$/;
 const SIGN_UP_PATH_PATTERN = /\/sign-up/;
 
-test.describe("Supabase auth flows", () => {
+test.describe("Supabase auth flows @auth", () => {
   test("redirects unauthenticated users from / to sign-in", async ({
     page,
   }) => {

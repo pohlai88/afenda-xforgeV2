@@ -139,13 +139,24 @@ analytics?.capture({ event: 'user_signed_up', distinctId: userId });
 
 ## Storage (`@repo/storage`)
 
-**Provider**: Vercel Blob
+**Provider**: Vercel Blob (multi-store)
+
+| Env | Store | Access | Use |
+|-----|-------|--------|-----|
+| `XFORGE_PUB_BLOB_READ_WRITE_TOKEN` + `XFORGE_PUB_STORE_ID` | `afenda-xfroge-public` | public | CMS images, Orbit Case attachments |
+| `XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN` + `XFORGE_STORE_ID` | `afenda-xfroge-sensitive` | private | Server-only blobs via `readPrivateBlob()` |
+| `BLOB_READ_WRITE_TOKEN` + `BLOB_STORE_ID` | `afenda-erp-documents` | private | Legacy default store (optional) |
+
+Each store requires its **own** read-write token — a single `BLOB_READ_WRITE_TOKEN` cannot authenticate all stores.
 
 **Key exports**:
-- `put` from `@repo/storage` — server-side upload
+- `put` + `getPublicBlobPutOptions()` — public server-side upload
+- `uploadPrivateBlob` / `readPrivateBlob` / `deletePrivateBlob` — private store helpers
 - `upload` from `@repo/storage/client` — client-side upload
 
-**Note**: Server uploads are limited to 4.5MB. Use client uploads for larger files.
+**Diagnostics**: `pnpm blob:check`, `pnpm blob:probe`, `pnpm blob:probe:private`, `pnpm blob:stores`
+
+**Note**: Server uploads are limited to 4.5MB. Use client uploads for larger files. Private blobs must be read with `get()` / `readPrivateBlob()` — do not expose URLs directly to browsers.
 
 ## Security (`@repo/security`)
 

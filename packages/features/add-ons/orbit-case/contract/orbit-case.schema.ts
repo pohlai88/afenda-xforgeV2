@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { orbitCaseBlobAccessSchema } from "./blob-access";
 import { ORBIT_CASE_PRIORITIES, ORBIT_CASE_STATUSES } from "./status";
 
 export const orbitCaseStatusSchema = z.enum(ORBIT_CASE_STATUSES);
@@ -79,6 +80,7 @@ export const createOrbitCaseAttachmentSchema = z.object({
   sizeBytes: z.number().int().positive().max(5 * 1024 * 1024),
   blobUrl: z.string().url(),
   blobPathname: z.string().trim().min(1).max(500),
+  blobAccess: orbitCaseBlobAccessSchema.default("public"),
 });
 
 export const deleteOrbitCaseAttachmentSchema = z.object({

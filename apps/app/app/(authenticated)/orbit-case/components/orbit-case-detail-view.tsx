@@ -34,11 +34,12 @@ import {
   ORBIT_CASE_STATUSES,
   formatOrbitCaseAttachmentSize,
   formatOrbitCaseDueDateLabel,
+  isOrbitCasePrivateBlobAccess,
 } from "@repo/orbit-case";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ChangeEvent } from "react";
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { removeAttachment } from "@/app/actions/orbit-case/attachment/delete";
 import { uploadAttachment } from "@/app/actions/orbit-case/attachment/upload";
 import { addComment } from "@/app/actions/orbit-case/comment/create";
@@ -49,6 +50,12 @@ import {
   executeCasePush,
   listPushDestinations,
 } from "@/app/actions/orbit-case/push/execute";
+import type { OrbitCaseAttachmentAccessPreference } from "@/lib/orbit-case-attachment-privacy";
+import {
+  getOrbitCaseAttachmentDownloadHref,
+  readOrbitCaseAttachmentAccessPreference,
+  writeOrbitCaseAttachmentAccessPreference,
+} from "@/lib/orbit-case-attachment-privacy";
 
 interface OrbitCaseDetailViewProps {
   activity: OrbitCaseActivityDto[];
@@ -97,6 +104,12 @@ export function OrbitCaseDetailView({
   const [pushAmount, setPushAmount] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [attachmentAccess, setAttachmentAccess] =
+    useState<OrbitCaseAttachmentAccessPreference>("public");
+
+  useEffect(() => {
+    setAttachmentAccess(readOrbitCaseAttachmentAccessPreference());
+  }, []);
 
   const saveFields = (patch: {
     title?: string;
@@ -239,6 +252,7 @@ export function OrbitCaseDetailView({
       const formData = new FormData();
       formData.set("caseId", orbitCase.id);
       formData.set("file", file);
+      formData.set("blobAccess", attachmentAccess);
 
       const result = await uploadAttachment(formData);
 
@@ -380,6 +394,33 @@ export function OrbitCaseDetailView({
             )}
           >
             <h2 className={blockRecipe("blockTitle")}>Attachments</h2>
+            <div className="grid max-w-sm gap-2">
+              <Label htmlFor="attachment-access">Default privacy for uploads</Label>
+              <Select
+                onValueChange={(value) => {
+                  const next = value as OrbitCaseAttachmentAccessPreference;
+                  setAttachmentAccess(next);
+                  writeOrbitCaseAttachmentAccessPreference(next);
+                }}
+                value={attachmentAccess}
+              >
+                <SelectTrigger id="attachment-access">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="public">
+                    Public link — anyone with the URL can open
+                  </SelectItem>
+                  <SelectItem value="private">
+                    Private — org members only (authenticated download)
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-muted-foreground text-xs">
+                Saved in this browser as your upload default. Private files never
+                use a direct blob URL in the UI.
+              </p>
+            </div>
             <input
               accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt"
               aria-label="Upload attachment"
@@ -400,14 +441,27 @@ export function OrbitCaseDetailView({
                   key={attachment.id}
                 >
                   <div>
-                    <a
-                      className="font-medium hover:underline"
-                      href={attachment.blobUrl}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      {attachment.fileName}
-                    </a>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <a
+                        className="font-medium hover:underline"
+                        href={getOrbitCaseAttachmentDownloadHref(attachment)}
+                        rel={
+                          isOrbitCasePrivateBlobAccess(attachment.blobAccess)
+                            ? undefined
+                            : "noopener noreferrer"
+                        }
+                        target={
+                          isOrbitCasePrivateBlobAccess(attachment.blobAccess)
+                            ? undefined
+                            : "_blank"
+                        }
+                      >
+                        {attachment.fileName}
+                      </a>
+                      {isOrbitCasePrivateBlobAccess(attachment.blobAccess) ? (
+                        <Badge variant="outline">Private</Badge>
+                      ) : null}
+                    </div>
                     <p className="text-muted-foreground text-xs">
                       {formatOrbitCaseAttachmentSize(attachment.sizeBytes)} ·{" "}
                       {new Date(attachment.createdAt).toLocaleString()}

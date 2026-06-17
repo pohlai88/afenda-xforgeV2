@@ -33,6 +33,12 @@ export type {
   OrbitObjectLinkDto,
   PushResultDto,
 } from "./contract/orbit-case.types";
+export type { OrbitCaseBlobAccess } from "./contract/blob-access";
+export {
+  ORBIT_CASE_BLOB_ACCESS,
+  isOrbitCasePrivateBlobAccess,
+  orbitCaseBlobAccessSchema,
+} from "./contract/blob-access";
 export { formatOrbitCaseActivitySummary } from "./contract/activity-format";
 export {
   formatOrbitCaseAttachmentSize,

@@ -5,7 +5,7 @@ import { withEditor } from "@repo/auth/guards";
 import type { AuthActionResult } from "@repo/auth/types";
 import { cmsCollectionSchema } from "@repo/cms";
 import { isCmsCollection } from "@repo/cms/writer";
-import { put } from "@repo/storage";
+import { put, getPublicBlobPutOptions } from "@repo/storage";
 import { z } from "zod";
 
 const uploadSchema = z.object({
@@ -49,10 +49,11 @@ export const uploadCmsAsset = async (
 
     const extension = parsed.filename.split(".").pop() ?? "jpg";
     const pathname = `cms/${parsed.collection}/${randomUUID()}.${extension}`;
-    const blob = await put(pathname, file, {
-      access: "public",
-      contentType: parsed.contentType,
-    });
+    const blob = await put(
+      pathname,
+      file,
+      getPublicBlobPutOptions(parsed.contentType)
+    );
 
     return {
       url: blob.url,

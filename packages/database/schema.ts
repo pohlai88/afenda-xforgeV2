@@ -345,6 +345,7 @@ export const orbitCaseAttachment = nextForge.table(
     sizeBytes: integer("sizeBytes").notNull(),
     blobUrl: text("blobUrl").notNull(),
     blobPathname: text("blobPathname").notNull(),
+    blobAccess: text("blobAccess").notNull().default("public"),
     createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
       .defaultNow()
       .notNull(),

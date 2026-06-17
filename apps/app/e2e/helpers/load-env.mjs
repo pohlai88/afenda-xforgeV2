@@ -88,6 +88,26 @@ export const assertE2eSupabaseEnv = () => {
   return { loaded, status };
 };
 
-export const getE2eBlobEnvStatus = () => ({
-  blobReadWriteToken: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
-});
+export const getE2eBlobEnvStatus = () => {
+  const publicBlobToken = Boolean(
+    process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN ??
+      process.env.BLOB_READ_WRITE_TOKEN
+  );
+  const privateBlobToken = Boolean(
+    process.env.XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN ??
+      process.env.XFROGE_READ_WRITE_TOKEN
+  );
+  const publicStoreId = Boolean(process.env.XFORGE_PUB_STORE_ID);
+  const privateStoreId = Boolean(
+    process.env.XFORGE_STORE_ID ?? process.env.XFROGE_STORE_ID
+  );
+
+  return {
+    publicBlobToken,
+    privateBlobToken,
+    publicStoreId,
+    privateStoreId,
+    readyForUploadTests: publicBlobToken && publicStoreId,
+    readyForPrivateBlob: privateBlobToken && privateStoreId,
+  };
+};

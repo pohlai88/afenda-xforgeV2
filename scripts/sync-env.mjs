@@ -41,6 +41,8 @@ const envAliases = {
   NEXT_PUBLIC_API_URL: "NEXT_PUBLIC_API_URL",
   NEXT_PUBLIC_SUPABASE_ANON_KEY: "SUPABASE_ANON_PUBLIC",
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "SUPABASE_PUBLISHABLE_KEY",
+  XFROGE_READ_WRITE_TOKEN: "XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN",
+  XFROGE_STORE_ID: "XFORGE_STORE_ID",
 };
 
 const defaultPublicUrls = {
@@ -391,6 +393,41 @@ if (command === "sync") {
         : "missing — add SUPABASE_SMTP_PASSWORD for pnpm supabase:apply-smtp-config"
     }`
   );
+  const blobToken = Boolean(merged.get("BLOB_READ_WRITE_TOKEN"));
+  const pubBlobToken = Boolean(merged.get("XFORGE_PUB_BLOB_READ_WRITE_TOKEN"));
+  const privateBlobToken = Boolean(
+    merged.get("XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN")
+  );
+  const pubStore = Boolean(merged.get("XFORGE_PUB_STORE_ID"));
+  const privateStore = Boolean(
+    merged.get("XFORGE_STORE_ID") ?? merged.get("XFROGE_STORE_ID")
+  );
+  console.log(
+    `vercel blob: legacy token=${blobToken ? "ok" : "missing"}, public token=${pubBlobToken ? "ok" : "missing"}, private token=${privateBlobToken ? "ok" : "missing"}`
+  );
+  console.log(
+    `vercel blob stores: public=${pubStore ? "ok" : "missing"}, private=${privateStore ? "ok" : "missing"}`
+  );
+  if (pubBlobToken && !pubStore) {
+    console.log(
+      "  hint: add XFORGE_PUB_STORE_ID to .env.config then run pnpm env:sync"
+    );
+  }
+  if (privateBlobToken && !privateStore) {
+    console.log(
+      "  hint: add XFORGE_STORE_ID to .env.config then run pnpm env:sync"
+    );
+  }
+  const appLocalPath = path.join(root, "apps/app/.env.local");
+  if (fs.existsSync(appLocalPath)) {
+    const appLocal = parseEnvFile(appLocalPath);
+    const appPubStore = Boolean(appLocal.entries.get("XFORGE_PUB_STORE_ID"));
+    if (pubStore && !appPubStore) {
+      console.log(
+        "  apps/app/.env.local missing XFORGE_PUB_STORE_ID — run pnpm env:sync"
+      );
+    }
+  }
 } else {
   fail("Usage: pnpm env:sync | pnpm env:consolidate | pnpm env:doctor");
 }

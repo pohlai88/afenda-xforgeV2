@@ -5,12 +5,15 @@ import type { OrganizationRole } from "@repo/auth/organization-roles";
 import { database } from "@repo/database";
 import { orbitCaseAttachment } from "@repo/database/schema";
 import { and, desc, eq } from "drizzle-orm";
+import type { OrbitCaseBlobAccess } from "../../contract/blob-access";
 import type { OrbitCaseAttachmentRecord } from "../../contract/orbit-case.types";
 import { recordOrbitCaseActivity } from "../activity/record-activity";
 import { getOrbitCaseById } from "../work/orbit-cases";
 import { canDeleteOrbitCaseAttachment } from "../work/permissions";
+import { mapOrbitCaseAttachmentRow } from "./attachment-map";
 
 export interface CreateOrbitCaseAttachmentInput {
+  blobAccess: OrbitCaseBlobAccess;
   blobPathname: string;
   blobUrl: string;
   caseId: string;
@@ -43,6 +46,7 @@ export const createOrbitCaseAttachment = async (
     sizeBytes: input.sizeBytes,
     blobUrl: input.blobUrl,
     blobPathname: input.blobPathname,
+    blobAccess: input.blobAccess,
     createdAt: now,
   });
 
@@ -51,10 +55,14 @@ export const createOrbitCaseAttachment = async (
     caseId: input.caseId,
     actorId,
     action: "attachment.added",
-    payload: { attachmentId: id, fileName: input.fileName },
+    payload: {
+      attachmentId: id,
+      fileName: input.fileName,
+      blobAccess: input.blobAccess,
+    },
   });
 
-  return {
+  return mapOrbitCaseAttachmentRow({
     id,
     caseId: input.caseId,
     organizationId,
@@ -64,8 +72,9 @@ export const createOrbitCaseAttachment = async (
     sizeBytes: input.sizeBytes,
     blobUrl: input.blobUrl,
     blobPathname: input.blobPathname,
+    blobAccess: input.blobAccess,
     createdAt: now,
-  };
+  });
 };
 
 export const listOrbitCaseAttachments = async (
@@ -83,18 +92,7 @@ export const listOrbitCaseAttachments = async (
     )
     .orderBy(desc(orbitCaseAttachment.createdAt));
 
-  return rows.map((row) => ({
-    id: row.id,
-    caseId: row.caseId,
-    organizationId: row.organizationId,
-    uploadedBy: row.uploadedBy,
-    fileName: row.fileName,
-    contentType: row.contentType,
-    sizeBytes: row.sizeBytes,
-    blobUrl: row.blobUrl,
-    blobPathname: row.blobPathname,
-    createdAt: row.createdAt,
-  }));
+  return rows.map((row) => mapOrbitCaseAttachmentRow(row));
 };
 
 export const deleteOrbitCaseAttachment = async (
@@ -118,18 +116,7 @@ export const deleteOrbitCaseAttachment = async (
     return null;
   }
 
-  const record: OrbitCaseAttachmentRecord = {
-    id: row.id,
-    caseId: row.caseId,
-    organizationId: row.organizationId,
-    uploadedBy: row.uploadedBy,
-    fileName: row.fileName,
-    contentType: row.contentType,
-    sizeBytes: row.sizeBytes,
-    blobUrl: row.blobUrl,
-    blobPathname: row.blobPathname,
-    createdAt: row.createdAt,
-  };
+  const record = mapOrbitCaseAttachmentRow(row);
 
   if (!canDeleteOrbitCaseAttachment(role, record, actorId)) {
     return null;
@@ -169,16 +156,5 @@ export const getOrbitCaseAttachmentById = async (
     return null;
   }
 
-  return {
-    id: row.id,
-    caseId: row.caseId,
-    organizationId: row.organizationId,
-    uploadedBy: row.uploadedBy,
-    fileName: row.fileName,
-    contentType: row.contentType,
-    sizeBytes: row.sizeBytes,
-    blobUrl: row.blobUrl,
-    blobPathname: row.blobPathname,
-    createdAt: row.createdAt,
-  };
+  return mapOrbitCaseAttachmentRow(row);
 };

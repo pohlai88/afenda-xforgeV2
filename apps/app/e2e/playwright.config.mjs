@@ -45,7 +45,19 @@ export default defineConfig({
         command: "pnpm dev",
         cwd: appDir,
         url: baseURL,
-        reuseExistingServer: true,
+        reuseExistingServer: process.env.PLAYWRIGHT_FORCE_FRESH_SERVER
+          ? false
+          : true,
         timeout: 120_000,
+        env: {
+          BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
+          XFORGE_PUB_BLOB_READ_WRITE_TOKEN:
+            process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN,
+          XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN:
+            process.env.XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN,
+          XFORGE_PUB_STORE_ID: process.env.XFORGE_PUB_STORE_ID,
+          XFORGE_STORE_ID: process.env.XFORGE_STORE_ID,
+          XFROGE_READ_WRITE_TOKEN: process.env.XFROGE_READ_WRITE_TOKEN,
+        },
       },
 });

@@ -62,6 +62,7 @@ export const toOrbitCaseAttachmentDto = (
   sizeBytes: record.sizeBytes,
   blobUrl: record.blobUrl,
   blobPathname: record.blobPathname,
+  blobAccess: record.blobAccess,
   createdAt: record.createdAt.toISOString(),
 });
 

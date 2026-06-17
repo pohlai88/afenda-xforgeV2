@@ -65,8 +65,12 @@ test.describe("Orbit Case lifecycle", () => {
   });
 
   test("uploads attachment when blob storage is configured", async ({ page }) => {
-    if (!getE2eBlobEnvStatus().blobReadWriteToken) {
-      test.skip(true, "BLOB_READ_WRITE_TOKEN not configured");
+    const blobEnv = getE2eBlobEnvStatus();
+    if (!blobEnv.readyForUploadTests) {
+      test.skip(
+        true,
+        "XFORGE_PUB_BLOB_READ_WRITE_TOKEN and XFORGE_PUB_STORE_ID required for upload E2E"
+      );
     }
 
     const uniqueTitle = `E2E Attach ${Date.now()}`;

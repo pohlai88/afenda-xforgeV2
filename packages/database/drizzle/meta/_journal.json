@@ -190,6 +190,13 @@
       "when": 1720699200000,
       "tag": "0026_orbit_case_attachments",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1720785600000,
+      "tag": "0027_orbit_case_attachment_access",
+      "breakpoints": true
     }
   ]
 }

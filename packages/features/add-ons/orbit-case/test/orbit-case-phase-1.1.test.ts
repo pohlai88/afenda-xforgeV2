@@ -42,6 +42,21 @@ describe("createOrbitCaseAttachmentSchema", () => {
     });
 
     expect(parsed.fileName).toBe("quote.pdf");
+    expect(parsed.blobAccess).toBe("public");
+  });
+
+  it("accepts private blob access", () => {
+    const parsed = createOrbitCaseAttachmentSchema.parse({
+      caseId: "case_1",
+      fileName: "secret.pdf",
+      contentType: "application/pdf",
+      sizeBytes: 1024,
+      blobUrl: "https://example.com/secret.pdf",
+      blobPathname: "orbit-case/org/case/secret.pdf",
+      blobAccess: "private",
+    });
+
+    expect(parsed.blobAccess).toBe("private");
   });
 });
 

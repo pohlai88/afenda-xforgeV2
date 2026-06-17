@@ -62,6 +62,7 @@ describe("orbit case attachment isolation", () => {
       sizeBytes: 12,
       blobUrl: "https://example.com/notes.txt",
       blobPathname: `orbit-case/${orgA}/${created.id}/notes.txt`,
+      blobAccess: "public",
     });
 
     expect(attachment).not.toBeNull();

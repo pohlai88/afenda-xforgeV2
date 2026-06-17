@@ -1,3 +1,4 @@
+import type { OrbitCaseBlobAccess } from "./blob-access";
 import type { OrbitCasePriority, OrbitCaseStatus } from "./status";
 
 /** Server-side row mapped from Drizzle (non-serializable Date fields). */
@@ -50,6 +51,7 @@ export type OrbitCaseCommentDto = Omit<OrbitCaseCommentRecord, "createdAt"> & {
 };
 
 export interface OrbitCaseAttachmentRecord {
+  blobAccess: OrbitCaseBlobAccess;
   blobPathname: string;
   blobUrl: string;
   caseId: string;

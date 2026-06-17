@@ -1,17 +1,20 @@
 "use server";
 
-import { randomUUID } from "node:crypto";
 import { getOrganizationRole } from "@repo/auth/cms";
 import { withOrg } from "@repo/auth/guards";
 import type { AuthActionResult } from "@repo/auth/types";
 import {
   deleteOrbitCaseAttachmentSchema,
+  isOrbitCasePrivateBlobAccess,
   type OrbitCaseAttachmentDto,
   toOrbitCaseAttachmentDto,
 } from "@repo/orbit-case";
 import { deleteOrbitCaseAttachment } from "@repo/orbit-case/server";
-import { keys as storageKeys } from "@repo/storage/keys";
-import { del } from "@repo/storage";
+import {
+  del,
+  getPrivateBlobDeleteOptions,
+  getPublicBlobDeleteOptions,
+} from "@repo/storage";
 import { revalidatePath } from "next/cache";
 
 export const removeAttachment = async (
@@ -36,14 +39,15 @@ export const removeAttachment = async (
       throw new Error("Attachment not found or not permitted");
     }
 
-    const blobToken = storageKeys().BLOB_READ_WRITE_TOKEN;
-
-    if (blobToken) {
-      try {
-        await del(removed.blobPathname);
-      } catch {
-        // Metadata delete succeeded; blob cleanup is best-effort.
-      }
+    try {
+      await del(
+        removed.blobPathname,
+        isOrbitCasePrivateBlobAccess(removed.blobAccess)
+          ? getPrivateBlobDeleteOptions()
+          : getPublicBlobDeleteOptions()
+      );
+    } catch {
+      // Metadata delete succeeded; blob cleanup is best-effort.
     }
 
     revalidatePath("/orbit-case");

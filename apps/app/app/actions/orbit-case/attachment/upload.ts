@@ -6,12 +6,18 @@ import type { AuthActionResult } from "@repo/auth/types";
 import {
   createOrbitCaseAttachmentSchema,
   type OrbitCaseAttachmentDto,
+  orbitCaseBlobAccessSchema,
   toOrbitCaseAttachmentDto,
 } from "@repo/orbit-case";
 import { keys as orbitCaseKeys } from "@repo/orbit-case/keys";
 import { createOrbitCaseAttachment } from "@repo/orbit-case/server";
-import { put } from "@repo/storage";
-import { keys as storageKeys } from "@repo/storage/keys";
+import {
+  getPrivateBlobPutOptions,
+  getPublicBlobPutOptions,
+  isBlobUploadConfigured,
+  isPrivateBlobConfigured,
+  put,
+} from "@repo/storage";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -33,6 +39,7 @@ const uploadFormSchema = z.object({
   filename: z.string().min(1),
   contentType: z.string().min(1),
   size: z.number().int().positive().max(5 * 1024 * 1024),
+  blobAccess: orbitCaseBlobAccessSchema.default("public"),
 });
 
 const sanitizeExtension = (filename: string): string => {
@@ -44,12 +51,6 @@ export const uploadAttachment = async (
   formData: FormData
 ): Promise<AuthActionResult<OrbitCaseAttachmentDto>> =>
   withOrg(async ({ orgId, userId }) => {
-    if (!storageKeys().BLOB_READ_WRITE_TOKEN) {
-      throw new Error(
-        "File uploads are unavailable — configure BLOB_READ_WRITE_TOKEN"
-      );
-    }
-
     const file = formData.get("file");
 
     if (!(file instanceof File)) {
@@ -61,20 +62,36 @@ export const uploadAttachment = async (
       filename: file.name,
       contentType: file.type,
       size: file.size,
+      blobAccess: formData.get("blobAccess") ?? "public",
     });
 
     if (!ORBIT_CASE_ALLOWED_CONTENT_TYPES.has(parsed.contentType)) {
       throw new Error("File type is not allowed");
     }
 
+    if (parsed.blobAccess === "private" && !isPrivateBlobConfigured()) {
+      throw new Error(
+        "Private uploads are unavailable — configure XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN and XFORGE_STORE_ID"
+      );
+    }
+
+    if (parsed.blobAccess === "public" && !isBlobUploadConfigured()) {
+      throw new Error(
+        "Public uploads are unavailable — configure XFORGE_PUB_BLOB_READ_WRITE_TOKEN and XFORGE_PUB_STORE_ID"
+      );
+    }
+
     const storagePrefix = orbitCaseKeys().ORBIT_CASE_STORAGE_PREFIX;
     const extension = sanitizeExtension(parsed.filename);
     const pathname = `${storagePrefix}/${orgId}/${parsed.caseId}/${randomUUID()}.${extension}`;
 
-    const blob = await put(pathname, file, {
-      access: "public",
-      contentType: parsed.contentType,
-    });
+    const blob = await put(
+      pathname,
+      file,
+      parsed.blobAccess === "private"
+        ? getPrivateBlobPutOptions(parsed.contentType)
+        : getPublicBlobPutOptions(parsed.contentType)
+    );
 
     const metadataInput = createOrbitCaseAttachmentSchema.parse({
       caseId: parsed.caseId,
@@ -83,6 +100,7 @@ export const uploadAttachment = async (
       sizeBytes: parsed.size,
       blobUrl: blob.url,
       blobPathname: pathname,
+      blobAccess: parsed.blobAccess,
     });
 
     const attachment = await createOrbitCaseAttachment(orgId, userId, {
@@ -92,6 +110,7 @@ export const uploadAttachment = async (
       sizeBytes: metadataInput.sizeBytes,
       blobUrl: metadataInput.blobUrl,
       blobPathname: metadataInput.blobPathname,
+      blobAccess: metadataInput.blobAccess,
     });
 
     if (!attachment) {

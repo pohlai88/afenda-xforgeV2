@@ -16,12 +16,14 @@ import {
   SelectValue,
   Switch,
   Textarea,
+  Progress,
   blockRecipe,
 } from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type {
   OrbitCaseActivityDto,
   OrbitCaseAttachmentDto,
+  OrbitCaseBlobAccess,
   OrbitCaseCommentDto,
   OrbitCaseDto,
   OrbitCasePriority,
@@ -30,18 +32,24 @@ import type {
   PushDestinationDefinition,
 } from "@repo/orbit-case";
 import {
+  ORBIT_CASE_ATTACHMENT_MAX_BYTES,
   ORBIT_CASE_PRIORITIES,
   ORBIT_CASE_STATUSES,
   formatOrbitCaseAttachmentSize,
   formatOrbitCaseDueDateLabel,
+  isOrbitCaseAttachmentContentTypeAllowed,
   isOrbitCasePrivateBlobAccess,
 } from "@repo/orbit-case";
+import { upload } from "@repo/storage/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { ChangeEvent } from "react";
 import { useEffect, useRef, useState, useTransition } from "react";
+import {
+  finalizeAttachmentUpload,
+  prepareAttachmentUpload,
+} from "@/app/actions/orbit-case/attachment/client-upload";
 import { removeAttachment } from "@/app/actions/orbit-case/attachment/delete";
-import { uploadAttachment } from "@/app/actions/orbit-case/attachment/upload";
 import { addComment } from "@/app/actions/orbit-case/comment/create";
 import { deleteCase } from "@/app/actions/orbit-case/delete";
 import { updateCase } from "@/app/actions/orbit-case/update";
@@ -50,7 +58,6 @@ import {
   executeCasePush,
   listPushDestinations,
 } from "@/app/actions/orbit-case/push/execute";
-import type { OrbitCaseAttachmentAccessPreference } from "@/lib/orbit-case-attachment-privacy";
 import {
   getOrbitCaseAttachmentDownloadHref,
   readOrbitCaseAttachmentAccessPreference,
@@ -105,7 +112,8 @@ export function OrbitCaseDetailView({
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [attachmentAccess, setAttachmentAccess] =
-    useState<OrbitCaseAttachmentAccessPreference>("public");
+    useState<OrbitCaseBlobAccess>("public");
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
 
   useEffect(() => {
     setAttachmentAccess(readOrbitCaseAttachmentAccessPreference());
@@ -247,23 +255,74 @@ export function OrbitCaseDetailView({
       return;
     }
 
+    const contentType = file.type || "application/octet-stream";
+
+    if (!isOrbitCaseAttachmentContentTypeAllowed(contentType)) {
+      setError("File type is not allowed");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > ORBIT_CASE_ATTACHMENT_MAX_BYTES) {
+      setError("File exceeds the 5 MB limit");
+      event.target.value = "";
+      return;
+    }
+
     startTransition(async () => {
       setError(null);
-      const formData = new FormData();
-      formData.set("caseId", orbitCase.id);
-      formData.set("file", file);
-      formData.set("blobAccess", attachmentAccess);
+      setUploadProgress(0);
 
-      const result = await uploadAttachment(formData);
+      try {
+        const prep = await prepareAttachmentUpload({
+          caseId: orbitCase.id,
+          fileName: file.name,
+          contentType,
+          sizeBytes: file.size,
+          blobAccess: attachmentAccess,
+        });
 
-      if (!result.ok) {
-        setError(result.error);
-        return;
+        if (!prep.ok) {
+          setError(prep.error);
+          return;
+        }
+
+        const blob = await upload(prep.data.pathname, file, {
+          access: attachmentAccess,
+          handleUploadUrl: prep.data.handleUploadUrl,
+          clientPayload: JSON.stringify({
+            caseId: orbitCase.id,
+            blobAccess: attachmentAccess,
+            fileName: file.name,
+            contentType,
+            sizeBytes: file.size,
+          }),
+          onUploadProgress: ({ percentage }) => {
+            setUploadProgress(percentage);
+          },
+        });
+
+        const result = await finalizeAttachmentUpload({
+          caseId: orbitCase.id,
+          fileName: file.name,
+          contentType,
+          sizeBytes: file.size,
+          blobAccess: attachmentAccess,
+          blobUrl: blob.url,
+          blobPathname: blob.pathname,
+        });
+
+        if (!result.ok) {
+          setError(result.error);
+          return;
+        }
+
+        setAttachments((current) => [result.data, ...current]);
+        event.target.value = "";
+        router.refresh();
+      } finally {
+        setUploadProgress(null);
       }
-
-      setAttachments((current) => [result.data, ...current]);
-      event.target.value = "";
-      router.refresh();
     });
   };
 
@@ -398,7 +457,7 @@ export function OrbitCaseDetailView({
               <Label htmlFor="attachment-access">Default privacy for uploads</Label>
               <Select
                 onValueChange={(value) => {
-                  const next = value as OrbitCaseAttachmentAccessPreference;
+                  const next = value as OrbitCaseBlobAccess;
                   setAttachmentAccess(next);
                   writeOrbitCaseAttachmentAccessPreference(next);
                 }}
@@ -432,6 +491,14 @@ export function OrbitCaseDetailView({
             <Button disabled={isPending} onClick={handleUploadAttachment}>
               Upload file
             </Button>
+            {uploadProgress !== null ? (
+              <div className="max-w-sm space-y-2">
+                <Progress aria-label="Upload progress" value={uploadProgress} />
+                <p className="text-muted-foreground text-xs">
+                  Uploading… {Math.round(uploadProgress)}%
+                </p>
+              </div>
+            ) : null}
             {attachments.length === 0 ? (
               <p className="text-muted-foreground text-sm">No attachments yet.</p>
             ) : (

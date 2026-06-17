@@ -35,26 +35,26 @@ export const MetricSizes: Story = {
     >
       <Stack gap="md">
         <div>
-          <Text tone="secondary" variant="caption">
+          <Text color="secondary" variant="caption">
             Ready to post
           </Text>
-          <MetricText size="lg" tone="success">
+          <MetricText color="success" size="lg">
             86
           </MetricText>
         </div>
         <div>
-          <Text tone="secondary" variant="caption">
+          <Text color="secondary" variant="caption">
             SLA risk
           </Text>
-          <MetricText size="md" tone="warning">
+          <MetricText color="warning" size="md">
             14
           </MetricText>
         </div>
         <div>
-          <Text tone="secondary" variant="caption">
+          <Text color="secondary" variant="caption">
             Failed sync
           </Text>
-          <MetricText size="sm" tone="critical">
+          <MetricText color="critical" size="sm">
             2
           </MetricText>
         </div>

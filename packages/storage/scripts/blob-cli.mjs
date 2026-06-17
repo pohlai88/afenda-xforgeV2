@@ -34,13 +34,12 @@ for (const relativePath of [".env.config", ".env.secret", "apps/app/.env.local"]
 }
 
 const resolvePublicBlobToken = () =>
-  process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN ??
-  process.env.BLOB_READ_WRITE_TOKEN;
+  process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN;
 
 const resolvePrivateBlobToken = () =>
   process.env.XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN ??
-  process.env.XFROGE_READ_WRITE_TOKEN ??
-  process.env.BLOB_READ_WRITE_TOKEN;
+  process.env.XFROGE_PRIVATE_READ_WRITE_TOKEN ??
+  process.env.XFROGE_READ_WRITE_TOKEN;
 
 const command = process.argv[2] ?? "help";
 
@@ -66,7 +65,10 @@ if (command === "probe-public") {
 
 if (command === "probe-private") {
   const token = resolvePrivateBlobToken();
-  const storeId = process.env.XFORGE_STORE_ID ?? process.env.XFROGE_STORE_ID;
+  const storeId =
+    process.env.XFORGE_STORE_ID ??
+    process.env.XFROGE_PRIVATE_STORE_ID ??
+    process.env.XFROGE_STORE_ID;
   if (!token || !storeId) {
     console.error(
       "Missing XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN or XFORGE_STORE_ID"

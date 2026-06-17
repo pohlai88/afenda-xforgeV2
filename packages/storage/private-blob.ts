@@ -6,8 +6,6 @@ import {
   isPrivateBlobConfigured,
 } from "./blob-stores";
 
-export { isPrivateBlobConfigured };
-
 type BlobBody = Parameters<typeof put>[1];
 
 const assertPrivateBlobConfigured = (): void => {

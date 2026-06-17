@@ -14,6 +14,10 @@ export default defineProject({
     alias: {
       ...serverOnlyAlias(),
       "@": path.resolve(import.meta.dirname, "./"),
+      "@repo/orbit-case": path.resolve(
+        import.meta.dirname,
+        "../../packages/features/add-ons/orbit-case"
+      ),
       "@repo": path.resolve(import.meta.dirname, "../../packages"),
     },
   },

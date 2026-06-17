@@ -64,6 +64,9 @@ export const AFENDA_AI_HARD_FAIL_RULES = [
   "unregistered-semantic-alias",
   "local-vocabulary-declaration",
   "stale-example",
+  "dynamic-recipe-id",
+  "dynamic-slot-id",
+  "dynamic-variant-value",
 ] as const;
 
 export const AFENDA_AI_DRIFT_SCORE_GATE = {

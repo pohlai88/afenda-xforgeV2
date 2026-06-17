@@ -190,6 +190,9 @@ describe("afenda design-system anti-drift contract", () => {
       "unregistered-semantic-alias",
       "local-vocabulary-declaration",
       "stale-example",
+      "dynamic-recipe-id",
+      "dynamic-slot-id",
+      "dynamic-variant-value",
     ]);
   });
 

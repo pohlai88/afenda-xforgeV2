@@ -89,10 +89,7 @@ export const assertE2eSupabaseEnv = () => {
 };
 
 export const getE2eBlobEnvStatus = () => {
-  const publicBlobToken = Boolean(
-    process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN ??
-      process.env.BLOB_READ_WRITE_TOKEN
-  );
+  const publicBlobToken = Boolean(process.env.XFORGE_PUB_BLOB_READ_WRITE_TOKEN);
   const privateBlobToken = Boolean(
     process.env.XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN ??
       process.env.XFROGE_READ_WRITE_TOKEN

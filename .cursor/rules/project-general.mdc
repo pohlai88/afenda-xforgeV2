@@ -48,6 +48,7 @@ Runtime checks when appropriate: MCP `nextjs_index` → `nextjs_call` `get_error
 | pnpm monorepo | `warn-wrong-package-manager.mjs` | `beforeShellExecution` |
 | Design-system primitives protected | `guard-workspace-compose.mjs` | `preToolUse` |
 | NEXT_PUBLIC_ secrets | `guard-next-public-env.mjs` | `preToolUse` |
+| Synced env outputs (no direct edit) | `guard-synced-env.mjs` | `preToolUse`, `beforeShellExecution` |
 | Vercel prod deploy | `ask-vercel-production.mjs` | `beforeShellExecution` |
 | Vercel MCP deploy | `guard-vercel-deploy-mcp.mjs` | `beforeMCPExecution` |
 | vercel env pull | `ask-vercel-env-pull.mjs` | `beforeShellExecution` |

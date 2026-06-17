@@ -9,7 +9,6 @@ const keys = [
   "XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN",
   "XFORGE_PUB_STORE_ID",
   "XFORGE_STORE_ID",
-  "BLOB_READ_WRITE_TOKEN",
 ];
 const files = [
   ".env.config",

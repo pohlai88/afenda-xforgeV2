@@ -19,7 +19,7 @@ scorecard contracts, and lifecycle contracts are intentionally removed.
 - Recipes: `packages/design-system/components/afenda-ui/recipes.ts`
 - Block recipes: `packages/design-system/components/blocks/block-recipes.ts`
 - Drift gate: `scripts/check-design-system-drift.mjs`
-- AI drift scanner: `scripts/lib/design-system-ai-drift.mjs`
+- AI drift scanner: `packages/design-system/governance/design-system-ai-drift.mjs`
 
 ## Required Gates
 

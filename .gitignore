@@ -312,3 +312,4 @@ chromatic-build-*.zip
 
 # Storybook Vite dev cache
 apps/storybook/node_modules/.cache/storybook
+.vercel

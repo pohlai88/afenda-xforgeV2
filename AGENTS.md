@@ -43,6 +43,7 @@ Prefer fixing at the app or preview layer before changing shared design-system d
 | pnpm monorepo | `warn-wrong-package-manager.mjs` | `beforeShellExecution` |
 | Workspace compose protected | `guard-workspace-compose.mjs` | `preToolUse` |
 | NEXT_PUBLIC_ secrets | `guard-next-public-env.mjs` | `preToolUse` |
+| Synced env outputs (no direct edit) | `guard-synced-env.mjs` | `preToolUse`, `beforeShellExecution` |
 | Vercel prod deploy / MCP deploy / env pull | `ask-vercel-*`, `guard-vercel-deploy-mcp` | shell / MCP |
 | Scoped quality gates | `stop-quality-gates.mjs` | `stop` (self-heal ×3) |
 

@@ -1,5 +1,4 @@
 import {
-  keys,
   resolvePrivateBlobToken,
   resolvePrivateStoreId,
   resolvePublicBlobToken,
@@ -29,8 +28,6 @@ export interface PrivateBlobGetOptions {
   access: "private";
   token?: string;
 }
-
-const storageKeys = () => keys();
 
 export const isBlobUploadConfigured = (): boolean =>
   Boolean(resolvePublicBlobToken() && resolvePublicStoreId());

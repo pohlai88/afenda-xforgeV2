@@ -273,7 +273,7 @@ function progressTone(
     return "success";
   }
 
-  return "brand";
+  return "info";
 }
 
 const stateToneClassName = {

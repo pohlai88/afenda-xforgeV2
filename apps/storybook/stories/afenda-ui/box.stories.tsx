@@ -30,12 +30,12 @@ export const Surfaces: Story = {
         <Text className="mt-2" variant="title">
           Posting batch held
         </Text>
-        <Text className="mt-1" tone="secondary" variant="caption">
+        <Text className="mt-1" color="secondary" variant="caption">
           Manager approval is required before AP-10471 can post.
         </Text>
       </Box>
       <Box padding="md" radius="sm" surface="muted">
-        <Text tone="secondary" variant="caption">
+        <Text color="secondary" variant="caption">
           Muted evidence surface for secondary operational context.
         </Text>
       </Box>

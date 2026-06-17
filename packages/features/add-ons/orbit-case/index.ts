@@ -33,12 +33,30 @@ export type {
   OrbitObjectLinkDto,
   PushResultDto,
 } from "./contract/orbit-case.types";
-export type { OrbitCaseBlobAccess } from "./contract/blob-access";
 export {
   ORBIT_CASE_BLOB_ACCESS,
   isOrbitCasePrivateBlobAccess,
   orbitCaseBlobAccessSchema,
+  parseOrbitCaseBlobAccess,
 } from "./contract/blob-access";
+export type { OrbitCaseBlobAccess } from "./contract/blob-access";
+export {
+  ORBIT_CASE_ATTACHMENT_ALLOWED_CONTENT_TYPES,
+  ORBIT_CASE_ATTACHMENT_HANDLE_UPLOAD_URL,
+  ORBIT_CASE_ATTACHMENT_MAX_BYTES,
+  buildOrbitCaseAttachmentPathname,
+  isOrbitCaseAttachmentContentTypeAllowed,
+  isOrbitCaseAttachmentPathnameForCase,
+  orbitCaseAttachmentUploadClientPayloadSchema,
+  orbitCaseAttachmentUploadTokenPayloadSchema,
+  sanitizeOrbitCaseAttachmentExtension,
+  sanitizeOrbitCaseAttachmentFileName,
+} from "./contract/attachment-upload";
+export type {
+  OrbitCaseAttachmentContentType,
+  OrbitCaseAttachmentUploadClientPayload,
+  OrbitCaseAttachmentUploadTokenPayload,
+} from "./contract/attachment-upload";
 export { formatOrbitCaseActivitySummary } from "./contract/activity-format";
 export {
   formatOrbitCaseAttachmentSize,

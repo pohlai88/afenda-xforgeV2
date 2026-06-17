@@ -176,7 +176,7 @@ function SaveStateStrip({
             <Progress
               aria-label="Save progress"
               className="mt-1 h-1"
-              tone="brand"
+              tone="info"
               value={64}
             />
           ) : null}
@@ -604,7 +604,7 @@ const blockToneToProgressTone: Record<
   ComponentProps<typeof Progress>["tone"]
 > = {
   critical: "critical",
-  info: "brand",
+  info: "info",
   neutral: "neutral",
   success: "success",
   warning: "warning",

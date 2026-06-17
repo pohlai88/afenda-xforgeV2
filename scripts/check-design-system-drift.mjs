@@ -3,7 +3,7 @@ import { join, relative } from "node:path";
 import {
   createDesignSystemAiDriftRegistry,
   scanDesignSystemAiDriftSource,
-} from "./lib/design-system-ai-drift.mjs";
+} from "../packages/design-system/governance/design-system-ai-drift.mjs";
 
 const root = process.cwd();
 const afendaUiDir = join(
@@ -955,6 +955,9 @@ for (const file of walk(aiDriftRoots)) {
     ...scanDesignSystemAiDriftSource({
       path: file,
       registry: aiDriftRegistry,
+      requirePublicDesignSystemImports: normalize(file).startsWith(
+        normalize(storiesDir)
+      ),
       root,
       source: readFileSync(file, "utf8"),
     })

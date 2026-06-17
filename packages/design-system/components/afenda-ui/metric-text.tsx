@@ -16,7 +16,7 @@ const metricTextVariants = cva(
         md: "text-[24px] leading-7",
         lg: "text-[32px] leading-9",
       },
-      tone: {
+      color: {
         primary: "text-text-primary",
         secondary: "text-text-secondary",
         critical: "text-critical",
@@ -27,13 +27,13 @@ const metricTextVariants = cva(
     },
     defaultVariants: {
       size: "md",
-      tone: "primary",
+      color: "primary",
     },
   }
 );
 
 interface MetricTextProps
-  extends React.ComponentProps<"strong">,
+  extends Omit<React.ComponentProps<"strong">, "color">,
     VariantProps<typeof metricTextVariants> {
   readonly asChild?: boolean;
 }
@@ -41,15 +41,15 @@ interface MetricTextProps
 function MetricText({
   asChild = false,
   className,
+  color,
   size,
-  tone,
   ...props
 }: MetricTextProps) {
   const Comp = asChild ? SlotPrimitive.Slot : "strong";
 
   return (
     <Comp
-      className={cn(metricTextVariants({ size, tone }), className)}
+      className={cn(metricTextVariants({ color, size }), className)}
       data-slot="metric-text"
       {...props}
     />

@@ -32,7 +32,7 @@ export const Default: Story = {
         <div className="grid gap-4">
           {(
             [
-              ["Payroll import", 64, "brand"],
+              ["Payroll import", 64, "info"],
               ["Compliance checks", 100, "success"],
               ["SLA consumed", 82, "warning"],
               ["Failed records", 38, "critical"],

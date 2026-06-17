@@ -15,6 +15,10 @@
       {
         "command": "node .cursor/hooks/guard-next-public-env.mjs",
         "timeout": 5
+      },
+      {
+        "command": "node .cursor/hooks/guard-synced-env.mjs",
+        "timeout": 5
       }
     ],
     "beforeShellExecution": [
@@ -36,6 +40,10 @@
       },
       {
         "command": "node .cursor/hooks/ask-vercel-env-pull.mjs",
+        "timeout": 5
+      },
+      {
+        "command": "node .cursor/hooks/guard-synced-env.mjs",
         "timeout": 5
       },
       {

@@ -31,7 +31,7 @@ export const EvidenceStack: Story = {
                 {index === 2 ? "Missing" : "Captured"}
               </Badge>
               <Text variant="medium">{label}</Text>
-              <Text tone="secondary" variant="caption">
+              <Text color="secondary" variant="caption">
                 Required evidence for June close posting.
               </Text>
             </Stack>

@@ -35,7 +35,7 @@ export const TypographyRoles: Story = {
           Posting batch AP-10471 exceeds the configured exposure limit for
           Northwind Trading.
         </Text>
-        <Text tone="secondary" variant="caption">
+        <Text color="secondary" variant="caption">
           Ask a finance manager to approve the exception before posting.
         </Text>
       </Stack>

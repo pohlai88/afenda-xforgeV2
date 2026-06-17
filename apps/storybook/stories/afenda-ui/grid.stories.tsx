@@ -33,7 +33,7 @@ const metrics = [
   ["Failed sync", "2", "critical"],
 ] as const;
 
-const metricTextTone = {
+const metricTextColor = {
   critical: "critical",
   info: "info",
   success: "success",
@@ -45,10 +45,10 @@ export const MetricGrid: Story = {
     <Grid className="w-[min(880px,calc(100vw-32px))]" columns={4} gap="sm">
       {metrics.map(([label, value, tone]) => (
         <Box key={label} padding="md" radius="md" surface="raised">
-          <Text tone="secondary" variant="caption">
+          <Text color="secondary" variant="caption">
             {label}
           </Text>
-          <MetricText tone={metricTextTone[tone]}>{value}</MetricText>
+          <MetricText color={metricTextColor[tone]}>{value}</MetricText>
           <Badge tone={tone} variant="outline">
             Current period
           </Badge>

@@ -30,7 +30,7 @@ export const FocusablePanel: Story = {
       <Box padding="lg" radius="md" surface="raised">
         <Stack gap="xs">
           <Text variant="title">AP-10471 evidence</Text>
-          <Text tone="secondary" variant="caption">
+          <Text color="secondary" variant="caption">
             Press Tab to verify the shared focus affordance on this custom
             surface.
           </Text>

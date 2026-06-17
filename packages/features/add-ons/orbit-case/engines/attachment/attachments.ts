@@ -5,12 +5,16 @@ import type { OrganizationRole } from "@repo/auth/organization-roles";
 import { database } from "@repo/database";
 import { orbitCaseAttachment } from "@repo/database/schema";
 import { and, desc, eq } from "drizzle-orm";
-import type { OrbitCaseBlobAccess } from "../../contract/blob-access";
+import {
+  parseOrbitCaseBlobAccess,
+  type OrbitCaseBlobAccess,
+} from "../../contract/blob-access";
 import type { OrbitCaseAttachmentRecord } from "../../contract/orbit-case.types";
 import { recordOrbitCaseActivity } from "../activity/record-activity";
 import { getOrbitCaseById } from "../work/orbit-cases";
 import { canDeleteOrbitCaseAttachment } from "../work/permissions";
-import { mapOrbitCaseAttachmentRow } from "./attachment-map";
+
+type OrbitCaseAttachmentRow = typeof orbitCaseAttachment.$inferSelect;
 
 export interface CreateOrbitCaseAttachmentInput {
   blobAccess: OrbitCaseBlobAccess;
@@ -21,6 +25,22 @@ export interface CreateOrbitCaseAttachmentInput {
   fileName: string;
   sizeBytes: number;
 }
+
+const mapOrbitCaseAttachmentRow = (
+  row: OrbitCaseAttachmentRow
+): OrbitCaseAttachmentRecord => ({
+  id: row.id,
+  caseId: row.caseId,
+  organizationId: row.organizationId,
+  uploadedBy: row.uploadedBy,
+  fileName: row.fileName,
+  contentType: row.contentType,
+  sizeBytes: row.sizeBytes,
+  blobUrl: row.blobUrl,
+  blobPathname: row.blobPathname,
+  blobAccess: parseOrbitCaseBlobAccess(row.blobAccess),
+  createdAt: row.createdAt,
+});
 
 export const createOrbitCaseAttachment = async (
   organizationId: string,

@@ -1,10 +1,11 @@
-import type { OrbitCaseAttachmentDto } from "@repo/orbit-case";
-import { isOrbitCasePrivateBlobAccess } from "@repo/orbit-case";
+import type { OrbitCaseAttachmentDto, OrbitCaseBlobAccess } from "@repo/orbit-case";
+import {
+  isOrbitCasePrivateBlobAccess,
+  orbitCaseBlobAccessSchema,
+} from "@repo/orbit-case";
 
 export const ORBIT_CASE_ATTACHMENT_ACCESS_STORAGE_KEY =
   "xforge.orbitCase.defaultAttachmentAccess";
-
-export type OrbitCaseAttachmentAccessPreference = "public" | "private";
 
 export const getOrbitCaseAttachmentDownloadHref = (
   attachment: Pick<OrbitCaseAttachmentDto, "blobAccess" | "blobUrl" | "id">
@@ -14,7 +15,7 @@ export const getOrbitCaseAttachmentDownloadHref = (
     : attachment.blobUrl;
 
 export const readOrbitCaseAttachmentAccessPreference =
-  (): OrbitCaseAttachmentAccessPreference => {
+  (): OrbitCaseBlobAccess => {
     if (typeof window === "undefined") {
       return "public";
     }
@@ -22,12 +23,13 @@ export const readOrbitCaseAttachmentAccessPreference =
     const stored = window.localStorage.getItem(
       ORBIT_CASE_ATTACHMENT_ACCESS_STORAGE_KEY
     );
+    const parsed = orbitCaseBlobAccessSchema.safeParse(stored);
 
-    return stored === "private" ? "private" : "public";
+    return parsed.success ? parsed.data : "public";
   };
 
 export const writeOrbitCaseAttachmentAccessPreference = (
-  value: OrbitCaseAttachmentAccessPreference
+  value: OrbitCaseBlobAccess
 ): void => {
   if (typeof window === "undefined") {
     return;

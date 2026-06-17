@@ -42,7 +42,9 @@ const envAliases = {
   NEXT_PUBLIC_SUPABASE_ANON_KEY: "SUPABASE_ANON_PUBLIC",
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: "SUPABASE_PUBLISHABLE_KEY",
   XFROGE_READ_WRITE_TOKEN: "XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN",
+  XFROGE_PRIVATE_READ_WRITE_TOKEN: "XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN",
   XFROGE_STORE_ID: "XFORGE_STORE_ID",
+  XFROGE_PRIVATE_STORE_ID: "XFORGE_STORE_ID",
 };
 
 const defaultPublicUrls = {
@@ -393,7 +395,6 @@ if (command === "sync") {
         : "missing — add SUPABASE_SMTP_PASSWORD for pnpm supabase:apply-smtp-config"
     }`
   );
-  const blobToken = Boolean(merged.get("BLOB_READ_WRITE_TOKEN"));
   const pubBlobToken = Boolean(merged.get("XFORGE_PUB_BLOB_READ_WRITE_TOKEN"));
   const privateBlobToken = Boolean(
     merged.get("XFORGE_PRIVATE_BLOB_READ_WRITE_TOKEN")
@@ -403,7 +404,7 @@ if (command === "sync") {
     merged.get("XFORGE_STORE_ID") ?? merged.get("XFROGE_STORE_ID")
   );
   console.log(
-    `vercel blob: legacy token=${blobToken ? "ok" : "missing"}, public token=${pubBlobToken ? "ok" : "missing"}, private token=${privateBlobToken ? "ok" : "missing"}`
+    `vercel blob: public token=${pubBlobToken ? "ok" : "missing"}, private token=${privateBlobToken ? "ok" : "missing"}`
   );
   console.log(
     `vercel blob stores: public=${pubStore ? "ok" : "missing"}, private=${privateStore ? "ok" : "missing"}`

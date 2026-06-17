@@ -3,6 +3,7 @@ import { getAuthSession } from "@repo/auth/server";
 import { isOrbitCasePrivateBlobAccess } from "@repo/orbit-case";
 import { getOrbitCaseAttachmentById } from "@repo/orbit-case/server";
 import { readPrivateBlob } from "@repo/storage";
+import { buildOrbitCaseAttachmentDeliveryHeaders } from "@/lib/orbit-case-attachment-delivery";
 
 export const dynamic = "force-dynamic";
 
@@ -47,11 +48,10 @@ export const GET = async (
     }
 
     return new Response(file.stream, {
-      headers: {
-        "Content-Type": attachment.contentType,
-        "Content-Disposition": `inline; filename="${attachment.fileName.replaceAll('"', "")}"`,
-        "Cache-Control": "private, no-store",
-      },
+      headers: buildOrbitCaseAttachmentDeliveryHeaders({
+        contentType: attachment.contentType,
+        fileName: attachment.fileName,
+      }),
     });
   } catch {
     return apiError("internal_error", "Internal server error", 500);

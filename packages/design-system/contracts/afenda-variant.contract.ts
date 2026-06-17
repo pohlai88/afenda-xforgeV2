@@ -42,6 +42,30 @@ export const AFENDA_SIZES = ["xs", "sm", "md", "lg", "xl"] as const;
 
 export type AfendaSize = (typeof AFENDA_SIZES)[number];
 
+export const AFENDA_COMPONENT_SIZE_VARIANTS = [
+  "compact",
+  "default",
+  "icon",
+  "icon-sm",
+  "icon-lg",
+] as const;
+
+export type AfendaComponentSizeVariant =
+  (typeof AFENDA_COMPONENT_SIZE_VARIANTS)[number];
+
+export const AFENDA_TEXT_COLOR_VARIANTS = [
+  "primary",
+  "secondary",
+  "tertiary",
+  "info",
+  "success",
+  "warning",
+  "critical",
+] as const;
+
+export type AfendaTextColorVariant =
+  (typeof AFENDA_TEXT_COLOR_VARIANTS)[number];
+
 export const AFENDA_ACTION_VARIANTS = [
   "primary",
   "secondary",
@@ -53,11 +77,15 @@ export const AFENDA_ACTION_VARIANTS = [
 export type AfendaActionVariant = (typeof AFENDA_ACTION_VARIANTS)[number];
 
 export const AFENDA_STRUCTURAL_VARIANTS = [
+  "body",
+  "caption",
   "default",
   "icon",
   "icon-sm",
   "label",
   "legend",
+  "medium",
+  "metadata",
   "panel",
   "plain",
   "sidebar",
@@ -66,6 +94,7 @@ export const AFENDA_STRUCTURAL_VARIANTS = [
   "outline",
   "soft",
   "solid",
+  "title",
 ] as const;
 
 export type AfendaStructuralVariant =
@@ -73,8 +102,10 @@ export type AfendaStructuralVariant =
 
 export const AFENDA_VARIANT_IDENTITY_REGISTRY = {
   actionVariants: AFENDA_ACTION_VARIANTS,
+  componentSizeVariants: AFENDA_COMPONENT_SIZE_VARIANTS,
   densities: AFENDA_DENSITIES,
   structuralVariants: AFENDA_STRUCTURAL_VARIANTS,
+  textColorVariants: AFENDA_TEXT_COLOR_VARIANTS,
   tones: AFENDA_TONES,
 } as const;
 
@@ -174,6 +205,8 @@ export const afendaVariantContract = {
   densities: AFENDA_DENSITIES,
   emphasis: AFENDA_EMPHASIS,
   sizes: AFENDA_SIZES,
+  componentSizeVariants: AFENDA_COMPONENT_SIZE_VARIANTS,
+  textColorVariants: AFENDA_TEXT_COLOR_VARIANTS,
   actionVariants: AFENDA_ACTION_VARIANTS,
   structuralVariants: AFENDA_STRUCTURAL_VARIANTS,
   variantIdentityRegistry: AFENDA_VARIANT_IDENTITY_REGISTRY,

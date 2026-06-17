@@ -11,7 +11,7 @@ const textVariants = cva("min-w-0", {
       center: "text-center",
       end: "text-right",
     },
-    tone: {
+    color: {
       primary: "text-text-primary",
       secondary: "text-text-secondary",
       tertiary: "text-text-tertiary",
@@ -35,14 +35,14 @@ const textVariants = cva("min-w-0", {
   },
   defaultVariants: {
     align: "start",
-    tone: "primary",
+    color: "primary",
     truncate: false,
     variant: "body",
   },
 });
 
 interface TextProps
-  extends React.ComponentProps<"p">,
+  extends Omit<React.ComponentProps<"p">, "color">,
     VariantProps<typeof textVariants> {
   readonly asChild?: boolean;
 }
@@ -51,7 +51,7 @@ function Text({
   align,
   asChild = false,
   className,
-  tone,
+  color,
   truncate,
   variant,
   ...props
@@ -61,7 +61,7 @@ function Text({
   return (
     <Comp
       className={cn(
-        textVariants({ align, tone, truncate, variant }),
+        textVariants({ align, color, truncate, variant }),
         className
       )}
       data-slot="text"

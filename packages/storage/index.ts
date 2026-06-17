@@ -25,3 +25,7 @@ export {
   resolvePublicBlobToken,
   resolvePublicStoreId,
 } from "./keys";
+export {
+  resolveHandleUploadToken,
+  type BlobHandleUploadAccess,
+} from "./handle-upload";

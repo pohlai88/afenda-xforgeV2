@@ -22,6 +22,7 @@
     "@repo/internationalization": "workspace:*",
     "@repo/next-config": "workspace:*",
     "@repo/observability": "workspace:*",
+    "@repo/orbit-case": "workspace:*",
     "@repo/rate-limit": "workspace:*",
     "@repo/security": "workspace:*",
     "@repo/seo": "workspace:*",

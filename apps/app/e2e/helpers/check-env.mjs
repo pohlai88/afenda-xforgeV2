@@ -47,13 +47,13 @@ console.log(
 console.log(`  XFORGE_STORE_ID: ${blobStatus.privateStoreId ? "yes" : "no"}`);
 console.log(
   blobStatus.readyForUploadTests
-    ? "Orbit Case upload E2E: will run"
-    : "Orbit Case upload E2E: will SKIP — need token + public store id (pnpm env:sync)"
+    ? "Orbit Case public upload E2E: will run"
+    : "Orbit Case public upload E2E: will SKIP — need token + public store id (pnpm env:sync)"
 );
 console.log(
   blobStatus.readyForPrivateBlob
-    ? "Private blob probes: ready (pnpm blob:probe:private)"
-    : "Private blob probes: need token + XFORGE_STORE_ID"
+    ? "Orbit Case private upload E2E: will run"
+    : "Orbit Case private upload E2E: will SKIP — need private token + XFORGE_STORE_ID"
 );
 
 if (!status.readyForIntegrationTests) {

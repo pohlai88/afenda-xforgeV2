@@ -611,7 +611,7 @@ type RiskEvidencePanelProps = ComponentProps<"section"> & {
   readonly metrics: readonly StatsMetric[];
   readonly progress?: {
     readonly label: string;
-    readonly tone?: "brand" | "success" | "warning" | "critical" | "neutral";
+    readonly tone?: "info" | "success" | "warning" | "critical" | "neutral";
     readonly value: number;
   };
   readonly title?: ReactNode;

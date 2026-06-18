@@ -197,6 +197,34 @@
       "when": 1720785600000,
       "tag": "0027_orbit_case_attachment_access",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1720872000000,
+      "tag": "0028_orbit_push_capabilities_align",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1720958400000,
+      "tag": "0029_orbit_meeting_requests",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1721044800000,
+      "tag": "0030_orbit_approval_requests",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1721131200000,
+      "tag": "0031_orbit_remaining_morph_requests",
+      "breakpoints": true
     }
   ]
 }

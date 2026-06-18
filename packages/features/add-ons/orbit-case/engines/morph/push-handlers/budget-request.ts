@@ -1,7 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { database } from "@repo/database";
 import { orbitBudgetRequest } from "@repo/database/schema";
-import { ORBIT_BUDGET_REQUEST_TARGET_TYPE } from "../../../contract/link-projection";
+import { ORBIT_BUDGET_REQUEST_TARGET_TYPE } from "../../../contract/morph-target-types";
 import type { ExecutePushInput } from "../../../contract/push.schema";
 import type { ExecutePushContext, PushHandlerMeta } from "../push-types";
 

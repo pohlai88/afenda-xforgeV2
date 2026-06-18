@@ -2,6 +2,8 @@ import withBundleAnalyzer from "@next/bundle-analyzer";
 import type { NextConfig } from "next";
 
 export const config: NextConfig = {
+  transpilePackages: ["@repo/analytics", "@repo/observability"],
+
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

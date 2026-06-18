@@ -171,6 +171,7 @@ export const SignUp = () => {
       <AlternativeAuthMethods mode="sign-up" onError={setFormError} />
       <form
         className={cn("flex flex-col", recipe("sectionGap"))}
+        method="post"
         noValidate
         onSubmit={handleSignUp}
       >

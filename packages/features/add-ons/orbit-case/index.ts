@@ -1,19 +1,10 @@
 /** Client-safe barrel — DTOs, schemas, serializers. Server records: `@repo/orbit-case/server`. */
-export type {
-  CreateOrbitCaseInput,
-  ListOrbitCasesFilter,
-  UpdateOrbitCaseInput,
-} from "./contract/orbit-case.schema";
 export {
-  assignOrbitCaseSchema,
   createOrbitCaseAttachmentSchema,
   createOrbitCaseCommentSchema,
   createOrbitCaseSchema,
   deleteOrbitCaseAttachmentSchema,
   deleteOrbitCaseSchema,
-  getOrbitCaseSchema,
-  listOrbitCaseActivitySchema,
-  listOrbitCaseAttachmentsSchema,
   listOrbitCasesFilterSchema,
   orbitCaseCalendarBoardSchema,
   orbitCasePrioritySchema,
@@ -31,9 +22,10 @@ export type {
   OrbitCaseDto,
   OrbitCaseTimelineDto,
   OrbitBudgetRequestDto,
+  OrbitMeetingRequestDto,
+  OrbitApprovalRequestDto,
   OrbitObjectLinkDto,
   OrbitObjectLinkProjectionDto,
-  PushResultDto,
 } from "./contract/orbit-case.types";
 export {
   ORBIT_CASE_BLOB_ACCESS,
@@ -59,16 +51,15 @@ export type {
   OrbitCaseAttachmentUploadClientPayload,
   OrbitCaseAttachmentUploadTokenPayload,
 } from "./contract/attachment-upload";
-export { formatOrbitCaseActivitySummary } from "./contract/activity-format";
 export {
   formatOrbitCaseAttachmentSize,
   formatOrbitCaseDueDateLabel,
 } from "./contract/format-display";
-export { parseOrbitCasePriority, parseOrbitCaseStatus } from "./contract/parse";
 export type {
   ExecutePushInput,
   OrbitPushCapability,
   PushDestinationDefinition,
+  PushResultDto,
 } from "./contract/push.schema";
 export {
   executePushSchema,
@@ -77,7 +68,6 @@ export {
   pushDestinationSchema,
 } from "./contract/push.schema";
 export {
-  toJsonSafeActivityPayload,
   toOrbitCaseActivityDto,
   toOrbitCaseAttachmentDto,
   toOrbitCaseBoardDto,
@@ -86,29 +76,40 @@ export {
   toOrbitCaseDto,
   toOrbitCaseTimelineDto,
   toOrbitBudgetRequestDto,
+  toOrbitMeetingRequestDto,
+  toOrbitApprovalRequestDto,
   toOrbitObjectLinkDto,
   toOrbitObjectLinkProjectionDto,
 } from "./contract/serialize";
-export { ORBIT_BUDGET_REQUEST_TARGET_TYPE } from "./contract/link-projection";
+export {
+  listRoutedMorphSlices,
+  readMorphRequestFieldValue,
+  resolveRoutedMorphSliceBySegment,
+  toOrbitMorphRequestDto,
+} from "./contract/morph-request-shared";
+export type {
+  OrbitMorphRequestDto,
+  OrbitMorphRequestRecord,
+} from "./contract/morph-request-shared";
+export {
+  ORBIT_APPROVAL_REQUEST_TARGET_TYPE,
+  ORBIT_BUDGET_REQUEST_TARGET_TYPE,
+  ORBIT_MEETING_REQUEST_TARGET_TYPE,
+  resolveMorphSliceByDestinationId,
+  resolveMorphSliceByTargetType,
+} from "./contract/morph-target-types";
 export type { OrbitCasePriority, OrbitCaseStatus } from "./contract/status";
 export {
-  ORBIT_CASE_ACTIVE_STATUSES,
   ORBIT_CASE_BOARD_COLUMNS,
   ORBIT_CASE_PRIORITIES,
   ORBIT_CASE_STATUSES,
 } from "./contract/status";
 export type { PushTemplateDefinition } from "./contract/template.schema";
 export {
-  pushTemplateSchema,
-  templateFieldSchema,
-} from "./contract/template.schema";
-export {
   ORBIT_EVENT_CASE_CREATED,
   ORBIT_EVENT_CASE_PUSHED,
   buildOrbitCaseCreatedEvent,
   buildOrbitCasePushedEvent,
-  orbitCaseCreatedEventSchema,
-  orbitCasePushedEventSchema,
 } from "./contract/events";
 export type {
   OrbitCaseCreatedEvent,
@@ -124,7 +125,4 @@ export type {
   UpsertPushDestinationInput,
   UpsertPushTemplateInput,
 } from "./contract/registry.schema";
-export {
-  orbitCaseCapabilitiesForRole,
-  resolveOrbitPushCapabilities,
-} from "./contract/capabilities";
+export { resolveOrbitPushCapabilities } from "./contract/capabilities";

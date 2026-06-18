@@ -1,6 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 import { e2eEmail } from "./helpers/credentials";
 import { getPlaywrightBaseUrl } from "./helpers/load-env";
+import { gotoPasswordSignIn } from "./helpers/sign-in";
 import {
   buildConfirmUrl,
   createE2eEmail,
@@ -24,7 +25,8 @@ const SIGN_UP_SUCCESS_URL_PATTERN = /\/sign-up-success$/;
 const SIGN_UP_URL_PATTERN = /\/sign-up$/;
 const UPDATE_PASSWORD_URL_PATTERN = /\/update-password$/;
 const VERIFICATION_LINK_COPY_PATTERN =
-  /verification link to confirm your email/i;
+  /verification link to confirm your account/i;
+const SEND_SIGN_IN_EMAIL_BUTTON_PATTERN = /Send sign-in email/i;
 
 const fillSignUpPassword = async (page: Page, value: string) => {
   await page.locator("#sign-up-password").fill(value);
@@ -52,18 +54,17 @@ test.describe("Email authentication UI @auth", () => {
     await fillSignUpPassword(page, "short");
     await page.getByRole("button", { name: "Create account" }).click();
 
-    await expect(page.locator("#sign-up-error")).toContainText(
-      PASSWORD_REQUIREMENT_COPY_PATTERN
-    );
+    await expect(
+      page.getByText(PASSWORD_REQUIREMENT_COPY_PATTERN)
+    ).toBeVisible();
     await expect(page).toHaveURL(SIGN_UP_URL_PATTERN);
   });
 
   test("sign-in exposes magic link mode for email auth", async ({ page }) => {
     await page.goto("/sign-in");
-    await page.getByRole("button", { name: "Use email link instead" }).click();
 
     await expect(
-      page.getByRole("button", { name: "Send sign-in link" })
+      page.getByRole("button", { name: SEND_SIGN_IN_EMAIL_BUTTON_PATTERN })
     ).toBeVisible();
     await expect(
       page.getByRole("button", { name: "Use password instead" })
@@ -74,9 +75,10 @@ test.describe("Email authentication UI @auth", () => {
     page,
   }) => {
     await page.goto("/sign-in");
-    await page.getByRole("button", { name: "Use email link instead" }).click();
     await page.getByLabel("Email").fill(e2eEmail);
-    await page.getByRole("button", { name: "Send sign-in link" }).click();
+    await page
+      .getByRole("button", { name: SEND_SIGN_IN_EMAIL_BUTTON_PATTERN })
+      .click();
 
     await expect(
       page.getByText(CHECK_EMAIL_SIGN_IN_COPY_PATTERN)
@@ -144,9 +146,9 @@ test.describe("Email authentication (Supabase integration) @auth", () => {
     try {
       await createUnconfirmedUser(email, password);
 
-      await page.goto("/sign-in");
+      const passwordField = await gotoPasswordSignIn(page);
       await page.getByLabel("Email").fill(email);
-      await page.locator("#sign-in-password").fill(password);
+      await passwordField.fill(password);
       await page.getByRole("button", { name: "Sign in" }).click();
 
       await expect(

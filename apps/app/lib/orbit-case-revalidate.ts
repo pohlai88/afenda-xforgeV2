@@ -1,4 +1,8 @@
-import { getOrbitCaseCacheTags } from "@repo/orbit-case/revalidate";
+import {
+  getOrbitCaseBudgetCacheTags,
+  getOrbitCaseCacheTags,
+  getOrbitCaseMorphCacheTags,
+} from "@repo/orbit-case/revalidate";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 export interface RevalidateOrbitCaseInput {
@@ -20,7 +24,29 @@ export const revalidateOrbitCaseMutation = (
   }
 };
 
-export const revalidateOrbitCaseBudgetMutation = (budgetId: string): void => {
-  revalidatePath("/orbit-case/budget");
-  revalidatePath(`/orbit-case/budget/${budgetId}`);
+export const revalidateOrbitCaseMorphMutation = (
+  segment: string,
+  organizationId: string,
+  targetId: string
+): void => {
+  revalidatePath(`/orbit-case/${segment}`);
+  revalidatePath(`/orbit-case/${segment}/${targetId}`);
+
+  for (const tag of getOrbitCaseMorphCacheTags(segment, organizationId)) {
+    revalidateTag(tag, "max");
+  }
+};
+
+export const revalidateOrbitCaseBudgetMutation = (
+  organizationId: string,
+  budgetId: string
+): void => {
+  revalidateOrbitCaseMorphMutation("budget", organizationId, budgetId);
+};
+
+export const revalidateOrbitCaseMeetingMutation = (
+  organizationId: string,
+  meetingId: string
+): void => {
+  revalidateOrbitCaseMorphMutation("meeting", organizationId, meetingId);
 };

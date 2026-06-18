@@ -2,6 +2,10 @@ import { withLogtail } from "@logtail/next";
 import { withSentryConfig } from "@sentry/nextjs";
 import { keys } from "./keys";
 
+interface TranspilableNextConfig {
+  transpilePackages?: string[];
+}
+
 export const sentryConfig: Parameters<typeof withSentryConfig>[1] = {
   org: keys().SENTRY_ORG,
   project: keys().SENTRY_PROJECT,
@@ -41,13 +45,18 @@ export const sentryConfig: Parameters<typeof withSentryConfig>[1] = {
   },
 };
 
-export const withSentry = (sourceConfig: object): object => {
+export const withSentry = <TConfig extends object & TranspilableNextConfig>(
+  sourceConfig: TConfig
+): TConfig => {
   const configWithTranspile = {
     ...sourceConfig,
-    transpilePackages: ["@sentry/nextjs"],
+    transpilePackages: [
+      ...new Set([...(sourceConfig.transpilePackages ?? []), "@sentry/nextjs"]),
+    ],
   };
 
-  return withSentryConfig(configWithTranspile, sentryConfig);
+  return withSentryConfig(configWithTranspile, sentryConfig) as TConfig;
 };
 
-export const withLogging = (config: object): object => withLogtail(config);
+export const withLogging = <TConfig extends object>(config: TConfig): TConfig =>
+  withLogtail(config) as TConfig;

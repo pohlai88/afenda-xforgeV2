@@ -124,20 +124,41 @@ export type OrbitBudgetRequestDto = Omit<OrbitBudgetRequestRecord, "createdAt"> 
   createdAt: string;
 };
 
-export type PushResultDto =
-  | {
-      ok: true;
-      pushEventId: string;
-      targetType: string;
-      targetId: string;
-      linkId: string;
-      cached: boolean;
-    }
-  | {
-      ok: false;
-      code: "destination_not_registered" | "missing_fields" | "forbidden";
-      missingFields?: string[];
-    };
+export interface OrbitMeetingRequestRecord {
+  createdAt: Date;
+  createdBy: string;
+  id: string;
+  location: string | null;
+  organizationId: string;
+  originCaseId: string;
+  scheduledAt: string | null;
+  title: string;
+}
+
+export type OrbitMeetingRequestDto = Omit<
+  OrbitMeetingRequestRecord,
+  "createdAt"
+> & {
+  createdAt: string;
+};
+
+export interface OrbitApprovalRequestRecord {
+  amount: string | null;
+  approver: string | null;
+  createdAt: Date;
+  createdBy: string;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  title: string;
+}
+
+export type OrbitApprovalRequestDto = Omit<
+  OrbitApprovalRequestRecord,
+  "createdAt"
+> & {
+  createdAt: string;
+};
 
 export interface OrbitCaseBoardColumn {
   cases: OrbitCaseRecord[];

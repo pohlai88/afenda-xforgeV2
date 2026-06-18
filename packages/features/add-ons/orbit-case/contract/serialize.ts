@@ -1,7 +1,15 @@
 import { formatOrbitCaseActivitySummary } from "./activity-format";
+import {
+  readOrbitObjectLinkLabel,
+  resolveOrbitMorphLinkHref,
+} from "./link-projection-registry";
 import type {
   OrbitBudgetRequestDto,
   OrbitBudgetRequestRecord,
+  OrbitMeetingRequestDto,
+  OrbitMeetingRequestRecord,
+  OrbitApprovalRequestDto,
+  OrbitApprovalRequestRecord,
   OrbitCaseActivityDto,
   OrbitCaseActivityRecord,
   OrbitCaseAttachmentDto,
@@ -18,6 +26,7 @@ import type {
   OrbitCaseTimelineDto,
   OrbitCaseTimelineResult,
   OrbitObjectLinkDto,
+  OrbitObjectLinkProjectionDto,
   OrbitObjectLinkRecord,
 } from "./orbit-case.types";
 
@@ -106,7 +115,42 @@ export const toOrbitBudgetRequestDto = (
   title: record.title,
 });
 
-export { toOrbitObjectLinkProjectionDto } from "./link-projection";
+export const toOrbitMeetingRequestDto = (
+  record: OrbitMeetingRequestRecord
+): OrbitMeetingRequestDto => ({
+  createdAt: record.createdAt.toISOString(),
+  createdBy: record.createdBy,
+  id: record.id,
+  location: record.location,
+  organizationId: record.organizationId,
+  originCaseId: record.originCaseId,
+  scheduledAt: record.scheduledAt,
+  title: record.title,
+});
+
+export const toOrbitApprovalRequestDto = (
+  record: OrbitApprovalRequestRecord
+): OrbitApprovalRequestDto => ({
+  amount: record.amount,
+  approver: record.approver,
+  createdAt: record.createdAt.toISOString(),
+  createdBy: record.createdBy,
+  id: record.id,
+  organizationId: record.organizationId,
+  originCaseId: record.originCaseId,
+  title: record.title,
+});
+
+export const toOrbitObjectLinkProjectionDto = (
+  link: OrbitObjectLinkDto
+): OrbitObjectLinkProjectionDto => ({
+  createdAt: link.createdAt,
+  href: resolveOrbitMorphLinkHref(link.targetType, link.targetId),
+  id: link.id,
+  label: readOrbitObjectLinkLabel(link),
+  targetId: link.targetId,
+  targetType: link.targetType,
+});
 
 export const toOrbitCaseBoardDto = (
   board: OrbitCaseBoardResult
@@ -139,7 +183,12 @@ export const toOrbitCaseTimelineDto = (
   })),
 });
 
+const isPlainRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === "object" && value !== null && !Array.isArray(value);
+
 export const toJsonSafeActivityPayload = (
   payload: object
-): Record<string, unknown> =>
-  JSON.parse(JSON.stringify(payload)) as Record<string, unknown>;
+): Record<string, unknown> => {
+  const parsed: unknown = JSON.parse(JSON.stringify(payload));
+  return isPlainRecord(parsed) ? parsed : {};
+};

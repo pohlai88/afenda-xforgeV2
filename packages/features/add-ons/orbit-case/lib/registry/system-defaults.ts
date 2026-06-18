@@ -1,3 +1,4 @@
+import { listMorphSlicesWithSystemDefaults } from "../../contract/morph-destination-manifest";
 import { registerPushDestination } from "./push-destination-registry";
 import { registerPushTemplate } from "./template-registry";
 
@@ -8,33 +9,24 @@ export const ensureSystemPushDefaults = (): void => {
     return;
   }
 
-  registerPushDestination({
-    id: "budget-request",
-    label: "Budget Request",
-    templateId: "budget-request-template",
-    requiredCapabilities: ["budget"],
-    visibleToRoles: ["owner", "editor"],
-  });
+  for (const slice of listMorphSlicesWithSystemDefaults()) {
+    const templateId = `${slice.destinationId}-template`;
 
-  registerPushTemplate({
-    id: "budget-request-template",
-    destinationId: "budget-request",
-    label: "Budget Request",
-    fields: [
-      {
-        key: "title",
-        label: "Title",
-        type: "text",
-        required: true,
-      },
-      {
-        key: "amount",
-        label: "Amount",
-        type: "text",
-        required: false,
-      },
-    ],
-  });
+    registerPushDestination({
+      id: slice.destinationId,
+      label: slice.label,
+      templateId,
+      requiredCapabilities: [slice.capability],
+      visibleToRoles: [...slice.visibleToRoles],
+    });
+
+    registerPushTemplate({
+      id: templateId,
+      destinationId: slice.destinationId,
+      label: slice.label,
+      fields: [...slice.templateFields],
+    });
+  }
 
   registered = true;
 };

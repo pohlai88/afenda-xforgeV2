@@ -1,13 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const db = vi.hoisted(() => {
-  const { createRequire } =
-    require("node:module") as typeof import("node:module");
-  const req = createRequire(import.meta.url);
-  const { createUpdateDatabaseMock } = req(
-    "../../../test-support/mock-database.ts"
-  ) as typeof import("../../../test-support/mock-database.ts");
-  return createUpdateDatabaseMock(vi.fn);
+  const where = vi.fn();
+  const set = vi.fn(() => ({ where }));
+  const update = vi.fn(() => ({ set }));
+
+  return {
+    database: {
+      update,
+    },
+  };
 });
 
 vi.mock("@repo/database", () => ({

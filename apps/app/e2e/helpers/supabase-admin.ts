@@ -215,16 +215,7 @@ export const getE2eUserHealth = async (
 
   let organizationId: string | undefined;
   try {
-    const memberships = await adminRequest<OrganizationMemberRow[]>(
-      `/rest/v1/organization_members?select=organizationId&userId=eq.${user.id}&limit=1`,
-      {
-        headers: {
-          Accept: "application/json",
-          "Accept-Profile": "next_forge",
-        },
-      }
-    );
-    organizationId = memberships[0]?.organizationId;
+    organizationId = await findOrganizationMembershipForUser(user.id);
   } catch {
     // membership probe is best-effort for env reporting
   }
@@ -245,3 +236,155 @@ export const isE2eUserReadyForAuthenticatedTests = (
   health: E2eUserHealth
 ): boolean =>
   health.exists && health.emailConfirmed && Boolean(health.organizationId);
+
+interface EnsureE2eAuthUserInput {
+  displayName?: string;
+  email: string;
+  password: string;
+}
+
+const fetchE2eAdminUserById = async (
+  userId: string
+): Promise<E2eAdminUserRecord> =>
+  adminRequest<E2eAdminUserRecord>(`/auth/v1/admin/users/${userId}`);
+
+const findOrganizationMembershipForUser = async (
+  userId: string
+): Promise<string | undefined> => {
+  try {
+    const memberships = await adminRequest<OrganizationMemberRow[]>(
+      `/rest/v1/organization_members?select=organizationId&userId=eq.${userId}&limit=1`,
+      {
+        headers: {
+          Accept: "application/json",
+          "Accept-Profile": "next_forge",
+        },
+      }
+    );
+
+    return memberships[0]?.organizationId;
+  } catch (error) {
+    console.warn(
+      "Could not query organization_members:",
+      error instanceof Error ? error.message : String(error)
+    );
+    return undefined;
+  }
+};
+
+const syncE2eUserActiveOrganization = async (userId: string): Promise<void> => {
+  const userBody = await fetchE2eAdminUserById(userId);
+
+  if (userBody.user_metadata?.activeOrganizationId) {
+    return;
+  }
+
+  const organizationId = await findOrganizationMembershipForUser(userId);
+
+  if (!organizationId) {
+    console.warn(
+      "E2E user has no organization membership to sync metadata from"
+    );
+    return;
+  }
+
+  const metadataResponse = await adminRequest<unknown>(
+    `/auth/v1/admin/users/${userId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        user_metadata: {
+          ...(userBody.user_metadata ?? {}),
+          name: userBody.user_metadata?.name ?? "E2E Playwright",
+          activeOrganizationId: organizationId,
+        },
+      }),
+    }
+  ).catch(async (error) => {
+    console.warn(
+      "Could not sync E2E active organization metadata:",
+      error instanceof Error ? error.message : String(error)
+    );
+    return null;
+  });
+
+  if (metadataResponse === null) {
+    return;
+  }
+};
+
+const createE2eAuthUser = async ({
+  displayName,
+  email,
+  password,
+}: EnsureE2eAuthUserInput): Promise<string> => {
+  const createBody = await adminRequest<{ id?: string; user?: { id?: string } }>(
+    "/auth/v1/admin/users",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        password,
+        email_confirm: true,
+        user_metadata: { name: displayName ?? "E2E Playwright" },
+      }),
+    }
+  );
+
+  const userId = createBody.id ?? createBody.user?.id;
+
+  if (!userId) {
+    throw new Error("Could not resolve E2E user id");
+  }
+
+  return userId;
+};
+
+const syncExistingE2eAuthUser = async (
+  existing: E2eAdminUserRecord,
+  input: EnsureE2eAuthUserInput
+): Promise<string> => {
+  const { url, serviceRoleKey } = getSupabaseAdminEnv();
+  const updateResponse = await fetch(`${url}/auth/v1/admin/users/${existing.id}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${serviceRoleKey}`,
+      apikey: serviceRoleKey,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      password: input.password,
+      email_confirm: true,
+      user_metadata: {
+        name: input.displayName ?? "E2E Playwright",
+        activeOrganizationId:
+          existing.user_metadata?.activeOrganizationId ?? undefined,
+      },
+    }),
+  });
+
+  if (!updateResponse.ok) {
+    console.warn(
+      "E2E user password sync skipped:",
+      updateResponse.status,
+      await updateResponse.text()
+    );
+  }
+
+  return existing.id;
+};
+
+export const ensureE2eAuthUser = async (
+  input: EnsureE2eAuthUserInput
+): Promise<string> => {
+  const list = await adminRequest<{ users?: E2eAdminUserRecord[] }>(
+    "/auth/v1/admin/users"
+  );
+  const existing = list.users?.find((user) => user.email === input.email);
+  const userId = existing
+    ? await syncExistingE2eAuthUser(existing, input)
+    : await createE2eAuthUser(input);
+
+  await syncE2eUserActiveOrganization(userId);
+  return userId;
+};

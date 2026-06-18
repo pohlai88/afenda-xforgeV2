@@ -45,11 +45,6 @@ export const listOrbitCasesFilterSchema = z.object({
 
 export type ListOrbitCasesFilter = z.infer<typeof listOrbitCasesFilterSchema>;
 
-export const assignOrbitCaseSchema = z.object({
-  caseId: z.string().min(1),
-  assigneeId: z.string().min(1).nullable(),
-});
-
 export const watchOrbitCaseSchema = z.object({
   caseId: z.string().min(1),
   watching: z.boolean(),
@@ -65,14 +60,6 @@ export const deleteOrbitCaseSchema = z.object({
   hard: z.boolean().optional(),
 });
 
-export const getOrbitCaseSchema = z.object({
-  caseId: z.string().min(1),
-});
-
-export const listOrbitCaseActivitySchema = z.object({
-  caseId: z.string().min(1),
-});
-
 export const createOrbitCaseAttachmentSchema = z.object({
   caseId: z.string().min(1),
   fileName: z.string().trim().min(1).max(255),
@@ -85,10 +72,6 @@ export const createOrbitCaseAttachmentSchema = z.object({
 
 export const deleteOrbitCaseAttachmentSchema = z.object({
   attachmentId: z.string().min(1),
-});
-
-export const listOrbitCaseAttachmentsSchema = z.object({
-  caseId: z.string().min(1),
 });
 
 export const orbitCaseCalendarBoardSchema = z.object({

@@ -4,13 +4,19 @@ import {
   orbitBudgetRequest,
   orbitCase,
   orbitCaseActivity,
+  orbitApprovalRequest,
+  orbitMeetingRequest,
+  orbitPurchaseRequest,
   orbitObjectLink,
   orbitPushEvent,
   organization,
 } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
+import { getPurchaseRequestById } from "../../engines/morph/remaining-morph-requests";
+import { getApprovalRequestById } from "../../engines/approval/approval-requests";
 import { getBudgetRequestById } from "../../engines/budget/budget-requests";
+import { getMeetingRequestById } from "../../engines/meeting/meeting-requests";
 import { executePush } from "../../engines/morph/push-orchestrator";
 import { createOrbitCase } from "../../engines/work/orbit-cases";
 import {
@@ -29,6 +35,9 @@ const createdOrgIds: string[] = [];
 const createdCaseIds: string[] = [];
 const createdPushEventIds: string[] = [];
 const createdBudgetIds: string[] = [];
+const createdMeetingIds: string[] = [];
+const createdApprovalIds: string[] = [];
+const createdPurchaseIds: string[] = [];
 const createdLinkIds: string[] = [];
 
 afterEach(async () => {
@@ -48,6 +57,24 @@ afterEach(async () => {
     await database
       .delete(orbitBudgetRequest)
       .where(eq(orbitBudgetRequest.id, budgetId));
+  }
+
+  for (const meetingId of createdMeetingIds.splice(0)) {
+    await database
+      .delete(orbitMeetingRequest)
+      .where(eq(orbitMeetingRequest.id, meetingId));
+  }
+
+  for (const approvalId of createdApprovalIds.splice(0)) {
+    await database
+      .delete(orbitApprovalRequest)
+      .where(eq(orbitApprovalRequest.id, approvalId));
+  }
+
+  for (const purchaseId of createdPurchaseIds.splice(0)) {
+    await database
+      .delete(orbitPurchaseRequest)
+      .where(eq(orbitPurchaseRequest.id, purchaseId));
   }
 
   for (const caseId of createdCaseIds.splice(0)) {
@@ -195,5 +222,205 @@ describe.skipIf(!hasDatabase)("orbit case push idempotency", () => {
     );
 
     expect(result).toEqual({ ok: false, code: "forbidden" });
+  });
+
+  it("allows member to push meeting when capability is present", async () => {
+    clearPushDestinations();
+    clearPushTemplates();
+
+    registerPushDestination({
+      id: "meeting-request",
+      label: "Meeting Request",
+      templateId: "meeting-request-template",
+      requiredCapabilities: ["meeting"],
+      visibleToRoles: ["owner", "editor", "member"],
+    });
+
+    registerPushTemplate({
+      id: "meeting-request-template",
+      destinationId: "meeting-request",
+      label: "Meeting Request",
+      fields: [{ key: "title", label: "Title", type: "text", required: true }],
+    });
+
+    const orgId = createId();
+    createdOrgIds.push(orgId);
+    const now = new Date();
+
+    await database.insert(organization).values({
+      id: orgId,
+      name: "Meeting Push Org",
+      updatedAt: now,
+    });
+
+    const created = await createOrbitCase(orgId, "user_member", {
+      title: "Meeting push case",
+    });
+    createdCaseIds.push(created.id);
+
+    const result = await executePush(
+      {
+        organizationId: orgId,
+        actorId: "user_member",
+        role: "member",
+        userCapabilities: ["meeting"],
+      },
+      {
+        caseId: created.id,
+        destinationId: "meeting-request",
+        idempotencyKey: createId(),
+        fieldValues: {
+          title: "Meeting push case",
+          location: "Room A",
+        },
+      }
+    );
+
+    expect(result.ok).toBe(true);
+
+    if (result.ok) {
+      createdPushEventIds.push(result.pushEventId);
+      createdMeetingIds.push(result.targetId);
+      createdLinkIds.push(result.linkId);
+
+      const meeting = await getMeetingRequestById(orgId, result.targetId);
+      expect(meeting?.originCaseId).toBe(created.id);
+      expect(meeting?.title).toBe("Meeting push case");
+      expect(meeting?.location).toBe("Room A");
+    }
+  });
+
+  it("allows editor to push approval when capability is present", async () => {
+    clearPushDestinations();
+    clearPushTemplates();
+
+    registerPushDestination({
+      id: "approval-request",
+      label: "Approval Request",
+      templateId: "approval-request-template",
+      requiredCapabilities: ["approval"],
+      visibleToRoles: ["owner", "editor"],
+    });
+
+    registerPushTemplate({
+      id: "approval-request-template",
+      destinationId: "approval-request",
+      label: "Approval Request",
+      fields: [{ key: "title", label: "Title", type: "text", required: true }],
+    });
+
+    const orgId = createId();
+    createdOrgIds.push(orgId);
+    const now = new Date();
+
+    await database.insert(organization).values({
+      id: orgId,
+      name: "Approval Push Org",
+      updatedAt: now,
+    });
+
+    const created = await createOrbitCase(orgId, "user_editor", {
+      title: "Approval push case",
+    });
+    createdCaseIds.push(created.id);
+
+    const result = await executePush(
+      {
+        organizationId: orgId,
+        actorId: "user_editor",
+        role: "editor",
+        userCapabilities: ["approval"],
+      },
+      {
+        caseId: created.id,
+        destinationId: "approval-request",
+        idempotencyKey: createId(),
+        fieldValues: {
+          title: "Approval push case",
+          approver: "CFO",
+          amount: "RM10000",
+        },
+      }
+    );
+
+    expect(result.ok).toBe(true);
+
+    if (result.ok) {
+      createdPushEventIds.push(result.pushEventId);
+      createdApprovalIds.push(result.targetId);
+      createdLinkIds.push(result.linkId);
+
+      const approval = await getApprovalRequestById(orgId, result.targetId);
+      expect(approval?.originCaseId).toBe(created.id);
+      expect(approval?.title).toBe("Approval push case");
+      expect(approval?.approver).toBe("CFO");
+      expect(approval?.amount).toBe("RM10000");
+    }
+  });
+
+  it("allows editor to push purchase when capability is present", async () => {
+    clearPushDestinations();
+    clearPushTemplates();
+
+    registerPushDestination({
+      id: "purchase-request",
+      label: "Purchase Request",
+      templateId: "purchase-request-template",
+      requiredCapabilities: ["purchase"],
+      visibleToRoles: ["owner", "editor"],
+    });
+
+    registerPushTemplate({
+      id: "purchase-request-template",
+      destinationId: "purchase-request",
+      label: "Purchase Request",
+      fields: [{ key: "title", label: "Title", type: "text", required: true }],
+    });
+
+    const orgId = createId();
+    createdOrgIds.push(orgId);
+    const now = new Date();
+
+    await database.insert(organization).values({
+      id: orgId,
+      name: "Purchase Push Org",
+      updatedAt: now,
+    });
+
+    const created = await createOrbitCase(orgId, "user_editor", {
+      title: "Purchase push case",
+    });
+    createdCaseIds.push(created.id);
+
+    const result = await executePush(
+      {
+        organizationId: orgId,
+        actorId: "user_editor",
+        role: "editor",
+        userCapabilities: ["purchase"],
+      },
+      {
+        caseId: created.id,
+        destinationId: "purchase-request",
+        idempotencyKey: createId(),
+        fieldValues: {
+          title: "Purchase push case",
+          vendor: "Acme Corp",
+        },
+      }
+    );
+
+    expect(result.ok).toBe(true);
+
+    if (result.ok) {
+      createdPushEventIds.push(result.pushEventId);
+      createdPurchaseIds.push(result.targetId);
+      createdLinkIds.push(result.linkId);
+
+      const purchase = await getPurchaseRequestById(orgId, result.targetId);
+      expect(purchase?.originCaseId).toBe(created.id);
+      expect(purchase?.title).toBe("Purchase push case");
+      expect(purchase?.values.vendor).toBe("Acme Corp");
+    }
   });
 });

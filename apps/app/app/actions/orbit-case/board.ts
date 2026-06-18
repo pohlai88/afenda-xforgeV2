@@ -5,20 +5,17 @@ import type { AuthActionResult } from "@repo/auth/types";
 import type {
   OrbitCaseBoardDto,
   OrbitCaseCalendarDto,
-  OrbitCaseTimelineDto,
 } from "@repo/orbit-case";
 import {
   orbitCaseCalendarBoardSchema,
   orbitCaseStatusSchema,
   toOrbitCaseBoardDto,
   toOrbitCaseCalendarDto,
-  toOrbitCaseTimelineDto,
   updateOrbitCaseSchema,
 } from "@repo/orbit-case";
 import {
   getOrbitCaseBoard,
   getOrbitCaseCalendar,
-  getOrbitCaseTimeline,
   updateOrbitCaseFields,
 } from "@repo/orbit-case/server";
 import { revalidateOrbitCaseMutation } from "@/lib/orbit-case-revalidate";
@@ -27,13 +24,6 @@ const moveCaseStatusSchema = updateOrbitCaseSchema.pick({
   caseId: true,
   status: true,
 });
-
-export const getBoard = async (): Promise<
-  AuthActionResult<OrbitCaseBoardDto>
-> =>
-  withOrg(async ({ orgId }) =>
-    toOrbitCaseBoardDto(await getOrbitCaseBoard(orgId))
-  );
 
 export const moveCaseStatus = async (
   input: unknown
@@ -58,10 +48,3 @@ export const getCalendarBoard = async (
       await getOrbitCaseCalendar(orgId, parsed.year, parsed.month)
     );
   });
-
-export const getTimelineBoard = async (): Promise<
-  AuthActionResult<OrbitCaseTimelineDto>
-> =>
-  withOrg(async ({ orgId }) =>
-    toOrbitCaseTimelineDto(await getOrbitCaseTimeline(orgId))
-  );

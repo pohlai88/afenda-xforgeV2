@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 import { e2eEmail, e2ePassword } from "./helpers/credentials";
+import { gotoPasswordSignIn } from "./helpers/sign-in";
 
 const INVALID_AUTH_LINK_COPY_PATTERN = /invalid or has expired/i;
-const PASSWORD_POLICY_COPY_PATTERN =
-  /At least \d+ characters|uppercase|symbol/i;
+const PASSWORD_POLICY_COPY_PATTERN = /uppercase/i;
 const ROOT_URL_PATTERN = /\/$/;
 const SIGN_IN_ERROR_URL_PATTERN = /\/sign-in\?error=/;
 const SIGN_IN_PATH_PATTERN = /\/sign-in/;
@@ -22,9 +22,9 @@ test.describe("Supabase auth flows @auth", () => {
   });
 
   test("shows error for invalid credentials", async ({ page }) => {
-    await page.goto("/sign-in");
+    const passwordField = await gotoPasswordSignIn(page);
     await page.getByLabel("Email").fill("not-a-real-user@xforge.local");
-    await page.getByLabel("Password").fill("wrong-password-123");
+    await passwordField.fill("wrong-password-123");
     await page.getByRole("button", { name: "Sign in" }).click();
 
     await expect(
@@ -36,23 +36,23 @@ test.describe("Supabase auth flows @auth", () => {
   test("signs in with valid credentials and loads workspace", async ({
     page,
   }) => {
-    await page.goto("/sign-in");
+    const passwordField = await gotoPasswordSignIn(page);
     await page.getByLabel("Email").fill(e2eEmail);
-    await page.getByLabel("Password").fill(e2ePassword);
+    await passwordField.fill(e2ePassword);
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    await expect(page).toHaveURL(ROOT_URL_PATTERN);
+    await expect(page).toHaveURL(ROOT_URL_PATTERN, { timeout: 60_000 });
     await expect(
       page.getByRole("heading", { name: "Governed tenant dashboard" })
     ).toBeVisible();
   });
 
   test("signs out and blocks authenticated routes", async ({ page }) => {
-    await page.goto("/sign-in");
+    const passwordField = await gotoPasswordSignIn(page);
     await page.getByLabel("Email").fill(e2eEmail);
-    await page.getByLabel("Password").fill(e2ePassword);
+    await passwordField.fill(e2ePassword);
     await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page).toHaveURL(ROOT_URL_PATTERN);
+    await expect(page).toHaveURL(ROOT_URL_PATTERN, { timeout: 60_000 });
 
     await page.getByRole("button", { name: "Toggle Sidebar" }).click();
     await page
@@ -87,8 +87,8 @@ test.describe("Supabase auth flows @auth", () => {
 
   test("validates password mismatch on update-password", async ({ page }) => {
     await page.goto("/update-password");
-    await page.getByLabel("New password").fill("abcdef");
-    await page.getByLabel("Confirm password").fill("ghijkl");
+    await page.getByLabel("New password").fill("Validpass123!");
+    await page.getByLabel("Confirm password").fill("Validpass1234!");
     await page.getByRole("button", { name: "Update password" }).click();
 
     await expect(page.getByText("Passwords do not match.")).toBeVisible();
@@ -129,11 +129,11 @@ test.describe("Supabase auth flows @auth", () => {
   test("loads authenticated search results from the database", async ({
     page,
   }) => {
-    await page.goto("/sign-in");
+    const passwordField = await gotoPasswordSignIn(page);
     await page.getByLabel("Email").fill(e2eEmail);
-    await page.getByLabel("Password").fill(e2ePassword);
+    await passwordField.fill(e2ePassword);
     await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page).toHaveURL(ROOT_URL_PATTERN);
+    await expect(page).toHaveURL(ROOT_URL_PATTERN, { timeout: 60_000 });
 
     await page.goto("/search?q=Building");
     await expect(

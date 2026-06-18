@@ -4,26 +4,18 @@ import {
   orbitPushCapabilitySchema,
   type OrbitPushCapability,
 } from "./push.schema";
+import { ORBIT_PUSH_ROLE_CAPABILITIES } from "./push-role-capabilities";
 
-const EDITOR_CAPABILITIES: OrbitPushCapability[] = [
-  "budget",
-  "meeting",
-  "approval",
-  "task",
-];
-
-const MEMBER_CAPABILITIES: OrbitPushCapability[] = ["meeting", "task"];
-
-export const orbitCaseCapabilitiesForRole = (
+const orbitCaseCapabilitiesForRole = (
   role: OrganizationRole
 ): OrbitPushCapability[] => {
   switch (role) {
     case "owner":
       return [...ORBIT_PUSH_CAPABILITIES];
     case "editor":
-      return EDITOR_CAPABILITIES;
+      return [...ORBIT_PUSH_ROLE_CAPABILITIES.editor];
     case "member":
-      return MEMBER_CAPABILITIES;
+      return [...ORBIT_PUSH_ROLE_CAPABILITIES.member];
     default:
       return [];
   }

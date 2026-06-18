@@ -1,7 +1,7 @@
 # Orbit Case — Requirements & Definition of Done
 
 **Package:** `@repo/orbit-case`  
-**Last updated:** 2026-06-16
+**Last updated:** 2026-06-18
 
 ---
 
@@ -91,9 +91,25 @@ Destinations (incremental): Approval, Meeting, Budget, Purchase, Lead, Complaint
 - [x] UI shows linked projection from case detail
 - [x] E2E: case → push → open target → origin visible
 
+### Per-destination DoD (Meeting Request)
+
+- [x] Template in manifest + registry
+- [x] Target owned by destination module (`engines/meeting/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/meeting-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
+
+### Per-destination DoD (Approval Request)
+
+- [x] Template in manifest + registry
+- [x] Target owned by destination module (`engines/approval/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/approval-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
+
 ### Remaining Phase 3 destinations
 
-Approval, Meeting, Purchase, Lead, Complaint, Risk, Project, Investigation, CAPA, Contract Review — repeat the Budget pattern (handler + read engine + routes + origin + E2E).
+All morph destinations are shipped. See [`PHASE3_COMPLETE.md`](./PHASE3_COMPLETE.md).
 
 ---
 

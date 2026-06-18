@@ -7,15 +7,10 @@ import {
   toOrbitCaseDto,
   toOrbitCaseTimelineDto,
 } from "@repo/orbit-case";
-import {
-  getOrbitCaseBoard,
-  getOrbitCaseCalendar,
-  getOrbitCaseTimeline,
-  listOrbitCases,
-} from "@repo/orbit-case/server";
 import type { Metadata } from "next";
 import { Header } from "../components/header";
 import { OrbitCaseWorkspace } from "./components/orbit-case-workspace";
+import { getCachedOrbitCaseWorkspace } from "@/lib/orbit-case-cached-reads";
 
 const title = "Orbit Case";
 const description =
@@ -29,13 +24,8 @@ export const metadata: Metadata = {
 export default async function OrbitCasePage() {
   const { orgId, userId } = await requireOrg();
   const role = await getOrganizationRole(userId, orgId);
-  const now = new Date();
-  const [cases, board, calendar, timeline] = await Promise.all([
-    listOrbitCases(orgId),
-    getOrbitCaseBoard(orgId),
-    getOrbitCaseCalendar(orgId, now.getUTCFullYear(), now.getUTCMonth() + 1),
-    getOrbitCaseTimeline(orgId, now),
-  ]);
+  const [cases, board, calendar, timeline] =
+    await getCachedOrbitCaseWorkspace(orgId);
 
   const initialCases: OrbitCaseDto[] = cases.map(toOrbitCaseDto);
   const initialBoard: OrbitCaseBoardDto = toOrbitCaseBoardDto(board);

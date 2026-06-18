@@ -20,18 +20,6 @@ import {
   blockRecipe,
 } from "@repo/design-system/design-system";
 import { cn } from "@repo/design-system/lib/utils";
-import type {
-  OrbitCaseActivityDto,
-  OrbitCaseAttachmentDto,
-  OrbitCaseBlobAccess,
-  OrbitCaseCommentDto,
-  OrbitCaseDto,
-  OrbitCasePriority,
-  OrbitCaseStatus,
-  OrbitObjectLinkProjectionDto,
-  PushDestinationDefinition,
-  PushTemplateDefinition,
-} from "@repo/orbit-case";
 import {
   ORBIT_CASE_ATTACHMENT_MAX_BYTES,
   ORBIT_CASE_PRIORITIES,
@@ -40,6 +28,16 @@ import {
   formatOrbitCaseDueDateLabel,
   isOrbitCaseAttachmentContentTypeAllowed,
   isOrbitCasePrivateBlobAccess,
+  type OrbitCaseActivityDto,
+  type OrbitCaseAttachmentDto,
+  type OrbitCaseBlobAccess,
+  type OrbitCaseCommentDto,
+  type OrbitCaseDto,
+  type OrbitCasePriority,
+  type OrbitCaseStatus,
+  type OrbitObjectLinkProjectionDto,
+  type PushDestinationDefinition,
+  type PushTemplateDefinition,
 } from "@repo/orbit-case";
 import { upload } from "@repo/storage/client";
 import Link from "next/link";
@@ -55,10 +53,7 @@ import { addComment } from "@/app/actions/orbit-case/comment/create";
 import { deleteCase } from "@/app/actions/orbit-case/delete";
 import { updateCase } from "@/app/actions/orbit-case/update";
 import { watchCase } from "@/app/actions/orbit-case/watch";
-import {
-  executeCasePush,
-  listPushDestinations,
-} from "@/app/actions/orbit-case/push/execute";
+import { executeCasePush } from "@/app/actions/orbit-case/push/execute";
 import { OrbitCasePushForm } from "./orbit-case-push-form";
 import { OrgMemberCombobox } from "./org-member-combobox";
 import {
@@ -94,7 +89,7 @@ export function OrbitCaseDetailView({
   comments: initialComments,
   attachments: initialAttachments,
   activity: initialActivity,
-  destinations: initialDestinations,
+  destinations,
   linkProjections: initialLinkProjections,
   pushTemplatesByDestinationId,
   watching: initialWatching,
@@ -106,13 +101,12 @@ export function OrbitCaseDetailView({
   const [orbitCase, setOrbitCase] = useState(initialCase);
   const [comments, setComments] = useState(initialComments);
   const [attachments, setAttachments] = useState(initialAttachments);
-  const [destinations, setDestinations] = useState(initialDestinations);
   const [watching, setWatching] = useState(initialWatching);
   const [title, setTitle] = useState(initialCase.title);
   const [description, setDescription] = useState(initialCase.description ?? "");
   const [commentBody, setCommentBody] = useState("");
   const [pushDestinationId, setPushDestinationId] = useState(
-    initialDestinations[0]?.id ?? ""
+    destinations[0]?.id ?? ""
   );
   const [pushFieldValues, setPushFieldValues] = useState<
     Record<string, string | number | boolean | null>
@@ -261,11 +255,6 @@ export function OrbitCaseDetailView({
           setError(result.data.code);
         }
         return;
-      }
-
-      const destResult = await listPushDestinations();
-      if (destResult.ok) {
-        setDestinations(destResult.data);
       }
 
       router.refresh();

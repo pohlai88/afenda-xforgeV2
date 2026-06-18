@@ -6,6 +6,14 @@ export const orbitCaseListTag = (organizationId: string): string =>
 export const orbitCaseBoardTag = (organizationId: string): string =>
   `orbit-case:board:${organizationId}`;
 
+export const orbitCaseMorphListTag = (
+  segment: string,
+  organizationId: string
+): string => `orbit-case:${segment}-list:${organizationId}`;
+
+export const orbitCaseBudgetListTag = (organizationId: string): string =>
+  orbitCaseMorphListTag("budget", organizationId);
+
 export const orbitCaseDetailTag = (caseId: string): string =>
   `orbit-case:detail:${caseId}`;
 
@@ -29,3 +37,15 @@ export const getOrbitCaseCacheTags = (
 
   return tags;
 };
+
+export const getOrbitCaseMorphCacheTags = (
+  segment: string,
+  organizationId: string
+): readonly string[] => [
+  ORBIT_CASE_CACHE_TAG_ALL,
+  orbitCaseMorphListTag(segment, organizationId),
+];
+
+export const getOrbitCaseBudgetCacheTags = (
+  organizationId: string
+): readonly string[] => getOrbitCaseMorphCacheTags("budget", organizationId);

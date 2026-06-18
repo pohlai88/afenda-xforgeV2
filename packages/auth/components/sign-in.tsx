@@ -58,6 +58,8 @@ const formErrorId = "sign-in-error";
 const signInSchema = createSignInSchema();
 
 type SignInMode = "password" | "magic-link";
+const initialSignInMode: SignInMode =
+  process.env.NODE_ENV === "development" ? "password" : "magic-link";
 
 interface SignInProperties {
   initialError?: string | null;
@@ -105,9 +107,9 @@ const getSubmitPendingLabel = (
 export const SignIn = ({ initialError = null }: SignInProperties) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [mode, setMode] = useState<SignInMode>("magic-link");
+  const [mode, setMode] = useState<SignInMode>(initialSignInMode);
   const [preferredMethod, setPreferredMethod] =
-    useState<SignInMethod>("magic-link");
+    useState<SignInMethod>(initialSignInMode);
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(initialError);
   const [fieldErrors, setFieldErrors] = useState<AuthFieldErrors>({});
@@ -339,6 +341,7 @@ export const SignIn = ({ initialError = null }: SignInProperties) => {
       ) : null}
       <form
         className={cn("flex flex-col", recipe("sectionGap"))}
+        method="post"
         noValidate
         onSubmit={submitHandler}
       >

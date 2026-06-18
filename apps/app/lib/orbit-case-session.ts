@@ -8,7 +8,7 @@ import {
 import type { OrganizationRole } from "@repo/auth/organization-roles";
 import { getOrganizationRole } from "@repo/auth/cms";
 import type { OrbitPushCapability } from "@repo/orbit-case";
-import { resolveOrbitPushCapabilities } from "@/lib/orbit-case-capabilities";
+import { resolveOrbitPushCapabilities } from "@repo/orbit-case";
 
 const readAccessTokenClaims = async (): Promise<SupabaseAccessTokenClaims | null> => {
   const supabase = await createClient();

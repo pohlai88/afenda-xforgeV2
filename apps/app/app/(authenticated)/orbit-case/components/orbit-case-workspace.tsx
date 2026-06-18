@@ -24,7 +24,11 @@ import type {
   OrbitCaseStatus,
   OrbitCaseTimelineDto,
 } from "@repo/orbit-case";
-import { ORBIT_CASE_STATUSES, formatOrbitCaseDueDateLabel } from "@repo/orbit-case";
+import {
+  ORBIT_CASE_STATUSES,
+  formatOrbitCaseDueDateLabel,
+  listRoutedMorphSlices,
+} from "@repo/orbit-case";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -133,14 +137,25 @@ export function OrbitCaseWorkspace({
       >
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className={blockRecipe("blockTitle")}>Capture work</h2>
-          {showRegistryLink ? (
-            <Link
-              className="text-muted-foreground text-sm hover:text-foreground"
-              href="/orbit-case/settings"
-            >
-              Push registry
-            </Link>
-          ) : null}
+          <div className="flex flex-wrap items-center gap-3">
+            {listRoutedMorphSlices().map((slice) => (
+              <Link
+                className="text-muted-foreground text-sm hover:text-foreground"
+                href={`/orbit-case/${slice.segment}`}
+                key={slice.segment}
+              >
+                {slice.label}s
+              </Link>
+            ))}
+            {showRegistryLink ? (
+              <Link
+                className="text-muted-foreground text-sm hover:text-foreground"
+                href="/orbit-case/settings"
+              >
+                Push registry
+              </Link>
+            ) : null}
+          </div>
         </div>
         <p className={blockRecipe("blockDescription")}>
           Start with a title — classify and push to governed modules later.

@@ -1,13 +1,20 @@
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from "vitest";
 
 const db = vi.hoisted(() => {
-  const { createRequire } =
-    require("node:module") as typeof import("node:module");
-  const req = createRequire(import.meta.url);
-  const { createInsertDeleteDatabaseMock } = req(
-    "../../../test-support/mock-database.ts"
-  ) as typeof import("../../../test-support/mock-database.ts");
-  return createInsertDeleteDatabaseMock(vi.fn);
+  const returning = vi.fn(async () => [{ id: 1 }]);
+  const values = vi.fn(() => ({ returning }));
+  const insert = vi.fn(() => ({ values }));
+  const where = vi.fn(async () => undefined);
+  const deleteMock = vi.fn(() => ({ where }));
+
+  return {
+    database: {
+      delete: deleteMock,
+      insert,
+    },
+    deleteMock,
+    insert,
+  };
 });
 
 vi.mock("@repo/database", () => ({

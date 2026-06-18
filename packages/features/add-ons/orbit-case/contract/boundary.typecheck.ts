@@ -5,8 +5,8 @@
 import type {
   OrbitCaseActivityDto,
   OrbitCaseActivityRecord,
+  OrbitCaseBoardColumn,
   OrbitCaseBoardDto,
-  OrbitCaseBoardResult,
   OrbitCaseCommentDto,
   OrbitCaseCommentRecord,
   OrbitCaseDto,
@@ -14,7 +14,6 @@ import type {
   OrbitObjectLinkDto,
   OrbitObjectLinkRecord,
 } from "./orbit-case.types";
-import type { Serializable } from "./serializable";
 
 type AssertEqual<T, U> = [T] extends [U]
   ? [U] extends [T]
@@ -24,25 +23,41 @@ type AssertEqual<T, U> = [T] extends [U]
 
 type AssertTrue<T extends true> = T;
 
-type _OrbitCaseDtoMatchesSerializableRecord = AssertTrue<
-  AssertEqual<OrbitCaseDto, Serializable<OrbitCaseRecord>>
+type IsoDateRecord<T> = {
+  [K in keyof T]: T[K] extends Date
+    ? string
+    : T[K] extends Date | null
+      ? string | null
+      : T[K];
+};
+
+type _OrbitCaseDtoMatchesRecord = AssertTrue<
+  AssertEqual<OrbitCaseDto, IsoDateRecord<OrbitCaseRecord>>
 >;
 
-type _OrbitCaseCommentDtoMatchesSerializableRecord = AssertTrue<
-  AssertEqual<OrbitCaseCommentDto, Serializable<OrbitCaseCommentRecord>>
+type _OrbitCaseCommentDtoMatchesRecord = AssertTrue<
+  AssertEqual<OrbitCaseCommentDto, IsoDateRecord<OrbitCaseCommentRecord>>
 >;
 
-type _OrbitCaseBoardDtoMatchesSerializableResult = AssertTrue<
-  AssertEqual<OrbitCaseBoardDto, Serializable<OrbitCaseBoardResult>>
->;
-
-type _OrbitCaseActivityDtoMatchesSerializableRecord = AssertTrue<
+type _OrbitCaseBoardDtoMatchesResult = AssertTrue<
   AssertEqual<
-    Omit<OrbitCaseActivityDto, "summary">,
-    Serializable<OrbitCaseActivityRecord>
+    OrbitCaseBoardDto,
+    {
+      columns: {
+        status: OrbitCaseBoardColumn["status"];
+        cases: OrbitCaseDto[];
+      }[];
+    }
   >
 >;
 
-type _OrbitObjectLinkDtoMatchesSerializableRecord = AssertTrue<
-  AssertEqual<OrbitObjectLinkDto, Serializable<OrbitObjectLinkRecord>>
+type _OrbitCaseActivityDtoMatchesRecord = AssertTrue<
+  AssertEqual<
+    Omit<OrbitCaseActivityDto, "summary">,
+    IsoDateRecord<OrbitCaseActivityRecord>
+  >
+>;
+
+type _OrbitObjectLinkDtoMatchesRecord = AssertTrue<
+  AssertEqual<OrbitObjectLinkDto, IsoDateRecord<OrbitObjectLinkRecord>>
 >;

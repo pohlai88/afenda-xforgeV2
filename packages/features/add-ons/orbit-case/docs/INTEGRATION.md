@@ -24,7 +24,7 @@
 1. User submits title in `OrbitCaseWorkspace` (client).
 2. `createCase` Server Action → `withOrg`.
 3. `createOrbitCase(orgId, userId, input)` inserts row + activity.
-4. `revalidatePath('/orbit-case')` refreshes RSC data.
+4. `revalidateOrbitCaseMutation` refreshes tagged cache + `/orbit-case` paths.
 
 ---
 
@@ -46,13 +46,14 @@
 | `update.ts` | `updateCase` |
 | `delete.ts` | `deleteCase` |
 | `list.ts` | `listCases` |
-| `board.ts` | `getBoard`, `moveCaseStatus`, `getCalendarBoard`, `getTimelineBoard` |
+| `board.ts` | `moveCaseStatus`, `getCalendarBoard` |
 | `attachment/client-upload.ts` | `prepareAttachmentUpload`, `finalizeAttachmentUpload` |
 | `attachment/delete.ts` | `removeAttachment` |
-| `push/execute.ts` | `executeCasePush`, `listPushDestinations`, `getPushTemplateForDestination` |
+| `push/execute.ts` | `executeCasePush` |
 | `watch.ts` | `watchCase` |
 | `comment/create.ts` | `addComment` |
-| `comment/list.ts` | `listComments` |
+
+Detail reads (case, comments, activity, links, attachments) load via `getCachedOrbitCaseDetailBundle` on `[caseId]/page.tsx` — not separate list actions. Push destinations and templates prefetch on the same page via `resolveOrgPushDestinations` / `getMergedPushTemplate`.
 
 Attachment upload flow:
 
@@ -70,7 +71,18 @@ Attachment upload flow:
 | `/orbit-case/[caseId]` | Case detail |
 | `/orbit-case/budget` | Budget request index |
 | `/orbit-case/budget/[budgetId]` | Budget detail with origin link |
+| `/orbit-case/meeting` | Meeting request index |
+| `/orbit-case/meeting/[meetingId]` | Meeting detail with origin link |
+| `/orbit-case/approval` | Approval request index |
+| `/orbit-case/approval/[approvalId]` | Approval detail with origin link |
+| `/orbit-case/purchase` | Purchase request index |
+| `/orbit-case/purchase/[requestId]` | Purchase detail with origin link |
+| `/orbit-case/**` | Lead, Complaint, Risk, Project, Investigation, CAPA, Contract Review — same list + `[requestId]` pattern |
 | `/orbit-case/settings` | Push registry admin (owner) |
+
+All eleven morph destinations in `contract/morph-destination-manifest.ts` have `hasAppRoute: true`. Link `href` projection (`contract/link-projection-registry.ts`) emits `/orbit-case/{segment}/{targetId}` for each routed entry.
+
+**Per-slice checklist:** see [`MORPH-DESTINATION-SLICE.md`](./MORPH-DESTINATION-SLICE.md).
 
 ---
 
@@ -82,7 +94,7 @@ Attachment upload flow:
 - `orbit_case_tags`
 - `orbit_case_attachments` (Phase 1.1)
 
-Phase 2+: `orbit_push_destinations`, `orbit_push_templates`, `orbit_push_events`, `orbit_object_links`, `orbit_budget_requests`.
+Phase 2+: `orbit_push_destinations`, `orbit_push_templates`, `orbit_push_events`, `orbit_object_links`, `orbit_budget_requests`, `orbit_meeting_requests`, `orbit_approval_requests`, plus eight two-field morph tables from migration `0031` (purchase, lead, complaint, risk, project, investigation, capa, contract review).
 
 Admin registry: `/orbit-case/settings` (owner-only).
 
@@ -96,7 +108,7 @@ Apply via repo Drizzle workflow only:
 pnpm migrate
 ```
 
-Runs `db:repair-journal` then `drizzle-kit migrate` on `@repo/database`. Do not apply `packages/database/drizzle/*.sql` manually.
+Required through **`0028_orbit_push_capabilities_align`** so JWT `orbit_push_capabilities` matches `@repo/orbit-case` `push-role-capabilities.ts`. Runs `db:repair-journal` then `drizzle-kit migrate` on `@repo/database`. Do not apply `packages/database/drizzle/*.sql` manually.
 
 After migration `0025`, push authorization uses live DB role with JWT claims capped to that ceiling. Token refresh (automatic) applies hook-injected claims when present; stale tokens cannot exceed role permissions.
 
@@ -107,8 +119,11 @@ After migration `0025`, push authorization uses live DB role with JWT claims cap
 - `orbit-case:list:{orgId}`
 - `orbit-case:board:{orgId}`
 - `orbit-case:detail:{caseId}`
+- `orbit-case:budget-list:{orgId}`
+- `orbit-case:meeting-list:{orgId}`
+- `orbit-case:approval-list:{orgId}`
 
-Use `updateTag` / `revalidateTag` in Server Actions after successful mutations (Next.js 16 cache components). Tag helpers live in `@repo/orbit-case/revalidate`; app mutations call `revalidateOrbitCaseMutation` in `apps/app/lib/orbit-case-revalidate.ts`.
+Use `revalidateTag` in Server Actions after successful mutations. Tag helpers live in `@repo/orbit-case/revalidate` (`orbitCaseMorphListTag`, `getOrbitCaseMorphCacheTags`); app mutations call `revalidateOrbitCaseMutation` and `revalidateOrbitCaseMorphMutation` in `apps/app/lib/orbit-case-revalidate.ts`.
 
 ---
 

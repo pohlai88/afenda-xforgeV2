@@ -486,3 +486,100 @@ export const orbitBudgetRequest = nextForge.table("orbit_budget_requests", {
     .defaultNow()
     .notNull(),
 });
+
+export const orbitMeetingRequest = nextForge.table("orbit_meeting_requests", {
+  id: text("id").primaryKey(),
+  organizationId: text("organizationId")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  originCaseId: text("originCaseId")
+    .notNull()
+    .references(() => orbitCase.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  scheduledAt: text("scheduledAt"),
+  location: text("location"),
+  createdBy: text("createdBy").notNull(),
+  createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+});
+
+export const orbitApprovalRequest = nextForge.table("orbit_approval_requests", {
+  id: text("id").primaryKey(),
+  organizationId: text("organizationId")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  originCaseId: text("originCaseId")
+    .notNull()
+    .references(() => orbitCase.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  approver: text("approver"),
+  amount: text("amount"),
+  createdBy: text("createdBy").notNull(),
+  createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+});
+
+const morphTwoFieldTable = (
+  tableName: string,
+  fieldA: string,
+  fieldB: string
+) =>
+  nextForge.table(tableName, {
+    id: text("id").primaryKey(),
+    organizationId: text("organizationId")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    originCaseId: text("originCaseId")
+      .notNull()
+      .references(() => orbitCase.id, { onDelete: "cascade" }),
+    title: text("title").notNull(),
+    [fieldA]: text(fieldA),
+    [fieldB]: text(fieldB),
+    createdBy: text("createdBy").notNull(),
+    createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+      .defaultNow()
+      .notNull(),
+  });
+
+export const orbitPurchaseRequest = morphTwoFieldTable(
+  "orbit_purchase_requests",
+  "vendor",
+  "amount"
+);
+export const orbitLeadRequest = morphTwoFieldTable(
+  "orbit_lead_requests",
+  "contact",
+  "company"
+);
+export const orbitComplaintRequest = morphTwoFieldTable(
+  "orbit_complaint_requests",
+  "category",
+  "severity"
+);
+export const orbitRiskRequest = morphTwoFieldTable(
+  "orbit_risk_requests",
+  "riskLevel",
+  "owner"
+);
+export const orbitProjectRequest = morphTwoFieldTable(
+  "orbit_project_requests",
+  "startDate",
+  "budget"
+);
+export const orbitInvestigationRequest = morphTwoFieldTable(
+  "orbit_investigation_requests",
+  "subject",
+  "priority"
+);
+export const orbitCapaRequest = morphTwoFieldTable(
+  "orbit_capa_requests",
+  "rootCause",
+  "dueDate"
+);
+export const orbitContractReviewRequest = morphTwoFieldTable(
+  "orbit_contract_review_requests",
+  "counterparty",
+  "expiryDate"
+);

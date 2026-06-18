@@ -2,17 +2,17 @@ import { z } from "zod";
 
 export const ORBIT_PUSH_CAPABILITIES = [
   "meeting",
-  "discussion",
   "task",
   "approval",
   "budget",
-  "expense",
   "purchase",
   "investigation",
   "complaint",
   "lead",
   "risk",
   "project",
+  "capa",
+  "contract-review",
 ] as const;
 
 export type OrbitPushCapability = (typeof ORBIT_PUSH_CAPABILITIES)[number];
@@ -42,3 +42,26 @@ export const executePushSchema = z.object({
 });
 
 export type ExecutePushInput = z.infer<typeof executePushSchema>;
+
+export const pushResultSchema = z.discriminatedUnion("ok", [
+  z.object({
+    ok: z.literal(true),
+    pushEventId: z.string().min(1),
+    targetType: z.string().min(1),
+    targetId: z.string().min(1),
+    linkId: z.string().min(1),
+    cached: z.boolean(),
+  }),
+  z.object({
+    ok: z.literal(false),
+    code: z.enum(["destination_not_registered", "missing_fields", "forbidden"]),
+    missingFields: z.array(z.string()).optional(),
+  }),
+]);
+
+export type PushResultDto = z.infer<typeof pushResultSchema>;
+
+export const parseStoredPushResult = (value: unknown): PushResultDto | null => {
+  const parsed = pushResultSchema.safeParse(value);
+  return parsed.success ? parsed.data : null;
+};

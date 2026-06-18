@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cacheLife, cacheTag } from "next/cache";
 import {
   defaultAuthUiSettings,
   fetchPublicAuthSettings,
@@ -34,6 +35,10 @@ export const fetchManagementAuthConfig = async (
 };
 
 export const getAuthUiSettings = async () => {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("auth-ui-settings");
+
   const supabaseUrl = getSupabaseUrl();
   const publishableKey = getSupabasePublishableKey();
   const projectRef = getProjectRef();

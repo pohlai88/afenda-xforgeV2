@@ -161,6 +161,17 @@ export const getE2eBlobWebServerEnv = (): Record<string, string> => {
   );
 };
 
+export const getE2eWebServerEnv = (): Record<string, string> => ({
+  ...getE2eBlobWebServerEnv(),
+  DEBUG: "",
+  ELECTRON_RUN_AS_NODE: "",
+  NEXT_TELEMETRY_DISABLED: "1",
+  NODE_INSPECT_RESUME_ON_START: "",
+  NODE_ENV: "development",
+  NODE_OPTIONS: "--no-deprecation",
+  VSCODE_INSPECTOR_OPTIONS: "",
+});
+
 export const isE2eProjectReady = (
   project: E2eCheckProject,
   supabase: E2eSupabaseEnvStatus,
@@ -174,8 +185,7 @@ export const isE2eProjectReady = (
     case "authenticated":
     case "orbit-case":
       return (
-        supabase.readyForBrowserAuthTests &&
-        supabase.readyForIntegrationTests
+        supabase.readyForBrowserAuthTests && supabase.readyForIntegrationTests
       );
     case "orbit-case-blob":
       return (

@@ -5,7 +5,6 @@
   "exports": {
     ".": "./index.ts",
     "./server": "./server.ts",
-    "./contract": "./contract/index.ts",
     "./keys": "./keys.ts",
     "./revalidate": "./revalidate.ts"
   },

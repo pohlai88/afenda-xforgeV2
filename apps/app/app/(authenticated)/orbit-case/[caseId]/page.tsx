@@ -13,16 +13,15 @@ import {
   canHardDeleteOrbitCase,
   ensureSystemPushDefaults,
   getMergedPushTemplate,
-  getOrbitCaseById,
   isOrbitCaseWatcher,
-  listObjectLinksForCase,
-  listOrbitCaseActivity,
-  listOrbitCaseAttachments,
-  listOrbitCaseComments,
   resolveOrgPushDestinations,
 } from "@repo/orbit-case/server";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import {
+  getCachedOrbitCaseDetailBundle,
+  getCachedOrbitCaseTitle,
+} from "@/lib/orbit-case-cached-reads";
 import { getOrbitPushCapabilitiesForSession } from "@/lib/orbit-case-session";
 import { Header } from "../../components/header";
 import { OrbitCaseDetailView } from "../components/orbit-case-detail-view";
@@ -36,10 +35,10 @@ export async function generateMetadata({
 }: OrbitCaseDetailPageProps): Promise<Metadata> {
   const { caseId } = await params;
   const { orgId } = await requireOrg();
-  const record = await getOrbitCaseById(orgId, caseId);
+  const title = await getCachedOrbitCaseTitle(orgId, caseId);
 
   return {
-    title: record?.title ?? "Orbit Case",
+    title: title ?? "Orbit Case",
   };
 }
 
@@ -48,11 +47,13 @@ export default async function OrbitCaseDetailPage({
 }: OrbitCaseDetailPageProps) {
   const { caseId } = await params;
   const { orgId, userId } = await requireOrg();
-  const record = await getOrbitCaseById(orgId, caseId);
+  const bundle = await getCachedOrbitCaseDetailBundle(orgId, caseId);
 
-  if (!record) {
+  if (!bundle) {
     notFound();
   }
+
+  const { record, comments, activity, links, attachments } = bundle;
 
   ensureSystemPushDefaults();
 
@@ -61,22 +62,17 @@ export default async function OrbitCaseDetailPage({
     userId,
     orgId
   );
-  const [comments, activity, links, watching, destinations, attachments] =
-    await Promise.all([
-      listOrbitCaseComments(orgId, caseId),
-      listOrbitCaseActivity(orgId, caseId),
-      listObjectLinksForCase(orgId, caseId),
-      isOrbitCaseWatcher(orgId, caseId, userId),
-      role
-        ? resolveOrgPushDestinations({
-            orgId,
-            userId,
-            role,
-            userCapabilities,
-          })
-        : Promise.resolve([]),
-      listOrbitCaseAttachments(orgId, caseId),
-    ]);
+  const [watching, destinations] = await Promise.all([
+    isOrbitCaseWatcher(orgId, caseId, userId),
+    role
+      ? resolveOrgPushDestinations({
+          orgId,
+          userId,
+          role,
+          userCapabilities,
+        })
+      : Promise.resolve([]),
+  ]);
 
   const pushTemplatesByDestinationId: Record<string, PushTemplateDefinition> =
     {};

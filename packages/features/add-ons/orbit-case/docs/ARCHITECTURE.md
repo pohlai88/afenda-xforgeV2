@@ -1,7 +1,7 @@
 # Orbit Case — Architecture
 
 **Version:** 0.1  
-**Status:** Phase 3 in progress — Budget Request is the first full morph destination  
+**Status:** Phase 3 complete — all eleven morph destinations are routed  
 **Package:** `@repo/orbit-case`  
 **Route:** `/orbit-case`
 

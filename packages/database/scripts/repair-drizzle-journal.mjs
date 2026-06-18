@@ -25,6 +25,22 @@ const resolveDatabaseUrl = () => {
 
 /** Schema probes for migrations that introduce distinctive objects (newest first). */
 const MIGRATION_PROBES = {
+  "0031_orbit_remaining_morph_requests": `
+    SELECT to_regclass('next_forge.orbit_contract_review_requests') IS NOT NULL AS ok`,
+  "0030_orbit_approval_requests": `
+    SELECT to_regclass('next_forge.orbit_approval_requests') IS NOT NULL AS ok`,
+  "0029_orbit_meeting_requests": `
+    SELECT to_regclass('next_forge.orbit_meeting_requests') IS NOT NULL AS ok`,
+  "0028_orbit_push_capabilities_align": `
+    SELECT EXISTS (
+      SELECT 1
+      FROM pg_proc p
+      JOIN pg_namespace n ON n.oid = p.pronamespace
+      WHERE n.nspname = 'next_forge'
+        AND p.proname = 'orbit_push_capabilities_for_role'
+        AND p.prosrc LIKE '%contract-review%'
+        AND p.prosrc NOT LIKE '%discussion%'
+    ) AS ok`,
   "0026_orbit_case_attachments": `
     SELECT to_regclass('next_forge.orbit_case_attachments') IS NOT NULL AS ok`,
   "0025_orbit_push_seed_and_claims": `

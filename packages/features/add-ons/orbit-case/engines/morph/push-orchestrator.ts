@@ -5,8 +5,8 @@ import { log } from "@repo/observability/log";
 import { database } from "@repo/database";
 import { orbitPushEvent } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
-import type { PushResultDto } from "../../contract/orbit-case.types";
-import type { ExecutePushInput } from "../../contract/push.schema";
+import type { ExecutePushInput, PushResultDto } from "../../contract/push.schema";
+import { parseStoredPushResult } from "../../contract/push.schema";
 import {
   getMergedPushDestination,
   getMergedPushTemplate,
@@ -20,47 +20,6 @@ import { getOrbitCaseById } from "../work/orbit-cases";
 import { canPushToDestination } from "../work/permissions";
 import { resolvePushDestinationHandler } from "./push-handlers";
 import type { ExecutePushContext } from "./push-types";
-
-export type { ExecutePushContext } from "./push-types";
-
-const parseStoredPushResult = (value: unknown): PushResultDto | null => {
-  if (!value || typeof value !== "object") {
-    return null;
-  }
-
-  const record = value as Record<string, unknown>;
-
-  if (record.ok === true) {
-    return {
-      ok: true,
-      pushEventId: String(record.pushEventId),
-      targetType: String(record.targetType),
-      targetId: String(record.targetId),
-      linkId: String(record.linkId),
-      cached: Boolean(record.cached),
-    };
-  }
-
-  if (record.ok === false && typeof record.code === "string") {
-    const code = record.code;
-
-    if (
-      code === "destination_not_registered" ||
-      code === "missing_fields" ||
-      code === "forbidden"
-    ) {
-      return {
-        ok: false,
-        code,
-        ...(Array.isArray(record.missingFields)
-          ? { missingFields: record.missingFields.map(String) }
-          : {}),
-      };
-    }
-  }
-
-  return null;
-};
 
 export const executePush = async (
   context: ExecutePushContext,

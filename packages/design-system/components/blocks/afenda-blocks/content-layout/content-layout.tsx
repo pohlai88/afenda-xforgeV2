@@ -7,20 +7,20 @@ import {
   DEFAULT_CONTENT_LAYOUT_RIGHT_SIDEBAR_WIDTH,
   DEFAULT_CONTENT_LAYOUT_TOPBAR_HEIGHT,
   EMPTY_CONTENT_LAYOUT_BREADCRUMBS,
-} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
+} from "./content-layout-constants";
 import {
   contentLayoutDensityClassName,
   getContentLayoutBodyGridClassName,
   resolveContentLayoutInsetStyle,
-} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-helpers";
+} from "./content-layout-helpers";
 import {
   contentLayoutBlockShellClass,
   contentLayoutBodyClass,
   contentLayoutMainClass,
   contentLayoutStageFooterPlacementClass,
-} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "./content-layout-recipes";
+import { blockRecipe } from "../../block-recipes";
+import { cn } from "../../../../lib/utils";
 import type { CSSProperties, ReactNode } from "react";
 import { useMemo, useRef } from "react";
 import { ContentLayoutBottomDrawer } from "./content-layout-bottom-drawer";

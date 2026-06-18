@@ -3,7 +3,7 @@
 import {
   Badge,
   blockRecipe,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { OrbitCaseTimelineDto } from "@repo/orbit-case";
 import { formatOrbitCaseDueDateLabel } from "@repo/orbit-case";

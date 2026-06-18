@@ -1,4 +1,4 @@
-import { Badge } from "@repo/design-system/design-system";
+import { Badge } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   CheckIcon,

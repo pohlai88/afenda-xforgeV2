@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { OTPInput, OTPInputContext } from "input-otp";
 import { type ComponentProps, useContext } from "react";
 import { recipe } from "./recipes";
@@ -16,7 +16,7 @@ function InputOTP({
     <OTPInput
       className={cn(
         "disabled:cursor-not-allowed",
-        "font-medium text-base tabular-nums tracking-[0.05em]",
+        "font-medium text-base tabular-nums tracking-[var(--input-otp-tracking)]",
         className
       )}
       containerClassName={cn(
@@ -57,7 +57,7 @@ function InputOTPSlot({
   return (
     <div
       className={cn(
-        "relative flex size-11 items-center justify-center rounded-[var(--button-radius)] border border-border-default bg-surface font-medium text-base text-text-primary tabular-nums tracking-[0.05em] outline-none",
+        "relative flex size-11 items-center justify-center rounded-[var(--button-radius)] border border-border-default bg-surface font-medium text-base text-text-primary tabular-nums tracking-[var(--input-otp-tracking)] outline-none",
         "data-[active=true]:z-10 data-[active=true]:border-border-active data-[active=true]:bg-surface-raised data-[active=true]:ring-2 data-[active=true]:ring-ring/30",
         "focus-visible:ring-2 focus-visible:ring-ring/30",
         "aria-invalid:border-critical aria-invalid:bg-critical/5 data-[active=true]:aria-invalid:border-critical data-[active=true]:aria-invalid:ring-critical/20 dark:data-[active=true]:aria-invalid:ring-critical/40",
@@ -78,7 +78,7 @@ function InputOTPSeparator({ className, ...props }: ComponentProps<"div">) {
     <div
       aria-hidden="true"
       className={cn(
-        "flex items-center px-1 text-[13px] text-text-tertiary",
+        "flex items-center px-1 text-[length:var(--xforge-font-body-size)] text-text-tertiary",
         recipe("motionReduce"),
         className
       )}

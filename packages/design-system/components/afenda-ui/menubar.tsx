@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 import { Menubar as MenubarPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -102,7 +102,7 @@ function MenubarContent({
 function MenubarItem({
   className,
   inset,
-  variant = "default",
+  variant: _variant = "default",
   ...props
 }: React.ComponentProps<typeof MenubarPrimitive.Item> & {
   inset?: boolean;
@@ -124,7 +124,6 @@ function MenubarItem({
       )}
       data-inset={inset}
       data-slot="menubar-item"
-      data-variant={variant}
       {...props}
     />
   );
@@ -152,9 +151,9 @@ function MenubarCheckboxItem({
       data-slot="menubar-checkbox-item"
       {...props}
     >
-      <span className={recipe("itemIndicator")}>
+      <span className={cn(recipe("itemIndicator"))}>
         <MenubarPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
+          <CheckIcon className={cn(recipe("itemIndicatorCheckIcon"))} />
         </MenubarPrimitive.ItemIndicator>
       </span>
       {children}
@@ -182,9 +181,9 @@ function MenubarRadioItem({
       data-slot="menubar-radio-item"
       {...props}
     >
-      <span className={recipe("itemIndicator")}>
+      <span className={cn(recipe("itemIndicator"))}>
         <MenubarPrimitive.ItemIndicator>
-          <CircleIcon className="size-2 fill-current" />
+          <CircleIcon className={cn(recipe("itemIndicatorRadioIcon"))} />
         </MenubarPrimitive.ItemIndicator>
       </span>
       {children}

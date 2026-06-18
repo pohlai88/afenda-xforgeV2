@@ -2,7 +2,7 @@
 
 import type { CmsLocale } from "@repo/cms/locale";
 import type { CmsCollectionName } from "@repo/cms/writer";
-import { Badge, Input } from "@repo/design-system/design-system";
+import { Badge, Input } from "@repo/design-system";
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { searchDocuments } from "@/app/actions/cms/documents";

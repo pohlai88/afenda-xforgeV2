@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, FieldHint, recipe } from "@repo/design-system/design-system";
+import { cn, FieldHint, recipe } from "@repo/design-system";
 import type { PasswordPolicy } from "../auth-ui-settings";
 
 const charsetHintLabel = (label: string): string | null => {

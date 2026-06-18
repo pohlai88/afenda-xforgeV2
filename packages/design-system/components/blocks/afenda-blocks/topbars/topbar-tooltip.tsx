@@ -1,12 +1,12 @@
 "use client";
 
-import { Kbd } from "@repo/design-system/components/afenda-ui/kbd";
+import { Kbd } from "../../../afenda-ui/kbd";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@repo/design-system/components/afenda-ui/tooltip";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../../afenda-ui/tooltip";
+import { cn } from "../../../../lib/utils";
 import type { ReactNode } from "react";
 
 export interface TopbarTooltipProps {

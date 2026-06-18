@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, recipe } from "@repo/design-system/design-system";
+import { cn, recipe } from "@repo/design-system";
 import { useEffect, useId, useRef, useState } from "react";
 import { useAuthUiConfig } from "../context/auth-ui-config";
 import { getCaptchaSiteKey } from "../keys";

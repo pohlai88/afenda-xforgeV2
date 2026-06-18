@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, cn, recipe } from "@repo/design-system/design-system";
+import { Button, cn, recipe } from "@repo/design-system";
 import { useCallback, useEffect, useId, useState } from "react";
 import { fromSupabaseError } from "../auth-result";
 import { isPasskeyOriginSupported } from "../auth-ui-settings";

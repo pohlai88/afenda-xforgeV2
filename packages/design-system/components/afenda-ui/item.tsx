@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot as SlotPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -79,9 +79,7 @@ function Item({
         recipe("bodyText"),
         className
       )}
-      data-size={size}
       data-slot="item"
-      data-variant={variant}
       role={role}
       {...props}
     />
@@ -120,7 +118,6 @@ function ItemMedia({
         className
       )}
       data-slot="item-media"
-      data-variant={variant}
       {...props}
     />
   );

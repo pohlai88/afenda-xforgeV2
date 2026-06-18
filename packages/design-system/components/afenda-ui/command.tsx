@@ -6,8 +6,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+} from "./dialog";
+import { cn } from "../../lib/utils";
 import { Command as CommandPrimitive } from "cmdk";
 import { SearchIcon } from "lucide-react";
 import type * as React from "react";
@@ -49,7 +49,7 @@ function CommandDialog({
         className={cn("overflow-hidden p-0", className)}
         showCloseButton={showCloseButton}
       >
-        <DialogHeader className="sr-only">
+        <DialogHeader className={cn(recipe("visuallyHidden"))}>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
@@ -65,10 +65,10 @@ function CommandInput({
 }: React.ComponentProps<typeof CommandPrimitive.Input>) {
   return (
     <div
-      className="flex h-12 items-center gap-2 border-border-default border-b px-[var(--button-padding-x)]"
+      className={cn(recipe("commandInputWrapper"))}
       data-slot="command-input-wrapper"
     >
-      <SearchIcon className="size-4 shrink-0 text-text-secondary" />
+      <SearchIcon className={cn(recipe("commandInputIcon"))} />
       <CommandPrimitive.Input
         aria-label="Search commands, records, or actions"
         autoCapitalize="none"
@@ -94,7 +94,7 @@ function CommandList({
   return (
     <CommandPrimitive.List
       className={cn(
-        "max-h-[360px] scroll-py-1 overflow-y-auto overflow-x-hidden p-2",
+        "max-h-[var(--command-list-max-height)] scroll-py-1 overflow-y-auto overflow-x-hidden p-2",
         className
       )}
       data-slot="command-list"
@@ -122,10 +122,7 @@ function CommandGroup({
 }: React.ComponentProps<typeof CommandPrimitive.Group>) {
   return (
     <CommandPrimitive.Group
-      className={cn(
-        "overflow-hidden py-1 text-text-primary [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-[length:var(--xforge-font-label-size)] [&_[cmdk-group-heading]]:text-text-secondary [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.08em]",
-        className
-      )}
+      className={cn(recipe("commandGroup"), className)}
       data-slot="command-group"
       {...props}
     />

@@ -5,8 +5,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../afenda-ui/table";
+import { cn } from "../../lib/utils";
 import type { ReactNode } from "react";
 import { blockRecipe } from "./block-recipes";
 import { type BlockRegistry, getBlockRegistryEntry } from "./block-registry";

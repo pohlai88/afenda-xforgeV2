@@ -8,12 +8,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@repo/design-system/components/afenda-ui/sidebar";
-import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
-import { SidebarNavGroupPanel } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-nav-group";
-import { sidebarIconRailHiddenClass } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import type { SidebarNavGroup } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-types";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../../../afenda-ui/sidebar";
+import { resolveSidebarLinkRenderer } from "../../sidebars/sidebar-link-defaults";
+import { SidebarNavGroupPanel } from "../../sidebars/sidebar-nav-group";
+import { sidebarIconRailHiddenClass } from "../../sidebars/sidebar-recipes";
+import type { SidebarNavGroup } from "../../sidebars/sidebar-types";
+import { cn } from "../../../../../lib/utils";
 import { GalleryVerticalEndIcon } from "lucide-react";
 import { type ComponentPropsWithoutRef, memo, type ReactNode } from "react";
 import type { NavMainItem } from "../nav/dashboard-nav-types";

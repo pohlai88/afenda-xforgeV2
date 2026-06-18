@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { type ComponentProps, forwardRef } from "react";
 import { recipe } from "./recipes";
 

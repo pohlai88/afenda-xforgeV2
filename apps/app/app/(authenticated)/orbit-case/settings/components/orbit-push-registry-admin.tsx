@@ -6,7 +6,7 @@ import {
   Input,
   blockRecipe,
   Label,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { PushDestinationDefinition } from "@repo/orbit-case";
 import type { PushTemplateDefinition } from "@repo/orbit-case";

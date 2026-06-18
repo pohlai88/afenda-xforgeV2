@@ -1,5 +1,4 @@
-import { Badge, Button, Progress } from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import {
   CheckCircle2Icon,
   CircleAlertIcon,
@@ -11,6 +10,9 @@ import {
   ShieldAlertIcon,
 } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
+import { Badge } from "../afenda-ui/badge";
+import { Button } from "../afenda-ui/button";
+import { Progress } from "../afenda-ui/progress";
 import { blockRecipe } from "./block-recipes";
 import type { BlockAction, BlockBaseProps, BlockTone } from "./foundation";
 import { BlockActions } from "./foundation";

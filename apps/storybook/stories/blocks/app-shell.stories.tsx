@@ -4,7 +4,7 @@ import type {
   StatsMetric,
   TopbarActionMenuItem,
   TopbarScopeSwitcherConfig,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import {
   ApprovalQueueBlock,
   AuthenticatedAppShellBlock,
@@ -24,7 +24,7 @@ import {
   SidebarFooterProfile,
   SidebarFooterTrailingControl,
   StatsStrip,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Meta, StoryObj } from "@storybook/react";
 import {

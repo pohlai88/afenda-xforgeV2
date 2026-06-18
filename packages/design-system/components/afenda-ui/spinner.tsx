@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { Loader2Icon } from "lucide-react";
 import { recipe } from "./recipes";
 
@@ -24,7 +24,6 @@ function Spinner({ className, size = "md", ...props }: SpinnerProps) {
         recipe("motionReduce"),
         className
       )}
-      data-size={size}
       data-slot="spinner"
       role="status"
       {...props}

@@ -1,4 +1,4 @@
-import { Badge, blockRecipe } from "@repo/design-system/design-system";
+import { Badge, blockRecipe } from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import {
   ORBIT_CASE_BOARD_COLUMNS,

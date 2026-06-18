@@ -14,18 +14,14 @@ const topbarsRoot = join(
   "topbars"
 );
 
-const forbiddenRelativeRecipeImports = [
-  /from\s+["']\.\/topbar-recipes["']/,
-  /from\s+["']\.\.\/\.\.\/block-recipes["']/,
-  /from\s+["']\.\.\/\.\.\/\.\.\/afenda-ui\//,
-];
+const forbiddenSelfPackageImports = [/from\s+["']@repo\/design-system(?:\/[^"']*)?["']/];
 
 describe("topbar block recipes", () => {
   it("composes operator shell from blockShell", () => {
     expect(operatorAppTopbarShellClass).toContain(blockRecipe("blockShell"));
   });
 
-  it("does not use relative recipe or afenda-ui imports in topbar components", () => {
+  it("does not self-import the public package from topbar components", () => {
     const violations: string[] = [];
 
     for (const file of walk(topbarsRoot)) {
@@ -34,7 +30,7 @@ describe("topbar block recipes", () => {
       }
 
       const source = readFileSync(file, "utf8");
-      for (const pattern of forbiddenRelativeRecipeImports) {
+      for (const pattern of forbiddenSelfPackageImports) {
         if (pattern.test(source)) {
           violations.push(`${file}: ${pattern}`);
         }

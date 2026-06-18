@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
-import { Button } from "./button";
+import { buttonVariants, type Button } from "./button";
 import { Input } from "./input";
 import { recipe } from "./recipes";
 import { Textarea } from "./textarea";
@@ -40,8 +40,10 @@ const inputGroupAddonVariants = cva(
   {
     variants: {
       align: {
-        "inline-start": "order-first pl-3 has-[>button]:ml-[-0.35rem]",
-        "inline-end": "order-last pr-3 has-[>button]:mr-[-0.35rem]",
+        "inline-start":
+          "order-first pl-3 has-[>button]:ml-[var(--input-group-addon-button-offset)]",
+        "inline-end":
+          "order-last pr-3 has-[>button]:mr-[var(--input-group-addon-button-offset)]",
         "block-start":
           "order-first w-full justify-start border-border-default border-b px-3 pt-3 pb-2 group-has-[>input]/input-group:pt-2.5",
         "block-end":
@@ -88,15 +90,18 @@ function InputGroupButton({
   type = "button",
   variant = "quiet",
   size = "xs",
+  asChild: _asChild,
   ...props
 }: Omit<React.ComponentProps<typeof Button>, "size"> &
   VariantProps<typeof inputGroupButtonVariants>) {
   return (
-    <Button
-      className={cn(inputGroupButtonVariants({ size }), className)}
-      data-size={size}
+    <button
+      className={cn(
+        buttonVariants({ variant, size: "default" }),
+        inputGroupButtonVariants({ size }),
+        className
+      )}
       type={type}
-      variant={variant}
       {...props}
     />
   );

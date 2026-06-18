@@ -2,7 +2,7 @@ import { Body } from "@repo/cms/components/body";
 import { TableOfContents } from "@repo/cms/components/toc";
 import { parseCmsRouteLocale } from "@repo/cms/locale";
 import { cmsReaders, isCmsCollection } from "@repo/cms/writer";
-import { Button } from "@repo/design-system/design-system";
+import { Button } from "@repo/design-system";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 

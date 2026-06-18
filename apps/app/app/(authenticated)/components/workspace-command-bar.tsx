@@ -5,7 +5,7 @@ import {
   blockRecipe,
   Input,
   Kbd,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import { SearchIcon, XIcon } from "lucide-react";
 import { useRouter } from "next/navigation";

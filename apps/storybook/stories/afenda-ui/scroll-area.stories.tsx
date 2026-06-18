@@ -1,4 +1,4 @@
-import { Badge, ScrollArea } from "@repo/design-system/design-system";
+import { Badge, ScrollArea } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {

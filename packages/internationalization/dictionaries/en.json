@@ -2,13 +2,13 @@
   "web": {
     "global": {
       "primaryCta": "Book a call",
-      "secondaryCta": "Sign up"
+      "secondaryCta": "Open app shell"
     },
     "header": {
       "home": "Home",
       "product": {
         "title": "Product",
-        "description": "Managing a small business today is already tough.",
+        "description": "Governance-first modules for tenant-scoped ERP operations.",
         "pricing": "Pricing"
       },
       "blog": "Blog",
@@ -18,35 +18,102 @@
       "signUp": "Get started"
     },
     "home": {
+      "publicHome": {
+        "title": "afenda cloud",
+        "brandTagline": "enterprise operating system",
+        "description": "Metadata-driven ERP workspace for governed operations, knowledge, and Lynx automation.",
+        "signInLabel": "sign in",
+        "slogan": "the best place for all your work, files, knowledge, and lynx automation.",
+        "featuresSection": {
+          "title": "four core powers. one intelligent erp.",
+          "lead": "orbit case, nexus net, arcana vault, and codex drive work together to power your entire business.",
+          "benefits": [
+            { "label": "more control" },
+            { "label": "better connection" },
+            { "label": "stronger security" },
+            { "label": "smarter decisions" }
+          ],
+          "lynx": {
+            "brand": "lynx",
+            "category": "automation",
+            "title": "governed automation for erp",
+            "lead": "policy-aware push and tenant-scoped routing — lynx connects work to records without losing finality.",
+            "imageAlt": "Lynx mascot for Afenda ERP automation"
+          },
+          "items": [
+            {
+              "title": "orbit case",
+              "category": "operations",
+              "description": "capture, track, and resolve every case, ticket, and task — everywhere in your organization.",
+              "imageAlt": "Orbit Case"
+            },
+            {
+              "title": "nexus net",
+              "category": "connectivity",
+              "description": "connect people, data, and processes across your business — nothing falls through the net.",
+              "imageAlt": "Nexus Net"
+            },
+            {
+              "title": "arcana vault",
+              "category": "governance",
+              "description": "secure your critical data and ensure compliance with a guardian that never sleeps.",
+              "imageAlt": "Arcana Vault"
+            },
+            {
+              "title": "codex drive",
+              "category": "knowledge",
+              "description": "store, organize, and access all institutional knowledge — memory fades, codex remembers.",
+              "imageAlt": "Codex Drive"
+            }
+          ],
+          "closing": {
+            "title": "open your workspace when you are ready.",
+            "ctaLabel": "sign in"
+          }
+        }
+      },
       "meta": {
-        "title": "Transform Your Business Operations Today",
-        "description": "In today's fast-paced world, your business deserves better than outdated trading systems. Our innovative platform streamlines operations, reduces complexity, and helps small businesses thrive in the modern economy."
+        "title": "afenda cloud",
+        "description": "Metadata-driven ERP workspace for governed operations, knowledge, and Lynx automation."
       },
       "hero": {
-        "announcement": "Read our latest article"
+        "announcement": "Orbit Case — universal work, governed push",
+        "badge": "Afenda XForge",
+        "openApp": "Open app shell",
+        "tags": ["Orbit Case", "Governed push", "Tenant isolation"],
+        "aside": {
+          "routeModel": {
+            "label": "Route model",
+            "title": "Public web surface"
+          },
+          "sharedStack": {
+            "label": "Shared stack",
+            "description": "@repo/analytics, @repo/design-system, @repo/seo, and shared metadata conventions with the authenticated app."
+          }
+        }
       },
       "cases": {
         "title": "Empowering Success Stories Across the Globe"
       },
       "features": {
-        "title": "Powerful Tools for Modern Business",
-        "description": "Discover how our cutting-edge features can revolutionize your daily operations.",
+        "title": "Governed operations across the stack",
+        "description": "Product surfaces that prove the monorepo foundation — shared design system, analytics hooks, and metadata with the main app shell.",
         "items": [
           {
-            "title": "Streamlined Operations",
-            "description": "Our platform streamlines operations, reduces complexity, and helps small businesses thrive in the modern economy."
+            "title": "Operational visibility",
+            "description": "Analysis and reporting views that stay tenant-scoped. Every chart and export respects the same permission boundary as the work it summarizes."
           },
           {
-            "title": "Real-Time Analytics",
-            "description": "Get instant insights into your business performance with comprehensive analytics and reporting tools."
+            "title": "Production workflows",
+            "description": "Run controlled operations with audit-friendly handoffs. Orbit Case captures work once and pushes to governed destinations when policy allows."
           },
           {
-            "title": "Automated Workflows",
-            "description": "Save time and reduce errors with intelligent automation that handles repetitive tasks for you."
+            "title": "Lynx ERP integration",
+            "description": "Connect operational work to ERP records without losing finality. Push registries define what can cross the boundary and who can approve it."
           },
           {
-            "title": "Secure Transactions",
-            "description": "Rest easy knowing your business operations are protected by enterprise-grade security and encryption."
+            "title": "Unified control plane",
+            "description": "One shell for authenticated operations, shared metadata, and module boundaries. The public web surface stays aligned with the app scaffold."
           }
         ]
       },
@@ -118,35 +185,35 @@
         ]
       },
       "faq": {
-        "title": "Common Questions, Expert Answers",
-        "description": "Get quick answers to your most pressing questions about our platform. We've compiled everything you need to know about transforming your business operations and getting started with modern trading solutions.",
-        "cta": "Any questions? Reach out",
+        "title": "How XForge stays governed",
+        "description": "Afenda XForge is built for teams that cannot afford silent permission drift or unaudited cross-module push.",
+        "cta": "Questions about rollout? Reach out",
         "items": [
           {
-            "question": "What is the platform?",
-            "answer": "The platform is a trading platform that allows you to trade with confidence."
+            "question": "What is Afenda XForge?",
+            "answer": "A governance-first ERP foundation for tenant-scoped business systems. The authenticated app shell hosts operational modules; this site is the public web surface."
           },
           {
-            "question": "How secure is the platform?",
-            "answer": "Our platform employs enterprise-grade security measures, including end-to-end encryption and multi-factor authentication, to ensure your trading activities remain completely secure."
+            "question": "How does tenant isolation work?",
+            "answer": "Every read and write is scoped to the active organization. Shared infrastructure does not blur tenant boundaries — permissions and audit trails stay final."
           },
           {
-            "question": "What trading features are available?",
-            "answer": "The platform offers comprehensive trading tools including real-time market data, advanced charting, automated trading strategies, and detailed analytics to support informed decision-making."
+            "question": "What is Orbit Case?",
+            "answer": "Universal work capture with governed push to downstream modules. Push registries define destinations, required fields, and who may execute a push."
           },
           {
-            "question": "How does pricing work?",
-            "answer": "We offer flexible pricing tiers designed to scale with your business needs, from starter plans for individual traders to enterprise solutions for large organizations."
+            "question": "How does the web app relate to the product app?",
+            "answer": "They share the design system, analytics provider, SEO presets, and metadata conventions. Marketing content lives here; operations live in the authenticated shell."
           },
           {
-            "question": "What kind of support do you provide?",
-            "answer": "Our dedicated support team is available 24/7 through multiple channels including live chat, email, and phone. We also provide extensive documentation and training resources."
+            "question": "Where do I start?",
+            "answer": "Open the app shell to sign in or create an account. Use contact if you need a guided rollout conversation."
           }
         ]
       },
       "cta": {
-        "title": "Start Your Business Transformation",
-        "description": "Join thousands of forward-thinking businesses who have already modernized their operations. Our platform offers the tools, support, and efficiency you need to succeed in today's competitive market. Get started in minutes."
+        "title": "Open the governed app shell",
+        "description": "Sign in to tenant-scoped operations with audit trails and permission finality built in. The public site stays in sync with the same monorepo foundation."
       }
     },
     "blog": {

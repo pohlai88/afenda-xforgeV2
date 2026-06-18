@@ -15,9 +15,9 @@ import {
   Kbd,
   KbdSequence,
   recipe,
-} from "@repo/design-system/components/afenda-ui";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../../afenda-ui";
+import { blockRecipe } from "../../block-recipes";
+import { cn } from "../../../../lib/utils";
 import { useEffect, useMemo, useState } from "react";
 import type {
   TopbarShortcutDefinition,

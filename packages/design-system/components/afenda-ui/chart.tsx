@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import {
   type ComponentProps,
   type ComponentType,
@@ -69,7 +69,7 @@ function ChartContainer({
       <div
         aria-label={props["aria-label"] ?? "Chart"}
         className={cn(
-          "flex min-h-[240px] w-full min-w-0 justify-center",
+          "flex min-h-[var(--chart-min-height)] w-full min-w-0 justify-center",
           "[&_.recharts-cartesian-axis-tick_text]:fill-text-secondary",
           "[&_.recharts-cartesian-grid_line]:stroke-border-subtle",
           "[&_.recharts-cartesian-axis-line]:stroke-border-default",
@@ -247,7 +247,7 @@ function ChartTooltipContent({
       )}
     >
       {nestLabel ? null : tooltipLabel}
-      <div className="grid gap-1.5">
+      <div className={cn(recipe("chartTooltipItems"))}>
         {payload
           .filter((item) => item.type !== "none")
           .map((item, index) => {
@@ -274,13 +274,16 @@ function ChartTooltipContent({
                       !hideIndicator && (
                         <div
                           className={cn(
-                            "shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg)",
+                            recipe("chartTooltipIndicator"),
                             {
-                              "size-2.5": indicator === "dot",
-                              "w-1": indicator === "line",
-                              "w-0 border-[1.5px] border-dashed bg-transparent":
+                              [recipe("chartTooltipIndicatorDot")]:
+                                indicator === "dot",
+                              [recipe("chartTooltipIndicatorLine")]:
+                                indicator === "line",
+                              [recipe("chartTooltipIndicatorDashed")]:
                                 indicator === "dashed",
-                              "my-0.5": nestLabel && indicator === "dashed",
+                              [recipe("chartTooltipIndicatorNested")]:
+                                nestLabel && indicator === "dashed",
                             }
                           )}
                           style={
@@ -298,14 +301,14 @@ function ChartTooltipContent({
                         nestLabel ? "items-end" : "items-center"
                       )}
                     >
-                      <div className="grid gap-1.5">
+                      <div className={cn(recipe("chartTooltipItems"))}>
                         {nestLabel ? tooltipLabel : null}
-                        <span className="text-text-secondary">
+                        <span className={cn(recipe("chartTooltipName"))}>
                           {itemConfig?.label || item.name}
                         </span>
                       </div>
                       {item.value && (
-                        <span className="font-medium font-mono text-text-primary tabular-nums">
+                        <span className={cn(recipe("chartTooltipValue"))}>
                           {item.value.toLocaleString()}
                         </span>
                       )}
@@ -357,14 +360,14 @@ function ChartLegendContent({
 
           return (
             <div
-              className="flex items-center gap-1.5 [&>svg]:size-3 [&>svg]:text-text-secondary"
+              className={cn(recipe("chartLegendItem"))}
               key={item.value}
             >
               {itemConfig?.icon && !hideIcon ? (
                 <itemConfig.icon />
               ) : (
                 <div
-                  className="size-2 shrink-0 rounded-[2px]"
+                  className={cn(recipe("chartLegendSwatch"))}
                   style={{
                     backgroundColor: item.color,
                   }}

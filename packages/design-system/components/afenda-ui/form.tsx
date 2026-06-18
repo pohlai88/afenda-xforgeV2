@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { type Label as LabelPrimitive, Slot as SlotPrimitive } from "radix-ui";
 import { type ComponentProps, createContext, useContext, useId } from "react";
 import {

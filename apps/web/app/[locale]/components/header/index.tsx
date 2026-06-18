@@ -9,9 +9,11 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import type { Dictionary } from "@repo/internationalization";
+import { AFENDA_SITE_ICONS } from "@repo/seo/afenda-site-icons";
 import { Menu, MoveRight, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { env } from "@/env";
@@ -109,22 +111,26 @@ export const Header = ({ dictionary }: HeaderProps) => {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="flex items-center gap-2 lg:justify-center">
-          <svg
-            className="h-[18px] w-[18px] -translate-y-[0.5px] fill-current"
-            fill="none"
-            height="22"
-            viewBox="0 0 235 203"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <title>Vercel</title>
-            <path
-              d="M117.082 0L234.164 202.794H0L117.082 0Z"
-              fill="currentColor"
-            />
-          </svg>
-          <p className="whitespace-nowrap font-semibold">next-forge</p>
-        </div>
+        <Link
+          className="flex items-center gap-2 lg:justify-center"
+          href="/"
+        >
+          <Image
+            alt=""
+            className="size-8 rounded-lg"
+            height={32}
+            src={AFENDA_SITE_ICONS.workspaceBrandIcon}
+            width={32}
+          />
+          <div className="hidden sm:block">
+            <p className="text-muted-foreground text-[10px] uppercase tracking-[0.28em] leading-none">
+              Afenda
+            </p>
+            <p className="whitespace-nowrap font-semibold text-sm leading-tight">
+              XForge
+            </p>
+          </div>
+        </Link>
         <div className="flex w-full justify-end gap-4">
           <Button asChild className="hidden md:inline" variant="quiet">
             <Link href="/contact">{dictionary.web.header.contact}</Link>

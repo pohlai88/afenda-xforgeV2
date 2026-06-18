@@ -1,13 +1,13 @@
 "use client";
 
-import { TooltipProvider } from "@repo/design-system/components/afenda-ui/tooltip";
-import { TopbarBrandDisk } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-brand-disk";
-import { TOPBAR_DEFAULT_BRAND_TOOLTIP } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
-import { resolveTopbarSidebarControl } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-helpers";
-import { TopbarScopeSwitchers } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-scope-switchers";
-import { TopbarSidebarControl } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-sidebar-control";
-import { TopbarUtilitiesRail } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-utilities-rail";
-import { cn } from "@repo/design-system/lib/utils";
+import { TooltipProvider } from "../../../../afenda-ui/tooltip";
+import { TopbarBrandDisk } from "../../topbars/topbar-brand-disk";
+import { TOPBAR_DEFAULT_BRAND_TOOLTIP } from "../../topbars/topbar-constants";
+import { resolveTopbarSidebarControl } from "../../topbars/topbar-helpers";
+import { TopbarScopeSwitchers } from "../../topbars/topbar-scope-switchers";
+import { TopbarSidebarControl } from "../../topbars/topbar-sidebar-control";
+import { TopbarUtilitiesRail } from "../../topbars/topbar-utilities-rail";
+import { cn } from "../../../../../lib/utils";
 import { memo } from "react";
 import {
   dashboardNavTopbarLeftClass,

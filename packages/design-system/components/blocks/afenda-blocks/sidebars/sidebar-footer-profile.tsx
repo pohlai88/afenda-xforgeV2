@@ -4,15 +4,15 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@repo/design-system/components/afenda-ui/avatar";
+} from "../../../afenda-ui/avatar";
 import {
   SidebarFooter,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@repo/design-system/components/afenda-ui/sidebar";
-import { SIDEBAR_DEFAULT_PROFILE_DESCRIPTION } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-constants";
-import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
+} from "../../../afenda-ui/sidebar";
+import { SIDEBAR_DEFAULT_PROFILE_DESCRIPTION } from "./sidebar-constants";
+import { resolveSidebarLinkRenderer } from "./sidebar-link-defaults";
 import {
   sidebarAvatarFallbackClass,
   sidebarFooterButtonClass,
@@ -21,8 +21,8 @@ import {
   sidebarIconRailAvatarClass,
   sidebarIconRailHiddenClass,
   sidebarProfileInitials,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "./sidebar-recipes";
+import { cn } from "../../../../lib/utils";
 import { memo } from "react";
 import type { SidebarFooterProfileProps } from "./sidebar-types";
 

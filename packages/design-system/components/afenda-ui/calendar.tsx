@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -44,7 +44,7 @@ function Calendar({
     <DayPicker
       captionLayout={captionLayout}
       className={cn(
-        "group/calendar bg-transparent p-3 [--cell-size:--spacing(8)] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+        "group/calendar bg-transparent p-3 [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         recipe("bodyText"),
@@ -63,20 +63,20 @@ function Calendar({
         ),
         button_previous: cn(
           buttonVariants({ variant: buttonVariant, size: "icon-sm" }),
-          "size-(--cell-size) select-none p-0 aria-disabled:opacity-50",
+          "size-[var(--calendar-cell-size)] select-none p-0 aria-disabled:opacity-50",
           defaultClassNames.button_previous
         ),
         button_next: cn(
           buttonVariants({ variant: buttonVariant, size: "icon-sm" }),
-          "size-(--cell-size) select-none p-0 aria-disabled:opacity-50",
+          "size-[var(--calendar-cell-size)] select-none p-0 aria-disabled:opacity-50",
           defaultClassNames.button_next
         ),
         month_caption: cn(
-          "flex h-(--cell-size) w-full items-center justify-center px-(--cell-size)",
+          "flex h-[var(--calendar-cell-size)] w-full items-center justify-center px-[var(--calendar-cell-size)]",
           defaultClassNames.month_caption
         ),
         dropdowns: cn(
-          "flex h-(--cell-size) w-full items-center justify-center gap-1.5",
+          "flex h-[var(--calendar-cell-size)] w-full items-center justify-center gap-1.5",
           recipe("bodyMediumText"),
           defaultClassNames.dropdowns
         ),
@@ -92,7 +92,7 @@ function Calendar({
           "select-none",
           captionLayout === "label"
             ? recipe("bodyMediumText")
-            : "flex h-8 items-center gap-1 rounded-[var(--button-radius)] pr-1 pl-2 text-[13px] [&>svg]:size-3.5 [&>svg]:text-text-secondary",
+            : "flex h-8 items-center gap-1 rounded-[var(--button-radius)] pr-1 pl-2 text-[length:var(--xforge-font-body-size)] [&>svg]:size-3.5 [&>svg]:text-text-secondary",
           defaultClassNames.caption_label
         ),
         table: "w-full border-collapse",
@@ -104,7 +104,7 @@ function Calendar({
         ),
         week: cn("mt-2 flex w-full", defaultClassNames.week),
         week_number_header: cn(
-          "w-(--cell-size) select-none",
+          "w-[var(--calendar-cell-size)] select-none",
           defaultClassNames.week_number_header
         ),
         week_number: cn(
@@ -191,7 +191,7 @@ function CalendarChevron({
 function CalendarWeekNumber({ children, ...props }: CalendarWeekNumberProps) {
   return (
     <td {...props}>
-      <div className="flex size-(--cell-size) items-center justify-center text-center">
+      <div className={cn(recipe("calendarWeekNumberCell"))}>
         {children}
       </div>
     </td>
@@ -216,7 +216,7 @@ function CalendarDayButton({
   return (
     <Button
       className={cn(
-        "flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 font-normal leading-none",
+        "flex aspect-square size-auto w-full min-w-[var(--calendar-cell-size)] flex-col gap-1 font-normal leading-none",
         "group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:border-border-active group-data-[focused=true]/day:ring-2 group-data-[focused=true]/day:ring-ring/30",
         "data-[selected-single=true]:bg-brand-primary data-[selected-single=true]:text-text-inverse",
         "data-[range-start=true]:rounded-l-[var(--button-radius)] data-[range-start=true]:bg-brand-primary data-[range-start=true]:text-text-inverse",

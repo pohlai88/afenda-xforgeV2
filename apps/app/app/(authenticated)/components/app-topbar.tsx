@@ -12,7 +12,7 @@ import {
   type TopbarActionMenuItem,
   type TopbarScopeSwitcherConfig,
   type TopbarUtilitiesMarketItem,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useOptionalWorkspaceKeyboard } from "./workspace-keyboard-provider";
 import { useWorkspaceSession } from "./workspace-session-context";

@@ -8,7 +8,7 @@ import type {
 } from "recharts/types/component/DefaultTooltipContent"
 import type { LegendPayload } from "recharts/types/component/DefaultLegendContent"
 
-import { cn } from "@repo/design-system/lib/utils"
+import { cn } from "../../lib/utils"
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const

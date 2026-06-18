@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -93,7 +93,7 @@ function DropdownMenuLabel({
 function DropdownMenuItem({
   className,
   inset,
-  variant = "default",
+  variant: _variant = "default",
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
   inset?: boolean;
@@ -115,7 +115,6 @@ function DropdownMenuItem({
       )}
       data-inset={inset}
       data-slot="dropdown-menu-item"
-      data-variant={variant}
       {...props}
     />
   );
@@ -145,7 +144,7 @@ function DropdownMenuCheckboxItem({
     >
       <span className={cn(recipe("itemIndicator", "itemIndicatorMuted"))}>
         <DropdownMenuPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
+          <CheckIcon className={cn(recipe("itemIndicatorCheckIcon"))} />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -186,7 +185,7 @@ function DropdownMenuRadioItem({
     >
       <span className={cn(recipe("itemIndicator", "itemIndicatorMuted"))}>
         <DropdownMenuPrimitive.ItemIndicator>
-          <CircleIcon className="size-2 fill-current" />
+          <CircleIcon className={cn(recipe("itemIndicatorRadioIcon"))} />
         </DropdownMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -249,7 +248,7 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <ChevronRightIcon className="ml-auto size-4 text-text-secondary" />
+      <ChevronRightIcon className={cn("ml-auto", recipe("submenuChevronIcon"))} />
     </DropdownMenuPrimitive.SubTrigger>
   );
 }

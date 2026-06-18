@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
 import { recipe } from "./recipes";
@@ -6,7 +6,7 @@ import { recipe } from "./recipes";
 const alertVariants = cva(
   [
     "relative grid w-full grid-cols-[0_1fr] items-start gap-y-1 rounded-[var(--xforge-radius-md)] border px-4 py-3",
-    "has-[>svg]:grid-cols-[1rem_1fr] has-[>svg]:gap-x-3",
+    "has-[>svg]:grid-cols-[var(--xforge-space-5)_1fr] has-[>svg]:gap-x-3",
     "[&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current",
     recipe("bodyText"),
   ],
@@ -43,7 +43,6 @@ function Alert({
     <div
       className={cn(alertVariants({ tone }), className)}
       data-slot="alert"
-      data-tone={tone}
       role={urgency === "assertive" ? "alert" : "status"}
       {...props}
     />

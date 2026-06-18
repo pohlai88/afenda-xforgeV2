@@ -13,7 +13,7 @@ import {
   AFENDA_TEXT_COLOR_VARIANTS,
   AFENDA_TONES,
   AFENDA_ACTION_VARIANTS,
-} from "../contracts/afenda-variant.contract.ts";
+} from "../registries/variant.registry.ts";
 
 interface SourceFile {
   readonly path: string;
@@ -126,29 +126,32 @@ console.log(`Warnings: ${warningCount}`);
 
 function checkVariantRegistry(): Violation[] {
   const violations: Violation[] = [];
-  const seenVariants = new Set<string>();
 
-  for (const variant of Object.values(allowedByProp).flat()) {
-    if (seenVariants.has(variant)) {
-      violations.push(
-        registryViolation(
-          RULES.duplicateVariant,
-          variant,
-          `Variant "${variant}" is duplicated in the canonical variant registry.`
-        )
-      );
-    }
+  for (const [prop, variants] of Object.entries(allowedByProp)) {
+    const seenVariants = new Set<string>();
 
-    seenVariants.add(variant);
+    for (const variant of variants) {
+      if (seenVariants.has(variant)) {
+        violations.push(
+          registryViolation(
+            RULES.duplicateVariant,
+            variant,
+            `Variant "${variant}" is duplicated in the ${prop} variant registry.`
+          )
+        );
+      }
 
-    if (!variantNamePattern.test(variant)) {
-      violations.push(
-        registryViolation(
-          RULES.invalidVariantName,
-          variant,
-          `Variant "${variant}" must use stable kebab-case.`
-        )
-      );
+      seenVariants.add(variant);
+
+      if (!variantNamePattern.test(variant)) {
+        violations.push(
+          registryViolation(
+            RULES.invalidVariantName,
+            variant,
+            `Variant "${variant}" must use stable kebab-case.`
+          )
+        );
+      }
     }
   }
 
@@ -181,7 +184,7 @@ function checkLiteralVariants(file: SourceFile, pattern: RegExp): Violation[] {
       evidence: variant,
       message: aliasTarget
         ? `Variant alias "${variant}" is forbidden; use canonical "${aliasTarget}".`
-        : `Unknown ${prop} variant "${variant}" is forbidden because ${prop} must use contract vocabulary.`,
+        : `Unknown ${prop} variant "${variant}" is forbidden because ${prop} must use registry vocabulary.`,
       ruleId: aliasTarget ? RULES.forbiddenAlias : RULES.unknownVariant,
       severity: "error",
     });
@@ -210,7 +213,7 @@ function checkDataVariantSelectors(file: SourceFile): Violation[] {
       evidence: variant,
       message: aliasTarget
         ? `Variant alias "${variant}" is forbidden; use canonical "${aliasTarget}".`
-        : `Unknown variant selector "${variant}" is forbidden because variants must use contract vocabulary.`,
+        : `Unknown variant selector "${variant}" is forbidden because variants must use registry vocabulary.`,
       ruleId: aliasTarget ? RULES.forbiddenAlias : RULES.unknownVariant,
       severity: "error",
     });
@@ -237,7 +240,7 @@ function checkDynamicVariants(file: SourceFile, pattern: RegExp): Violation[] {
     const evidence = match[0];
     const violation = toViolation(file, match.index ?? 0, {
       evidence,
-      message: `Dynamic ${prop} value "${evidence.trim()}" is forbidden because variant identity must be contract-known.`,
+      message: `Dynamic ${prop} value "${evidence.trim()}" is forbidden because variant identity must be registry-known.`,
       ruleId: RULES.dynamicVariant,
       severity: "error",
     });
@@ -258,7 +261,7 @@ function registryViolation(
   return {
     ruleId,
     severity: "error",
-    file: "contracts/afenda-variant.contract.ts",
+    file: "registries/variant.registry.ts",
     line: 1,
     column: 1,
     evidence,

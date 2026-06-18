@@ -36,6 +36,7 @@ describe("design-system package contract", () => {
   it("does not document implementation layers as stable package exports", () => {
     for (const exportPath of implementationLayerExports) {
       expect(stablePackageExports, exportPath).not.toContain(exportPath);
+      expect(packageJson.exports, exportPath).not.toHaveProperty(exportPath);
     }
   });
 });
@@ -63,7 +64,8 @@ const requiredRuntimeDependencies = [
 
 const stablePackageExports = [
   ".",
-  "./design-system",
+  "./ai-context",
+  "./component.manifest",
   "./contracts/afenda-design-system",
   "./contracts/afenda-token",
   "./contracts/afenda-accessibility",
@@ -76,6 +78,11 @@ const stablePackageExports = [
   "./contracts/afenda-slot",
   "./contracts/afenda-state",
   "./contracts/afenda-variant",
+  "./registries/component",
+  "./registries/recipe",
+  "./registries/slot",
+  "./registries/variant",
+  "./registries/token",
   "./lib/fonts",
   "./lib/utils",
   "./postcss.config.mjs",
@@ -85,6 +92,7 @@ const stablePackageExports = [
 ] as const;
 
 const implementationLayerExports = [
+  "./design-system",
   "./components/afenda-ui",
   "./components/afenda-ui/*",
   "./components/blocks",

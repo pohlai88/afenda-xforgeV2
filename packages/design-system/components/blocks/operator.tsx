@@ -1,7 +1,9 @@
-import { Badge, Button, Separator } from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { CheckCircle2Icon, CircleIcon, XIcon } from "lucide-react";
 import type { ComponentProps, MouseEventHandler, ReactNode } from "react";
+import { Badge } from "../afenda-ui/badge";
+import { Button } from "../afenda-ui/button";
+import { Separator } from "../afenda-ui/separator";
 import { blockRecipe } from "./block-recipes";
 import type { BlockAction, BlockBaseProps, BlockTone } from "./foundation";
 import { BlockActions } from "./foundation";

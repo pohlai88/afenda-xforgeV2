@@ -4,9 +4,9 @@ import {
   sidebarGroupLabelClass,
   sidebarIconRailHiddenClass,
   sidebarLabelRowClass,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "./sidebar-recipes";
+import { blockRecipe } from "../../block-recipes";
+import { cn } from "../../../../lib/utils";
 import { memo } from "react";
 import type {
   SidebarLabelGroupPanelProps,

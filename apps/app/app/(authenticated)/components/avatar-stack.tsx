@@ -8,7 +8,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 
 interface PresenceAvatarProps {
   info?: Liveblocks["UserMeta"]["info"];

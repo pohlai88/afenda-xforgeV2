@@ -7,7 +7,7 @@ import { IdentityManager } from "@repo/auth/components/identity-manager";
 import { MfaManager } from "@repo/auth/components/mfa-manager";
 import { PasskeyManager } from "@repo/auth/components/passkey-manager";
 import { SessionControls } from "@repo/auth/components/session-controls";
-import { cn, recipe } from "@repo/design-system/design-system";
+import { cn, recipe } from "@repo/design-system";
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
 

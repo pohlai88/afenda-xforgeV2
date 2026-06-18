@@ -2,7 +2,7 @@ import { canOwnOrg, getOrganizationRole } from "@repo/auth/cms";
 import { OrganizationManager } from "@repo/auth/components/organization-manager";
 import { getOrganizations } from "@repo/auth/organizations";
 import { auth, currentUser } from "@repo/auth/server";
-import { cn, recipe } from "@repo/design-system/design-system";
+import { cn, recipe } from "@repo/design-system";
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";

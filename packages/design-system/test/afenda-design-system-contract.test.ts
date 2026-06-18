@@ -558,6 +558,8 @@ describe("afenda design-system anti-drift contract", () => {
     );
     expect(AFENDA_PUBLIC_EXPORTS).toEqual(
       expect.arrayContaining([
+        "@repo/design-system/ai-context",
+        "@repo/design-system/component.manifest",
         "@repo/design-system/contracts/afenda-accessibility",
         "@repo/design-system/contracts/afenda-class-name-policy",
         "@repo/design-system/contracts/afenda-component",
@@ -569,6 +571,11 @@ describe("afenda design-system anti-drift contract", () => {
         "@repo/design-system/contracts/afenda-state",
         "@repo/design-system/contracts/afenda-token",
         "@repo/design-system/contracts/afenda-variant",
+        "@repo/design-system/registries/component",
+        "@repo/design-system/registries/recipe",
+        "@repo/design-system/registries/slot",
+        "@repo/design-system/registries/token",
+        "@repo/design-system/registries/variant",
       ])
     );
     expect(
@@ -578,6 +585,9 @@ describe("afenda design-system anti-drift contract", () => {
     ).toBe(true);
     expect(AFENDA_PUBLIC_EXPORTS).not.toContain(
       "@repo/design-system/contracts/afenda-desing-system"
+    );
+    expect(AFENDA_PUBLIC_EXPORTS).not.toContain(
+      "@repo/design-system/design-system"
     );
   });
 });

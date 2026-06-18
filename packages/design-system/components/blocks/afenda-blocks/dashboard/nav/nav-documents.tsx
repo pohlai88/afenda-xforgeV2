@@ -6,7 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
+} from "../../../../afenda-ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -15,15 +15,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@repo/design-system/components/afenda-ui/sidebar";
-import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
+} from "../../../../afenda-ui/sidebar";
+import { resolveSidebarLinkRenderer } from "../../sidebars/sidebar-link-defaults";
 import {
   sidebarGroupLabelClass,
   sidebarIconRailHiddenClass,
   sidebarIconRailIconClass,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../sidebars/sidebar-recipes";
+import { blockRecipe } from "../../../block-recipes";
+import { cn } from "../../../../../lib/utils";
 import { EllipsisIcon, FolderIcon, Share2Icon, TrashIcon } from "lucide-react";
 import { memo } from "react";
 import {

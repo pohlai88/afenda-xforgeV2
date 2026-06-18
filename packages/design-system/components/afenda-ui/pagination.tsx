@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -91,7 +91,7 @@ function PaginationPrevious({
       className={cn("w-auto gap-1 px-2.5 sm:pl-2", className)}
       {...props}
     >
-      <ChevronLeftIcon className="size-4" />
+      <ChevronLeftIcon className={cn(recipe("paginationIcon"))} />
       <span className="hidden sm:block">Previous</span>
     </PaginationLink>
   );
@@ -108,7 +108,7 @@ function PaginationNext({
       {...props}
     >
       <span className="hidden sm:block">Next</span>
-      <ChevronRightIcon className="size-4" />
+      <ChevronRightIcon className={cn(recipe("paginationIcon"))} />
     </PaginationLink>
   );
 }
@@ -127,8 +127,11 @@ function PaginationEllipsis({
       data-slot="pagination-ellipsis"
       {...props}
     >
-      <MoreHorizontalIcon aria-hidden="true" className="size-4" />
-      <span className="sr-only">More pages</span>
+      <MoreHorizontalIcon
+        aria-hidden="true"
+        className={cn(recipe("paginationIcon"))}
+      />
+      <span className={cn(recipe("visuallyHidden"))}>More pages</span>
     </span>
   );
 }

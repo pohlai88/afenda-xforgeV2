@@ -8,14 +8,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
+} from "../../../afenda-ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@repo/design-system/components/afenda-ui/sidebar";
-import { isSidebarCardSectionItemActive } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-nav-helpers";
+} from "../../../afenda-ui/sidebar";
+import { isSidebarCardSectionItemActive } from "./sidebar-nav-helpers";
 import {
   sidebarCardSectionActionClass,
   sidebarCardSectionExpandedClass,
@@ -27,9 +27,9 @@ import {
   sidebarCardSectionShellClass,
   sidebarCardSectionTitleClass,
   sidebarIconRailIconClass,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "./sidebar-recipes";
+import { blockRecipe } from "../../block-recipes";
+import { cn } from "../../../../lib/utils";
 import { SettingsIcon } from "lucide-react";
 import { memo } from "react";
 import { resolveSidebarLinkRenderer } from "./sidebar-link-defaults";

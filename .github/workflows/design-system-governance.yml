@@ -1,0 +1,129 @@
+name: Design-system governance
+
+on:
+  pull_request:
+    paths:
+      - "packages/design-system/**"
+      - "apps/storybook/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/design-system/**"
+      - "apps/storybook/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+
+concurrency:
+  group: design-system-governance-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance:
+    name: Governance report
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CI: "true"
+      SKIP_ENV_VALIDATION: "true"
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck design-system
+        run: pnpm --filter @repo/design-system typecheck
+
+      - name: Test design-system
+        run: pnpm --filter @repo/design-system test
+
+      - name: Check generated AI context
+        run: pnpm --filter @repo/design-system generate:ai-context:check
+
+      - name: Run governance report
+        id: governance
+        shell: bash
+        run: |
+          set +e
+          node packages/design-system/scripts/check-design-system-governance.ts --json \
+            > design-system-governance.json \
+            2> design-system-governance.stderr.log
+          status=$?
+          set -e
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Summarize governance report
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+
+          const report = JSON.parse(
+            fs.readFileSync("design-system-governance.json", "utf8")
+          );
+          const violations = Array.isArray(report.violations)
+            ? report.violations
+            : [];
+          const errors = violations.filter(
+            (violation) => violation.severity === "error"
+          ).length;
+          const warnings = violations.filter(
+            (violation) => violation.severity === "warning"
+          ).length;
+          const scoreGate = violations.filter(
+            (violation) =>
+              violation.ruleId === "design-system/no-score-below-gate"
+          ).length;
+          const invalidJson = violations.filter(
+            (violation) =>
+              violation.ruleId === "design-system/no-invalid-governance-json"
+          ).length;
+
+          fs.appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              "## Design-system governance",
+              "",
+              `Passed: ${report.passed ? "yes" : "no"}`,
+              `Violations: ${violations.length}`,
+              `Errors: ${errors}`,
+              `Warnings: ${warnings}`,
+              `Score-gate failures: ${scoreGate}`,
+              `Invalid child JSON failures: ${invalidJson}`,
+              "",
+              "The full machine-readable report is attached as `design-system-governance-report`.",
+              "",
+            ].join("\n")
+          );
+          NODE
+
+      - name: Upload governance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-system-governance-report
+          path: |
+            design-system-governance.json
+            design-system-governance.stderr.log
+          if-no-files-found: error
+
+      - name: Enforce governance gate
+        if: steps.governance.outputs.status != '0' && vars.DESIGN_SYSTEM_GOVERNANCE_ENFORCE == 'true'
+        run: |
+          echo "Design-system governance failed and DESIGN_SYSTEM_GOVERNANCE_ENFORCE=true."
+          exit 1

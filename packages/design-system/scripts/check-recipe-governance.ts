@@ -7,8 +7,10 @@ import { afendaRecipe } from "../components/afenda-ui/recipes.ts";
 import { afendaBlockRecipe } from "../components/blocks/block-recipes.ts";
 import {
   AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY,
-  AFENDA_RECIPE_FORBIDDEN_PATTERNS,
   AFENDA_RECIPE_IDENTITY_REGISTRY,
+} from "../registries/recipe.registry.ts";
+import {
+  AFENDA_RECIPE_FORBIDDEN_PATTERNS,
 } from "../contracts/afenda-recipe.contract.ts";
 
 interface SourceFile {
@@ -107,7 +109,7 @@ function checkRecipeRegistries(): Violation[] {
           RULES.unknownRecipeIdentity,
           "components/afenda-ui/recipes.ts",
           recipeId,
-          `Recipe identity "${recipeId}" is implemented but not registered in the recipe contract.`
+          `Recipe identity "${recipeId}" is implemented but not registered in the recipe registry.`
         )
       );
     }
@@ -133,7 +135,7 @@ function checkRecipeRegistries(): Violation[] {
           RULES.unknownRecipeIdentity,
           "components/blocks/block-recipes.ts",
           recipeId,
-          `Block recipe identity "${recipeId}" is implemented but not registered in the recipe contract.`
+          `Block recipe identity "${recipeId}" is implemented but not registered in the recipe registry.`
         )
       );
     }

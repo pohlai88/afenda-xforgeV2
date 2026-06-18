@@ -17,11 +17,7 @@ const contentLayoutRoot = join(
   "content-layout"
 );
 
-const forbiddenRelativeRecipeImports = [
-  /from\s+["']\.\/content-layout-recipes["']/,
-  /from\s+["']\.\.\/\.\.\/block-recipes["']/,
-  /from\s+["']\.\.\/\.\.\/\.\.\/afenda-ui\//,
-];
+const forbiddenSelfPackageImports = [/from\s+["']@repo\/design-system(?:\/[^"']*)?["']/];
 
 describe("content layout block recipes", () => {
   it("composes shell from blockShell and blockPanel", () => {
@@ -33,7 +29,7 @@ describe("content layout block recipes", () => {
     expect(contentLayoutSidebarClass).toContain(blockRecipe("blockRail"));
   });
 
-  it("does not use relative recipe or afenda-ui imports in content-layout components", () => {
+  it("does not self-import the public package from content-layout components", () => {
     const violations: string[] = [];
 
     for (const file of walk(contentLayoutRoot)) {
@@ -42,7 +38,7 @@ describe("content layout block recipes", () => {
       }
 
       const source = readFileSync(file, "utf8");
-      for (const pattern of forbiddenRelativeRecipeImports) {
+      for (const pattern of forbiddenSelfPackageImports) {
         if (pattern.test(source)) {
           violations.push(`${file}: ${pattern}`);
         }

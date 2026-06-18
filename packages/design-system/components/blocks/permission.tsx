@@ -2,11 +2,11 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-  Badge,
-  Button,
-  Separator,
-} from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../afenda-ui/alert";
+import { Badge } from "../afenda-ui/badge";
+import { Button } from "../afenda-ui/button";
+import { Separator } from "../afenda-ui/separator";
+import { cn } from "../../lib/utils";
 import { AlertTriangleIcon, LockIcon } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
 import { blockRecipe } from "./block-recipes";

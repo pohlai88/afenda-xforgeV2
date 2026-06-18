@@ -1,6 +1,6 @@
 "use client";
 
-import { TopbarShortcutsDialog } from "@repo/design-system/design-system";
+import { TopbarShortcutsDialog } from "@repo/design-system";
 import { useWorkspaceKeyboard } from "./workspace-keyboard-provider";
 import { useWorkspaceShortcutDefinitions } from "./workspace-shortcuts";
 

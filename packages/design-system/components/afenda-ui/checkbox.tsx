@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { CheckIcon, MinusIcon } from "lucide-react";
 import { Checkbox as CheckboxPrimitive } from "radix-ui";
@@ -13,7 +13,7 @@ import { recipe } from "./recipes";
 
 const checkboxVariants = cva(
   [
-    "peer relative size-4 shrink-0 rounded-[var(--xforge-radius-xs)] border border-border-default bg-surface-raised outline-none before:absolute before:inset-[-10px] before:content-['']",
+    "peer relative size-4 shrink-0 rounded-[var(--xforge-radius-xs)] border border-border-default bg-surface-raised outline-none before:absolute before:inset-[var(--checkbox-hit-target-inset)] before:content-['']",
     recipe("interactiveTransition"),
     "disabled:cursor-not-allowed disabled:opacity-50",
     recipe("invalidState", "focusRing", "motionReduce"),
@@ -23,13 +23,13 @@ const checkboxVariants = cva(
       tone: {
         neutral:
           "data-[state=checked]:border-brand-primary data-[state=indeterminate]:border-brand-primary data-[state=checked]:bg-brand-primary data-[state=indeterminate]:bg-brand-primary data-[state=checked]:text-text-inverse data-[state=indeterminate]:text-text-inverse",
-        info: "data-[tone=info]:data-[state=checked]:border-info data-[tone=info]:data-[state=indeterminate]:border-info data-[tone=info]:data-[state=checked]:bg-info data-[tone=info]:data-[state=indeterminate]:bg-info data-[tone=info]:data-[state=checked]:text-info-foreground data-[tone=info]:data-[state=indeterminate]:text-info-foreground",
+        info: "data-[state=checked]:border-info data-[state=indeterminate]:border-info data-[state=checked]:bg-info data-[state=indeterminate]:bg-info data-[state=checked]:text-info-foreground data-[state=indeterminate]:text-info-foreground",
         success:
-          "data-[tone=success]:data-[state=checked]:border-success data-[tone=success]:data-[state=indeterminate]:border-success data-[tone=success]:data-[state=checked]:bg-success data-[tone=success]:data-[state=indeterminate]:bg-success data-[tone=success]:data-[state=checked]:text-success-foreground data-[tone=success]:data-[state=indeterminate]:text-success-foreground",
+          "data-[state=checked]:border-success data-[state=indeterminate]:border-success data-[state=checked]:bg-success data-[state=indeterminate]:bg-success data-[state=checked]:text-success-foreground data-[state=indeterminate]:text-success-foreground",
         warning:
-          "data-[tone=warning]:data-[state=checked]:border-warning data-[tone=warning]:data-[state=indeterminate]:border-warning data-[tone=warning]:data-[state=checked]:bg-warning data-[tone=warning]:data-[state=indeterminate]:bg-warning data-[tone=warning]:data-[state=checked]:text-warning-foreground data-[tone=warning]:data-[state=indeterminate]:text-warning-foreground",
+          "data-[state=checked]:border-warning data-[state=indeterminate]:border-warning data-[state=checked]:bg-warning data-[state=indeterminate]:bg-warning data-[state=checked]:text-warning-foreground data-[state=indeterminate]:text-warning-foreground",
         critical:
-          "data-[tone=critical]:data-[state=checked]:border-critical data-[tone=critical]:data-[state=indeterminate]:border-critical data-[tone=critical]:data-[state=checked]:bg-critical data-[tone=critical]:data-[state=indeterminate]:bg-critical data-[tone=critical]:data-[state=checked]:text-critical-foreground data-[tone=critical]:data-[state=indeterminate]:text-critical-foreground",
+          "data-[state=checked]:border-critical data-[state=indeterminate]:border-critical data-[state=checked]:bg-critical data-[state=indeterminate]:bg-critical data-[state=checked]:text-critical-foreground data-[state=indeterminate]:text-critical-foreground",
       },
     },
     defaultVariants: {
@@ -51,16 +51,15 @@ const Checkbox = forwardRef<
     <CheckboxPrimitive.Root
       className={cn(checkboxVariants({ tone }), className)}
       data-slot="checkbox"
-      data-tone={tone}
       ref={ref}
       {...props}
     >
       <CheckboxPrimitive.Indicator
-        className="grid place-content-center text-current transition-none"
+        className={cn(recipe("checkboxIndicator"))}
         data-slot="checkbox-indicator"
       >
-        <CheckIcon className="size-3.5 [[data-state=indeterminate]_&]:hidden" />
-        <MinusIcon className="hidden size-3.5 [[data-state=indeterminate]_&]:block" />
+        <CheckIcon className={cn(recipe("checkboxCheckIcon"))} />
+        <MinusIcon className={cn(recipe("checkboxIndeterminateIcon"))} />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

@@ -4,7 +4,7 @@
     "sessionStart": [
       {
         "type": "prompt",
-        "prompt": "Repo: afenda-Xforge (next-forge, pnpm, apps/app Next.js 16+). Rules: AGENTS.md + .cursor/rules/ (project-general.mdc index). Skill: .cursor/skills/xforge-nextjs-vercel/ for Next.js + Vercel. apps/app: MCP init(project_path=apps/app) + nextjs_docs (after llms-index) before any Next.js code. Hooks enforce: NEXT_PUBLIC secrets, Vercel prod deploy/MCP deploy/env pull, destructive git, dev servers, design-system primitives, stop quality gates."
+        "prompt": "Repo: afenda-Xforge (afenda-xforge, pnpm, apps/app Next.js 16+). Rules: AGENTS.md + .cursor/rules/ (project-general.mdc index). Skill: .cursor/skills/xforge-nextjs-vercel/ for Next.js + Vercel. apps/app: MCP init(project_path=apps/app) + nextjs_docs (after llms-index) before any Next.js code. Hooks enforce: NEXT_PUBLIC secrets, Vercel prod deploy/MCP deploy/env pull, destructive git, dev servers, design-system primitives, stop quality gates."
       }
     ],
     "preToolUse": [

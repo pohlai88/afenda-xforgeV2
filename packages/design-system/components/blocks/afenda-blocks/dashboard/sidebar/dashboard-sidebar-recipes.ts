@@ -1,4 +1,4 @@
-import { sidebarIconRailBlockItemClass } from "@repo/design-system/components/afenda-ui/sidebar-rail-recipes";
+import { sidebarIconRailBlockItemClass } from "../../../../afenda-ui/sidebar-rail-recipes";
 
 const dashboardSidebarBrandButtonClass = [
   sidebarIconRailBlockItemClass,

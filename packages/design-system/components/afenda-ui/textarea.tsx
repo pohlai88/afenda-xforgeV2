@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { type ComponentProps, forwardRef } from "react";
 import { recipe } from "./recipes";
 
@@ -30,7 +30,6 @@ const Textarea = forwardRef<
         recipe("focusRing", "invalidState"),
         className
       )}
-      data-density={density}
       data-slot="textarea"
       ref={ref}
       {...props}

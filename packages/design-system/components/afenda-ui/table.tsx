@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import type * as React from "react";
 import { recipe } from "./recipes";
 
@@ -82,7 +82,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
   return (
     <th
       className={cn(
-        "sticky top-0 z-[var(--xforge-z-raised)] h-10 whitespace-nowrap bg-surface-muted px-3 text-left align-middle font-medium text-text-secondary [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "sticky top-0 z-[var(--xforge-z-raised)] h-10 whitespace-nowrap bg-surface-muted px-3 text-left align-middle font-medium text-text-secondary [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[var(--table-checkbox-offset)]",
         recipe("captionText"),
         className
       )}
@@ -96,7 +96,7 @@ function TableCell({ className, ...props }: React.ComponentProps<"td">) {
   return (
     <td
       className={cn(
-        "h-10 whitespace-nowrap px-3 py-2 align-middle text-text-primary [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]",
+        "h-10 whitespace-nowrap px-3 py-2 align-middle text-text-primary [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[var(--table-checkbox-offset)]",
         className
       )}
       data-slot="table-cell"

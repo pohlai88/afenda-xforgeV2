@@ -1,7 +1,7 @@
 "use client";
 
-import { contentLayoutTopbarClass } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+import { contentLayoutTopbarClass } from "./content-layout-recipes";
+import { cn } from "../../../../lib/utils";
 import { ChevronDownIcon } from "lucide-react";
 import type {
   ContentLayoutBreadcrumbItem,

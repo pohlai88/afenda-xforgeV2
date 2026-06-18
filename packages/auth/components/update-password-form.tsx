@@ -8,7 +8,7 @@ import {
   FieldLabel,
   Input,
   recipe,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { isAuthApiError } from "@supabase/supabase-js";
 import { useMemo, useState } from "react";
 import {

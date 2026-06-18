@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { AspectRatio as AspectRatioPrimitive } from "radix-ui";
 import { recipe } from "./recipes";
 

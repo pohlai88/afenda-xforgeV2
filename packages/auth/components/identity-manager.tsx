@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, cn, recipe } from "@repo/design-system/design-system";
+import { Button, cn, recipe } from "@repo/design-system";
 import type { UserIdentity } from "@supabase/supabase-js";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";

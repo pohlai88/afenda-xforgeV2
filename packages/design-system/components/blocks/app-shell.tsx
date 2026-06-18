@@ -5,8 +5,8 @@ import {
   SidebarProvider,
   SidebarRail,
   useSidebar,
-} from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../afenda-ui/sidebar";
+import { cn } from "../../lib/utils";
 import type {
   ComponentProps,
   CSSProperties,

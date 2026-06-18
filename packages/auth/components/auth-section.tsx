@@ -1,4 +1,4 @@
-import { cn, recipe } from "@repo/design-system/design-system";
+import { cn, recipe } from "@repo/design-system";
 import type { ReactNode } from "react";
 
 /** Shared underline style for in-form auth links. */

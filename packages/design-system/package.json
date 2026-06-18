@@ -4,7 +4,8 @@
   "private": true,
   "exports": {
     ".": "./index.tsx",
-    "./design-system": "./design-system.ts",
+    "./ai-context": "./ai-context.ts",
+    "./component.manifest": "./component.manifest.ts",
     "./contracts/afenda-design-system": "./contracts/afenda-design-system.contract.ts",
     "./contracts/afenda-token": "./contracts/afenda-token.contract.ts",
     "./contracts/afenda-accessibility": "./contracts/afenda-accessibility.contract.ts",
@@ -17,6 +18,11 @@
     "./contracts/afenda-slot": "./contracts/afenda-slot.contract.ts",
     "./contracts/afenda-state": "./contracts/afenda-state.contract.ts",
     "./contracts/afenda-variant": "./contracts/afenda-variant.contract.ts",
+    "./registries/component": "./registries/component.registry.ts",
+    "./registries/recipe": "./registries/recipe.registry.ts",
+    "./registries/slot": "./registries/slot.registry.ts",
+    "./registries/variant": "./registries/variant.registry.ts",
+    "./registries/token": "./registries/token.registry.ts",
     "./lib/fonts": "./lib/fonts.ts",
     "./lib/utils": "./lib/utils.ts",
     "./postcss.config.mjs": "./postcss.config.mjs",
@@ -26,6 +32,10 @@
   },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "generate:ai-context": "node scripts/generate-ai-context.ts",
+    "generate:ai-context:check": "node scripts/generate-ai-context.ts --check",
+    "governance": "node scripts/check-design-system-governance.ts",
+    "governance:json": "node scripts/check-design-system-governance.ts --json",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },

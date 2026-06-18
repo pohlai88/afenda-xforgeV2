@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { CircleIcon } from "lucide-react";
 import { RadioGroup as RadioGroupPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -34,10 +34,10 @@ function RadioGroupItem({
       {...props}
     >
       <RadioGroupPrimitive.Indicator
-        className="relative flex size-full items-center justify-center"
+        className={cn(recipe("radioGroupIndicator"))}
         data-slot="radio-group-indicator"
       >
-        <CircleIcon className="size-2 fill-current text-current" />
+        <CircleIcon className={cn(recipe("radioGroupIndicatorIcon"))} />
       </RadioGroupPrimitive.Indicator>
     </RadioGroupPrimitive.Item>
   );

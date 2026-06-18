@@ -3,8 +3,8 @@ import type {
   MetadataDataSources,
   MetadataPage,
   MetadataPermissionContext,
-} from "@repo/design-system/design-system";
-import { MetadataPageRenderer } from "@repo/design-system/design-system";
+} from "@repo/design-system";
+import { MetadataPageRenderer } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import {

@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
 import { Label } from "./label";
@@ -34,7 +34,6 @@ function FieldLegend({
         className
       )}
       data-slot="field-legend"
-      data-variant={variant}
       {...props}
     />
   );
@@ -153,7 +152,11 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
 
 function FieldHint({ className, ...props }: React.ComponentProps<"p">) {
   return (
-    <FieldDescription className={className} data-slot="field-hint" {...props} />
+    <FieldDescription
+      className={cn(className)}
+      data-slot="field-hint"
+      {...props}
+    />
   );
 }
 
@@ -174,7 +177,7 @@ function FieldSeparator({
       <Separator className="absolute inset-0 top-1/2" />
       {children ? (
         <span
-          className="relative mx-auto block w-fit bg-surface px-2 text-text-secondary"
+          className={cn(recipe("fieldSeparatorContent"))}
           data-slot="field-separator-content"
         >
           {children}
@@ -244,7 +247,7 @@ function getFieldErrorContent(
   }
 
   return (
-    <ul className="ml-4 flex list-disc flex-col gap-1">
+    <ul className={cn(recipe("fieldErrorList"))}>
       {uniqueErrors.map((error) =>
         error?.message ? <li key={error.message}>{error.message}</li> : null
       )}

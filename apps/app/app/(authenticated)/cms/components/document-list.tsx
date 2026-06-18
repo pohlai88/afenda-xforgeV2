@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import Link from "next/link";
 
 interface DocumentListProperties {

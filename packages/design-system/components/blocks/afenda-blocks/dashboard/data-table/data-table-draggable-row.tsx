@@ -5,7 +5,7 @@ import { CSS } from "@dnd-kit/utilities";
 import {
   TableCell,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
+} from "../../../../afenda-ui/table";
 import { flexRender, type Row } from "@tanstack/react-table";
 import { memo } from "react";
 import { dashboardDataTableDraggableRowClass } from "./dashboard-data-table-recipes";

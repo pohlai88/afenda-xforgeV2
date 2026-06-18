@@ -1,7 +1,7 @@
 import { fetchDocumentListItems } from "@repo/cms/document-list";
 import { parseCmsRouteLocale } from "@repo/cms/locale";
 import { isCmsCollection } from "@repo/cms/writer";
-import { Button } from "@repo/design-system/design-system";
+import { Button } from "@repo/design-system";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DocumentList } from "../../components/document-list";

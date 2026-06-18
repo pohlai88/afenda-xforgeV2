@@ -3,7 +3,7 @@
  * Quick actions, nav, footer profile, and sidebar control share this contract.
  */
 
-const sidebarIconRailWidth = "3rem";
+const sidebarIconRailWidth = "var(--sidebar-icon-rail-width)";
 
 const sidebarIconRailItemGapClass = "group-data-[collapsible=icon]:gap-2";
 

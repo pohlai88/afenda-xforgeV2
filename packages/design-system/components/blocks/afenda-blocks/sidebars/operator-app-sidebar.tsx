@@ -1,16 +1,16 @@
 "use client";
 
-import { SidebarHeader } from "@repo/design-system/components/afenda-ui/sidebar";
-import { SIDEBAR_EMPTY_NAVIGATION_LABEL } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-constants";
-import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
+import { SidebarHeader } from "../../../afenda-ui/sidebar";
+import { SIDEBAR_EMPTY_NAVIGATION_LABEL } from "./sidebar-constants";
+import { resolveSidebarLinkRenderer } from "./sidebar-link-defaults";
 import {
   EMPTY_SIDEBAR_LABEL_GROUPS,
   hasOperatorSidebarNavigation,
   isSidebarNavItemActive,
   resolveSidebarActiveItemIds,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-nav-helpers";
-import { operatorAppSidebarShellClass } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "./sidebar-nav-helpers";
+import { operatorAppSidebarShellClass } from "./sidebar-recipes";
+import { cn } from "../../../../lib/utils";
 import { useMemo } from "react";
 import { SidebarNavGroupPanel } from "./sidebar-nav-group";
 import { SidebarNavPanel } from "./sidebar-nav-panel";

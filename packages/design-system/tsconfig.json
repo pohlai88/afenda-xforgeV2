@@ -4,6 +4,7 @@
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
+    "types": ["node", "react", "react-dom"],
     "paths": {
       "@repo/*": ["../*"],
       "@repo/design-system/*": ["./*"]

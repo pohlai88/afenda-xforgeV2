@@ -1,4 +1,4 @@
-import { Button, blockRecipe } from "@repo/design-system/design-system";
+import { Button, blockRecipe } from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import { CalendarIcon, ChevronDownIcon } from "lucide-react";
 

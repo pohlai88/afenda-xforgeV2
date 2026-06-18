@@ -1,12 +1,12 @@
 "use client";
 
-import { TOPBAR_MAX_PINNED_UTILITY_SLOTS } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
+import { TOPBAR_MAX_PINNED_UTILITY_SLOTS } from "./topbar-constants";
 import {
   buildCatalogMaps,
   buildPinnedActions,
   buildPinnedOrder,
   resolveDefaultEnabledIds,
-} from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-utilities-helpers";
+} from "./topbar-utilities-helpers";
 import { useCallback, useMemo, useState } from "react";
 import type {
   TopbarUtilitiesRailProps,

@@ -92,6 +92,7 @@
   --xforge-font-label-size: 11px;
   --xforge-font-label-weight: 600;
   --xforge-font-label-line-height: 13px;
+  --xforge-font-metadata-tracking: 0.08em;
   --xforge-font-metric-size: 28px;
   --xforge-font-metric-weight: 600;
   --xforge-font-metric-line-height: 34px;
@@ -187,6 +188,28 @@
   --card-padding: var(--xforge-space-5);
   --pill-radius: var(--xforge-radius-sm);
   --modal-radius: var(--xforge-radius-xl);
+  --calendar-cell-size: 32px;
+  --chart-min-height: 240px;
+  --chart-indicator-radius: 2px;
+  --chart-indicator-border-width: 1.5px;
+  --checkbox-hit-target-inset: -10px;
+  --command-list-max-height: 360px;
+  --drawer-right-width: 28rem;
+  --drawer-left-width: 24rem;
+  --grid-auto-column-min: 16rem;
+  --input-group-addon-button-offset: -0.35rem;
+  --input-otp-tracking: 0.05em;
+  --metric-text-size-sm: 18px;
+  --metric-text-size-md: 24px;
+  --metric-text-size-lg: 32px;
+  --select-content-min-width: 8rem;
+  --sheet-side-inset: 1rem;
+  --sidebar-icon-rail-width: 3rem;
+  --sidebar-tooltip-description-size: 10px;
+  --sidebar-tooltip-shortcut-size: 9px;
+  --sidebar-width-default: 17rem;
+  --sidebar-width-mobile: 20rem;
+  --table-checkbox-offset: 2px;
   --border: var(--xforge-color-line);
   --input: var(--xforge-color-line);
   --ring: var(--xforge-color-focus);
@@ -478,7 +501,7 @@
   }
 }
 
-/* This layer is by next-forge */
+/* This layer is by afenda-xforge */
 @layer base {
   ::after,
   ::before,

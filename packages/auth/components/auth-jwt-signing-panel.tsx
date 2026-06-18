@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, recipe } from "@repo/design-system/design-system";
+import { cn, recipe } from "@repo/design-system";
 import { useId } from "react";
 import {
   describeClientKeyMode,

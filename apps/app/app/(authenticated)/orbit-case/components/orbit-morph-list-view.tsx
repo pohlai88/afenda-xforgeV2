@@ -5,7 +5,7 @@ import {
   resolveRoutedMorphSliceBySegment,
   toOrbitMorphRequestDto,
 } from "@repo/orbit-case";
-import { Badge, blockRecipe } from "@repo/design-system/design-system";
+import { Badge, blockRecipe } from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";

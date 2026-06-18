@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Button } from "../../../afenda-ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,15 +9,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
-import { Kbd } from "@repo/design-system/components/afenda-ui/kbd";
+} from "../../../afenda-ui/dropdown-menu";
+import { Kbd } from "../../../afenda-ui/kbd";
 import {
   TOPBAR_DEFAULT_ACTIONS_MENU_BUTTON_LABEL,
   TOPBAR_DEFAULT_ACTIONS_MENU_DESCRIPTION,
   TOPBAR_DEFAULT_ACTIONS_MENU_LABEL,
-} from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
-import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "./topbar-constants";
+import { topbarIconActionClass } from "./topbar-recipes";
+import { cn } from "../../../../lib/utils";
 import { MoreHorizontalIcon } from "lucide-react";
 import { TopbarTooltip } from "./topbar-tooltip";
 import type { TopbarActionsMenuProps } from "./topbar-types";

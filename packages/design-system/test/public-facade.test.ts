@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -45,7 +45,7 @@ import {
   Table,
   TenantOperationsWorkspace,
   Text,
-} from "../design-system";
+} from "..";
 
 const wildcardExportPattern = /export\s+\*\s+from\s+["']/;
 
@@ -58,11 +58,26 @@ describe("public design-system facade", () => {
 
   it("keeps the facade explicit instead of using wildcard re-exports", () => {
     const source = readFileSync(
-      join(dirname(fileURLToPath(import.meta.url)), "..", "design-system.ts"),
+      join(dirname(fileURLToPath(import.meta.url)), "..", "index.tsx"),
       "utf8"
     );
 
     expect(source).not.toMatch(wildcardExportPattern);
+  });
+
+  it("keeps implementation files from self-importing package public paths", () => {
+    const packageRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
+    const implementationRoots = ["components", "hooks", "lib", "providers"];
+
+    for (const filePath of implementationRoots.flatMap((directory) =>
+      getSourceFiles(join(packageRoot, directory))
+    )) {
+      const source = readFileSync(filePath, "utf8");
+
+      expect(source, filePath).not.toMatch(
+        /from\s+["']@repo\/design-system(?:\/[^"']*)?["']/
+      );
+    }
   });
 });
 
@@ -155,3 +170,18 @@ const stableRuntimeExports = [
   "createMetadataDiagnosticsDispatcher",
   "resolveMetadataBinding",
 ] as const satisfies readonly (keyof typeof stableRuntimeExportValues)[];
+
+function getSourceFiles(directory: string): readonly string[] {
+  const entries = readdirSync(directory).flatMap((entry) => {
+    const entryPath = join(directory, entry);
+    const stats = statSync(entryPath);
+
+    if (stats.isDirectory()) {
+      return getSourceFiles(entryPath);
+    }
+
+    return /\.(?:ts|tsx)$/.test(entry) ? [entryPath] : [];
+  });
+
+  return entries.sort((a, b) => a.localeCompare(b));
+}

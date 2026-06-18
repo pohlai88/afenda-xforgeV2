@@ -1,6 +1,6 @@
 "use client";
 
-import { Skeleton } from "@repo/design-system/design-system";
+import { Skeleton } from "@repo/design-system";
 import dynamic from "next/dynamic";
 
 interface MdxEditorProperties {

@@ -3,7 +3,7 @@
 import {
   DEFAULT_ERP_ACTIONS_MENU_ITEMS,
   DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
-} from "@repo/design-system/components/blocks/afenda-blocks/topbars";
+} from "../../topbars";
 import type { DashboardNavTopbarProps } from "./dashboard-topbar-types";
 
 export const DEFAULT_DASHBOARD_NAV_TOPBAR_ENABLED_UTILITY_IDS = [

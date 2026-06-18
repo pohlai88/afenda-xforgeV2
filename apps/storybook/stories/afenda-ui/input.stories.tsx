@@ -1,4 +1,4 @@
-import { Input } from "@repo/design-system/design-system";
+import { Input } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { booleanControl } from "../../.storybook/args";

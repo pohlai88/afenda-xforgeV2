@@ -5,7 +5,7 @@ import {
   Field,
   FieldError,
   recipe,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { useId, useMemo, useState } from "react";
 import {
   type AuthFieldErrors,

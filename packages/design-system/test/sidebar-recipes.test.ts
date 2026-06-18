@@ -18,12 +18,7 @@ const sidebarsRoot = join(
   "sidebars"
 );
 
-const forbiddenRelativeRecipeImports = [
-  /from\s+["']\.\/sidebar-recipes["']/,
-  /from\s+["']\.\.\/\.\.\/block-recipes["']/,
-  /from\s+["']\.\.\/\.\.\/\.\.\/afenda-ui\/sidebar-rail-recipes["']/,
-  /from\s+["']\.\.\/\.\.\/\.\.\/afenda-ui\//,
-];
+const forbiddenSelfPackageImports = [/from\s+["']@repo\/design-system(?:\/[^"']*)?["']/];
 
 describe("sidebar block recipes", () => {
   it("composes nav panel spacing from blockStack", () => {
@@ -40,7 +35,7 @@ describe("sidebar block recipes", () => {
     expect(sidebarProfileInitials("ops")).toBe("O");
   });
 
-  it("does not use relative recipe imports in sidebar block components", () => {
+  it("does not self-import the public package from sidebar block components", () => {
     const violations: string[] = [];
 
     for (const file of walk(sidebarsRoot)) {
@@ -49,7 +44,7 @@ describe("sidebar block recipes", () => {
       }
 
       const source = readFileSync(file, "utf8");
-      for (const pattern of forbiddenRelativeRecipeImports) {
+      for (const pattern of forbiddenSelfPackageImports) {
         if (pattern.test(source)) {
           violations.push(`${file}: ${pattern}`);
         }

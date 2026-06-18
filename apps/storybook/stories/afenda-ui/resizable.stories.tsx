@@ -4,7 +4,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
   Separator,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { layoutStoryParameters } from "../../.storybook/essentials";
 

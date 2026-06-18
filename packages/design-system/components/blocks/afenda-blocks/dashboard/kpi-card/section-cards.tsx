@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
+import { Badge } from "../../../../afenda-ui/badge";
 import {
   Card,
   CardAction,
@@ -8,8 +8,8 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@repo/design-system/components/afenda-ui/card";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../../../afenda-ui/card";
+import { cn } from "../../../../../lib/utils";
 import { TrendingDownIcon, TrendingUpIcon } from "lucide-react";
 import { memo } from "react";
 import { DEMO_DASHBOARD_SECTION_CARDS } from "./dashboard-section-cards-demo-data";

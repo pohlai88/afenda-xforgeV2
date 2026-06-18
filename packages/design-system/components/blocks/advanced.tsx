@@ -2,8 +2,10 @@
 
 import {
   Badge,
-  Button,
-  Checkbox,
+} from "../afenda-ui/badge";
+import { Button } from "../afenda-ui/button";
+import { Checkbox } from "../afenda-ui/checkbox";
+import {
   Command,
   CommandEmpty,
   CommandGroup,
@@ -12,30 +14,38 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
+} from "../afenda-ui/command";
+import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Input,
+} from "../afenda-ui/dropdown-menu";
+import { Input } from "../afenda-ui/input";
+import {
   Kbd,
   KbdSequence,
-  Progress,
-  Separator,
-  Skeleton,
+} from "../afenda-ui/kbd";
+import { Progress } from "../afenda-ui/progress";
+import { Separator } from "../afenda-ui/separator";
+import { Skeleton } from "../afenda-ui/skeleton";
+import {
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
+} from "../afenda-ui/table";
+import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../afenda-ui/tabs";
+import { cn } from "../../lib/utils";
 import {
   type ColumnDef,
   type ColumnFiltersState,

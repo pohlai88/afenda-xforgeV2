@@ -1,4 +1,4 @@
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+import { blockRecipe } from "../../../block-recipes";
 
 /** Transparent nav strip — embedded on body default bg, no blockChrome fill */
 const dashboardNavTopbarShellClass = [

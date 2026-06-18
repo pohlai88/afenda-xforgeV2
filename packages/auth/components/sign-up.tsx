@@ -7,7 +7,7 @@ import {
   FieldLabel,
   Input,
   recipe,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useId, useMemo, useState } from "react";

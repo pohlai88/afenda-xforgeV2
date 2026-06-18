@@ -5,7 +5,7 @@ import {
   toOrbitMorphRequestDto,
 } from "@repo/orbit-case";
 import { resolveOrbitMorphRouteLoader } from "@repo/orbit-case/server";
-import { blockRecipe } from "@repo/design-system/design-system";
+import { blockRecipe } from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";

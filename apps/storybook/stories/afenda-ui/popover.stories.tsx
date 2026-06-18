@@ -6,7 +6,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { FilterIcon, SearchIcon } from "lucide-react";
 import { expect, screen } from "storybook/test";

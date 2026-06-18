@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 type KbdSize = "sm" | "md";
@@ -23,7 +23,6 @@ function Kbd({ className, size = "md", ...props }: KbdProps) {
         recipe("shortcutText"),
         className
       )}
-      data-size={size}
       data-slot="kbd"
       {...props}
     />

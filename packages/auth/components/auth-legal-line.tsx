@@ -1,6 +1,6 @@
 "use client";
 
-import { cn, recipe } from "@repo/design-system/design-system";
+import { cn, recipe } from "@repo/design-system";
 import Link from "next/link";
 import { useAuthUiConfig } from "../context/auth-ui-config";
 import { authLinkClass } from "./auth-section";

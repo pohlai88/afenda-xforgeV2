@@ -1,14 +1,14 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Button } from "../../../afenda-ui/button";
 import {
   contentLayoutSidebarAriaLabel,
   contentLayoutSidebarToggleAriaLabel,
   DEFAULT_CONTENT_LAYOUT_SIDEBAR_COLLAPSED_WIDTH,
   DEFAULT_CONTENT_LAYOUT_SIDEBAR_WIDTH,
-} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
-import { contentLayoutSidebarClass } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "./content-layout-constants";
+import { contentLayoutSidebarClass } from "./content-layout-recipes";
+import { cn } from "../../../../lib/utils";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import type {
   ContentLayoutSidebarPanelProps,

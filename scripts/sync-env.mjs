@@ -34,7 +34,7 @@ const publicNamePattern = /^(NEXT_PUBLIC_|PUBLIC_)/;
 
 const ignoredNames = new Set(["NODE_ENV"]);
 
-// Map next-forge .env.example keys to legacy source keys.
+// Map afenda-xforge .env.example keys to legacy source keys.
 const envAliases = {
   RESEND_TOKEN: "RESEND_API_KEY",
   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "STRIPE_PUBLISHABLE_KEY",

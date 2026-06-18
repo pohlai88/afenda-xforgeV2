@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { TOPBAR_MAX_PINNED_UTILITY_SLOTS } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-constants";
-import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+import { Button } from "../../../afenda-ui/button";
+import { TOPBAR_MAX_PINNED_UTILITY_SLOTS } from "./topbar-constants";
+import { topbarIconActionClass } from "./topbar-recipes";
+import { cn } from "../../../../lib/utils";
 import {
   type DragEvent,
   memo,

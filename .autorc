@@ -1,7 +1,5 @@
 {
   "plugins": [["npm", { "setRcToken": false }], "first-time-contributor", "released"],
-  "owner": "vercel",
-  "repo": "next-forge",
-  "name": "Hayden Bleasel",
-  "email": "hello@haydenbleasel.com"
+  "owner": "pohlai88",
+  "repo": "afenda-xforgeV2"
 }

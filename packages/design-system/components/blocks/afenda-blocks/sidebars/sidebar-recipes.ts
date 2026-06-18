@@ -5,8 +5,8 @@ import {
   sidebarIconRailHiddenClass,
   sidebarIconRailNavClass,
   sidebarIconRailShellClass,
-} from "@repo/design-system/components/afenda-ui/sidebar-rail-recipes";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+} from "../../../afenda-ui/sidebar-rail-recipes";
+import { blockRecipe } from "../../block-recipes";
 
 export {
   sidebarIconRailAvatarClass,
@@ -14,7 +14,7 @@ export {
   sidebarIconRailIconClass,
   sidebarIconRailScrollAreaClass,
   sidebarIconRailShellClass,
-} from "@repo/design-system/components/afenda-ui/sidebar-rail-recipes";
+} from "../../../afenda-ui/sidebar-rail-recipes";
 
 const WHITESPACE_PATTERN = /\s+/;
 

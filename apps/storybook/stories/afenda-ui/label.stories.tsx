@@ -1,4 +1,4 @@
-import { Input, Label } from "@repo/design-system/design-system";
+import { Input, Label } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {

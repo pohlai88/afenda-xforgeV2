@@ -1,7 +1,7 @@
 "use client";
 
 import { useSortable } from "@dnd-kit/sortable";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Button } from "../../../../afenda-ui/button";
 import { GripVerticalIcon } from "lucide-react";
 import { memo } from "react";
 import { dashboardDataTableDragHandleClass } from "./dashboard-data-table-recipes";

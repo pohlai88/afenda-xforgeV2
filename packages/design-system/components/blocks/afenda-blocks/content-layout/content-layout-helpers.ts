@@ -1,5 +1,5 @@
-import { DEFAULT_CONTENT_LAYOUT_INSETS } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+import { DEFAULT_CONTENT_LAYOUT_INSETS } from "./content-layout-constants";
+import { blockRecipe } from "../../block-recipes";
 import type { CSSProperties } from "react";
 import type { BlockDensity } from "../../foundation";
 import type {

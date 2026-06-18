@@ -8,7 +8,7 @@ description: >-
 
 # afenda-Xforge CSS + Tailwind v4
 
-Scoped to the next-forge monorepo (`packages/design-system`, `apps/app`, `apps/storybook`).
+Scoped to the afenda-xforge monorepo (`packages/design-system`, `apps/app`, `apps/storybook`).
 
 ## When to apply
 

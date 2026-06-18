@@ -9,7 +9,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { ChevronRightIcon, PlusIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";

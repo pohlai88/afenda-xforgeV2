@@ -3,16 +3,16 @@
 import {
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@repo/design-system/components/afenda-ui/sidebar";
-import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
+} from "../../../afenda-ui/sidebar";
+import { resolveSidebarLinkRenderer } from "./sidebar-link-defaults";
 import {
   sidebarIconRailHiddenClass,
   sidebarIconRailIconClass,
   sidebarNavItemBaseClass,
   sidebarNavItemIdleClass,
   sidebarNavItemSelectedClass,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "./sidebar-recipes";
+import { cn } from "../../../../lib/utils";
 import { memo } from "react";
 import type { SidebarNavItemRowProps } from "./sidebar-types";
 

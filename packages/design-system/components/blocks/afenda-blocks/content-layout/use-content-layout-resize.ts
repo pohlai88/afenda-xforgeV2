@@ -3,12 +3,12 @@
 import {
   DEFAULT_CONTENT_LAYOUT_MIN_HEIGHT,
   DEFAULT_CONTENT_LAYOUT_MIN_WIDTH,
-} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-constants";
+} from "./content-layout-constants";
 import {
   applyContentLayoutResize,
   applyGeometryToElement,
   geometryToContainerStyle,
-} from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-helpers";
+} from "./content-layout-helpers";
 import type { CSSProperties, RefObject } from "react";
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type {

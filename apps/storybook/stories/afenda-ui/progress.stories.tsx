@@ -1,6 +1,6 @@
-import type { ProgressTone } from "@repo/design-system/design-system";
+import type { ProgressTone } from "@repo/design-system";
 
-import { Progress } from "@repo/design-system/design-system";
+import { Progress } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {

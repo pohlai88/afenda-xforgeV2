@@ -3,7 +3,7 @@
 import {
   SidebarControlMenu,
   SidebarMenuItem,
-} from "@repo/design-system/components/afenda-ui/sidebar";
+} from "../../../afenda-ui/sidebar";
 
 export function SidebarFooterTrailingControl() {
   return (

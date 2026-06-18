@@ -1,4 +1,4 @@
-import type { ChartConfig } from "@repo/design-system/components/afenda-ui/chart";
+import type { ChartConfig } from "../../../../afenda-ui/chart";
 import type { ReactNode } from "react";
 import type { ChartAreaDataPoint } from "../dashboard-contracts";
 

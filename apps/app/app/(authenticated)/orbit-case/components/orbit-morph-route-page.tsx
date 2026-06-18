@@ -1,5 +1,5 @@
 import type { OrbitMorphSegment } from "@/lib/orbit-morph-page-types";
-import { Skeleton } from "@repo/design-system/design-system";
+import { Skeleton } from "@repo/design-system";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { OrbitMorphDetailView } from "./orbit-morph-detail-view";

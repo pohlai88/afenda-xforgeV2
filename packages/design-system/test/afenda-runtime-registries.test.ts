@@ -1,0 +1,141 @@
+import { describe, expect, it } from "vitest";
+import {
+  AFENDA_BLOCK_COMPONENT_IDS as CONTRACT_BLOCK_COMPONENT_IDS,
+  AFENDA_COMPONENT_IDENTITY_REGISTRY as CONTRACT_COMPONENT_IDENTITY_REGISTRY,
+  AFENDA_INTERNAL_COMPONENT_IDS as CONTRACT_INTERNAL_COMPONENT_IDS,
+  AFENDA_PRIMITIVE_COMPONENT_IDS as CONTRACT_PRIMITIVE_COMPONENT_IDS,
+} from "../contracts/afenda-component.contract";
+import {
+  AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY as CONTRACT_BLOCK_RECIPE_IDENTITY_REGISTRY,
+  AFENDA_RECIPE_IDENTITY_REGISTRY as CONTRACT_RECIPE_IDENTITY_REGISTRY,
+} from "../contracts/afenda-recipe.contract";
+import {
+  AFENDA_SLOT_EXACT_IDENTITY_REGISTRY as CONTRACT_SLOT_EXACT_IDENTITY_REGISTRY,
+  AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY as CONTRACT_SLOT_IDENTITY_PATTERN_REGISTRY,
+} from "../contracts/afenda-slot.contract";
+import {
+  AFENDA_TOKEN_DOMAINS as CONTRACT_TOKEN_DOMAINS,
+  AFENDA_TOKEN_LAYERS as CONTRACT_TOKEN_LAYERS,
+  AFENDA_TOKEN_SOURCE_OF_TRUTH as CONTRACT_TOKEN_SOURCE_OF_TRUTH,
+} from "../contracts/afenda-token.contract";
+import {
+  AFENDA_ACTION_VARIANTS as CONTRACT_ACTION_VARIANTS,
+  AFENDA_COMPONENT_SIZE_VARIANTS as CONTRACT_COMPONENT_SIZE_VARIANTS,
+  AFENDA_DENSITIES as CONTRACT_DENSITIES,
+  AFENDA_FORBIDDEN_VARIANT_ALIASES as CONTRACT_FORBIDDEN_VARIANT_ALIASES,
+  AFENDA_SIZES as CONTRACT_SIZES,
+  AFENDA_STRUCTURAL_VARIANTS as CONTRACT_STRUCTURAL_VARIANTS,
+  AFENDA_TEXT_COLOR_VARIANTS as CONTRACT_TEXT_COLOR_VARIANTS,
+  AFENDA_TONES as CONTRACT_TONES,
+  AFENDA_VARIANT_IDENTITY_REGISTRY as CONTRACT_VARIANT_IDENTITY_REGISTRY,
+} from "../contracts/afenda-variant.contract";
+import {
+  AFENDA_BLOCK_COMPONENT_IDS,
+  AFENDA_COMPONENT_IDENTITY_REGISTRY,
+  AFENDA_INTERNAL_COMPONENT_IDS,
+  AFENDA_PRIMITIVE_COMPONENT_IDS,
+  afendaComponentRegistry,
+} from "../registries/component.registry";
+import {
+  AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY,
+  AFENDA_RECIPE_IDENTITY_REGISTRY,
+  afendaRecipeRegistry,
+} from "../registries/recipe.registry";
+import {
+  AFENDA_SLOT_EXACT_IDENTITY_REGISTRY,
+  AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY,
+  afendaSlotRegistry,
+} from "../registries/slot.registry";
+import {
+  AFENDA_TOKEN_DOMAINS,
+  AFENDA_TOKEN_LAYERS,
+  AFENDA_TOKEN_SOURCE_OF_TRUTH,
+  afendaTokenRegistry,
+} from "../registries/token.registry";
+import {
+  AFENDA_ACTION_VARIANTS,
+  AFENDA_COMPONENT_SIZE_VARIANTS,
+  AFENDA_DENSITIES,
+  AFENDA_FORBIDDEN_VARIANT_ALIASES,
+  AFENDA_SIZES,
+  AFENDA_STRUCTURAL_VARIANTS,
+  AFENDA_TEXT_COLOR_VARIANTS,
+  AFENDA_TONES,
+  AFENDA_VARIANT_IDENTITY_REGISTRY,
+  afendaVariantRegistry,
+} from "../registries/variant.registry";
+
+describe("afenda runtime registries", () => {
+  it("keeps component registry aligned with component contract", () => {
+    expect(AFENDA_PRIMITIVE_COMPONENT_IDS).toEqual(
+      CONTRACT_PRIMITIVE_COMPONENT_IDS
+    );
+    expect(AFENDA_BLOCK_COMPONENT_IDS).toEqual(CONTRACT_BLOCK_COMPONENT_IDS);
+    expect(AFENDA_INTERNAL_COMPONENT_IDS).toEqual(
+      CONTRACT_INTERNAL_COMPONENT_IDS
+    );
+    expect(AFENDA_COMPONENT_IDENTITY_REGISTRY).toEqual(
+      CONTRACT_COMPONENT_IDENTITY_REGISTRY
+    );
+  });
+
+  it("keeps recipe registry aligned with recipe contract", () => {
+    expect(AFENDA_RECIPE_IDENTITY_REGISTRY).toEqual(
+      CONTRACT_RECIPE_IDENTITY_REGISTRY
+    );
+    expect(AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY).toEqual(
+      CONTRACT_BLOCK_RECIPE_IDENTITY_REGISTRY
+    );
+  });
+
+  it("keeps slot registry aligned with slot contract", () => {
+    expect(AFENDA_SLOT_EXACT_IDENTITY_REGISTRY).toEqual(
+      CONTRACT_SLOT_EXACT_IDENTITY_REGISTRY
+    );
+    expect(AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY).toEqual(
+      CONTRACT_SLOT_IDENTITY_PATTERN_REGISTRY
+    );
+  });
+
+  it("keeps variant registry aligned with variant contract", () => {
+    expect(AFENDA_TONES).toEqual(CONTRACT_TONES);
+    expect(AFENDA_DENSITIES).toEqual(CONTRACT_DENSITIES);
+    expect(AFENDA_SIZES).toEqual(CONTRACT_SIZES);
+    expect(AFENDA_COMPONENT_SIZE_VARIANTS).toEqual(
+      CONTRACT_COMPONENT_SIZE_VARIANTS
+    );
+    expect(AFENDA_TEXT_COLOR_VARIANTS).toEqual(
+      CONTRACT_TEXT_COLOR_VARIANTS
+    );
+    expect(AFENDA_ACTION_VARIANTS).toEqual(CONTRACT_ACTION_VARIANTS);
+    expect(AFENDA_STRUCTURAL_VARIANTS).toEqual(
+      CONTRACT_STRUCTURAL_VARIANTS
+    );
+    expect(AFENDA_VARIANT_IDENTITY_REGISTRY).toEqual(
+      CONTRACT_VARIANT_IDENTITY_REGISTRY
+    );
+    expect(AFENDA_FORBIDDEN_VARIANT_ALIASES).toEqual(
+      CONTRACT_FORBIDDEN_VARIANT_ALIASES
+    );
+  });
+
+  it("keeps token registry aligned with token contract", () => {
+    expect(AFENDA_TOKEN_LAYERS).toEqual(CONTRACT_TOKEN_LAYERS);
+    expect(AFENDA_TOKEN_DOMAINS).toEqual(CONTRACT_TOKEN_DOMAINS);
+    expect(AFENDA_TOKEN_SOURCE_OF_TRUTH).toEqual(
+      CONTRACT_TOKEN_SOURCE_OF_TRUTH
+    );
+  });
+
+  it("keeps runtime registries JSON-serializable", () => {
+    for (const registry of [
+      afendaComponentRegistry,
+      afendaRecipeRegistry,
+      afendaSlotRegistry,
+      afendaVariantRegistry,
+      afendaTokenRegistry,
+    ]) {
+      expect(JSON.parse(JSON.stringify(registry))).toEqual(registry);
+    }
+  });
+});

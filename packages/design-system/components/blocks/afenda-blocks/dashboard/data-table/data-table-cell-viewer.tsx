@@ -1,11 +1,11 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Button } from "../../../../afenda-ui/button";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@repo/design-system/components/afenda-ui/chart";
+} from "../../../../afenda-ui/chart";
 import {
   Drawer,
   DrawerClose,
@@ -15,18 +15,18 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@repo/design-system/components/afenda-ui/drawer";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import { Label } from "@repo/design-system/components/afenda-ui/label";
+} from "../../../../afenda-ui/drawer";
+import { Input } from "../../../../afenda-ui/input";
+import { Label } from "../../../../afenda-ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/design-system/components/afenda-ui/select";
-import { Separator } from "@repo/design-system/components/afenda-ui/separator";
-import { useIsMobile } from "@repo/design-system/hooks/use-mobile";
+} from "../../../../afenda-ui/select";
+import { Separator } from "../../../../afenda-ui/separator";
+import { useIsMobile } from "../../../../../hooks/use-mobile";
 import { TrendingUpIcon } from "lucide-react";
 import { memo } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";

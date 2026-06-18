@@ -3,8 +3,8 @@
 import {
   SidebarInset,
   SidebarProvider,
-} from "@repo/design-system/components/afenda-ui/sidebar";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../../../afenda-ui/sidebar";
+import { cn } from "../../../../../lib/utils";
 import { type CSSProperties, memo } from "react";
 import { ChartAreaInteractive } from "../chart/chart-area-interactive";
 import { DashboardDataTable } from "../data-table";

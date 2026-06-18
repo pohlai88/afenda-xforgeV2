@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Input, Label } from "@repo/design-system/design-system";
+import { Button, Input, Label } from "@repo/design-system";
 import { CMS_WEBHOOK_EVENTS, type CmsWebhookEventType } from "@repo/webhooks";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";

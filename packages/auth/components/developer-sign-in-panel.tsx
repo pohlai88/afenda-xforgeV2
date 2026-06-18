@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, cn, recipe } from "@repo/design-system/design-system";
+import { Button, cn, recipe } from "@repo/design-system";
 
 export const DEVELOPER_SIGN_IN_CREDENTIALS = {
   email: "developer@afenda.com",

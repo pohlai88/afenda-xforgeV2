@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot as SlotPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -17,7 +17,7 @@ const gridVariants = cva(["grid min-w-0", recipe("motionReduce")], {
       2: "grid-cols-1 sm:grid-cols-2",
       3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
       4: "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4",
-      auto: "grid-cols-[repeat(auto-fit,minmax(min(100%,16rem),1fr))]",
+      auto: "grid-cols-[repeat(auto-fit,minmax(min(100%,var(--grid-auto-column-min)),1fr))]",
     },
     gap: {
       none: "gap-0",

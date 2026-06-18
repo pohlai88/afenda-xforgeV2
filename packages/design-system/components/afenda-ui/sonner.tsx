@@ -11,6 +11,7 @@ import { useTheme } from "next-themes";
 import type * as React from "react";
 import { Toaster as Sonner, type ToasterProps } from "sonner";
 
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 const Toaster = ({ ...props }: ToasterProps) => {
@@ -18,18 +19,18 @@ const Toaster = ({ ...props }: ToasterProps) => {
 
   return (
     <Sonner
-      className="toaster group"
+      className={cn(recipe("toasterRoot"))}
       closeButton
       data-slot="toaster"
       icons={{
-        success: <CircleCheckIcon className="size-4 text-success" />,
-        info: <InfoIcon className="size-4 text-info" />,
-        warning: <TriangleAlertIcon className="size-4 text-warning" />,
-        error: <OctagonXIcon className="size-4 text-critical" />,
+        success: <CircleCheckIcon className={cn(recipe("toastSuccessIcon"))} />,
+        info: <InfoIcon className={cn(recipe("toastInfoIcon"))} />,
+        warning: (
+          <TriangleAlertIcon className={cn(recipe("toastWarningIcon"))} />
+        ),
+        error: <OctagonXIcon className={cn(recipe("toastCriticalIcon"))} />,
         loading: (
-          <Loader2Icon
-            className={`size-4 animate-spin text-text-secondary ${recipe("motionReduce")}`}
-          />
+          <Loader2Icon className={cn(recipe("toastLoadingIcon"))} />
         ),
       }}
       position="top-right"

@@ -1,7 +1,6 @@
 "use client";
 
-import { Button } from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   ClipboardCheckIcon,
@@ -15,6 +14,7 @@ import {
   SlidersHorizontalIcon,
 } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
+import { Button } from "../afenda-ui/button";
 import type {
   ApprovalQueueRow,
   CommandSearchGroup,

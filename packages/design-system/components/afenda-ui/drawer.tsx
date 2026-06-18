@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import type * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 import { recipe } from "./recipes";
@@ -58,8 +58,8 @@ function DrawerContent({
           "group/drawer-content fixed z-[var(--xforge-z-modal)] flex h-auto flex-col overflow-hidden border-border-default bg-surface-overlay text-text-primary shadow-overlay outline-none",
           "data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-[var(--modal-radius)] data-[vaul-drawer-direction=top]:border-b",
           "data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[82vh] data-[vaul-drawer-direction=bottom]:rounded-t-[var(--modal-radius)] data-[vaul-drawer-direction=bottom]:border-t",
-          "data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:h-screen data-[vaul-drawer-direction=right]:w-[min(100vw,28rem)] data-[vaul-drawer-direction=right]:border-l",
-          "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:h-screen data-[vaul-drawer-direction=left]:w-[min(100vw,24rem)] data-[vaul-drawer-direction=left]:border-r",
+          "data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:h-screen data-[vaul-drawer-direction=right]:w-[min(100vw,var(--drawer-right-width))] data-[vaul-drawer-direction=right]:border-l",
+          "data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:h-screen data-[vaul-drawer-direction=left]:w-[min(100vw,var(--drawer-left-width))] data-[vaul-drawer-direction=left]:border-r",
           recipe("bodyText", "focusRingOnly", "motionReduce"),
           className
         )}

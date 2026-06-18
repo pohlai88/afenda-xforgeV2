@@ -7,26 +7,26 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/design-system/components/afenda-ui/card";
+} from "../../../../afenda-ui/card";
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@repo/design-system/components/afenda-ui/chart";
+} from "../../../../afenda-ui/chart";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/design-system/components/afenda-ui/select";
+} from "../../../../afenda-ui/select";
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@repo/design-system/components/afenda-ui/toggle-group";
-import { useIsMobile } from "@repo/design-system/hooks/use-mobile";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../../../afenda-ui/toggle-group";
+import { useIsMobile } from "../../../../../hooks/use-mobile";
+import { cn } from "../../../../../lib/utils";
 import { memo, useId, useMemo, useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import type {

@@ -1,16 +1,16 @@
+import { Badge } from "../afenda-ui/badge";
+import { Button } from "../afenda-ui/button";
 import {
-  Badge,
-  Button,
   Empty,
   EmptyContent,
   EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-  Input,
-  Separator,
-} from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../afenda-ui/empty";
+import { Input } from "../afenda-ui/input";
+import { Separator } from "../afenda-ui/separator";
+import { cn } from "../../lib/utils";
 import { SearchIcon, XIcon } from "lucide-react";
 import type {
   ChangeEventHandler,

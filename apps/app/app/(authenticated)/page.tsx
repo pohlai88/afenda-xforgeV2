@@ -1,5 +1,5 @@
 import { requireOrg } from "@repo/auth/server";
-import { Badge } from "@repo/design-system/design-system";
+import { Badge } from "@repo/design-system";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";

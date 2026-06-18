@@ -4,7 +4,7 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@repo/design-system/components/afenda-ui/avatar";
+} from "../../../../afenda-ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,22 +13,22 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
+} from "../../../../afenda-ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@repo/design-system/components/afenda-ui/sidebar";
-import { SIDEBAR_DEFAULT_PROFILE_DESCRIPTION } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-constants";
+} from "../../../../afenda-ui/sidebar";
+import { SIDEBAR_DEFAULT_PROFILE_DESCRIPTION } from "../../sidebars/sidebar-constants";
 import {
   sidebarAvatarFallbackClass,
   sidebarFooterButtonClass,
   sidebarIconRailAvatarClass,
   sidebarIconRailHiddenClass,
   sidebarProfileInitials,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../sidebars/sidebar-recipes";
+import { cn } from "../../../../../lib/utils";
 import {
   BellIcon,
   CircleUserIcon,

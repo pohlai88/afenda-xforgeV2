@@ -1,6 +1,6 @@
 "use client";
 
-import { AuthenticatedAppShellBlock } from "@repo/design-system/design-system";
+import { AuthenticatedAppShellBlock } from "@repo/design-system";
 import type { ReactNode } from "react";
 import { AppTopbar } from "./app-topbar";
 import { AppSidebarNav } from "./sidebar";

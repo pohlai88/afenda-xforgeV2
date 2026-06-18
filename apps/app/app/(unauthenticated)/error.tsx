@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, cn, recipe } from "@repo/design-system/design-system";
+import { Button, cn, recipe } from "@repo/design-system";
 import { captureException } from "@sentry/nextjs";
 import { useEffect } from "react";
 

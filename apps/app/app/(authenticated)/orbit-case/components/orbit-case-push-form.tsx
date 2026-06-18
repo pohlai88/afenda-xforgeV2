@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
   Textarea,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import type { PushTemplateDefinition } from "@repo/orbit-case";
 import { useState } from "react";
 

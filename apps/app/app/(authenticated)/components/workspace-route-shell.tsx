@@ -1,4 +1,4 @@
-import { blockRecipe } from "@repo/design-system/design-system";
+import { blockRecipe } from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import { Header } from "./header";
 

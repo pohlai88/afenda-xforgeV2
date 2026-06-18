@@ -5,13 +5,13 @@ import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   AFENDA_BLOCK_COMPONENT_IDS,
-  AFENDA_COMPONENT_FORBIDDEN_PATTERNS,
   AFENDA_PRIMITIVE_COMPONENT_IDS,
-} from "../contracts/afenda-component.contract.ts";
+} from "../registries/component.registry.ts";
+import { AFENDA_COMPONENT_FORBIDDEN_PATTERNS } from "../contracts/afenda-component.contract.ts";
 import {
   AFENDA_SLOT_EXACT_IDENTITY_REGISTRY,
   AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY,
-} from "../contracts/afenda-slot.contract.ts";
+} from "../registries/slot.registry.ts";
 
 interface SourceFile {
   readonly path: string;
@@ -151,7 +151,7 @@ function checkPrimitiveRegistry(): Violation[] {
         RULES.unknownPrimitiveFile,
         `components/afenda-ui/${fileId}.tsx`,
         fileId,
-        `Public primitive component file "${fileId}" is not registered in the component contract.`
+        `Public primitive component file "${fileId}" is not registered in the component registry.`
       )
     );
   }
@@ -297,7 +297,7 @@ function checkKnownSlots(file: SourceFile): Violation[] {
 
       const violation = toViolation(file, match.index ?? 0, {
         evidence: slot,
-        message: `Unknown data-slot "${slot}" is forbidden because components must use contract slots.`,
+        message: `Unknown data-slot "${slot}" is forbidden because components must use registry slots.`,
         ruleId: RULES.unknownSlot,
         severity: "error",
       });

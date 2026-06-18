@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { Slider as SliderPrimitive } from "radix-ui";
 import type * as React from "react";
 import { recipe } from "./recipes";
@@ -36,11 +36,17 @@ function Slider({
       {...props}
     >
       <SliderPrimitive.Track
-        className="relative grow overflow-hidden rounded-full bg-surface-muted data-[orientation=horizontal]:h-1.5 data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-1.5"
+        className={cn(
+          "relative overflow-hidden data-[orientation=horizontal]:h-1.5 data-[orientation=vertical]:h-full data-[orientation=horizontal]:w-full data-[orientation=vertical]:w-1.5",
+          recipe("sliderTrack")
+        )}
         data-slot="slider-track"
       >
         <SliderPrimitive.Range
-          className="absolute bg-brand-primary data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full"
+          className={cn(
+            "absolute data-[orientation=horizontal]:h-full data-[orientation=vertical]:w-full",
+            recipe("sliderRange")
+          )}
           data-slot="slider-range"
         />
       </SliderPrimitive.Track>
@@ -49,8 +55,13 @@ function Slider({
           aria-label={thumb.ariaLabel}
           aria-labelledby={ariaLabel ? undefined : ariaLabelledBy}
           className={cn(
-            "block size-4 shrink-0 rounded-full border border-brand-primary bg-surface-raised outline-none hover:ring-4 hover:ring-ring/30 disabled:pointer-events-none disabled:opacity-50",
-            recipe("colorTransition", "focusRingOnly", "motionReduce")
+            "block outline-none hover:ring-4 hover:ring-ring/30 disabled:pointer-events-none disabled:opacity-50",
+            recipe(
+              "sliderThumb",
+              "colorTransition",
+              "focusRingOnly",
+              "motionReduce"
+            )
           )}
           data-slot="slider-thumb"
           key={thumb.id}

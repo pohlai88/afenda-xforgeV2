@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { Avatar as AvatarPrimitive } from "radix-ui";
 import type * as React from "react";
 import { recipe } from "./recipes";
@@ -27,7 +27,6 @@ function Avatar({ className, size = "md", ...props }: AvatarProps) {
         recipe("captionText"),
         className
       )}
-      data-size={size}
       data-slot="avatar"
       {...props}
     />

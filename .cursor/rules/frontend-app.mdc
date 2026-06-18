@@ -1,5 +1,5 @@
 ---
-description: next-forge app UI — Next.js RSC, apps/app layers, MCP verification
+description: afenda-xforge app UI — Next.js RSC, apps/app layers, MCP verification
 globs: apps/app/**/*.tsx
 alwaysApply: false
 ---

@@ -1,7 +1,7 @@
 import type {
   DashboardNavTopbarProps,
   SidebarLinkRenderProps,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import {
   AppSidebar,
   ChartAreaInteractive,
@@ -14,7 +14,7 @@ import {
   SidebarInset,
   SidebarProvider,
   SiteHeader,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { CSSProperties } from "react";
 import { useCallback, useState } from "react";

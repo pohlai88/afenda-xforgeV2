@@ -1,10 +1,10 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Separator } from "@repo/design-system/components/afenda-ui/separator";
-import { SidebarTrigger } from "@repo/design-system/components/afenda-ui/sidebar";
-import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
-import { cn } from "@repo/design-system/lib/utils";
+import { Button } from "../../../../afenda-ui/button";
+import { Separator } from "../../../../afenda-ui/separator";
+import { SidebarTrigger } from "../../../../afenda-ui/sidebar";
+import { resolveSidebarLinkRenderer } from "../../sidebars/sidebar-link-defaults";
+import { cn } from "../../../../../lib/utils";
 import { type CSSProperties, memo } from "react";
 import {
   DEFAULT_DASHBOARD_SITE_HEADER_GITHUB_HREF,

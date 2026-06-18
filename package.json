@@ -1,16 +1,16 @@
 {
-  "name": "next-forge",
+  "name": "afenda-xforge",
   "version": "6.0.2",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vercel/next-forge.git"
+    "url": "git+https://github.com/pohlai88/afenda-xforgeV2.git"
   },
   "publishConfig": {
     "provenance": true,
     "access": "public"
   },
   "bin": {
-    "next-forge": "dist/index.js"
+    "afenda-xforge": "dist/index.js"
   },
   "files": [
     "dist/index.js"
@@ -19,6 +19,9 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "check": "ultracite check",
+    "design-system:governance": "pnpm --filter @repo/design-system governance",
+    "design-system:governance:json": "pnpm --filter @repo/design-system governance:json",
+    "generate:ai-context": "pnpm --filter @repo/design-system generate:ai-context",
     "fix": "ultracite fix",
     "typecheck": "turbo typecheck",
     "typecheck:affected": "turbo typecheck --filter=...[origin/main]",

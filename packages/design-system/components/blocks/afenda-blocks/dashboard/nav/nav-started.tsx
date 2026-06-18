@@ -4,7 +4,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@repo/design-system/components/afenda-ui/collapsible";
+} from "../../../../afenda-ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -14,15 +14,15 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@repo/design-system/components/afenda-ui/sidebar";
-import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
+} from "../../../../afenda-ui/sidebar";
+import { resolveSidebarLinkRenderer } from "../../sidebars/sidebar-link-defaults";
 import {
   sidebarGroupLabelClass,
   sidebarIconRailHiddenClass,
   sidebarIconRailIconClass,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../sidebars/sidebar-recipes";
+import { blockRecipe } from "../../../block-recipes";
+import { cn } from "../../../../../lib/utils";
 import { ChevronRightIcon } from "lucide-react";
 import { memo } from "react";
 import { NAV_STARTED_DEFAULT_GROUP_LABEL } from "./dashboard-nav-constants";

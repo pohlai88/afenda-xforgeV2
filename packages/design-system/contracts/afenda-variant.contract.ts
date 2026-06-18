@@ -100,6 +100,8 @@ export const AFENDA_VARIANT_IDENTITY_REGISTRY = {
   actionVariants: AFENDA_ACTION_VARIANTS,
   componentSizeVariants: AFENDA_COMPONENT_SIZE_VARIANTS,
   densities: AFENDA_DENSITIES,
+  emphasis: AFENDA_EMPHASIS,
+  sizes: AFENDA_SIZES,
   structuralVariants: AFENDA_STRUCTURAL_VARIANTS,
   textColorVariants: AFENDA_TEXT_COLOR_VARIANTS,
   tones: AFENDA_TONES,

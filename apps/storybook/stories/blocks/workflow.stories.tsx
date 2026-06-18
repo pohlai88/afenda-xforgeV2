@@ -8,7 +8,7 @@ import type {
   RiskEvidenceItem,
   StatsMetric,
   StatusTimelineItem,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import {
   ApprovalControlCenter,
   AuditEvidenceWorkspace,
@@ -16,7 +16,7 @@ import {
   Button,
   PolicyLockManager,
   TenantOperationsWorkspace,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   DownloadIcon,

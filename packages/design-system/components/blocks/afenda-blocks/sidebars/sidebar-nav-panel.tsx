@@ -1,21 +1,21 @@
 "use client";
 
-import { ScrollArea } from "@repo/design-system/components/afenda-ui/scroll-area";
-import { SidebarContent } from "@repo/design-system/components/afenda-ui/sidebar";
-import { SIDEBAR_EMPTY_NAVIGATION_LABEL } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-constants";
+import { ScrollArea } from "../../../afenda-ui/scroll-area";
+import { SidebarContent } from "../../../afenda-ui/sidebar";
+import { SIDEBAR_EMPTY_NAVIGATION_LABEL } from "./sidebar-constants";
 import {
   EMPTY_SIDEBAR_LABEL_GROUPS,
   hasOperatorSidebarNavigation,
   isSidebarNavItemActive,
   resolveSidebarActiveCardSectionIds,
   resolveSidebarActiveItemIds,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-nav-helpers";
+} from "./sidebar-nav-helpers";
 import {
   sidebarIconRailScrollAreaClass,
   sidebarNavPanelEmptyClass,
   sidebarNavPanelNavClass,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "./sidebar-recipes";
+import { cn } from "../../../../lib/utils";
 import { useMemo } from "react";
 import { SidebarCardSectionPanel } from "./sidebar-card-section";
 import { SidebarLabelGroupPanel } from "./sidebar-label-group";

@@ -24,7 +24,8 @@ export const AFENDA_EXPORT_AUTHORITY_RULES = {
 
 export const AFENDA_PUBLIC_EXPORTS = [
   "@repo/design-system",
-  "@repo/design-system/design-system",
+  "@repo/design-system/ai-context",
+  "@repo/design-system/component.manifest",
   "@repo/design-system/contracts/afenda-design-system",
   "@repo/design-system/contracts/afenda-token",
   "@repo/design-system/contracts/afenda-recipe",
@@ -37,6 +38,11 @@ export const AFENDA_PUBLIC_EXPORTS = [
   "@repo/design-system/contracts/afenda-motion",
   "@repo/design-system/contracts/afenda-state",
   "@repo/design-system/contracts/afenda-example",
+  "@repo/design-system/registries/component",
+  "@repo/design-system/registries/recipe",
+  "@repo/design-system/registries/slot",
+  "@repo/design-system/registries/variant",
+  "@repo/design-system/registries/token",
   "@repo/design-system/lib/fonts",
   "@repo/design-system/lib/utils",
   "@repo/design-system/postcss.config.mjs",
@@ -48,6 +54,7 @@ export const AFENDA_PUBLIC_EXPORTS = [
 export type AfendaPublicExport = (typeof AFENDA_PUBLIC_EXPORTS)[number];
 
 export const AFENDA_FORBIDDEN_IMPORT_PATTERNS = [
+  "@repo/design-system/design-system",
   "@repo/design-system/src/",
   "@repo/design-system/internal/",
   "@repo/design-system/components/internal/",
@@ -91,6 +98,7 @@ export const AFENDA_EXPORT_NAMING_RULES = {
 } as const;
 
 export const AFENDA_EXPORT_FORBIDDEN_PATTERNS = [
+  "@repo/design-system/design-system",
   "@repo/design-system/src/",
   "@repo/design-system/internal/",
   "@repo/design-system/components/internal/",

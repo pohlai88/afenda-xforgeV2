@@ -1,4 +1,4 @@
-import { Skeleton } from "@repo/design-system/design-system";
+import { Skeleton } from "@repo/design-system";
 
 export const AuthenticatedLayoutFallback = () => (
   <div className="flex min-h-screen flex-col gap-4 p-6">

@@ -5,7 +5,7 @@ import {
   SidebarFooterProfile,
   SidebarFooterTrailingControl,
   type SidebarLinkRenderProps,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";

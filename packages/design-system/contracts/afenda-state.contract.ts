@@ -22,6 +22,8 @@ export const AFENDA_STATES = [
   "focus",
   "active",
   "selected",
+  "checked",
+  "indeterminate",
   "open",
   "closed",
   "disabled",

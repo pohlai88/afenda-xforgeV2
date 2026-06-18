@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { GripVerticalIcon } from "lucide-react";
 import type * as React from "react";
 import { Group, Panel, Separator } from "react-resizable-panels";
@@ -68,7 +68,7 @@ function ResizableHandle({
             recipe("colorTransition", "motionReduce")
           )}
         >
-          <GripVerticalIcon className="size-3" />
+          <GripVerticalIcon className={cn(recipe("resizableHandleIcon"))} />
         </div>
       )}
     </Separator>

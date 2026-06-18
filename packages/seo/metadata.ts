@@ -1,5 +1,9 @@
 import merge from "lodash.merge";
 import type { Metadata } from "next";
+import {
+  AFENDA_SITE_ICONS,
+  afendaSiteIconsMetadata,
+} from "./afenda-site-icons";
 
 type MetadataGenerator = Omit<Metadata, "description" | "title"> & {
   title: string;
@@ -7,13 +11,15 @@ type MetadataGenerator = Omit<Metadata, "description" | "title"> & {
   image?: string;
 };
 
-const applicationName = "next-forge";
+const applicationName = "Afenda";
 const author: Metadata["authors"] = {
-  name: "Vercel",
-  url: "https://vercel.com/",
+  name: "Afenda",
+  url: "https://afenda.com/",
 };
-const publisher = "Vercel";
-const twitterHandle = "@vercel";
+const publisher = "Afenda";
+const twitterHandle = "@afenda";
+const defaultDescription =
+  "Governance-first ERP foundation for tenant-scoped business systems.";
 const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
 const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 
@@ -26,7 +32,7 @@ export const createMetadata = ({
   const parsedTitle = `${title} | ${applicationName}`;
   const defaultMetadata: Metadata = {
     title: parsedTitle,
-    description,
+    description: description || defaultDescription,
     applicationName,
     metadataBase: productionUrl
       ? new URL(`${protocol}://${productionUrl}`)
@@ -39,8 +45,10 @@ export const createMetadata = ({
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
-      title: parsedTitle,
+      title: applicationName,
     },
+    icons: afendaSiteIconsMetadata(),
+    manifest: AFENDA_SITE_ICONS.manifest,
     openGraph: {
       title: parsedTitle,
       description,

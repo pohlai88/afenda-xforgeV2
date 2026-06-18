@@ -1,4 +1,4 @@
-import { Button } from "@repo/design-system/design-system";
+import { Button } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { toast } from "sonner";
 

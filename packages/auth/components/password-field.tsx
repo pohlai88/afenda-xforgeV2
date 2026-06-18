@@ -6,7 +6,7 @@ import {
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { useId, useState } from "react";
 import type { PasswordPolicy } from "../auth-ui-settings";
 import { EyeIcon, EyeOffIcon } from "./auth-icons";

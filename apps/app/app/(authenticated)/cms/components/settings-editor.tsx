@@ -6,7 +6,7 @@ import {
   Input,
   Label,
   Textarea,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { updateSettings } from "@/app/actions/cms/settings";

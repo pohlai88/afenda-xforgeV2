@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot as SlotPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -12,9 +12,9 @@ const metricTextVariants = cva(
   {
     variants: {
       size: {
-        sm: "text-[18px] leading-6",
-        md: "text-[24px] leading-7",
-        lg: "text-[32px] leading-9",
+        sm: "text-[length:var(--metric-text-size-sm)] leading-6",
+        md: "text-[length:var(--metric-text-size-md)] leading-7",
+        lg: "text-[length:var(--metric-text-size-lg)] leading-9",
       },
       color: {
         primary: "text-text-primary",

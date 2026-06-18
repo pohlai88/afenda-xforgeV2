@@ -1,19 +1,16 @@
-import { showBetaFeature } from "@repo/feature-flags";
 import { getDictionary } from "@repo/internationalization";
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
-import { Cases } from "./components/cases";
-import { CTA } from "./components/cta";
-import { FAQ } from "./components/faq";
-import { Features } from "./components/features";
-import { Hero } from "./components/hero";
-import { Stats } from "./components/stats";
-import { Testimonials } from "./components/testimonials";
+import { Suspense } from "react";
+import { env } from "@/env";
+import type { PublicHomeContent } from "@/lib/public-home-content";
+import { PublicHomeShell } from "./components/public-home-shell";
 
 interface HomeProps {
   params: Promise<{
     locale: string;
   }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export const generateMetadata = async ({
@@ -21,31 +18,52 @@ export const generateMetadata = async ({
 }: HomeProps): Promise<Metadata> => {
   const { locale } = await params;
   const dictionary = await getDictionary(locale);
+  const { publicHome } = dictionary.web.home;
 
-  return createMetadata(dictionary.web.home.meta);
+  return createMetadata({
+    title: publicHome.title,
+    description: publicHome.description,
+  });
 };
 
-const Home = async ({ params }: HomeProps) => {
+function buildContent(
+  dictionary: Awaited<ReturnType<typeof getDictionary>>,
+): PublicHomeContent {
+  const { publicHome } = dictionary.web.home;
+
+  return {
+    title: publicHome.title,
+    description: publicHome.description,
+    signInLabel: publicHome.signInLabel,
+    signInHref: `${env.NEXT_PUBLIC_APP_URL}/sign-in`,
+  };
+}
+
+const Home = async ({ params, searchParams }: HomeProps) => {
   const { locale } = await params;
   const dictionary = await getDictionary(locale);
-  const betaFeature = await showBetaFeature();
+  const content = buildContent(dictionary);
 
   return (
-    <>
-      {betaFeature && (
-        <div className="w-full bg-black py-2 text-center text-white">
-          Beta feature now available
-        </div>
-      )}
-      <Hero dictionary={dictionary} locale={locale} />
-      <Cases dictionary={dictionary} />
-      <Features dictionary={dictionary} />
-      <Stats dictionary={dictionary} />
-      <Testimonials dictionary={dictionary} />
-      <FAQ dictionary={dictionary} />
-      <CTA dictionary={dictionary} />
-    </>
+    <Suspense fallback={<PublicHomeShell content={content} />}>
+      <HomeContent content={content} searchParams={searchParams} />
+    </Suspense>
   );
 };
+
+async function HomeContent({
+  content,
+  searchParams,
+}: {
+  content: PublicHomeContent;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const resolvedSearchParams = await searchParams;
+  const initialSkip = resolvedSearchParams.intro === "0";
+
+  return (
+    <PublicHomeShell content={content} initialSkip={initialSkip} />
+  );
+}
 
 export default Home;

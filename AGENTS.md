@@ -1,6 +1,6 @@
 # afenda-Xforge Agent Guide
 
-afenda-Xforge is a **next-forge** Turborepo — TypeScript, pnpm, Next.js 16+ (`apps/app`), Prisma/PostgreSQL, and shared `@repo/*` packages. When instructions conflict with drift in the tree, fix the implementation to match the architecture docs — not the other way around.
+Afenda XForge is an **afenda-xforge** Turborepo — TypeScript, pnpm, Next.js 16+ (`apps/app`), Prisma/PostgreSQL, and shared `@repo/*` packages. When instructions conflict with drift in the tree, fix the implementation to match the architecture docs — not the other way around.
 
 Scoped detail lives in `.cursor/rules/*.mdc` (index in `project-general.mdc`). Deterministic policies are enforced by `.cursor/hooks.json`.
 
@@ -11,7 +11,7 @@ Scoped detail lives in `.cursor/rules/*.mdc` (index in `project-general.mdc`). D
 ## Read order
 
 1. User instruction in the current message
-2. This file + `skills/next-forge/references/*.md`
+2. This file + `skills/afenda-xforge/references/*.md`
 3. `.cursor/rules/*.mdc` for the paths you touch
 4. Next.js APIs → MCP `nextjs_docs` from `nextjs-docs://llms-index` — **do not guess** from training data
 
@@ -55,12 +55,12 @@ Everything else — execution, security, UI patterns, performance — stays in r
 
 | Doc | Scope |
 |-----|-------|
-| `skills/next-forge/references/architecture.md` | Monorepo layout, apps, packages, Turborepo |
-| `skills/next-forge/references/packages.md` | Package ownership and integrations |
-| `skills/next-forge/references/customization.md` | Swapping providers, deployment defaults |
-| `skills/next-forge/references/setup.md` | Bootstrap, env contract, local dev |
+| `skills/afenda-xforge/references/architecture.md` | Monorepo layout, apps, packages, Turborepo |
+| `skills/afenda-xforge/references/packages.md` | Package ownership and integrations |
+| `skills/afenda-xforge/references/customization.md` | Swapping providers, deployment defaults |
+| `skills/afenda-xforge/references/setup.md` | Bootstrap, env contract, local dev |
 
-Skill entry point: `skills/next-forge/SKILL.md`.
+Skill entry point: `skills/afenda-xforge/SKILL.md`.
 
 ---
 
@@ -82,7 +82,7 @@ Skill entry point: `skills/next-forge/SKILL.md`.
 
 **Server components first:** `page.tsx` / `layout.tsx` stay server components; client interactivity in separate `'use client'` files.
 
-Full detail: `skills/next-forge/references/architecture.md`, `backend-execution.mdc`, `backend-security.mdc`.
+Full detail: `skills/afenda-xforge/references/architecture.md`, `backend-execution.mdc`, `backend-security.mdc`.
 
 ---
 
@@ -145,7 +145,7 @@ Primary deployables: **`apps/app`**, **`apps/web`**, **`apps/api`** — each as 
 | Stale pages after deploy | Review cache tags, `revalidate`, Cache Components invalidation |
 | Env missing at runtime but present at build | Confirm Vercel env scope (Production / Preview / Development) |
 
-See `vercel-deployment.mdc`, `skills/next-forge/references/customization.md`.
+See `vercel-deployment.mdc`, `skills/afenda-xforge/references/customization.md`.
 
 ---
 

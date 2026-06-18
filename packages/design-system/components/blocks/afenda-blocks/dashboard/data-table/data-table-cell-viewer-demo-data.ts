@@ -1,6 +1,6 @@
 /** @internal Storybook / dashboard-01 demo only — drawer preview chart fixtures. */
 
-import type { ChartConfig } from "@repo/design-system/components/afenda-ui/chart";
+import type { ChartConfig } from "../../../../afenda-ui/chart";
 
 export const DEMO_DATA_TABLE_CELL_VIEWER_CHART_DATA = [
   { month: "January", desktop: 186, mobile: 80 },

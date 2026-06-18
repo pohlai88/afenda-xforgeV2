@@ -7,9 +7,8 @@ export { createMiddleware as securityMiddleware } from "@nosecone/next";
 export const noseconeOptions: Options = {
   ...defaults,
   // Content Security Policy (CSP) is disabled by default because the values
-  // depend on which Next Forge features are enabled. See
-  // https://www.next-forge.com/packages/security/headers for guidance on how
-  // to configure it.
+  // depend on which Afenda XForge features are enabled. See @repo/security docs
+  // for guidance on security headers.
   contentSecurityPolicy: false,
 };
 

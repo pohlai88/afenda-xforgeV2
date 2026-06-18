@@ -2,13 +2,13 @@ import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from "@repo/design-system/components/afenda-ui/alert";
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Progress } from "@repo/design-system/components/afenda-ui/progress";
-import { Separator } from "@repo/design-system/components/afenda-ui/separator";
-import { Skeleton } from "@repo/design-system/components/afenda-ui/skeleton";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../afenda-ui/alert";
+import { Badge } from "../afenda-ui/badge";
+import { Button } from "../afenda-ui/button";
+import { Progress } from "../afenda-ui/progress";
+import { Separator } from "../afenda-ui/separator";
+import { Skeleton } from "../afenda-ui/skeleton";
+import { cn } from "../../lib/utils";
 import {
   AlertTriangleIcon,
   CheckCircle2Icon,

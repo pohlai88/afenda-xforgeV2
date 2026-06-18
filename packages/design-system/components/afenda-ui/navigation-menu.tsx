@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { cva } from "class-variance-authority";
 import { ChevronDownIcon } from "lucide-react";
 import { NavigationMenu as NavigationMenuPrimitive } from "radix-ui";
@@ -89,7 +89,10 @@ function NavigationMenuTrigger({
       {children}
       <ChevronDownIcon
         aria-hidden="true"
-        className="relative top-px ml-1 size-3 transition-transform duration-200 group-data-[state=open]:rotate-180 motion-reduce:transition-none"
+        className={cn(
+          "relative top-px ml-1",
+          recipe("navigationMenuTriggerIcon")
+        )}
       />
     </NavigationMenuPrimitive.Trigger>
   );
@@ -120,7 +123,7 @@ function NavigationMenuViewport({
   ...props
 }: React.ComponentProps<typeof NavigationMenuPrimitive.Viewport>) {
   return (
-    <div className="absolute top-full left-0 isolate z-[var(--xforge-z-dropdown)] flex justify-center">
+    <div className={cn(recipe("navigationMenuViewportWrapper"))}>
       <NavigationMenuPrimitive.Viewport
         className={cn(
           "relative mt-1.5 h-[var(--radix-navigation-menu-viewport-height)] w-full origin-top-center overflow-hidden md:w-[var(--radix-navigation-menu-viewport-width)]",
@@ -170,7 +173,7 @@ function NavigationMenuIndicator({
       data-slot="navigation-menu-indicator"
       {...props}
     >
-      <div className="relative top-[60%] size-2 rotate-45 rounded-tl-[var(--xforge-radius-sm)] border-border-default border-t border-l bg-surface-overlay shadow-popover" />
+      <div className={cn(recipe("navigationMenuIndicatorArrow"))} />
     </NavigationMenuPrimitive.Indicator>
   );
 }

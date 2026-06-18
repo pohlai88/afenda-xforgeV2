@@ -1,7 +1,6 @@
 "use client";
 
-import { Progress, Separator } from "@repo/design-system/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import {
   AccessibilityIcon,
   CheckCircle2Icon,
@@ -14,6 +13,8 @@ import {
   TerminalSquareIcon,
 } from "lucide-react";
 import type { ComponentProps, ReactNode } from "react";
+import { Progress } from "../afenda-ui/progress";
+import { Separator } from "../afenda-ui/separator";
 import { blockRecipe } from "./block-recipes";
 import type { BlockAction, BlockTone } from "./foundation";
 import { PageHeader } from "./foundation";

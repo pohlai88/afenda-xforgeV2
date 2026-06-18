@@ -1,16 +1,16 @@
 ---
-description: afenda-Xforge baseline — next-forge stack, tooling, docs order, rule index
+description: afenda-Xforge baseline — afenda-xforge stack, tooling, docs order, rule index
 alwaysApply: true
 ---
 
 # Project General (afenda-Xforge)
 
-Domain rules override generic habits. This repo is **next-forge** — TypeScript + pnpm + Turborepo — not JavaScript, Bun, or npm-by-default.
+Domain rules override generic habits. This repo is **afenda-xforge** — TypeScript + pnpm + Turborepo — not JavaScript, Bun, or npm-by-default.
 
 ## Source of truth (read order)
 
 1. User instruction in the current message
-2. `AGENTS.md` and `skills/next-forge/references/*.md` (architecture, Vercel deployment, Next.js MCP)
+2. `AGENTS.md` and `skills/afenda-xforge/references/*.md` (architecture, Vercel deployment, Next.js MCP)
 3. `.cursor/rules/*.mdc` for the files you touch
 4. Next.js APIs: MCP `nextjs_docs` from `nextjs-docs://llms-index` — training data is stale (`/docs/app/guides/ai-agents`)
 

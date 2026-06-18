@@ -3,7 +3,7 @@ import type {
   TopbarScopeSwitcherConfig,
   TopbarSidebarControlProps,
   TopbarUtilitiesRailProps,
-} from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-types";
+} from "../../topbars/topbar-types";
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 export interface DashboardNavTopbarProps

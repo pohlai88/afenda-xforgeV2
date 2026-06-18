@@ -1,24 +1,24 @@
 "use client";
 
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
-import { Checkbox } from "@repo/design-system/components/afenda-ui/checkbox";
+import { Badge } from "../../../../afenda-ui/badge";
+import { Button } from "../../../../afenda-ui/button";
+import { Checkbox } from "../../../../afenda-ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
-import { Input } from "@repo/design-system/components/afenda-ui/input";
-import { Label } from "@repo/design-system/components/afenda-ui/label";
+} from "../../../../afenda-ui/dropdown-menu";
+import { Input } from "../../../../afenda-ui/input";
+import { Label } from "../../../../afenda-ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/design-system/components/afenda-ui/select";
+} from "../../../../afenda-ui/select";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   CheckCircle2Icon,

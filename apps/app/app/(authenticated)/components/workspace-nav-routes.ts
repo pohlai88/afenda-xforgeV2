@@ -4,7 +4,7 @@ import {
   type SidebarNavGroup,
   type SidebarNavItem,
   type SidebarQuickAction,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import {
   BirdIcon,
   BugIcon,

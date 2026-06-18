@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { XIcon } from "lucide-react";
 import { Dialog as SheetPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -53,8 +53,8 @@ function SheetContent({
 }) {
   const sideClasses = {
     right:
-      "inset-y-0 right-0 h-full w-[calc(100%-1rem)] border-l rounded-l-[var(--modal-radius)] sm:max-w-lg data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
-    left: "inset-y-0 left-0 h-full w-[calc(100%-1rem)] border-r rounded-r-[var(--modal-radius)] sm:max-w-lg data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
+      "inset-y-0 right-0 h-full w-[calc(100%-var(--sheet-side-inset))] border-l rounded-l-[var(--modal-radius)] sm:max-w-lg data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right",
+    left: "inset-y-0 left-0 h-full w-[calc(100%-var(--sheet-side-inset))] border-r rounded-r-[var(--modal-radius)] sm:max-w-lg data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left",
     top: "inset-x-0 top-0 h-auto border-b rounded-b-[var(--modal-radius)] data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top",
     bottom:
       "inset-x-0 bottom-0 h-auto border-t rounded-t-[var(--modal-radius)] data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom",
@@ -87,7 +87,7 @@ function SheetContent({
           data-slot="sheet-close"
         >
           <XIcon />
-          <span className="sr-only">Close</span>
+          <span className={cn(recipe("visuallyHidden"))}>Close</span>
         </SheetPrimitive.Close>
       </SheetPrimitive.Content>
     </SheetPortal>

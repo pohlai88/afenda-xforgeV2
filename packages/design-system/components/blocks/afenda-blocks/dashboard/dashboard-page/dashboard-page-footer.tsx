@@ -1,8 +1,8 @@
 "use client";
 
-import { ContentLayoutFooter } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-footer";
-import type { ContentLayoutFooterProps } from "@repo/design-system/components/blocks/afenda-blocks/content-layout/content-layout-types";
-import { cn } from "@repo/design-system/lib/utils";
+import { ContentLayoutFooter } from "../../content-layout/content-layout-footer";
+import type { ContentLayoutFooterProps } from "../../content-layout/content-layout-types";
+import { cn } from "../../../../../lib/utils";
 import { memo } from "react";
 import { dashboardPageFooterClass } from "./dashboard-page-footer-recipes";
 

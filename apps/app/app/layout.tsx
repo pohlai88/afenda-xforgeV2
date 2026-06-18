@@ -6,7 +6,20 @@ import { DesignSystemProvider } from "@repo/design-system";
 import { fonts } from "@repo/design-system/lib/fonts";
 import { Toolbar } from "@repo/feature-flags/components/toolbar";
 import { keys as nextConfigKeys } from "@repo/next-config/keys";
+import { createMetadata } from "@repo/seo/metadata";
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
+
+export const metadata: Metadata = {
+  ...createMetadata({
+    title: "App",
+    description:
+      "Governance-first ERP foundation for tenant-scoped business systems.",
+  }),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
+  ),
+};
 
 interface RootLayoutProperties {
   readonly children: ReactNode;

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../../../lib/utils";
 import { TopbarScopeSwitcher } from "./topbar-scope-switcher";
 import type { TopbarScopeSwitchersProps } from "./topbar-types";
 

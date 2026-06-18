@@ -1,5 +1,5 @@
 /** Unauthenticated auth pages — centered shell with theme toggle. */
-import { ModeToggle } from "@repo/design-system/design-system";
+import { ModeToggle } from "@repo/design-system";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { AuthShell } from "./components/auth-shell";

@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
   Textarea,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { useRef, useTransition } from "react";
 import { uploadCmsAsset } from "@/app/actions/cms/media";
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { useIsMobile } from "@repo/design-system/hooks/use-mobile";
-import { cn } from "@repo/design-system/lib/utils";
+import { useIsMobile } from "../../hooks/use-mobile";
+import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 import { Slot as SlotPrimitive } from "radix-ui";
@@ -59,10 +59,37 @@ import {
   TooltipTrigger,
 } from "./tooltip";
 
-const SIDEBAR_WIDTH = "17rem";
-const SIDEBAR_WIDTH_MOBILE = "20rem";
+type SidebarVariant = "floating" | "inset" | "sidebar";
+type SidebarMenuButtonSize = "default" | "lg" | "sm";
+type SidebarMenuSubButtonSize = "md" | "sm";
+
+const SIDEBAR_WIDTH = "var(--sidebar-width-default)";
+const SIDEBAR_WIDTH_MOBILE = "var(--sidebar-width-mobile)";
 const SIDEBAR_WIDTH_ICON = sidebarIconRailWidth;
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
+
+const sidebarVariantAttributes = {
+  floating: { "data-variant": "floating" },
+  inset: { "data-variant": "inset" },
+  sidebar: { "data-variant": "sidebar" },
+} as const satisfies Record<SidebarVariant, { readonly "data-variant": string }>;
+
+const sidebarMenuButtonSizeAttributes = {
+  default: { "data-size": "default" },
+  lg: { "data-size": "lg" },
+  sm: { "data-size": "sm" },
+} as const satisfies Record<
+  SidebarMenuButtonSize,
+  { readonly "data-size": string }
+>;
+
+const sidebarMenuSubButtonSizeAttributes = {
+  md: { "data-size": "md" },
+  sm: { "data-size": "sm" },
+} as const satisfies Record<
+  SidebarMenuSubButtonSize,
+  { readonly "data-size": string }
+>;
 
 export interface SidebarMenuTooltipProps {
   readonly description?: string;
@@ -93,19 +120,14 @@ function SidebarMenuTooltipContent({
 }: SidebarMenuTooltipProps) {
   return (
     <>
-      <span className="font-medium text-[11px] leading-4">{label}</span>
+      <span className={cn(recipe("sidebarTooltipLabel"))}>{label}</span>
       {description ? (
-        <span className="text-[10px] text-text-inverse/75 leading-snug">
+        <span className={cn(recipe("sidebarTooltipDescription"))}>
           {description}
         </span>
       ) : null}
       {shortcut ? (
-        <Kbd
-          className={cn(
-            "h-4 w-fit border-border-subtle/40 bg-surface-inverse/20 px-1",
-            "font-mono text-[9px] text-text-inverse/90 tabular-nums"
-          )}
-        >
+        <Kbd className={cn("h-4 w-fit px-1", recipe("sidebarTooltipShortcut"))}>
           {shortcut}
         </Kbd>
       ) : null}
@@ -347,7 +369,7 @@ function Sidebar({
     return (
       <Sheet onOpenChange={setOpenMobile} open={openMobile} {...props}>
         <SheetContent
-          className="w-(--sidebar-width) p-0 [&>button]:hidden"
+          className={cn("w-(--sidebar-width)", recipe("sidebarMobileSheetContent"))}
           data-mobile="true"
           data-sidebar="sidebar"
           data-slot="sidebar"
@@ -358,7 +380,7 @@ function Sidebar({
             } as React.CSSProperties
           }
         >
-          <SheetHeader className="sr-only">
+          <SheetHeader className={cn(recipe("visuallyHidden"))}>
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
@@ -370,12 +392,12 @@ function Sidebar({
 
   return (
     <div
-      className="group peer hidden text-text-primary md:block"
+      className={cn("hidden md:block", recipe("sidebarRootPeer"))}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-side={side}
       data-slot="sidebar"
       data-state={state}
-      data-variant={variant}
+      {...sidebarVariantAttributes[variant]}
     >
       <div
         className={cn(
@@ -442,7 +464,7 @@ function SidebarTrigger({
       {...props}
     >
       <PanelLeftIcon />
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className={cn(recipe("visuallyHidden"))}>Toggle Sidebar</span>
     </Button>
   );
 }
@@ -473,7 +495,10 @@ function SidebarControlMenu({
           type="button"
           variant="quiet"
         >
-          <PanelLeftIcon aria-hidden="true" className="size-4 shrink-0" />
+          <PanelLeftIcon
+            aria-hidden="true"
+            className={cn(recipe("sidebarControlIcon"))}
+          />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -482,13 +507,13 @@ function SidebarControlMenu({
         data-slot="sidebar-control-menu"
         side={side}
       >
-        <DropdownMenuLabel className="px-2 py-1.5 font-normal text-[11px] text-text-tertiary">
+        <DropdownMenuLabel className={cn(recipe("sidebarControlMenuLabel"))}>
           {menuLabel}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {SIDEBAR_BEHAVIOR_OPTIONS.map((option) => (
           <DropdownMenuItem
-            className="gap-2 text-[12px]"
+            className={cn(recipe("sidebarControlMenuItem"))}
             key={option.id}
             onSelect={() => {
               setBehaviorMode(option.id);
@@ -759,7 +784,7 @@ const sidebarMenuButtonVariants = cva(
       },
       size: {
         default: "h-8",
-        sm: "h-7 text-[12px]",
+        sm: `h-7 ${recipe("sidebarMenuButtonSmallText")}`,
         lg: "h-12 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:bg-transparent! group-data-[collapsible=icon]:p-0!",
       },
     },
@@ -786,15 +811,23 @@ function SidebarMenuButton({
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const Comp = asChild ? SlotPrimitive.Slot : "button";
   const { isMobile, state } = useSidebar();
+  const resolvedSize = size ?? "default";
+  const resolvedVariant = variant ?? "default";
 
   const button = (
     <Comp
-      className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
+      className={cn(
+        sidebarMenuButtonVariants({
+          variant: resolvedVariant,
+          size: resolvedSize,
+        }),
+        className
+      )}
       data-active={isActive}
       data-sidebar="menu-button"
-      data-size={size}
       data-slot="sidebar-menu-button"
       type={asChild ? undefined : (type ?? "button")}
+      {...sidebarMenuButtonSizeAttributes[resolvedSize]}
       {...props}
     />
   );
@@ -813,7 +846,7 @@ function SidebarMenuButton({
         <TooltipTrigger asChild>{button}</TooltipTrigger>
         <TooltipContent
           align="center"
-          className="grid max-w-56 gap-1 px-2 py-1.5"
+          className={cn("grid max-w-56", recipe("sidebarTooltipContent"))}
           hidden={state !== "collapsed" || isMobile}
           side="right"
           sideOffset={8}
@@ -905,7 +938,7 @@ function SidebarMenuSkeleton({
     >
       {showIcon && (
         <Skeleton
-          className="size-4 rounded-[var(--xforge-radius-sm)]"
+          className={cn(recipe("sidebarMenuSkeletonIcon"))}
           data-sidebar="menu-skeleton-icon"
         />
       )}
@@ -964,8 +997,8 @@ function SidebarMenuSubButton({
     <Comp
       className={cn(
         "flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-[var(--xforge-radius-sm)] px-2 text-text-secondary outline-none hover:bg-surface-hover hover:text-text-primary active:bg-surface-active active:text-text-primary disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-surface-active data-[active=true]:text-text-primary group-data-[collapsible=icon]:hidden [&>span:last-child]:truncate",
-        size === "sm" && "text-[12px]",
-        size === "md" && "text-[13px]",
+        size === "sm" && recipe("sidebarMenuSubButtonSmallText"),
+        size === "md" && recipe("sidebarMenuSubButtonDefaultText"),
         recipe(
           "colorTransition",
           "focusRingOnly",
@@ -976,8 +1009,8 @@ function SidebarMenuSubButton({
       )}
       data-active={isActive}
       data-sidebar="menu-sub-button"
-      data-size={size}
       data-slot="sidebar-menu-sub-button"
+      {...sidebarMenuSubButtonSizeAttributes[size]}
       {...props}
     />
   );

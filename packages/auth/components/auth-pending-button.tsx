@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Spinner } from "@repo/design-system/design-system";
+import { Button, Spinner } from "@repo/design-system";
 import type { ComponentProps, ReactNode } from "react";
 
 type AuthPendingButtonProperties = {

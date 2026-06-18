@@ -1,12 +1,12 @@
 ---
-description: next-forge backend — Server Actions, route handlers, @repo packages
+description: afenda-xforge backend — Server Actions, route handlers, @repo packages
 globs: apps/app/**/{route,actions}.ts,apps/api/**/*.ts,packages/**/*.ts
 alwaysApply: false
 ---
 
-# Backend Development (next-forge)
+# Backend Development (afenda-xforge)
 
-TypeScript only. Governance: `skills/next-forge/references/architecture.md`, `AGENTS.md`. Security: `backend-security.mdc`.
+TypeScript only. Governance: `skills/afenda-xforge/references/architecture.md`, `AGENTS.md`. Security: `backend-security.mdc`.
 
 ## Next.js docs — MCP, not memory
 

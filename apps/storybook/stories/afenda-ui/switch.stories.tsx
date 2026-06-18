@@ -1,4 +1,4 @@
-import { Label, Switch } from "@repo/design-system/design-system";
+import { Label, Switch } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import type { ComponentProps } from "react";
 import { useState } from "react";

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { Tooltip as TooltipPrimitive } from "radix-ui";
 import type * as React from "react";
 import { recipe } from "./recipes";
@@ -60,7 +60,7 @@ function TooltipContent({
         {...props}
       >
         {children}
-        <TooltipPrimitive.Arrow className="size-2.5 fill-surface-inverse" />
+        <TooltipPrimitive.Arrow className={cn(recipe("tooltipArrow"))} />
       </TooltipPrimitive.Content>
     </TooltipPortal>
   );

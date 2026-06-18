@@ -14,7 +14,7 @@ import {
   SidebarQuickActions,
   SidebarRail,
   stripSidebarNavItemSelection,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useCallback, useState } from "react";
 

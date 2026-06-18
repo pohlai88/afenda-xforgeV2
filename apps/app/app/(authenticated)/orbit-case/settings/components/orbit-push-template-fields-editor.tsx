@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
   Switch,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import type { PushTemplateDefinition } from "@repo/orbit-case";
 
 type TemplateField = PushTemplateDefinition["fields"][number];

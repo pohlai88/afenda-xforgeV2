@@ -11,7 +11,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
   recipe,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { isAuthApiError, isAuthWeakPasswordError } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";

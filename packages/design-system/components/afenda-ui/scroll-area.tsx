@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { ScrollArea as ScrollAreaPrimitive } from "radix-ui";
 import type * as React from "react";
 import { recipe } from "./recipes";
@@ -32,7 +32,7 @@ function ScrollArea({
       </ScrollAreaPrimitive.Viewport>
       <ScrollBar />
       <ScrollBar orientation="horizontal" />
-      <ScrollAreaPrimitive.Corner className="bg-transparent" />
+      <ScrollAreaPrimitive.Corner className={cn(recipe("scrollAreaCorner"))} />
     </ScrollAreaPrimitive.Root>
   );
 }
@@ -58,7 +58,7 @@ function ScrollBar({
       {...props}
     >
       <ScrollAreaPrimitive.ScrollAreaThumb
-        className="relative flex-1 rounded-full bg-border-default hover:bg-border-hover"
+        className={cn(recipe("scrollAreaThumb"))}
         data-slot="scroll-area-thumb"
       />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>

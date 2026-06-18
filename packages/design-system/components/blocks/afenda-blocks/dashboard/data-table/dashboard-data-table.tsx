@@ -17,22 +17,22 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Badge } from "../../../../afenda-ui/badge";
+import { Button } from "../../../../afenda-ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@repo/design-system/components/afenda-ui/dropdown-menu";
-import { Label } from "@repo/design-system/components/afenda-ui/label";
+} from "../../../../afenda-ui/dropdown-menu";
+import { Label } from "../../../../afenda-ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/design-system/components/afenda-ui/select";
+} from "../../../../afenda-ui/select";
 import {
   Table,
   TableBody,
@@ -40,14 +40,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/components/afenda-ui/table";
+} from "../../../../afenda-ui/table";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@repo/design-system/components/afenda-ui/tabs";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../../../afenda-ui/tabs";
+import { cn } from "../../../../../lib/utils";
 import {
   type ColumnFiltersState,
   flexRender,

@@ -10,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 
 const TABLE_ROW_KEYS = ["table-row-1", "table-row-2", "table-row-3"] as const;

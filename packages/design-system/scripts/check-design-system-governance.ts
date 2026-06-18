@@ -27,6 +27,16 @@ interface GovernanceResult {
   readonly violations: readonly Violation[];
 }
 
+interface DriftScoreResult {
+  readonly passed: boolean;
+  readonly score: number;
+  readonly files: readonly {
+    readonly file: string;
+    readonly score: number;
+    readonly passed: boolean;
+  }[];
+}
+
 const RULES = {
   missingContract: "design-system/no-missing-contract",
   missingGovernanceScript: "design-system/no-missing-governance-script",
@@ -40,6 +50,7 @@ const scriptsRoot = dirname(scriptPath);
 const packageRoot = fileURLToPath(new URL("..", import.meta.url));
 const outputJson = process.argv.includes("--json");
 const strict = process.argv.includes("--strict");
+const driftScoreScript = "check-drift-score.ts";
 const requiredGovernanceScripts = [
   "check-token-governance.ts",
   "check-recipe-governance.ts",
@@ -62,22 +73,13 @@ const errorCount = violations.filter(
 const warningCount = violations.filter(
   (violation) => violation.severity === "warning"
 ).length;
-const score = Math.max(0, 100 - errorCount * 5 - warningCount);
+const driftScoreResult = runDriftScore();
+const score = driftScoreResult?.score ?? 0;
 const minimumScore = Math.max(
   AFENDA_AI_DRIFT_SCORE_GATE.minimumScore,
   AFENDA_AI_VIBE_CODING_GATE.minimumScore
 );
-const scoreViolations =
-  score >= minimumScore
-    ? []
-    : [
-        registryViolation({
-          evidence: String(score),
-          message: `Design system governance score ${score} is below required minimum ${minimumScore}.`,
-          ruleId: RULES.scoreBelowGate,
-          severity: "error",
-        }),
-      ];
+const scoreViolations = createScoreViolations(driftScoreResult);
 const finalViolations = [...violations, ...scoreViolations].sort(
   sortViolations
 );
@@ -138,7 +140,7 @@ function checkRequiredContracts(): Violation[] {
 }
 
 function checkRequiredGovernanceScripts(): Violation[] {
-  return requiredGovernanceScripts.flatMap((script) => {
+  return [...requiredGovernanceScripts, driftScoreScript].flatMap((script) => {
     const governanceScriptPath = join(scriptsRoot, script);
 
     if (existsSync(governanceScriptPath)) {
@@ -154,6 +156,52 @@ function checkRequiredGovernanceScripts(): Violation[] {
       }),
     ];
   });
+}
+
+function runDriftScore(): DriftScoreResult | undefined {
+  const driftScorePath = join(scriptsRoot, driftScoreScript);
+
+  if (!existsSync(driftScorePath)) {
+    return undefined;
+  }
+
+  const result = spawnSync(
+    process.execPath,
+    [driftScorePath, "--json", ...(strict ? ["--strict"] : [])],
+    {
+      cwd: packageRoot,
+      encoding: "utf8",
+    }
+  );
+
+  return parseDriftScoreResult(result.stdout);
+}
+
+function createScoreViolations(
+  result: DriftScoreResult | undefined
+): Violation[] {
+  if (!result) {
+    return [
+      scriptViolation(driftScoreScript, {
+        evidence: driftScoreScript,
+        message: `Drift scoring script "${driftScoreScript}" did not emit valid JSON output.`,
+        ruleId: RULES.invalidGovernanceJson,
+        severity: "error",
+      }),
+    ];
+  }
+
+  return result.files
+    .filter((file) => !file.passed)
+    .map((file) => ({
+      ruleId: RULES.scoreBelowGate,
+      severity: "error",
+      file: file.file,
+      line: 1,
+      column: 1,
+      evidence: String(file.score),
+      message: `Component drift score ${file.score} is below required minimum ${minimumScore}.`,
+    }));
 }
 
 function runGovernanceScripts(): Violation[] {
@@ -241,6 +289,48 @@ function parseGovernanceResult(
   } catch {
     return undefined;
   }
+}
+
+function parseDriftScoreResult(output: string): DriftScoreResult | undefined {
+  try {
+    const parsed: unknown = JSON.parse(output);
+
+    if (!isRecord(parsed)) {
+      return undefined;
+    }
+
+    if (
+      typeof parsed.passed !== "boolean" ||
+      typeof parsed.score !== "number" ||
+      !Array.isArray(parsed.files)
+    ) {
+      return undefined;
+    }
+
+    return {
+      passed: parsed.passed,
+      score: parsed.score,
+      files: parsed.files.filter(isDriftFileScore),
+    };
+  } catch {
+    return undefined;
+  }
+}
+
+function isDriftFileScore(value: unknown): value is {
+  readonly file: string;
+  readonly score: number;
+  readonly passed: boolean;
+} {
+  if (!isRecord(value)) {
+    return false;
+  }
+
+  return (
+    typeof value.file === "string" &&
+    typeof value.score === "number" &&
+    typeof value.passed === "boolean"
+  );
 }
 
 function isGovernanceResultShape(

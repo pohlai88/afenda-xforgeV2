@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
@@ -221,8 +221,8 @@ function CarouselItem({ className, ...props }: ComponentProps<"section">) {
 
 function CarouselPrevious({
   className,
-  variant = "secondary",
-  size = "icon-sm",
+  variant: _variant,
+  size: _size,
   ...props
 }: ComponentProps<typeof Button>) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
@@ -239,20 +239,20 @@ function CarouselPrevious({
       data-slot="carousel-previous"
       disabled={!canScrollPrev}
       onClick={scrollPrev}
-      size={size}
-      variant={variant}
+      size="icon-sm"
+      variant="secondary"
       {...props}
     >
       <ArrowLeftIcon />
-      <span className="sr-only">Previous slide</span>
+      <span className={cn(recipe("visuallyHidden"))}>Previous slide</span>
     </Button>
   );
 }
 
 function CarouselNext({
   className,
-  variant = "secondary",
-  size = "icon-sm",
+  variant: _variant,
+  size: _size,
   ...props
 }: ComponentProps<typeof Button>) {
   const { orientation, scrollNext, canScrollNext } = useCarousel();
@@ -269,12 +269,12 @@ function CarouselNext({
       data-slot="carousel-next"
       disabled={!canScrollNext}
       onClick={scrollNext}
-      size={size}
-      variant={variant}
+      size="icon-sm"
+      variant="secondary"
       {...props}
     >
       <ArrowRightIcon />
-      <span className="sr-only">Next slide</span>
+      <span className={cn(recipe("visuallyHidden"))}>Next slide</span>
     </Button>
   );
 }

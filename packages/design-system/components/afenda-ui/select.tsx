@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
 import { Select as SelectPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -51,18 +51,17 @@ function SelectTrigger({
           "focusRing",
           "motionReduce"
         ),
-        "data-[size=compact]:h-8 data-[size=default]:h-9",
+        size === "compact" ? "h-8" : "h-9",
         recipe("mutedControlIcon"),
         "*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",
         className
       )}
-      data-size={size}
       data-slot="select-trigger"
       {...props}
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="size-4" />
+        <ChevronDownIcon className={cn(recipe("selectIcon"))} />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   );
@@ -83,7 +82,7 @@ function SelectContent({
       <SelectPrimitive.Content
         align={align}
         className={cn(
-          "max-h-(--radix-select-content-available-height) min-w-[8rem] overflow-y-auto overflow-x-hidden",
+          "max-h-(--radix-select-content-available-height) min-w-[var(--select-content-min-width)] overflow-y-auto overflow-x-hidden",
           recipe("overlaySurface", "bodyText", "selectOrigin", "overlayMotion"),
           position === "popper" &&
             "data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1",
@@ -137,9 +136,9 @@ function SelectItem({
       data-slot="select-item"
       {...props}
     >
-      <span className="absolute right-2 flex size-3.5 items-center justify-center">
+      <span className={cn(recipe("selectItemIndicator"))}>
         <SelectPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
+          <CheckIcon className={cn(recipe("selectIcon"))} />
         </SelectPrimitive.ItemIndicator>
       </span>
       <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
@@ -173,7 +172,7 @@ function SelectScrollUpButton({
       data-slot="select-scroll-up-button"
       {...props}
     >
-      <ChevronUpIcon className="size-4" />
+      <ChevronUpIcon className={cn(recipe("selectIcon"))} />
     </SelectPrimitive.ScrollUpButton>
   );
 }
@@ -188,7 +187,7 @@ function SelectScrollDownButton({
       data-slot="select-scroll-down-button"
       {...props}
     >
-      <ChevronDownIcon className="size-4" />
+      <ChevronDownIcon className={cn(recipe("selectIcon"))} />
     </SelectPrimitive.ScrollDownButton>
   );
 }

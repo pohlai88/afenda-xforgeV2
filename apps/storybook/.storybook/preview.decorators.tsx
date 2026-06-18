@@ -1,4 +1,4 @@
-import { DesignSystemProvider } from "@repo/design-system/design-system";
+import { DesignSystemProvider } from "@repo/design-system";
 import { withThemeByClassName } from "@storybook/addon-themes";
 import type { Decorator, Preview } from "@storybook/react";
 

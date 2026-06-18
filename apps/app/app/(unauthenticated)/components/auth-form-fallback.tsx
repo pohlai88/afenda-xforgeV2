@@ -1,4 +1,4 @@
-import { cn, recipe, Skeleton } from "@repo/design-system/design-system";
+import { cn, recipe, Skeleton } from "@repo/design-system";
 
 interface AuthFormFallbackProps {
   readonly label?: string;

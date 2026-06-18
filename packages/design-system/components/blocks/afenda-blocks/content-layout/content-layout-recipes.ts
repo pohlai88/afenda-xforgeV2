@@ -1,4 +1,4 @@
-import { blockRecipe } from "@repo/design-system/components/blocks/block-recipes";
+import { blockRecipe } from "../../block-recipes";
 
 const contentLayoutBlockShellClass = [
   blockRecipe("blockShell"),

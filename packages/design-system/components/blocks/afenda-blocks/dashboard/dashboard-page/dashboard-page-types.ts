@@ -1,7 +1,7 @@
 import type {
   Sidebar,
   SidebarProvider,
-} from "@repo/design-system/components/afenda-ui/sidebar";
+} from "../../../../afenda-ui/sidebar";
 import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from "react";
 import type { ContentLayoutFooterProps } from "../../content-layout/content-layout-types";
 import type { ChartAreaInteractiveProps } from "../chart/chart-area-types";

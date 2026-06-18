@@ -1,4 +1,4 @@
-import { Box, Stack, Text } from "@repo/design-system/design-system";
+import { Box, Stack, Text } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const meta = {

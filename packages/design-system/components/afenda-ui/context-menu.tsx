@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 import { ContextMenu as ContextMenuPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -119,7 +119,7 @@ function ContextMenuContent({
 function ContextMenuItem({
   className,
   inset,
-  variant = "default",
+  variant: _variant = "default",
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Item> & {
   inset?: boolean;
@@ -141,7 +141,6 @@ function ContextMenuItem({
       )}
       data-inset={inset}
       data-slot="context-menu-item"
-      data-variant={variant}
       {...props}
     />
   );
@@ -169,9 +168,9 @@ function ContextMenuCheckboxItem({
       data-slot="context-menu-checkbox-item"
       {...props}
     >
-      <span className={recipe("itemIndicator")}>
+      <span className={cn(recipe("itemIndicator"))}>
         <ContextMenuPrimitive.ItemIndicator>
-          <CheckIcon className="size-4" />
+          <CheckIcon className={cn(recipe("itemIndicatorCheckIcon"))} />
         </ContextMenuPrimitive.ItemIndicator>
       </span>
       {children}
@@ -199,9 +198,9 @@ function ContextMenuRadioItem({
       data-slot="context-menu-radio-item"
       {...props}
     >
-      <span className={recipe("itemIndicator")}>
+      <span className={cn(recipe("itemIndicator"))}>
         <ContextMenuPrimitive.ItemIndicator>
-          <CircleIcon className="size-2 fill-current" />
+          <CircleIcon className={cn(recipe("itemIndicatorRadioIcon"))} />
         </ContextMenuPrimitive.ItemIndicator>
       </span>
       {children}

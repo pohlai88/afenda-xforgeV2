@@ -1,19 +1,19 @@
 "use client";
 
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Button } from "../../../../afenda-ui/button";
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@repo/design-system/components/afenda-ui/sidebar";
-import { resolveSidebarLinkRenderer } from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
+} from "../../../../afenda-ui/sidebar";
+import { resolveSidebarLinkRenderer } from "../../sidebars/sidebar-link-defaults";
 import {
   sidebarIconRailHiddenClass,
   sidebarIconRailIconClass,
-} from "@repo/design-system/components/blocks/afenda-blocks/sidebars/sidebar-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../sidebars/sidebar-recipes";
+import { cn } from "../../../../../lib/utils";
 import { CirclePlusIcon, MailIcon } from "lucide-react";
 import { memo } from "react";
 import {

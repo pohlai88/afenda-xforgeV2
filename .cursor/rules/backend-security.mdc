@@ -4,7 +4,7 @@ globs: apps/app/**/{route,actions}.ts,apps/api/**/*.ts,packages/**/*.ts
 alwaysApply: false
 ---
 
-# Backend Security (next-forge)
+# Backend Security (afenda-xforge)
 
 MCP: `/docs/app/guides/data-security`. Pipeline rules: `backend-execution.mdc`.
 

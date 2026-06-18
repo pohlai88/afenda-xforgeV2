@@ -6,7 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import Link from "next/link";
 import { getCollectionSummaries } from "@/app/actions/cms/documents";
 

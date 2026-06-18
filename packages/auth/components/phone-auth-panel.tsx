@@ -11,7 +11,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
   recipe,
-} from "@repo/design-system/design-system";
+} from "@repo/design-system";
 import { useId, useState } from "react";
 import { fromSupabaseError } from "../auth-result";
 import { createClient } from "../client";

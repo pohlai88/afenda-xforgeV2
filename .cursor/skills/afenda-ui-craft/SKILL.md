@@ -1,7 +1,7 @@
 ---
 name: afenda-ui-craft
 description: >-
-  afenda-Xforge UI craft — composition, polish, and anti-slop for next-forge surfaces.
+  afenda-Xforge UI craft — composition, polish, and anti-slop for afenda-xforge surfaces.
   Wraps ui-craft with local layer order and design-system governance. Use when
   building or refining app UI, Storybook, or @repo/design-system surfaces.
   Prefer ui-craft-dense-dashboard for dashboard and admin work.
@@ -10,7 +10,7 @@ disable-model-invocation: true
 
 # afenda-Xforge UI Craft
 
-Merged guidance from **ui-craft** (`.cursor/skills/ui-craft/`), scoped to this next-forge monorepo.
+Merged guidance from **ui-craft** (`.cursor/skills/ui-craft/`), scoped to this afenda-xforge monorepo.
 
 ## How to invoke in Cursor
 

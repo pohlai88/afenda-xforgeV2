@@ -1,4 +1,4 @@
-import { ModeToggle } from "@repo/design-system/design-system";
+import { ModeToggle } from "@repo/design-system";
 import type { ReactNode } from "react";
 import { AuthShell } from "../../(unauthenticated)/components/auth-shell";
 

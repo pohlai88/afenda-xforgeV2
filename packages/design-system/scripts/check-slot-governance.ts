@@ -5,8 +5,10 @@ import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   AFENDA_SLOT_EXACT_IDENTITY_REGISTRY,
-  AFENDA_SLOT_FORBIDDEN_PATTERNS,
   AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY,
+} from "../registries/slot.registry.ts";
+import {
+  AFENDA_SLOT_FORBIDDEN_PATTERNS,
 } from "../contracts/afenda-slot.contract.ts";
 
 interface SourceFile {
@@ -175,7 +177,7 @@ function checkDynamicSlots(file: SourceFile): Violation[] {
       const evidence = match[1] ?? match[0];
       const violation = toViolation(file, match.index ?? 0, {
         evidence,
-        message: `Dynamic data-slot "${evidence}" is forbidden because slot identity must be contract-known.`,
+        message: `Dynamic data-slot "${evidence}" is forbidden because slot identity must be registry-known.`,
         ruleId: RULES.dynamicSlot,
         severity: "error",
       });
@@ -253,7 +255,7 @@ function registryViolation(
   return {
     ruleId,
     severity: "error",
-    file: "contracts/afenda-slot.contract.ts",
+    file: "registries/slot.registry.ts",
     line: 1,
     column: 1,
     evidence,

@@ -1,4 +1,4 @@
-import { Toggle } from "@repo/design-system/design-system";
+import { Toggle } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 import { EyeIcon } from "lucide-react";
 

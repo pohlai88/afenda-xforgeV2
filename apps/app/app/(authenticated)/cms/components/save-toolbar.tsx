@@ -1,7 +1,7 @@
 "use client";
 
 import type { CmsCollectionName } from "@repo/cms/writer";
-import { Button } from "@repo/design-system/design-system";
+import { Button } from "@repo/design-system";
 import Link from "next/link";
 
 interface SaveToolbarProperties {

@@ -4,7 +4,7 @@ globs: apps/app/**/*.tsx,apps/storybook/**/*.tsx,packages/design-system/**/*.tsx
 alwaysApply: false
 ---
 
-# React Performance (next-forge)
+# React Performance (afenda-xforge)
 
 **Server Components first** — see `frontend-app.mdc`. This rule applies to **`'use client'`** leaves and interactive UI only.
 

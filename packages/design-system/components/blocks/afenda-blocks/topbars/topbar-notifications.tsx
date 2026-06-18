@@ -1,21 +1,21 @@
 "use client";
 
-import { Badge } from "@repo/design-system/components/afenda-ui/badge";
-import { Button } from "@repo/design-system/components/afenda-ui/button";
+import { Badge } from "../../../afenda-ui/badge";
+import { Button } from "../../../afenda-ui/button";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@repo/design-system/components/afenda-ui/popover";
-import { ScrollArea } from "@repo/design-system/components/afenda-ui/scroll-area";
+} from "../../../afenda-ui/popover";
+import { ScrollArea } from "../../../afenda-ui/scroll-area";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@repo/design-system/components/afenda-ui/tabs";
-import { topbarIconActionClass } from "@repo/design-system/components/blocks/afenda-blocks/topbars/topbar-recipes";
-import { cn } from "@repo/design-system/lib/utils";
+} from "../../../afenda-ui/tabs";
+import { topbarIconActionClass } from "./topbar-recipes";
+import { cn } from "../../../../lib/utils";
 import { Settings2Icon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { TopbarTooltip } from "./topbar-tooltip";

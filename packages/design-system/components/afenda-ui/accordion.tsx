@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { ChevronDownIcon } from "lucide-react";
 import { Accordion as AccordionPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -56,8 +56,10 @@ function AccordionTrigger({
         data-slot="accordion-trigger"
         {...props}
       >
-        <span className="min-w-0 flex-1 text-balance">{children}</span>
-        <ChevronDownIcon className="pointer-events-none size-4 shrink-0 text-text-secondary transition-transform duration-200 motion-reduce:transition-none" />
+        <span className={cn("min-w-0 flex-1", recipe("accordionTriggerLabel"))}>
+          {children}
+        </span>
+        <ChevronDownIcon className={cn(recipe("accordionTriggerIcon"))} />
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   );

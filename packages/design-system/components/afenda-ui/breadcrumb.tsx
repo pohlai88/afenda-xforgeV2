@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { ChevronRightIcon, MoreHorizontalIcon } from "lucide-react";
 import { Slot as SlotPrimitive } from "radix-ui";
 import type * as React from "react";
@@ -111,8 +111,8 @@ function BreadcrumbEllipsis({
       role="presentation"
       {...props}
     >
-      <MoreHorizontalIcon className="size-3.5" />
-      <span className="sr-only">More</span>
+      <MoreHorizontalIcon className={cn(recipe("breadcrumbEllipsisIcon"))} />
+      <span className={cn(recipe("visuallyHidden"))}>More</span>
     </span>
   );
 }

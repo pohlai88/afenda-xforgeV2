@@ -3,7 +3,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { AFENDA_TOKEN_SOURCE_OF_TRUTH } from "../contracts/afenda-token.contract.ts";
+import { AFENDA_TOKEN_SOURCE_OF_TRUTH } from "../registries/token.registry.ts";
 
 interface SourceFile {
   readonly path: string;

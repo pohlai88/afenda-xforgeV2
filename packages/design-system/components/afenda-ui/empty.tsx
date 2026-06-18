@@ -1,4 +1,4 @@
-import { cn } from "@repo/design-system/lib/utils";
+import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { recipe } from "./recipes";
 
@@ -60,7 +60,6 @@ function EmptyMedia({
         className
       )}
       data-slot="empty-media"
-      data-variant={variant}
       {...props}
     />
   );

@@ -30,37 +30,6 @@ export {
 } from "./sidebar-link";
 export { SectionCards } from "./section-cards";
 export { SiteHeader } from "./site-header";
-export {
-  buildCatalogMaps,
-  buildPinnedActions,
-  buildPinnedOrder,
-  DEFAULT_ERP_ACTIONS_MENU_ITEMS,
-  DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
-  resolveDefaultEnabledIds,
-  resolveTopbarSidebarControl,
-  TOPBAR_DEFAULT_BRAND_TOOLTIP,
-  TOPBAR_FIXED_UTILITY_SLOTS,
-  TOPBAR_MAX_PINNED_UTILITY_SLOTS,
-  TOPBAR_MAX_TOTAL_UTILITY_SLOTS,
-  TopbarShortcutsDialog,
-} from "./topbar";
-export type {
-  TopbarActionMenuItem,
-  TopbarActionsMenuProps,
-  TopbarScopeOption,
-  TopbarScopeSwitcherConfig,
-  TopbarShortcutDefinition,
-  TopbarShortcutEmptyState,
-  TopbarShortcutKeys,
-  TopbarShortcutScope,
-  TopbarShortcutsDialogProps,
-  TopbarShortcutsProps,
-  TopbarSidebarControlProps,
-  TopbarUtilitiesMarketItem,
-  TopbarUtilitiesRailProps,
-  TopbarUtilityAction,
-  TopbarUtilityRequest,
-} from "./topbar/topbar-types";
 
 export { DataTable as DashboardDataTable };
 

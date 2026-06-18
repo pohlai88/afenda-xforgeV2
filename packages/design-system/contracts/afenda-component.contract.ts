@@ -99,63 +99,23 @@ export type AfendaPrimitiveComponentId =
   (typeof AFENDA_PRIMITIVE_COMPONENT_IDS)[number];
 
 export const AFENDA_BLOCK_COMPONENT_IDS = [
-  "AdvancedDataTable",
   "AppSidebar",
-  "ApprovalControlCenter",
-  "ApprovalDecisionTrail",
-  "ApprovalQueueBlock",
-  "AuditEvidenceWorkspace",
-  "AuditSafeCriticalAction",
-  "AuditTrailPanel",
-  "AuthenticatedAppShellBlock",
-  "BatchPostingReview",
-  "BlockActionButton",
-  "BlockActions",
-  "BulkActionBar",
   "ChartAreaInteractive",
-  "CommandSearchBlock",
   "DashboardDataTable",
   "DashboardNavTopbar",
   "DashboardPage",
-  "DataTableShell",
-  "EmptyPanel",
-  "EntitySummaryPanel",
-  "EvidenceChecklist",
-  "FilterBar",
-  "FormSection",
-  "ImmutableAuditTimeline",
-  "MetadataPageRenderer",
   "NavDocuments",
   "NavMain",
   "NavSecondary",
   "NavUser",
-  "OperationalDashboardShell",
-  "PageHeader",
-  "PermissionActionToolbar",
-  "PolicyExceptionSummary",
-  "PolicyLockManager",
-  "QualityGatesBlock",
-  "RecordEditorBlock",
-  "ReversibleBulkActionBar",
-  "RiskEvidencePanel",
-  "RowEvidencePanel",
-  "RuntimeStateBlock",
-  "SaveStateStrip",
   "SectionCards",
   "SiteHeader",
-  "SlaRiskEscalationPanel",
-  "StatsStrip",
-  "StatusTimeline",
-  "TenantOperationsWorkspace",
-  "TopbarShortcutsDialog",
 ] as const;
 
 export type AfendaBlockComponentId =
   (typeof AFENDA_BLOCK_COMPONENT_IDS)[number];
 
-export const AFENDA_INTERNAL_COMPONENT_IDS = [
-  "TopbarUtilitiesBar",
-] as const;
+export const AFENDA_INTERNAL_COMPONENT_IDS = [] as const;
 
 export const AFENDA_COMPONENT_IDENTITY_REGISTRY = [
   ...AFENDA_PRIMITIVE_COMPONENT_IDS,

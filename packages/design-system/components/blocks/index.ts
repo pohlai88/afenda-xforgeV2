@@ -1,24 +1,4 @@
 export type {
-  AdvancedDataTableProps,
-  ApprovalQueueBlockProps,
-  ApprovalQueueRow,
-  CommandSearchBlockProps,
-  CommandSearchGroup,
-  CommandSearchItem,
-  DashboardTab,
-  RecordEditorBlockProps,
-  RiskEvidenceItem,
-  RiskEvidencePanelProps,
-} from "./advanced";
-export {
-  AdvancedDataTable,
-  ApprovalQueueBlock,
-  CommandSearchBlock,
-  OperationalDashboardShell,
-  RecordEditorBlock,
-  RiskEvidencePanel,
-} from "./advanced";
-export type {
   DashboardDataTableProps,
   DashboardDataTableRow,
   DashboardNavTopbarProps,
@@ -46,47 +26,11 @@ export {
 export type {
   SidebarLinkRenderer,
   SidebarLinkRenderProps,
-  TopbarActionMenuItem,
-  TopbarActionsMenuProps,
-  TopbarScopeOption,
-  TopbarScopeSwitcherConfig,
-  TopbarShortcutDefinition,
-  TopbarShortcutEmptyState,
-  TopbarShortcutKeys,
-  TopbarShortcutScope,
-  TopbarShortcutsDialogProps,
-  TopbarShortcutsProps,
-  TopbarSidebarControlProps,
-  TopbarUtilitiesMarketItem,
-  TopbarUtilitiesRailProps,
-  TopbarUtilityAction,
-  TopbarUtilityRequest,
 } from "./afenda-blocks/shadcn-dashboard-01";
 export {
-  buildCatalogMaps,
-  buildPinnedActions,
-  buildPinnedOrder,
-  DEFAULT_ERP_ACTIONS_MENU_ITEMS,
-  DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
   defaultSidebarLink,
-  resolveDefaultEnabledIds,
   resolveSidebarLinkRenderer,
-  resolveTopbarSidebarControl,
-  TOPBAR_DEFAULT_BRAND_TOOLTIP,
-  TOPBAR_FIXED_UTILITY_SLOTS,
-  TOPBAR_MAX_PINNED_UTILITY_SLOTS,
-  TOPBAR_MAX_TOTAL_UTILITY_SLOTS,
-  TopbarShortcutsDialog,
 } from "./afenda-blocks/shadcn-dashboard-01";
-export type {
-  AppShellAuditDockPlacement,
-  AppShellSidebarConfig,
-  AppShellSiteContainerConfig,
-  AppShellSiteContainerGeometry,
-  AppShellSiteContainerMode,
-  AuthenticatedAppShellBlockProps,
-} from "./app-shell";
-export { AuthenticatedAppShellBlock } from "./app-shell";
 export type {
   AfendaBlockRecipeContract,
   AfendaBlockRecipeEntry,
@@ -94,128 +38,29 @@ export type {
 } from "./block-recipes";
 export { afendaBlockRecipe, blockRecipe } from "./block-recipes";
 export type {
-  BlockRegistry,
-  BlockRegistryEntry,
-  BlockRegistryFamily,
-} from "./block-registry";
-export {
-  blockRegistry,
-  blockRegistryEntries,
-  getBlockRegistryEntry,
-  isSupportedBlockType,
-} from "./block-registry";
-export type { BlockType } from "./block-types";
-export { supportedBlockTypes } from "./block-types";
-export type {
-  ErpRiskLevel,
-  ErpSaveState,
-  ReversibleBulkActionBarProps,
-  ReversibleBulkMode,
-  RuntimeStateBlockProps,
-  SaveStateStripProps,
-  SlaRiskEscalationPanelProps,
-} from "./erp-state";
-export {
-  ReversibleBulkActionBar,
-  RuntimeStateBlock,
-  SaveStateStrip,
-  SlaRiskEscalationPanel,
-} from "./erp-state";
-export type {
-  ApprovalDecision,
-  ApprovalDecisionTrailProps,
-  EvidenceChecklistItem,
-  EvidenceChecklistProps,
-  EvidenceMetaItem,
-  EvidenceStatus,
-  ImmutableAuditEvent,
-  ImmutableAuditTimelineProps,
-  PolicyException,
-  PolicyExceptionSummaryProps,
-  RowEvidenceArtifact,
-  RowEvidencePanelProps,
-} from "./evidence-audit";
-export {
-  ApprovalDecisionTrail,
-  EvidenceChecklist,
-  ImmutableAuditTimeline,
-  PolicyExceptionSummary,
-  RowEvidencePanel,
-} from "./evidence-audit";
-export type {
-  ActiveFilter,
   BlockAction,
   BlockBaseProps,
   BlockDensity,
   BlockIntent,
   BlockRuntimeState,
   BlockTone,
-  EmptyPanelProps,
-  FilterBarProps,
-  FormSectionProps,
-  PageHeaderMeta,
-  PageHeaderProps,
-  StatsMetric,
-  StatsStripProps,
-} from "./foundation";
-export {
-  BlockActionButton,
-  BlockActions,
-  EmptyPanel,
-  FilterBar,
-  FormSection,
-  PageHeader,
-  StatsStrip,
-} from "./foundation";
+  ErpRiskLevel,
+  ErpSaveState,
+} from "./block-governance-types";
+export type { BlockType } from "./block-types";
+export { supportedBlockTypes } from "./block-types";
 export type {
   AfendaBlockFamily,
   AfendaBlockLayoutContract,
 } from "./layout-contracts";
 export { afendaBlockLayoutContracts } from "./layout-contracts";
 export type {
-  MetadataActionConfigField,
-  MetadataAuditEvent,
-  MetadataAuditEventName,
-  MetadataBindingDiagnostic,
-  MetadataBindingResolution,
-  MetadataDataSources,
-  MetadataDiagnosticEvent,
-  MetadataDiagnosticsReport,
-  MetadataDiagnosticsSink,
-  MetadataPageRendererProps,
-  MetadataTelemetryEvent,
-} from "./metadata-page-renderer";
-export {
-  createMetadataDiagnosticsCollector,
-  createMetadataDiagnosticsDispatcher,
-  MetadataPageRenderer,
-  resolveMetadataBinding,
-} from "./metadata-page-renderer";
-export type {
-  MetadataActionSurface,
-  MetadataBlockBaseProps,
-  MetadataBlockRenderContext,
-  MetadataGovernanceStatus,
-  MetadataPermissionContext,
-  MetadataPermissionDecision,
-  MetadataPermissionSubject,
-} from "./metadata-renderer-core";
-export {
-  createMetadataBlockRenderContext,
-  resolveDefaultMetadataPermission,
-  resolveMetadataBlockActions,
-  resolveMetadataBlockPermission,
-  resolveMetadataPermission,
-} from "./metadata-renderer-core";
-export type {
   MetadataBlock,
   MetadataBlockAction,
   MetadataDataBinding,
   MetadataDataSourceEnvelope,
   MetadataDataSourceState,
-  MetadataLayoutItem,
   MetadataPage,
-  MetadataPageLayout,
   MetadataScalar,
   MetadataValue,
 } from "./metadata-schema";
@@ -239,14 +84,7 @@ export {
   metadataDataTableBlockSchema,
   metadataEmptyPanelBlockSchema,
   metadataFilterBarBlockSchema,
-  metadataLayoutBreakpointValues,
-  metadataLayoutDependencyModeValues,
-  metadataLayoutItemSchema,
-  metadataLayoutItemTypeValues,
-  metadataLayoutResponsiveRuleSchema,
-  metadataLayoutVisibilitySchema,
   metadataPageHeaderBlockSchema,
-  metadataPageLayoutSchema,
   metadataPageSchema,
   metadataRuntimeStateBlockSchema,
   metadataScalarSchema,
@@ -254,41 +92,42 @@ export {
   metadataValueSchema,
 } from "./metadata-schema";
 export type {
-  AuditTrailEvent,
-  AuditTrailPanelProps,
-  BulkActionBarProps,
-  DataTableShellProps,
-  EntitySummaryField,
-  EntitySummaryPanelProps,
-  OperatorStatus,
-  OperatorTone,
-  StatusTimelineItem,
-  StatusTimelineProps,
-} from "./operator";
+  MetadataActionSurface,
+  MetadataAuditEvent,
+  MetadataAuditEventName,
+  MetadataBindingDiagnostic,
+  MetadataBindingResolution,
+  MetadataBlockBaseProps,
+  MetadataBlockRenderContext,
+  MetadataDataSources,
+  MetadataDiagnosticEvent,
+  MetadataDiagnosticsReport,
+  MetadataDiagnosticsSink,
+  MetadataGovernanceStatus,
+  MetadataLayoutItem,
+  MetadataPageLayout,
+  MetadataPermissionContext,
+  MetadataPermissionDecision,
+  MetadataPermissionSubject,
+  MetadataTelemetryEvent,
+} from "./metadata-renderer";
 export {
-  AuditTrailPanel,
-  BulkActionBar,
-  DataTableShell,
-  EntitySummaryPanel,
-  StatusTimeline,
-} from "./operator";
-export type {
-  AuditSafeCriticalActionProps,
-  PermissionActionAuditItem,
-  PermissionActionToolbarProps,
-  PermissionAwareAction,
-} from "./permission";
-export {
-  AuditSafeCriticalAction,
-  PermissionActionToolbar,
-} from "./permission";
-export type {
-  QualityGateItem,
-  QualityGateState,
-  QualityGatesBlockProps,
-  QualityGateViewport,
-} from "./quality-gates";
-export { QualityGatesBlock } from "./quality-gates";
+  createMetadataBlockRenderContext,
+  createMetadataDiagnosticsCollector,
+  createMetadataDiagnosticsDispatcher,
+  metadataLayoutBreakpointValues,
+  metadataLayoutDependencyModeValues,
+  metadataLayoutItemSchema,
+  metadataLayoutItemTypeValues,
+  metadataLayoutResponsiveRuleSchema,
+  metadataLayoutVisibilitySchema,
+  metadataPageLayoutSchema,
+  resolveDefaultMetadataPermission,
+  resolveMetadataBinding,
+  resolveMetadataBlockActions,
+  resolveMetadataBlockPermission,
+  resolveMetadataPermission,
+} from "./metadata-renderer";
 export type {
   BlockStateInput,
   OrchestratedBlockState,
@@ -298,23 +137,3 @@ export {
   orchestrateBlockState,
   resolveStateSignal,
 } from "./state-orchestration";
-export type {
-  ApprovalControlCenterProps,
-  AuditEvidenceWorkspaceProps,
-  BatchPostingReviewProps,
-  BatchPostingRow,
-  EvidenceRecord,
-  PolicyLockManagerProps,
-  PolicyLockRow,
-  TenantOperationsWorkspaceProps,
-  WorkflowFilter,
-  WorkflowScope,
-  WorkflowStatus,
-} from "./workflow";
-export {
-  ApprovalControlCenter,
-  AuditEvidenceWorkspace,
-  BatchPostingReview,
-  PolicyLockManager,
-  TenantOperationsWorkspace,
-} from "./workflow";

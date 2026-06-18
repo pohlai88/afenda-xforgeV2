@@ -1,275 +1,71 @@
 "use client";
 
-import { TooltipProvider } from "../../../afenda-ui/tooltip";
-import { blockRecipe } from "../../block-recipes";
-import { TopbarBrandDisk } from "./topbar/topbar-brand-disk";
-import {
-  DEFAULT_ERP_ACTIONS_MENU_ITEMS,
-  DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
-} from "./topbar";
-import { TOPBAR_DEFAULT_BRAND_TOOLTIP } from "./topbar/topbar-constants";
-import { resolveTopbarSidebarControl } from "./topbar/topbar-helpers";
-import { TopbarScopeSwitchers } from "./topbar/topbar-scope-switchers";
-import { TopbarSidebarControl } from "./topbar/topbar-sidebar-control";
-import type {
-  TopbarBrandDiskProps,
-  TopbarScopeSwitcherConfig,
-  TopbarShortcutDefinition,
-  TopbarSidebarControlProps,
-  TopbarUtilitiesRailProps,
-} from "./topbar/topbar-types";
-import { TopbarUtilitiesRail } from "./topbar/topbar-utilities-rail";
+import { Button } from "../../../afenda-ui/button";
+import { Separator } from "../../../afenda-ui/separator";
+import { SidebarTrigger } from "../../../afenda-ui/sidebar";
 import { cn } from "../../../../lib/utils";
-import { memo, type ComponentPropsWithoutRef, type ReactNode } from "react";
+import { type ComponentPropsWithoutRef, type ReactNode } from "react";
 
-const NAV_TOPBAR_HEIGHT = "var(--xforge-layout-app-topbar)";
-
-const navTopbarShellClass = [
-  blockRecipe("blockShell"),
-  "sticky top-0 z-[var(--xforge-z-sticky)] flex h-[var(--dashboard-nav-topbar-height,var(--xforge-layout-app-topbar))] shrink-0 items-center justify-between gap-3 bg-transparent px-4 text-sidebar-foreground antialiased lg:px-6",
-].join(" ");
-
-const navTopbarLeftClass = "flex min-w-0 items-center gap-1";
-
-const navTopbarRightClass = "flex shrink-0 items-center justify-end gap-0.5";
-
-const DEFAULT_NAV_TOPBAR_ENABLED_UTILITY_IDS = [
-  "shortcuts",
-  "notifications",
-  "tasks",
-  "reports",
-  "messenger",
-  "settings",
-] as const;
-
-const DEFAULT_NAV_TOPBAR_SCOPE_SWITCHERS: readonly TopbarScopeSwitcherConfig[] =
-  [
-    {
-      id: "organization",
-      label: "Organization",
-      description: "Tenant scope for reads, writes, and audit evidence.",
-      activeOptionId: "org-vf",
-      options: [
-        { id: "org-vf", label: "Vietnam Feed Co." },
-        { id: "org-apac", label: "APAC Holdings" },
-      ],
-    },
-    {
-      id: "department",
-      label: "Department",
-      description: "Functional area within the active organization.",
-      activeOptionId: "dept-brand",
-      options: [
-        { id: "dept-brand", label: "Brand Systems" },
-        { id: "dept-erp", label: "ERP Surfaces" },
-      ],
-    },
-    {
-      id: "team",
-      label: "Team",
-      description: "Working group for queue ownership and approvals.",
-      activeOptionId: "team-design",
-      options: [
-        { id: "team-design", label: "Design Ops" },
-        { id: "team-product", label: "Product UX" },
-      ],
-    },
-    {
-      id: "project",
-      label: "Project",
-      description: "Time-bound initiative or delivery track.",
-      activeOptionId: "proj-rail",
-      options: [
-        { id: "proj-rail", label: "Workspace Rail" },
-        { id: "proj-scorecard", label: "Scorecard Gate" },
-      ],
-    },
-  ];
-
-const DEFAULT_NAV_TOPBAR_NOTIFICATIONS = [
-  {
-    id: "notif-approval-1",
-    title: "Approval queue breached SLA",
-    body: "Northwind APAC has 4 approvals waiting longer than 2 hours.",
-    scope: "team" as const,
-    timeLabel: "4m",
-    unread: true,
-  },
-  {
-    id: "notif-follow-1",
-    title: "Evidence packet needs your review",
-    body: "June payroll packet is missing two supporting bank files.",
-    scope: "following" as const,
-    timeLabel: "19m",
-    unread: true,
-  },
-  {
-    id: "notif-inbox-1",
-    title: "Posting batch completed",
-    body: "Batch POST-2026-06-18 reconciled without variance.",
-    scope: "inbox" as const,
-    timeLabel: "1h",
-  },
-  {
-    id: "notif-team-2",
-    title: "Webhook delivery retried",
-    body: "ERP sync recovered after the second delivery attempt.",
-    scope: "team" as const,
-    timeLabel: "2h",
-  },
-];
-
-const DEFAULT_NAV_TOPBAR_SHORTCUTS: readonly TopbarShortcutDefinition[] = [
-  {
-    id: "shortcut-command-palette",
-    label: "Open command palette",
-    description: "Search records, routes, and operator actions.",
-    category: "global",
-    scope: "global",
-    keys: [["⌘", "K"], ["Ctrl", "K"]],
-    aliases: ["search", "command", "palette"],
-  },
-  {
-    id: "shortcut-shortcuts",
-    label: "Open keyboard shortcuts",
-    description: "Show the shortcut reference for this workspace.",
-    category: "utilities",
-    scope: "global",
-    keys: [["?"]],
-    aliases: ["help", "hotkeys"],
-  },
-  {
-    id: "shortcut-sidebar",
-    label: "Toggle sidebar",
-    description: "Collapse or expand the primary navigation rail.",
-    category: "navigation",
-    scope: "global",
-    keys: [["⌘", "B"]],
-  },
-  {
-    id: "shortcut-table-select-all",
-    label: "Select all rows",
-    description: "Select every visible row in the active table.",
-    category: "selection",
-    scope: "selection",
-    keys: [["⌘", "A"]],
-    when: "When a data table has focus",
-  },
-  {
-    id: "shortcut-table-focus",
-    label: "Focus data table",
-    description: "Move keyboard focus to the primary grid on this screen.",
-    category: "current-screen",
-    scope: "context",
-    keys: [["G"], ["T"]],
-    when: "Dashboard overview",
-  },
-  {
-    id: "shortcut-scope-switcher",
-    label: "Cycle scope switcher",
-    description: "Move focus across organization, department, team, and project scopes.",
-    category: "navigation",
-    scope: "context",
-    keys: [["⌘", "Shift", "S"]],
-  },
-];
-
-const DEFAULT_NAV_TOPBAR_BRAND: TopbarBrandDiskProps = {
-  ariaLabel: "Afenda",
-  description: "Afenda workspace identity.",
-  className: "size-7 place-items-stretch overflow-hidden border-0 bg-transparent p-0",
-  icon: (
-    // biome-ignore lint/performance/noImgElement: Design-system demo renders a static public asset without a Next runtime.
-    <img
-      alt=""
-      aria-hidden="true"
-      className="block size-full object-contain"
-      height={180}
-      src="/afenda-brand/afenda-icon-180-transparent.png"
-      width={180}
-    />
-  ),
-};
-
-const DEFAULT_NAV_TOPBAR_UTILITIES_RAIL: TopbarUtilitiesRailProps = {
-  catalog: DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
-  defaultEnabledIds: DEFAULT_NAV_TOPBAR_ENABLED_UTILITY_IDS,
-  enabledIds: [...DEFAULT_NAV_TOPBAR_ENABLED_UTILITY_IDS],
-  notifications: {
-    items: DEFAULT_NAV_TOPBAR_NOTIFICATIONS,
-  },
-  shortcuts: {
-    contextLabel: "Afenda workspace · Dashboard overview",
-    items: DEFAULT_NAV_TOPBAR_SHORTCUTS,
-  },
-  order: [...DEFAULT_NAV_TOPBAR_ENABLED_UTILITY_IDS],
-  requestUtilityTitle: "Request utility shortcut",
-  requestUtilityNote:
-    "Describe the shortcut or tool operators need in the workspace chrome.",
-  actionsMenu: {
-    actions: DEFAULT_ERP_ACTIONS_MENU_ITEMS,
-  },
-};
-
-export const DEFAULT_NAV_TOPBAR_PROPS = {
-  brand: DEFAULT_NAV_TOPBAR_BRAND,
-  scopeSwitchers: DEFAULT_NAV_TOPBAR_SCOPE_SWITCHERS,
-  sidebarControl: true,
-  utilitiesRail: DEFAULT_NAV_TOPBAR_UTILITIES_RAIL,
-} as const;
+const NAV_TOPBAR_HEIGHT = "calc(var(--spacing) * 12)";
 
 export interface NavTopbarProps
-  extends Omit<ComponentPropsWithoutRef<"header">, "children"> {
-  readonly brand?: TopbarBrandDiskProps | false;
-  readonly scopeSwitchers?: readonly TopbarScopeSwitcherConfig[];
-  readonly sidebarControl?: boolean | TopbarSidebarControlProps | false;
+  extends Omit<ComponentPropsWithoutRef<"header">, "children" | "title"> {
+  readonly showSidebarTrigger?: boolean;
+  readonly title?: ReactNode;
   readonly trailing?: ReactNode;
-  readonly utilitiesRail?: TopbarUtilitiesRailProps | false;
 }
 
-export const NavTopbar = memo(function NavTopbar({
-  brand = DEFAULT_NAV_TOPBAR_BRAND,
+export const DEFAULT_NAV_TOPBAR_PROPS = {
+  showSidebarTrigger: true,
+  title: "Documents",
+} as const;
+
+export function NavTopbar({
   className,
-  scopeSwitchers = DEFAULT_NAV_TOPBAR_SCOPE_SWITCHERS,
-  sidebarControl = true,
+  showSidebarTrigger = true,
+  title = "Documents",
   trailing,
-  utilitiesRail = DEFAULT_NAV_TOPBAR_UTILITIES_RAIL,
   ...properties
 }: NavTopbarProps) {
-  const sidebarControlProps = resolveTopbarSidebarControl(
-    sidebarControl === false ? undefined : sidebarControl
-  );
-  const showBrand = brand !== false;
-  const showUtilitiesRail = utilitiesRail !== false;
-
   return (
-    <TooltipProvider delayDuration={350} skipDelayDuration={100}>
-      <header
-        className={cn(navTopbarShellClass, className)}
-        data-slot="nav-topbar"
-        {...properties}
-      >
-        <div className={navTopbarLeftClass} data-slot="nav-topbar-left">
-          {sidebarControlProps ? (
-            <TopbarSidebarControl {...sidebarControlProps} />
-          ) : null}
-          {showBrand && brand ? (
-            <TopbarBrandDisk
-              tooltip={TOPBAR_DEFAULT_BRAND_TOOLTIP}
-              {...brand}
-            />
-          ) : null}
-          <TopbarScopeSwitchers switchers={scopeSwitchers} />
+    <header
+      className={cn(
+        "flex h-(--header-height, var(--dashboard-nav-topbar-height, calc(var(--spacing) * 12))) shrink-0 items-center gap-2 border-b transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-(--header-height)",
+        className
+      )}
+      data-slot="nav-topbar"
+      {...properties}
+    >
+      <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+        {showSidebarTrigger ? <SidebarTrigger className="-ml-1" /> : null}
+        {showSidebarTrigger ? (
+          <Separator
+            className="mx-2 data-[orientation=vertical]:h-4"
+            orientation="vertical"
+          />
+        ) : null}
+        <h1 className="text-base font-medium">{title}</h1>
+        <div className="ml-auto flex items-center gap-2">
+          {trailing ?? (
+            <Button
+              asChild
+              className="hidden sm:flex dark:text-foreground"
+              size="sm"
+              variant="quiet"
+            >
+              <a
+                href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                GitHub
+              </a>
+            </Button>
+          )}
         </div>
-        <div className={navTopbarRightClass} data-slot="nav-topbar-right">
-          {trailing}
-          {showUtilitiesRail && utilitiesRail ? (
-            <TopbarUtilitiesRail {...utilitiesRail} />
-          ) : null}
-        </div>
-      </header>
-    </TooltipProvider>
+      </div>
+    </header>
   );
-});
+}
 
 export { NAV_TOPBAR_HEIGHT };

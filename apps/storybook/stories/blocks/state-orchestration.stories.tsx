@@ -1,7 +1,11 @@
 import type { BlockStateInput } from "@repo/design-system";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
   orchestrateBlockState,
-  RuntimeStateBlock,
   resolveStateSignal,
 } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
@@ -41,43 +45,49 @@ const stateCases = [
     label: "Empty",
   },
   {
-    detail: "A failed sync or broken binding blocks governed actions.",
+    detail: "The data source failed and the block stays in error tone.",
     id: "error",
-    input: { error: "Vendor evidence sync failed." },
+    input: { error: true },
     label: "Error",
   },
   {
-    detail: "Permission policy blocks both visibility-sensitive actions.",
+    detail: "Permissions block the operator from mutating this surface.",
     id: "forbidden",
     input: { isForbidden: true },
     label: "Forbidden",
   },
   {
-    detail: "The block can be inspected but not modified.",
+    detail: "The block is visible but read-only until context changes.",
     id: "readonly",
     input: { isReadonly: true },
-    label: "Read-only",
+    label: "Readonly",
   },
   {
-    detail: "Local edits may queue, but server-side actions are disabled.",
+    detail: "Offline save state disables server-side actions.",
     id: "offline",
     input: { isOffline: true },
     label: "Offline",
   },
   {
-    detail: "Autosave is active and represented through the loading state.",
+    detail: "Autosave is idle and the block remains interactive.",
     id: "autosave",
-    input: { saveState: "saving" },
-    label: "Autosave",
+    input: { saveState: "idle" },
+    label: "Autosave idle",
   },
   {
-    detail: "A newer version exists and must be resolved before editing.",
+    detail: "Conflict blocks editing until merge resolution completes.",
     id: "conflict",
     input: { hasConflict: true },
     label: "Conflict",
   },
   {
-    detail: "SLA breach raises critical tone without blocking escalation.",
+    detail: "SLA watch keeps the block visible with warning tone.",
+    id: "sla-watch",
+    input: { riskLevel: "watch" },
+    label: "SLA watch",
+  },
+  {
+    detail: "SLA breach escalates the block to critical tone.",
     id: "sla-breach",
     input: { riskLevel: "breach" },
     label: "SLA breach",
@@ -91,7 +101,7 @@ const stateCases = [
 
 const priorityCases = [
   {
-    detail: "Forbidden wins over loading so permission tracing is clear.",
+    detail: "Forbidden wins over loading because access is denied.",
     id: "forbidden-over-loading",
     input: { isForbidden: true, isLoading: true },
     label: "Forbidden over loading",
@@ -115,29 +125,41 @@ const priorityCases = [
   readonly label: string;
 }[];
 
+function StatePreview({
+  detail,
+  id,
+  input,
+  label,
+}: {
+  readonly detail: string;
+  readonly id: string;
+  readonly input: BlockStateInput;
+  readonly label: string;
+}) {
+  const resolved = orchestrateBlockState(input);
+  const signal = resolveStateSignal(input);
+
+  return (
+    <Card data-slot={`orchestration-${id}`}>
+      <CardHeader>
+        <CardTitle>{label}</CardTitle>
+        <CardDescription>{detail}</CardDescription>
+      </CardHeader>
+      <CardContent className="font-mono text-[12px] text-text-secondary">
+        signal={signal}; state={resolved.state}; tone={resolved.tone};
+        disabled={String(resolved.isInteractionDisabled)}; reason=
+        {resolved.disabledReason ?? "none"}
+      </CardContent>
+    </Card>
+  );
+}
+
 export const StateMatrix: Story = {
   render: () => (
     <main className="grid w-[min(960px,calc(100vw-32px))] min-w-0 gap-3">
-      {stateCases.map((item) => {
-        const resolved = orchestrateBlockState(item.input);
-
-        return (
-          <RuntimeStateBlock
-            blockId={`orchestration-${item.id}`}
-            description={item.detail}
-            details={
-              <span className="font-mono text-[12px]">
-                signal={resolved.signal}; disabled=
-                {String(resolved.isInteractionDisabled)}
-              </span>
-            }
-            key={item.id}
-            state={resolved.state}
-            title={item.label}
-            tone={resolved.tone}
-          />
-        );
-      })}
+      {stateCases.map((item) => (
+        <StatePreview key={item.id} {...item} />
+      ))}
     </main>
   ),
 };
@@ -145,26 +167,9 @@ export const StateMatrix: Story = {
 export const PriorityOrder: Story = {
   render: () => (
     <main className="grid w-[min(960px,calc(100vw-32px))] min-w-0 gap-3">
-      {priorityCases.map((item) => {
-        const resolved = orchestrateBlockState(item.input);
-        const signal = resolveStateSignal(item.input);
-
-        return (
-          <RuntimeStateBlock
-            blockId={`orchestration-priority-${item.id}`}
-            description={item.detail}
-            details={
-              <span className="font-mono text-[12px]">
-                resolved={signal}; reason={resolved.disabledReason ?? "none"}
-              </span>
-            }
-            key={item.id}
-            state={resolved.state}
-            title={item.label}
-            tone={resolved.tone}
-          />
-        );
-      })}
+      {priorityCases.map((item) => (
+        <StatePreview key={item.id} {...item} />
+      ))}
     </main>
   ),
 };

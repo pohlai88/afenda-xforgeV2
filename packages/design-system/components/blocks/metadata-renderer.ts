@@ -1,22 +1,20 @@
 export type {
-  MetadataActionConfigField,
-  MetadataAuditEvent,
-  MetadataAuditEventName,
   MetadataBindingDiagnostic,
   MetadataBindingResolution,
-  MetadataDataSources,
+} from "./metadata-binding";
+export { resolveMetadataBinding } from "./metadata-binding";
+export type {
+  MetadataAuditEvent,
+  MetadataAuditEventName,
   MetadataDiagnosticEvent,
   MetadataDiagnosticsReport,
   MetadataDiagnosticsSink,
-  MetadataPageRendererProps,
   MetadataTelemetryEvent,
-} from "./metadata-page-renderer";
+} from "./metadata-diagnostics";
 export {
   createMetadataDiagnosticsCollector,
   createMetadataDiagnosticsDispatcher,
-  MetadataPageRenderer,
-  resolveMetadataBinding,
-} from "./metadata-page-renderer";
+} from "./metadata-diagnostics";
 export type {
   MetadataActionSurface,
   MetadataBlockBaseProps,
@@ -33,7 +31,7 @@ export {
   resolveMetadataBlockPermission,
   resolveMetadataPermission,
 } from "./metadata-renderer-core";
-export type { MetadataLayoutItem, MetadataPageLayout } from "./metadata-schema";
+export type { MetadataDataSources, MetadataLayoutItem, MetadataPageLayout } from "./metadata-schema";
 export {
   metadataLayoutBreakpointValues,
   metadataLayoutDependencyModeValues,

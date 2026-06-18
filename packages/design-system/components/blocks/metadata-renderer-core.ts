@@ -1,4 +1,4 @@
-import type { BlockAction, BlockBaseProps } from "./foundation";
+import type { BlockAction, BlockBaseProps } from "./block-governance-types";
 import type { MetadataDiagnosticsSink } from "./metadata-diagnostics";
 import {
   emitMetadataActionDiagnostics,

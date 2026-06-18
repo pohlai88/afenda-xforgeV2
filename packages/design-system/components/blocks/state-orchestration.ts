@@ -1,5 +1,9 @@
-import type { ErpRiskLevel, ErpSaveState } from "./erp-state";
-import type { BlockRuntimeState, BlockTone } from "./foundation";
+import type {
+  BlockRuntimeState,
+  BlockTone,
+  ErpRiskLevel,
+  ErpSaveState,
+} from "./block-governance-types";
 
 type StateSignal =
   | "autosave"

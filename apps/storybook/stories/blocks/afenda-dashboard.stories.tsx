@@ -12,7 +12,6 @@ import {
   SiteHeader,
 } from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
-import type { CSSProperties } from "react";
 import { expect, waitFor, within } from "storybook/test";
 
 import {
@@ -62,20 +61,19 @@ export const DashboardNavTopbarDefault: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Operator nav topbar from shadcn-dashboard-01.",
+        story: "Simple shadcn-style nav topbar with sidebar trigger and title.",
       },
     },
   },
   render: () => (
-    <SidebarProvider
-      style={
-        {
-          "--dashboard-nav-topbar-height": "var(--xforge-layout-app-topbar)",
-        } as CSSProperties
-      }
-      {...dashboardSidebarProviderProps}
-    >
-      <DashboardNavTopbar {...DEMO_DASHBOARD_NAV_TOPBAR_PROPS} />
+    <SidebarProvider {...dashboardSidebarProviderProps}>
+      <AppSidebar variant="inset" />
+      <SidebarInset className="flex min-h-svh flex-col">
+        <DashboardNavTopbar {...DEMO_DASHBOARD_NAV_TOPBAR_PROPS} />
+        <div className="grid flex-1 place-items-center p-8 text-[13px] text-text-secondary">
+          Main workspace stage
+        </div>
+      </SidebarInset>
     </SidebarProvider>
   ),
 };

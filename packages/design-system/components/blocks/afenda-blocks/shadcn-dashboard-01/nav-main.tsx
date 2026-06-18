@@ -9,6 +9,7 @@ import {
   navItemIdleClass,
   navItemLabelClass,
   navItemSelectedClass,
+  sidebarLinkClass,
 } from "./nav-main-recipes";
 import {
   SidebarGroup,
@@ -139,7 +140,7 @@ export const DEFAULT_NAV_MAIN_ITEMS: readonly NavMainItem[] = [
   {
     id: "nexus-net",
     label: "Nexus Net",
-    href: "/",
+    href: "/dashboard",
     icon: NexusNetIcon,
     description:
       "Open the operational map, local workspace widgets, and tenant shortcuts.",
@@ -197,7 +198,7 @@ const NavMainItemRow = memo(function NavMainItemRow({
       >
         {renderLink({
           "aria-current": selected ? "page" : undefined,
-          className: "",
+          className: sidebarLinkClass,
           href: item.href,
           children: (
             <>

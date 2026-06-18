@@ -17,7 +17,7 @@ Use this checklist when shipping a new Phase 3 morph destination. **All eleven d
 | 4 | Push handler | `engines/morph/push-handlers/{destination-id}.ts` + register in `push-handlers/index.ts` |
 | 5 | Read engine | `engines/{segment}/{segment}-requests.ts` — `getById`, `listForOrg` |
 | 6 | Types | `Orbit*RequestRecord/Dto` in `contract/orbit-case.types.ts` |
-| 7 | Serializer | `toOrbit*RequestDto` in `contract/serialize.ts`; export from `index.ts` + `server.ts` |
+| 7 | Serializer | `toOrbitMorphRequestDto` in `contract/morph-request-shared.ts`; export from `index.ts` |
 | 8 | Cache | Use `getOrbitCaseMorphCacheTags(segment, orgId)` in app cached list loader |
 | 9 | Revalidate | Push success revalidates automatically via `resolveMorphSliceByTargetType` in `executeCasePush` when `hasAppRoute: true` |
 | 10 | App routes | `/orbit-case/{segment}/page.tsx` + `/orbit-case/{segment}/[{id}]/page.tsx` using `OrbitMorphDetailLayout` + `OrbitMorphOriginAside` |

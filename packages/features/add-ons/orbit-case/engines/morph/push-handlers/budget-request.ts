@@ -1,5 +1,4 @@
-import { database } from "@repo/database";
-import { orbitBudgetRequest } from "@repo/database/schema";
+import { database, orbitBudgetRequest } from "@repo/database";
 import { createTwoFieldMorphPushHandler } from "../create-two-field-morph-push-handler";
 
 export const executeBudgetRequestPush = createTwoFieldMorphPushHandler({

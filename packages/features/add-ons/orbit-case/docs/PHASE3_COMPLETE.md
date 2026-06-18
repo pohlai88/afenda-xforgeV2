@@ -31,6 +31,6 @@ Shared infrastructure:
 - Typed reads factory: [`engines/morph/create-typed-morph-reads.ts`](../engines/morph/create-typed-morph-reads.ts)
 - Push handler factory: [`engines/morph/create-two-field-morph-push-handler.ts`](../engines/morph/create-two-field-morph-push-handler.ts)
 - Route loaders: [`engines/morph/morph-route-loaders.ts`](../engines/morph/morph-route-loaders.ts)
-- App list/detail: [`OrbitMorphListView`](../../../../apps/app/app/(authenticated)/orbit-case/components/orbit-morph-list-view.tsx) / [`OrbitMorphDetailView`](../../../../apps/app/app/(authenticated)/orbit-case/components/orbit-morph-detail-view.tsx)
+- App list/detail: [`OrbitMorphListView`](../../../../apps/app/app/(authenticated)/orbit-case/_components/orbit-morph-list-view.tsx) / [`OrbitMorphDetailView`](../../../../apps/app/app/(authenticated)/orbit-case/_components/orbit-morph-detail-view.tsx)
 
 See [`MORPH-DESTINATION-SLICE.md`](./MORPH-DESTINATION-SLICE.md) for the slice checklist.

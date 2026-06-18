@@ -2,8 +2,7 @@ import "server-only";
 
 import { createId } from "@paralleldrive/cuid2";
 import type { OrganizationRole } from "@repo/auth/organization-roles";
-import { database } from "@repo/database";
-import { orbitCaseAttachment } from "@repo/database/schema";
+import { database, orbitCaseAttachment } from "@repo/database";
 import { and, desc, eq } from "drizzle-orm";
 import {
   parseOrbitCaseBlobAccess,

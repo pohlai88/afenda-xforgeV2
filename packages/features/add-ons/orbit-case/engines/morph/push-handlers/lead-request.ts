@@ -1,5 +1,4 @@
-import { database } from "@repo/database";
-import { orbitLeadRequest } from "@repo/database/schema";
+import { database, orbitLeadRequest } from "@repo/database";
 import { createTwoFieldMorphPushHandler } from "../create-two-field-morph-push-handler";
 
 export const executeLeadRequestPush = createTwoFieldMorphPushHandler({

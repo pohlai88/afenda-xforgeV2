@@ -182,15 +182,28 @@ function SidebarProvider({
   const isMobile = useIsMobile();
   const [openMobile, setOpenMobile] = useState(false);
   const [hoverPeek, setHoverPeek] = useState(false);
-  const initialBehaviorMode =
-    readSidebarBehaviorCookie() ?? defaultBehaviorMode;
   const [_behaviorMode, _setBehaviorMode] =
-    useState<SidebarBehaviorMode>(initialBehaviorMode);
+    useState<SidebarBehaviorMode>(defaultBehaviorMode);
   const behaviorMode = behaviorModeProp ?? _behaviorMode;
   const [_open, _setOpen] = useState(() =>
-    resolveInitialSidebarOpen(initialBehaviorMode, defaultOpen)
+    resolveInitialSidebarOpen(defaultBehaviorMode, defaultOpen)
   );
   const open = openProp ?? _open;
+
+  useEffect(() => {
+    const fromCookie = readSidebarBehaviorCookie();
+    if (!fromCookie) {
+      return;
+    }
+
+    if (behaviorModeProp === undefined) {
+      _setBehaviorMode(fromCookie);
+    }
+
+    if (openProp === undefined) {
+      _setOpen(resolveInitialSidebarOpen(fromCookie, defaultOpen));
+    }
+  }, [behaviorModeProp, defaultBehaviorMode, defaultOpen, openProp]);
 
   const setOpen = useCallback(
     (value: boolean | ((value: boolean) => boolean)) => {
@@ -429,7 +442,7 @@ function Sidebar({
       >
         <div
           className={cn(
-            "flex h-full w-full flex-col bg-surface-raised",
+            "flex h-full w-full flex-col bg-surface-raised group-data-[variant=inset]:bg-transparent",
             sidebarIconRailInnerClass,
             "group-data-[variant=floating]:rounded-[var(--card-radius)] group-data-[variant=floating]:border group-data-[variant=floating]:border-border-default group-data-[variant=floating]:shadow-panel"
           )}

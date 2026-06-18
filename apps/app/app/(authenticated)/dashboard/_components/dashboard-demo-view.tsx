@@ -1,7 +1,14 @@
 "use client";
 
-import { DashboardPage } from "@repo/design-system";
+import {
+  DashboardPage,
+  type DashboardDataTableRow,
+} from "@repo/design-system";
 
-export function DashboardDemoView() {
-  return <DashboardPage />;
+interface DashboardDemoViewProperties {
+  readonly tableData: readonly DashboardDataTableRow[];
+}
+
+export function DashboardDemoView({ tableData }: DashboardDemoViewProperties) {
+  return <DashboardPage tableData={tableData} />;
 }

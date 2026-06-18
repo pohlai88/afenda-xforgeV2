@@ -1,7 +1,6 @@
 import "server-only";
 
-import { database } from "@repo/database";
-import { orbitPurchaseRequest } from "@repo/database/schema";
+import { database, orbitPurchaseRequest } from "@repo/database";
 import type { OrbitPurchaseRequestRecord } from "../../contract/orbit-case.types";
 import {
   createTypedMorphReads,

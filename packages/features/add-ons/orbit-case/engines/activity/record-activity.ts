@@ -1,8 +1,7 @@
 import "server-only";
 
 import { createId } from "@paralleldrive/cuid2";
-import { database } from "@repo/database";
-import { orbitCaseActivity } from "@repo/database/schema";
+import { database, orbitCaseActivity } from "@repo/database";
 
 export const recordOrbitCaseActivity = async (input: {
   organizationId: string;

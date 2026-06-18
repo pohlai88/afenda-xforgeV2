@@ -12,15 +12,8 @@ export {
   updateOrbitCaseSchema,
   watchOrbitCaseSchema,
 } from "./contract/orbit-case.schema";
+/** @deprecated Prefer `OrbitMorphRequestDto` from `contract/morph-request-shared`. */
 export type {
-  OrbitCaseActivityDto,
-  OrbitCaseAttachmentDto,
-  OrbitCaseBoardColumnDto,
-  OrbitCaseBoardDto,
-  OrbitCaseCalendarDto,
-  OrbitCaseCommentDto,
-  OrbitCaseDto,
-  OrbitCaseTimelineDto,
   OrbitBudgetRequestDto,
   OrbitMeetingRequestDto,
   OrbitApprovalRequestDto,
@@ -32,6 +25,16 @@ export type {
   OrbitInvestigationRequestDto,
   OrbitCapaRequestDto,
   OrbitContractReviewRequestDto,
+} from "./contract/orbit-case.types";
+export type {
+  OrbitCaseActivityDto,
+  OrbitCaseAttachmentDto,
+  OrbitCaseBoardColumnDto,
+  OrbitCaseBoardDto,
+  OrbitCaseCalendarDto,
+  OrbitCaseCommentDto,
+  OrbitCaseDto,
+  OrbitCaseTimelineDto,
   OrbitObjectLinkDto,
   OrbitObjectLinkProjectionDto,
 } from "./contract/orbit-case.types";
@@ -83,9 +86,6 @@ export {
   toOrbitCaseCommentDto,
   toOrbitCaseDto,
   toOrbitCaseTimelineDto,
-  toOrbitBudgetRequestDto,
-  toOrbitMeetingRequestDto,
-  toOrbitApprovalRequestDto,
   toOrbitObjectLinkDto,
   toOrbitObjectLinkProjectionDto,
 } from "./contract/serialize";

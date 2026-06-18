@@ -99,6 +99,8 @@ export type AfendaPrimitiveComponentId =
   (typeof AFENDA_PRIMITIVE_COMPONENT_IDS)[number];
 
 export const AFENDA_BLOCK_COMPONENT_IDS = [
+  "AfendaAppShell",
+  "AfendaAppTopbar",
   "AppSidebar",
   "ChartAreaInteractive",
   "DashboardDataTable",

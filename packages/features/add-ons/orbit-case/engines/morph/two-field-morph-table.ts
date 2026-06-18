@@ -9,7 +9,7 @@ import type {
   orbitProjectRequest,
   orbitPurchaseRequest,
   orbitRiskRequest,
-} from "@repo/database/schema";
+} from "@repo/database";
 
 /** Shared Drizzle handle for Phase 3 two-field morph tables (migration 0031). */
 export type MorphTwoFieldTable =

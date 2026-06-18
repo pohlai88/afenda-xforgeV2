@@ -31,6 +31,7 @@ import {
   dashboardNavUserMenuIconClass,
   dashboardNavUserMenuIdentityRowClass,
   dashboardNavUserMenuLabelClass,
+  dashboardNavUserMenuClass,
   dashboardNavUserNameClass,
   dashboardNavUserTriggerClass,
 } from "./dashboard-recipes";
@@ -55,7 +56,7 @@ export function NavUser({
 
   return (
     <SidebarMenu
-      className={cn(blockRecipe("blockSection"))}
+      className={cn(blockRecipe("blockSection"), dashboardNavUserMenuClass)}
       data-slot="nav-user"
     >
       <SidebarMenuItem>

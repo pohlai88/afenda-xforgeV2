@@ -1,5 +1,4 @@
-import { database } from "@repo/database";
-import { orbitApprovalRequest } from "@repo/database/schema";
+import { database, orbitApprovalRequest } from "@repo/database";
 import { createTwoFieldMorphPushHandler } from "../create-two-field-morph-push-handler";
 
 export const executeApprovalRequestPush = createTwoFieldMorphPushHandler({

@@ -5,7 +5,16 @@ import { DataTable, schema } from "./data-table";
 
 export { AppSidebar } from "./app-sidebar";
 export { ChartAreaInteractive } from "./chart-area-interactive";
-export { DashboardPage } from "./dashboard/dashboard-01.page";
+export {
+  DashboardContent,
+  type DashboardContentProps,
+} from "./dashboard/dashboard-content";
+export {
+  DashboardDemoPage,
+  type DashboardDemoPageProps,
+  DashboardPage,
+  type DashboardPageProps,
+} from "./dashboard/dashboard-01.page";
 export { DataTable, schema as dashboardDataTableSchema } from "./data-table";
 export {
   DEFAULT_NAV_MAIN_ITEMS,
@@ -28,6 +37,7 @@ export {
   type SidebarLinkRenderer,
   type SidebarLinkRenderProps,
 } from "./sidebar-link";
+export { sidebarLinkClass } from "./nav-main-recipes";
 export { SectionCards } from "./section-cards";
 export { SiteHeader, type SiteHeaderProps } from "./site-header";
 

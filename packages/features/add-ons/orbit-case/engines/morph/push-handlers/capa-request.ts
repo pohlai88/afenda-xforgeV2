@@ -1,5 +1,4 @@
-import { database } from "@repo/database";
-import { orbitCapaRequest } from "@repo/database/schema";
+import { database, orbitCapaRequest } from "@repo/database";
 import { createTwoFieldMorphPushHandler } from "../create-two-field-morph-push-handler";
 
 export const executeCapaRequestPush = createTwoFieldMorphPushHandler({

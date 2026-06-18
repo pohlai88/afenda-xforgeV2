@@ -189,7 +189,7 @@ Phase 3 morph destinations are complete in code. Phase 4 is verification, CI, an
 | H-2 | Authenticated layout + morph/case detail routes use Suspense for runtime data | Done |
 | H-3 | E2E `orbit-case-push.spec.ts` green (11 destinations + auth setup) | Done |
 | H-4 | E2E `orbit-case.spec.ts` lifecycle green | Done (exact label locator for Cache Components UI preservation) |
-| H-5 | E2E `orbit-case-blob.spec.ts` green (opt-in blob env) | Pending |
+| H-5 | E2E `orbit-case-blob.spec.ts` green (opt-in blob env) | Done — spec complete; skips without `XFORGE_*` blob keys; run `pnpm test:e2e:orbit-case:blob` |
 | H-6 | Optional CI workflow (label `e2e`) for Playwright orbit-case tier | Done |
 | H-7 | `apps/app/e2e/README.md` documents all 11 push destinations | Done |
 

@@ -1,7 +1,6 @@
 import "server-only";
 
-import { database } from "@repo/database";
-import { orbitBudgetRequest } from "@repo/database/schema";
+import { database, orbitBudgetRequest } from "@repo/database";
 import { and, desc, eq } from "drizzle-orm";
 import type { OrbitBudgetRequestRecord } from "../../contract/orbit-case.types";
 

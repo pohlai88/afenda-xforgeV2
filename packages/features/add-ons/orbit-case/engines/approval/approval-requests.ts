@@ -1,7 +1,6 @@
 import "server-only";
 
-import { database } from "@repo/database";
-import { orbitApprovalRequest } from "@repo/database/schema";
+import { database, orbitApprovalRequest } from "@repo/database";
 import { and, desc, eq } from "drizzle-orm";
 import type { OrbitApprovalRequestRecord } from "../../contract/orbit-case.types";
 

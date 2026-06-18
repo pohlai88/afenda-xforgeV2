@@ -4,12 +4,6 @@ import {
   resolveOrbitMorphLinkHref,
 } from "./link-projection-registry";
 import type {
-  OrbitBudgetRequestDto,
-  OrbitBudgetRequestRecord,
-  OrbitMeetingRequestDto,
-  OrbitMeetingRequestRecord,
-  OrbitApprovalRequestDto,
-  OrbitApprovalRequestRecord,
   OrbitCaseActivityDto,
   OrbitCaseActivityRecord,
   OrbitCaseAttachmentDto,
@@ -101,47 +95,6 @@ export const toOrbitObjectLinkDto = (
   targetId: record.targetId,
   payload: record.payload,
   createdAt: record.createdAt.toISOString(),
-});
-
-/** @deprecated Prefer `OrbitMorphRequestDto` via `toOrbitMorphRequestDto`. */
-export const toOrbitBudgetRequestDto = (
-  record: OrbitBudgetRequestRecord
-): OrbitBudgetRequestDto => ({
-  amount: record.amount,
-  createdAt: record.createdAt.toISOString(),
-  createdBy: record.createdBy,
-  id: record.id,
-  organizationId: record.organizationId,
-  originCaseId: record.originCaseId,
-  title: record.title,
-});
-
-/** @deprecated Prefer `OrbitMorphRequestDto` via `toOrbitMorphRequestDto`. */
-export const toOrbitMeetingRequestDto = (
-  record: OrbitMeetingRequestRecord
-): OrbitMeetingRequestDto => ({
-  createdAt: record.createdAt.toISOString(),
-  createdBy: record.createdBy,
-  id: record.id,
-  location: record.location,
-  organizationId: record.organizationId,
-  originCaseId: record.originCaseId,
-  scheduledAt: record.scheduledAt,
-  title: record.title,
-});
-
-/** @deprecated Prefer `OrbitMorphRequestDto` via `toOrbitMorphRequestDto`. */
-export const toOrbitApprovalRequestDto = (
-  record: OrbitApprovalRequestRecord
-): OrbitApprovalRequestDto => ({
-  amount: record.amount,
-  approver: record.approver,
-  createdAt: record.createdAt.toISOString(),
-  createdBy: record.createdBy,
-  id: record.id,
-  organizationId: record.organizationId,
-  originCaseId: record.originCaseId,
-  title: record.title,
 });
 
 export const toOrbitObjectLinkProjectionDto = (

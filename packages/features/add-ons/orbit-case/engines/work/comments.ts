@@ -1,8 +1,7 @@
 import "server-only";
 
 import { createId } from "@paralleldrive/cuid2";
-import { database } from "@repo/database";
-import { orbitCaseComment } from "@repo/database/schema";
+import { database, orbitCaseComment } from "@repo/database";
 import { and, desc, eq } from "drizzle-orm";
 import type { OrbitCaseCommentRecord } from "../../contract/orbit-case.types";
 import { recordOrbitCaseActivity } from "../activity/record-activity";

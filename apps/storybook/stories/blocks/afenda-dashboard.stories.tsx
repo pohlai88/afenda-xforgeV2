@@ -1,9 +1,10 @@
 import {
-  AppSidebar,
+  DashboardDemoPage,
+  DashboardPage,
+  ShadcnDemoAppSidebar,
   ChartAreaInteractive,
   DashboardDataTable,
   DashboardNavTopbar,
-  DashboardPage,
   DEMO_DASHBOARD_DATA_TABLE_ROWS,
   DEMO_DASHBOARD_NAV_TOPBAR_PROPS,
   SectionCards,
@@ -49,11 +50,11 @@ export const DashboardPageDefault: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Full dashboard-01 page from shadcn-dashboard-01.",
+        story: "Full dashboard demo composed with AfendaAppShell.",
       },
     },
   },
-  render: () => <DashboardPage />,
+  render: () => <DashboardDemoPage />,
 };
 
 export const DashboardNavTopbarDefault: Story = {
@@ -67,7 +68,7 @@ export const DashboardNavTopbarDefault: Story = {
   },
   render: () => (
     <SidebarProvider {...dashboardSidebarProviderProps}>
-      <AppSidebar variant="inset" />
+      <ShadcnDemoAppSidebar variant="inset" />
       <SidebarInset className="flex min-h-svh flex-col">
         <DashboardNavTopbar {...DEMO_DASHBOARD_NAV_TOPBAR_PROPS} />
         <div className="grid flex-1 place-items-center p-8 text-[13px] text-text-secondary">
@@ -89,7 +90,7 @@ export const AppSidebarWithMainStage: Story = {
   },
   render: () => (
     <SidebarProvider {...dashboardSidebarProviderProps}>
-      <AppSidebar variant="inset" />
+      <ShadcnDemoAppSidebar variant="inset" />
       <SidebarInset className="grid min-w-0 flex-1 place-items-center p-8 text-[13px] text-text-secondary">
         Main workspace stage
       </SidebarInset>
@@ -107,7 +108,7 @@ export const SiteHeaderBar: Story = {
   },
   render: () => (
     <SidebarProvider {...dashboardSidebarProviderProps}>
-      <AppSidebar variant="inset" />
+      <ShadcnDemoAppSidebar variant="inset" />
       <SidebarInset className="flex min-h-svh flex-col">
         <SiteHeader />
         <div className="grid flex-1 place-items-center p-8 text-[13px] text-text-secondary">

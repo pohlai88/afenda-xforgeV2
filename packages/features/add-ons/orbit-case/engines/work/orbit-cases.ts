@@ -1,13 +1,13 @@
 import "server-only";
 
 import { createId } from "@paralleldrive/cuid2";
-import { database } from "@repo/database";
 import {
+  database,
   orbitCase,
   orbitCaseActivity,
   orbitCaseTag,
   orbitCaseWatcher,
-} from "@repo/database/schema";
+} from "@repo/database";
 import { log } from "@repo/observability/log";
 import { and, desc, eq, gte, inArray, isNull, lte } from "drizzle-orm";
 import type {

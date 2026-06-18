@@ -1,3 +1,4 @@
+import { DEMO_DASHBOARD_DATA_TABLE_ROWS } from "@repo/design-system";
 import type { Metadata } from "next";
 import { DashboardDemoView } from "./_components/dashboard-demo-view";
 
@@ -11,7 +12,9 @@ export const metadata: Metadata = {
 };
 
 const DashboardRoutePage = () => {
-  return <DashboardDemoView />;
+  return (
+    <DashboardDemoView tableData={DEMO_DASHBOARD_DATA_TABLE_ROWS} />
+  );
 };
 
 export default DashboardRoutePage;

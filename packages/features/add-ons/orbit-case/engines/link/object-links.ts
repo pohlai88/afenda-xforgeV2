@@ -1,8 +1,7 @@
 import "server-only";
 
 import { createId } from "@paralleldrive/cuid2";
-import { database } from "@repo/database";
-import { orbitObjectLink } from "@repo/database/schema";
+import { database, orbitObjectLink } from "@repo/database";
 import { and, desc, eq } from "drizzle-orm";
 import type { OrbitObjectLinkRecord } from "../../contract/orbit-case.types";
 

@@ -27,6 +27,12 @@ import {
   dashboardNavDocumentsMoreIconClass,
 } from "./dashboard-recipes";
 import {
+  navItemBaseClass,
+  navItemIconClass,
+  navItemIdleClass,
+  navItemLabelClass,
+} from "./nav-main-recipes";
+import {
   EllipsisIcon,
   FolderIcon,
   Share2Icon,
@@ -56,10 +62,13 @@ export function NavDocuments({
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton
+              asChild
+              className={cn(navItemBaseClass, navItemIdleClass)}
+            >
               <a href={item.url}>
-                <item.icon />
-                <span>{item.name}</span>
+                <item.icon className={cn(navItemIconClass)} />
+                <span className={cn(navItemLabelClass)}>{item.name}</span>
               </a>
             </SidebarMenuButton>
             <DropdownMenu>
@@ -96,9 +105,15 @@ export function NavDocuments({
           </SidebarMenuItem>
         ))}
         <SidebarMenuItem>
-          <SidebarMenuButton className={cn(dashboardNavDocumentsMoreButtonClass)}>
+          <SidebarMenuButton
+            className={cn(
+              navItemBaseClass,
+              navItemIdleClass,
+              dashboardNavDocumentsMoreButtonClass
+            )}
+          >
             <EllipsisIcon className={cn(dashboardNavDocumentsMoreIconClass)} />
-            <span>More</span>
+            <span className={cn(navItemLabelClass)}>More</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { blockRecipe } from "../../block-recipes";
 import { cn } from "../../../../lib/utils";
+import { sidebarLinkClass } from "./nav-main-recipes";
 
 export interface SidebarLinkRenderProps {
   readonly "aria-current"?: "page" | "step" | "location" | "date" | "time" | true | false;
@@ -20,7 +21,7 @@ export function defaultSidebarLink({
   return (
     <a
       aria-current={ariaCurrent}
-      className={cn(blockRecipe("blockShell"), className)}
+      className={cn(blockRecipe("blockShell"), sidebarLinkClass, className)}
       data-slot="sidebar-link"
       href={href}
     >

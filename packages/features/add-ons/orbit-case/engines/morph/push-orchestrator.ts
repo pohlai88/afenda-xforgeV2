@@ -2,8 +2,7 @@ import "server-only";
 
 import { createId } from "@paralleldrive/cuid2";
 import { log } from "@repo/observability/log";
-import { database } from "@repo/database";
-import { orbitPushEvent } from "@repo/database/schema";
+import { database, orbitPushEvent } from "@repo/database";
 import { eq } from "drizzle-orm";
 import type { ExecutePushInput, PushResultDto } from "../../contract/push.schema";
 import { parseStoredPushResult } from "../../contract/push.schema";

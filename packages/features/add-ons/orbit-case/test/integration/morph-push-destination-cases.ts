@@ -1,5 +1,5 @@
-import { database } from "@repo/database";
 import {
+  database,
   orbitCapaRequest,
   orbitComplaintRequest,
   orbitContractReviewRequest,
@@ -8,7 +8,7 @@ import {
   orbitProjectRequest,
   orbitPurchaseRequest,
   orbitRiskRequest,
-} from "@repo/database/schema";
+} from "@repo/database";
 import { eq } from "drizzle-orm";
 import { expect } from "vitest";
 import type { OrbitPushCapability } from "../../contract/push.schema";

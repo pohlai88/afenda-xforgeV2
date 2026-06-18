@@ -1,5 +1,4 @@
-import { database } from "@repo/database";
-import { orbitRiskRequest } from "@repo/database/schema";
+import { database, orbitRiskRequest } from "@repo/database";
 import { createTwoFieldMorphPushHandler } from "../create-two-field-morph-push-handler";
 
 export const executeRiskRequestPush = createTwoFieldMorphPushHandler({

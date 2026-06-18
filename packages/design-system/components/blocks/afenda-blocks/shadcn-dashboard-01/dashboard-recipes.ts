@@ -22,6 +22,18 @@ const dashboardAppSidebarBrandIconClass = "size-5!";
 
 const dashboardAppSidebarBrandLabelClass = "text-base font-semibold";
 
+const dashboardAppSidebarContentClass =
+  "flex min-h-0 flex-1 flex-col gap-2 overflow-x-hidden overflow-y-auto";
+
+const dashboardAppSidebarFooterClass =
+  "min-w-0 shrink-0 border-t border-border-subtle pb-[env(safe-area-inset-bottom,0px)]";
+
+const dashboardAppSidebarSecondaryNavClass = "mt-auto";
+
+const dashboardNavUserMenuClass = "min-w-0 w-full";
+
+const dashboardNavSecondaryContentClass = "min-w-0 p-0";
+
 const dashboardSectionCardsGridClass =
   "grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card";
 
@@ -221,6 +233,9 @@ export {
   dashboardAppSidebarBrandButtonClass,
   dashboardAppSidebarBrandIconClass,
   dashboardAppSidebarBrandLabelClass,
+  dashboardAppSidebarContentClass,
+  dashboardAppSidebarFooterClass,
+  dashboardAppSidebarSecondaryNavClass,
   dashboardChartCardClass,
   dashboardChartContainerClass,
   dashboardChartContentClass,
@@ -284,6 +299,7 @@ export {
   dashboardNavDocumentsMenuClass,
   dashboardNavDocumentsMoreButtonClass,
   dashboardNavDocumentsMoreIconClass,
+  dashboardNavSecondaryContentClass,
   dashboardNavTopbarActionsClass,
   dashboardNavTopbarGithubButtonClass,
   dashboardNavTopbarInnerClass,
@@ -296,6 +312,7 @@ export {
   dashboardNavUserEmailClass,
   dashboardNavUserIdentityClass,
   dashboardNavUserMenuContentClass,
+  dashboardNavUserMenuClass,
   dashboardNavUserMenuIconClass,
   dashboardNavUserMenuIdentityRowClass,
   dashboardNavUserMenuLabelClass,

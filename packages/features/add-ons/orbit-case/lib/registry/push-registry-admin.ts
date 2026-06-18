@@ -1,11 +1,11 @@
 import "server-only";
 
 import { createId } from "@paralleldrive/cuid2";
-import { database } from "@repo/database";
 import {
+  database,
   orbitPushDestination,
   orbitPushTemplate,
-} from "@repo/database/schema";
+} from "@repo/database";
 import { and, eq, isNotNull } from "drizzle-orm";
 import type { PushDestinationDefinition } from "../../contract/push.schema";
 import type { PushTemplateDefinition } from "../../contract/template.schema";

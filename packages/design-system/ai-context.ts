@@ -66,6 +66,8 @@ export const AFENDA_AI_CONTEXT = {
       "tooltip"
     ],
     "block": [
+      "AfendaAppShell",
+      "AfendaAppTopbar",
       "AppSidebar",
       "ChartAreaInteractive",
       "DashboardDataTable",
@@ -80,6 +82,8 @@ export const AFENDA_AI_CONTEXT = {
     ],
     "public": [
       "accordion",
+      "AfendaAppShell",
+      "AfendaAppTopbar",
       "alert",
       "alert-dialog",
       "AppSidebar",

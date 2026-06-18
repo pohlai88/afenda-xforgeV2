@@ -1,10 +1,10 @@
 import "server-only";
 
-import { database } from "@repo/database";
 import {
+  database,
   orbitPushDestination,
   orbitPushTemplate,
-} from "@repo/database/schema";
+} from "@repo/database";
 import { and, eq, isNull, or } from "drizzle-orm";
 import type {
   PushDestinationDefinition,

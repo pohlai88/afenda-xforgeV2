@@ -7,8 +7,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../../../afenda-ui/sidebar";
-import { blockRecipe } from "../../block-recipes";
 import { cn } from "../../../../lib/utils";
+import { blockRecipe } from "../../block-recipes";
+import {
+  navItemBaseClass,
+  navItemIconClass,
+  navItemIdleClass,
+  navItemLabelClass,
+} from "./nav-main-recipes";
+import { dashboardNavSecondaryContentClass } from "./dashboard-recipes";
 import { type ComponentPropsWithoutRef } from "react";
 import { type LucideIcon } from "lucide-react";
 
@@ -24,14 +31,19 @@ export function NavSecondary({
 } & ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
     <SidebarGroup data-slot="nav-secondary" {...props}>
-      <SidebarGroupContent className={cn(blockRecipe("blockSection"))}>
+      <SidebarGroupContent
+        className={cn(blockRecipe("blockStack"), dashboardNavSecondaryContentClass)}
+      >
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton
+                asChild
+                className={cn(navItemBaseClass, navItemIdleClass)}
+              >
                 <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
+                  <item.icon className={cn(navItemIconClass)} />
+                  <span className={cn(navItemLabelClass)}>{item.title}</span>
                 </a>
               </SidebarMenuButton>
             </SidebarMenuItem>

@@ -1,14 +1,45 @@
 export type {
+  AfendaAppContentHeaderProps,
+  AfendaAppContentLeftRailProps,
+  AfendaAppContentProps,
+  AfendaAppContentRightRailProps,
+  AfendaAppFooterProps,
+  AfendaAppShellProps,
+  AfendaAppSidebarProps,
+  AfendaAppTopbarProps,
+} from "./afenda-blocks/afenda-appshell";
+export type {
+  DashboardContentProps,
   DashboardDataTableProps,
   DashboardDataTableRow,
+  DashboardDemoPageProps,
   DashboardNavTopbarProps,
+  DashboardPageProps,
   NavMainItem,
   NavMainProps,
 } from "./afenda-blocks/shadcn-dashboard-01";
 export {
-  AppSidebar,
+  AfendaAppContent,
+  AfendaAppContentHeader,
+  AfendaAppContentLeftRail,
+  AfendaAppContentRightRail,
+  AfendaAppFooter,
+  AfendaAppShell,
+  AfendaAppSidebar,
+  AfendaAppTopbar,
+  AfendaAppSidebar as AppSidebar,
+  AfendaAppTopbar as AppTopbar,
+  APP_SHELL_FOOTER_HEIGHT as AFENDA_APP_SHELL_FOOTER_HEIGHT,
+  APP_SHELL_RAIL_WIDTH as AFENDA_APP_SHELL_RAIL_WIDTH,
+  APP_SHELL_SIDEBAR_WIDTH as AFENDA_APP_SHELL_SIDEBAR_WIDTH,
+  APP_SHELL_TOPBAR_HEIGHT as AFENDA_APP_SHELL_TOPBAR_HEIGHT,
+} from "./afenda-blocks/afenda-appshell";
+export {
+  AppSidebar as ShadcnDemoAppSidebar,
   ChartAreaInteractive,
+  DashboardContent,
   DashboardDataTable,
+  DashboardDemoPage,
   DashboardNavTopbar,
   DashboardPage,
   DEFAULT_DASHBOARD_NAV_TOPBAR_HEIGHT,
@@ -30,6 +61,7 @@ export type {
 export {
   defaultSidebarLink,
   resolveSidebarLinkRenderer,
+  sidebarLinkClass,
 } from "./afenda-blocks/shadcn-dashboard-01";
 export type {
   AfendaBlockRecipeContract,

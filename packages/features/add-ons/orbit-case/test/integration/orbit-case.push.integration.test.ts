@@ -1,6 +1,6 @@
 import { createId } from "@paralleldrive/cuid2";
-import { database } from "@repo/database";
 import {
+  database,
   orbitBudgetRequest,
   orbitCase,
   orbitCaseActivity,
@@ -9,7 +9,7 @@ import {
   orbitObjectLink,
   orbitPushEvent,
   organization,
-} from "@repo/database/schema";
+} from "@repo/database";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
 import { getApprovalRequestById } from "../../engines/approval/approval-requests";

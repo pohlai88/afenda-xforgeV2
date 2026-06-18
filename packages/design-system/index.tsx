@@ -356,6 +356,8 @@ export type { SidebarMenuTooltipProps } from "./components/afenda-ui/sidebar";
 export type { SidebarBehaviorMode } from "./components/afenda-ui/sidebar-behavior";
 export { SIDEBAR_BEHAVIOR_OPTIONS } from "./components/afenda-ui/sidebar-behavior";
 export type {
+  AfendaAppContentBottomDrawerProps,
+  AfendaAppContentBreadcrumbItem,
   AfendaAppContentHeaderProps,
   AfendaAppContentLeftRailProps,
   AfendaAppContentProps,
@@ -424,9 +426,12 @@ export type {
 export {
   afendaBlockLayoutContracts,
   AfendaAppContent,
+  AfendaAppContentBottomDrawer,
   AfendaAppContentHeader,
+  AfendaAppContentLayoutProvider,
   AfendaAppContentLeftRail,
   AfendaAppContentRightRail,
+  useAfendaAppContentLayout,
   AfendaAppFooter,
   AfendaAppShell,
   AfendaAppSidebar,

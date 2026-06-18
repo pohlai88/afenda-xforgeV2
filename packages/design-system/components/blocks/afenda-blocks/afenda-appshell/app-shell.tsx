@@ -23,9 +23,13 @@ import { AfendaAppTopbar } from "./topbar/app-topbar";
 function AfendaAppShellInner({
   children,
   className,
+  contentBottomDrawer,
   contentHeader,
   contentLeftRail,
   contentRightRail,
+  defaultContentBottomDrawerOpen,
+  defaultContentLeftRailOpen,
+  defaultContentRightRailOpen,
   footer,
   sidebar,
   topbar,
@@ -56,6 +60,10 @@ function AfendaAppShellInner({
       <div className={cn(appShellContentInsetClass)}>
         <div className={cn(appShellContentBodyClass)} data-slot="app-content-body">
           <AfendaAppContent
+            bottomDrawer={contentBottomDrawer}
+            defaultBottomDrawerOpen={defaultContentBottomDrawerOpen}
+            defaultLeftRailOpen={defaultContentLeftRailOpen}
+            defaultRightRailOpen={defaultContentRightRailOpen}
             header={contentHeader}
             leftRail={contentLeftRail}
             rightRail={contentRightRail}

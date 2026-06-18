@@ -13,6 +13,8 @@ export {
 } from "./app-shell-recipes";
 export type { SidebarBehaviorMode } from "../../../afenda-ui/sidebar-behavior";
 export type {
+  AfendaAppContentBottomDrawerProps,
+  AfendaAppContentBreadcrumbItem,
   AfendaAppContentHeaderProps,
   AfendaAppContentLeftRailProps,
   AfendaAppContentProps,
@@ -35,9 +37,12 @@ export type {
 } from "./app-shell-types";
 export {
   AfendaAppContent,
+  AfendaAppContentBottomDrawer,
   AfendaAppContentHeader,
+  AfendaAppContentLayoutProvider,
   AfendaAppContentLeftRail,
   AfendaAppContentRightRail,
+  useAfendaAppContentLayout,
 } from "./content";
 export { AfendaAppFooter } from "./footer";
 export {

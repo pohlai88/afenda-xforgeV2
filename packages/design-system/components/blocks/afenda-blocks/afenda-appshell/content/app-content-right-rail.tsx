@@ -15,6 +15,7 @@ export function AfendaAppContentRightRail({
     <aside
       className={cn(blockRecipe("blockToolbar"), appContentRightRailShellClass, className)}
       data-slot="app-content-right-rail"
+      id="app-content-right-rail"
       {...properties}
     >
       {children ?? (

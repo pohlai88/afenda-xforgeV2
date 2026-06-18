@@ -21,9 +21,13 @@ export type {
 export interface AfendaAppShellProps
   extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
   readonly children?: ReactNode;
+  readonly contentBottomDrawer?: ReactNode;
   readonly contentHeader?: ReactNode;
   readonly contentLeftRail?: ReactNode;
   readonly contentRightRail?: ReactNode;
+  readonly defaultContentBottomDrawerOpen?: boolean;
+  readonly defaultContentLeftRailOpen?: boolean;
+  readonly defaultContentRightRailOpen?: boolean;
   readonly footer?: ReactNode;
   readonly sidebar?: ReactNode;
   readonly topbar?: ReactNode;
@@ -53,15 +57,31 @@ export interface AfendaAppFooterProps
   }[];
 }
 
+export interface AfendaAppContentBreadcrumbItem {
+  readonly href?: string;
+  readonly label: string;
+}
+
 export interface AfendaAppContentProps
   extends Omit<ComponentPropsWithoutRef<"section">, "children"> {
+  readonly bottomDrawer?: ReactNode;
+  readonly breadcrumbs?: readonly AfendaAppContentBreadcrumbItem[];
   readonly children?: ReactNode;
+  readonly defaultBottomDrawerOpen?: boolean;
+  readonly defaultLeftRailOpen?: boolean;
+  readonly defaultRightRailOpen?: boolean;
   readonly header?: ReactNode;
   readonly leftRail?: ReactNode;
   readonly rightRail?: ReactNode;
 }
 
 export interface AfendaAppContentHeaderProps
+  extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
+  readonly breadcrumbs?: readonly AfendaAppContentBreadcrumbItem[];
+  readonly children?: ReactNode;
+}
+
+export interface AfendaAppContentBottomDrawerProps
   extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
   readonly children?: ReactNode;
 }

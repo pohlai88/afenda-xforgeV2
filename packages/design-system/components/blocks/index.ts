@@ -1,4 +1,6 @@
 export type {
+  AfendaAppContentBottomDrawerProps,
+  AfendaAppContentBreadcrumbItem,
   AfendaAppContentHeaderProps,
   AfendaAppContentLeftRailProps,
   AfendaAppContentProps,
@@ -26,9 +28,12 @@ export type {
 } from "./afenda-blocks/shadcn-dashboard-01";
 export {
   AfendaAppContent,
+  AfendaAppContentBottomDrawer,
   AfendaAppContentHeader,
+  AfendaAppContentLayoutProvider,
   AfendaAppContentLeftRail,
   AfendaAppContentRightRail,
+  useAfendaAppContentLayout,
   AfendaAppFooter,
   AfendaAppShell,
   AfendaAppSidebar,

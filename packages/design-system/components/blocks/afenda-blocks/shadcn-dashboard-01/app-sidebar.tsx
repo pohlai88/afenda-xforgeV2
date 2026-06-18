@@ -1,14 +1,12 @@
 "use client";
 
 import {
-  CameraIcon,
   DatabaseIcon,
   FileTextIcon,
   GalleryVerticalEndIcon,
   HelpCircleIcon,
   SearchIcon,
   SettingsIcon,
-  SparklesIcon,
 } from "lucide-react";
 import { type ComponentPropsWithoutRef } from "react";
 import { NavDocuments } from "./nav-documents";
@@ -31,54 +29,6 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navClouds: [
-    {
-      title: "Capture",
-      icon: CameraIcon,
-      isActive: true,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Proposal",
-      icon: FileTextIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Prompts",
-      icon: SparklesIcon,
-      url: "#",
-      items: [
-        {
-          title: "Active Proposals",
-          url: "#",
-        },
-        {
-          title: "Archived",
-          url: "#",
-        },
-      ],
-    },
-  ],
   navSecondary: [
     {
       title: "Settings",

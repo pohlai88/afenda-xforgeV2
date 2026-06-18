@@ -1,4 +1,4 @@
-import { AuthFormFallback } from "./components/auth-form-fallback";
+import { AuthFormFallback } from "./_components/auth-form-fallback";
 
 const AuthLoading = () => <AuthFormFallback />;
 

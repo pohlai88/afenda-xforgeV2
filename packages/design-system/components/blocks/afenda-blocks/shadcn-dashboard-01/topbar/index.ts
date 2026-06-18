@@ -3,16 +3,13 @@ export {
   TOPBAR_DEFAULT_BRAND_ARIA_LABEL,
   TOPBAR_DEFAULT_BRAND_DESCRIPTION,
   TOPBAR_DEFAULT_BRAND_TOOLTIP,
-  TOPBAR_DEFAULT_COMMAND_DESCRIPTION,
-  TOPBAR_DEFAULT_COMMAND_LABEL,
-  TOPBAR_DEFAULT_COMMAND_PLACEHOLDER,
-  TOPBAR_DEFAULT_COMMAND_SHORTCUT,
   TOPBAR_FIXED_UTILITY_SLOTS,
   TOPBAR_MAX_PINNED_UTILITY_SLOTS,
   TOPBAR_MAX_TOTAL_UTILITY_SLOTS,
 } from "./topbar-constants";
 export { resolveTopbarSidebarControl } from "./topbar-helpers";
 export { TopbarNotifications } from "./topbar-notifications";
+export { TopbarShortcuts } from "./topbar-shortcuts";
 export { TopbarShortcutsDialog } from "./topbar-shortcuts-dialog";
 export type {
   TopbarActionMenuItem,
@@ -27,6 +24,7 @@ export type {
   TopbarShortcutKeys,
   TopbarShortcutScope,
   TopbarShortcutsDialogProps,
+  TopbarShortcutsProps,
   TopbarSidebarControlProps,
   TopbarUtilitiesMarketItem,
   TopbarUtilitiesRailProps,

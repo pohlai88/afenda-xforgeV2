@@ -8,8 +8,8 @@ import {
   toOrbitCaseTimelineDto,
 } from "@repo/orbit-case";
 import type { Metadata } from "next";
-import { Header } from "../components/header";
-import { OrbitCaseWorkspace } from "./components/orbit-case-workspace";
+import { Header } from "../_components/header";
+import { OrbitCaseWorkspace } from "./_components/orbit-case-workspace";
 import { getCachedOrbitCaseWorkspace } from "@/lib/orbit-case-cached-reads";
 
 const title = "Orbit Case";

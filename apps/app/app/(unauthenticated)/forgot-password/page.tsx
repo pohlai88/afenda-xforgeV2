@@ -1,7 +1,7 @@
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
-import { ForgotPasswordForm } from "../components/auth-forms";
-import { AuthPageHeader } from "../components/auth-page-header";
+import { ForgotPasswordForm } from "../_components/auth-forms";
+import { AuthPageHeader } from "../_components/auth-page-header";
 
 const title = "Forgot password";
 const description = "Reset your password via email.";

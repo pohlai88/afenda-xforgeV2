@@ -4,9 +4,9 @@ import { isCmsCollection } from "@repo/cms/writer";
 import { Button } from "@repo/design-system";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { DocumentList } from "../../components/document-list";
-import { DocumentSearch } from "../../components/document-search";
-import { LocaleNav } from "../../components/locale-nav";
+import { DocumentList } from "../../_components/document-list";
+import { DocumentSearch } from "../../_components/document-search";
+import { LocaleNav } from "../../_components/locale-nav";
 
 interface CollectionLocalePageProperties {
   readonly params: Promise<{ collection: string; locale: string }>;

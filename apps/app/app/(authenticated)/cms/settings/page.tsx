@@ -1,5 +1,5 @@
 import { getSettings } from "@/app/actions/cms/settings";
-import { SettingsEditor } from "../components/settings-editor";
+import { SettingsEditor } from "../_components/settings-editor";
 
 const CmsSettingsPage = async () => {
   const result = await getSettings();

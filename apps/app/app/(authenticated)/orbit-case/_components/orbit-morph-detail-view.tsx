@@ -10,7 +10,7 @@ import { cn } from "@repo/design-system/lib/utils";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCachedOrbitCaseTitle } from "@/lib/orbit-case-cached-reads";
-import { Header } from "../../components/header";
+import { Header } from "../../_components/header";
 import {
   OrbitMorphDetailLayout,
   OrbitMorphOriginAside,

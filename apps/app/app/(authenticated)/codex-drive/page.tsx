@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { RouteSections } from "../components/route-sections";
+import { RouteSections } from "../_components/route-sections";
 
 const title = "Codex Drive";
 const description =

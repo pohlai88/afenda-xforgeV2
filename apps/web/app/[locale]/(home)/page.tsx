@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { env } from "@/env";
 import type { PublicHomeContent } from "@/lib/public-home-content";
-import { PublicHomeShell } from "./components/public-home-shell";
+import { PublicHomeShell } from "./_components/public-home-shell";
 
 interface HomeProps {
   params: Promise<{

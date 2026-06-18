@@ -154,9 +154,6 @@ export type AfendaBlockComponentId =
   (typeof AFENDA_BLOCK_COMPONENT_IDS)[number];
 
 export const AFENDA_INTERNAL_COMPONENT_IDS = [
-  "SidebarCardSectionPanel",
-  "SidebarLabelGroupPanel",
-  "SidebarNavGroupPanel",
   "TopbarUtilitiesBar",
 ] as const;
 

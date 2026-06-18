@@ -1,8 +1,8 @@
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { blog } from "@repo/cms";
-import { Body } from "@repo/cms/components/body";
-import { Image } from "@repo/cms/components/image";
-import { TableOfContents } from "@repo/cms/components/toc";
+import { Body } from "@repo/cms/_components/body";
+import { Image } from "@repo/cms/_components/image";
+import { TableOfContents } from "@repo/cms/_components/toc";
 import { getPreviewReaderOptions } from "@repo/cms/reader-options";
 import { buildLocaleSlugParams } from "@repo/cms/static-params";
 import { JsonLd } from "@repo/seo/json-ld";
@@ -10,7 +10,7 @@ import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Sidebar } from "@/components/sidebar";
+import { Sidebar } from "@/_components/sidebar";
 import { env } from "@/env";
 
 const protocol = env.VERCEL_PROJECT_PRODUCTION_URL?.startsWith("https")

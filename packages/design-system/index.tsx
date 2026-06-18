@@ -484,6 +484,7 @@ export type {
   TopbarShortcutKeys,
   TopbarShortcutScope,
   TopbarShortcutsDialogProps,
+  TopbarShortcutsProps,
   TopbarSidebarControlProps,
   TopbarUtilitiesMarketItem,
   TopbarUtilitiesRailProps,

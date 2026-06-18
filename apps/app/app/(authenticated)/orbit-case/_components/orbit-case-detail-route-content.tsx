@@ -19,7 +19,7 @@ import {
 import { notFound } from "next/navigation";
 import { getCachedOrbitCaseDetailBundle } from "@/lib/orbit-case-cached-reads";
 import { getOrbitPushCapabilitiesForSession } from "@/lib/orbit-case-session";
-import { Header } from "../../components/header";
+import { Header } from "../../_components/header";
 import { OrbitCaseDetailView } from "./orbit-case-detail-view";
 
 interface OrbitCaseDetailRouteContentProps {

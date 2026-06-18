@@ -1,7 +1,7 @@
 import { getDictionary } from "@repo/internationalization";
 import type { ReactNode } from "react";
-import { Footer } from "../components/footer";
-import { Header } from "../components/header";
+import { Footer } from "../_components/footer";
+import { Header } from "../_components/header";
 
 interface SiteLayoutProperties {
   readonly children: ReactNode;

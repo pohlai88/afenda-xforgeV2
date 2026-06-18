@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DashboardDemoView } from "./components/dashboard-demo-view";
+import { DashboardDemoView } from "./_components/dashboard-demo-view";
 
 const title = "Dashboard";
 const description =

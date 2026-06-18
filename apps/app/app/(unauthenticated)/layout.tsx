@@ -2,7 +2,7 @@
 import { ModeToggle } from "@repo/design-system";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { AuthShell } from "./components/auth-shell";
+import { AuthShell } from "./_components/auth-shell";
 
 export const metadata: Metadata = {
   robots: {

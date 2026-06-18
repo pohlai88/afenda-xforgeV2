@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { RouteSections } from "../../components/route-sections";
+import { RouteSections } from "../../_components/route-sections";
 
 const systemAreas = {
   notifications: {

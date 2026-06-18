@@ -1,4 +1,4 @@
-import { MfaLoginChallenge } from "@repo/auth/components/mfa-login-challenge";
+import { MfaLoginChallenge } from "@repo/auth/_components/mfa-login-challenge";
 import { resolveSafeRedirect } from "@repo/auth/confirm-link";
 import { resolveServerMfaRedirect } from "@repo/auth/mfa-login.server";
 import { createMetadata } from "@repo/seo/metadata";

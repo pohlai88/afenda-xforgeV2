@@ -13,6 +13,7 @@ import {
   useState,
 } from "react";
 import { TopbarNotifications } from "./topbar-notifications";
+import { TopbarShortcuts } from "./topbar-shortcuts";
 import { TopbarTooltip } from "./topbar-tooltip";
 import type {
   TopbarUtilitiesBarProps,
@@ -133,6 +134,7 @@ export function TopbarUtilitiesBar({
   notifications,
   onOrderChange,
   order,
+  shortcuts,
 }: TopbarUtilitiesBarProps) {
   const actionById = useMemo(
     () => new Map(actions.map((action) => [action.id, action])),
@@ -273,6 +275,8 @@ export function TopbarUtilitiesBar({
                 action={action}
                 notifications={notifications}
               />
+            ) : action.id === "shortcuts" && shortcuts ? (
+              <TopbarShortcuts action={action} shortcuts={shortcuts} />
             ) : undefined}
           </TopbarUtilityPin>
         );

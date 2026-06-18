@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 export interface TopbarScopeOption {
   readonly id: string;
@@ -47,6 +47,15 @@ export interface TopbarShortcutDefinition {
 export interface TopbarShortcutEmptyState {
   readonly description?: string;
   readonly title?: string;
+}
+
+export interface TopbarShortcutsProps {
+  readonly contextLabel?: string;
+  readonly description?: string;
+  readonly emptyState?: TopbarShortcutEmptyState;
+  readonly items: readonly TopbarShortcutDefinition[];
+  readonly label?: string;
+  readonly menuLabel?: string;
 }
 
 export interface TopbarShortcutsDialogProps {
@@ -112,6 +121,7 @@ export interface TopbarUtilitiesBarProps {
   readonly notifications?: TopbarNotificationsProps;
   readonly onOrderChange?: (order: readonly string[]) => void;
   readonly order?: readonly string[];
+  readonly shortcuts?: TopbarShortcutsProps;
 }
 
 export type TopbarUtilitiesMarketItem = TopbarUtilityAction;
@@ -181,6 +191,7 @@ export interface TopbarUtilitiesRailProps {
   readonly requestUtilityNote?: string;
   readonly requestUtilitySendLabel?: string;
   readonly requestUtilityTitle?: string;
+  readonly shortcuts?: TopbarShortcutsProps;
   readonly themeToggle?: ReactNode;
 }
 
@@ -190,13 +201,4 @@ export interface TopbarSidebarControlProps {
   readonly menuLabel?: string;
   readonly side?: "bottom" | "left" | "right" | "top";
   readonly triggerLabel?: string;
-}
-
-export interface OperatorAppTopbarProps
-  extends Omit<ComponentPropsWithoutRef<"header">, "children"> {
-  readonly brand?: TopbarBrandDiskProps;
-  readonly scopeSwitchers?: readonly TopbarScopeSwitcherConfig[];
-  readonly sidebarControl?: boolean | TopbarSidebarControlProps;
-  readonly trailing?: ReactNode;
-  readonly utilitiesRail: TopbarUtilitiesRailProps;
 }

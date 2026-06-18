@@ -1,7 +1,7 @@
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
-import { ResendConfirmationForm } from "../components/auth-forms";
-import { AuthPageHeader } from "../components/auth-page-header";
+import { ResendConfirmationForm } from "../_components/auth-forms";
+import { AuthPageHeader } from "../_components/auth-page-header";
 
 const title = "Check your email";
 const description = "We sent you a confirmation link to finish signing up.";

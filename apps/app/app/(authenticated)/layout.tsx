@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Suspense } from "react";
-import { AuthenticatedLayoutContent } from "./components/authenticated-layout-content";
-import { AuthenticatedLayoutFallback } from "./components/authenticated-layout-fallback";
+import { AuthenticatedLayoutContent } from "./_components/authenticated-layout-content";
+import { AuthenticatedLayoutFallback } from "./_components/authenticated-layout-fallback";
 
 interface AppLayoutProperties {
   readonly children: ReactNode;

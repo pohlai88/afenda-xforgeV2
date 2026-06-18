@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import type { AuthUiSettings } from "./auth-ui-settings";
-import { SupabaseAuthListener } from "./components/supabase-auth-listener";
+import { SupabaseAuthListener } from "./_components/supabase-auth-listener";
 import { AuthUiConfigProvider } from "./context/auth-ui-config";
 
 interface AuthProviderProperties {

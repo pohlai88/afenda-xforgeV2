@@ -7,12 +7,6 @@ export const TOPBAR_DEFAULT_BRAND_ARIA_LABEL = "Afenda workspace";
 export const TOPBAR_DEFAULT_BRAND_DESCRIPTION = "Signed-in operator workspace.";
 export const TOPBAR_DEFAULT_BRAND_TOOLTIP = "Afenda workspace";
 
-export const TOPBAR_DEFAULT_COMMAND_DESCRIPTION =
-  "Search records inline or open the command palette.";
-export const TOPBAR_DEFAULT_COMMAND_LABEL = "Search workspace";
-export const TOPBAR_DEFAULT_COMMAND_PLACEHOLDER = "Search…";
-export const TOPBAR_DEFAULT_COMMAND_SHORTCUT = "⌘K";
-
 export const TOPBAR_DEFAULT_ACTIONS_MENU_DESCRIPTION =
   "Workspace overflow actions and operator tools.";
 export const TOPBAR_DEFAULT_ACTIONS_MENU_LABEL = "More actions";

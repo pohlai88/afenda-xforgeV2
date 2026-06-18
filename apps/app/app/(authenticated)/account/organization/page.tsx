@@ -1,5 +1,5 @@
 import { canOwnOrg, getOrganizationRole } from "@repo/auth/cms";
-import { OrganizationManager } from "@repo/auth/components/organization-manager";
+import { OrganizationManager } from "@repo/auth/_components/organization-manager";
 import { getOrganizations } from "@repo/auth/organizations";
 import { auth, currentUser } from "@repo/auth/server";
 import { cn, recipe } from "@repo/design-system";

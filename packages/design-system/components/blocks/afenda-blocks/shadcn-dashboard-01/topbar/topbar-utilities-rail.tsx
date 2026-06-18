@@ -35,6 +35,7 @@ export function TopbarUtilitiesRail({
   requestUtilityNote,
   requestUtilitySendLabel,
   requestUtilityTitle,
+  shortcuts,
   themeToggle,
 }: TopbarUtilitiesRailProps) {
   const {
@@ -86,6 +87,7 @@ export function TopbarUtilitiesRail({
           notifications={notifications}
           onOrderChange={commitOrder}
           order={pinnedOrder}
+          shortcuts={shortcuts}
         />
       ) : null}
       <div

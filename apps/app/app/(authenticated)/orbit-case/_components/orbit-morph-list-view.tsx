@@ -11,7 +11,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCachedMorphRequestsForOrg } from "@/lib/orbit-case-cached-reads";
-import { Header } from "../../components/header";
+import { Header } from "../../_components/header";
 
 interface OrbitMorphListViewProps {
   caseId?: string;

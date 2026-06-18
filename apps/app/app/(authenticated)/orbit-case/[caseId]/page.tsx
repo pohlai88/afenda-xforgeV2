@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { OrbitCaseDetailRoutePage } from "../components/orbit-case-detail-route-page";
+import { OrbitCaseDetailRoutePage } from "../_components/orbit-case-detail-route-page";
 
 interface OrbitCaseDetailPageProps {
   params: Promise<{ caseId: string }>;

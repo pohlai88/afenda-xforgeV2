@@ -4,10 +4,10 @@ import {
   getWebhookDeliveries,
   getWebhookEndpoints,
 } from "@/app/actions/webhooks/endpoints";
-import { CreateEndpointForm } from "./components/create-endpoint-form";
-import { DeliveriesPanel } from "./components/deliveries-panel";
-import { EndpointsTable } from "./components/endpoints-table";
-import { SubscriberDocsPanel } from "./components/subscriber-docs-panel";
+import { CreateEndpointForm } from "./_components/create-endpoint-form";
+import { DeliveriesPanel } from "./_components/deliveries-panel";
+import { EndpointsTable } from "./_components/endpoints-table";
+import { SubscriberDocsPanel } from "./_components/subscriber-docs-panel";
 import { parseWebhooksSearchParams } from "./search-params";
 
 export const metadata = {

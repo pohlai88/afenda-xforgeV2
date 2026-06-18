@@ -1,9 +1,9 @@
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { AuthFormFallback } from "../../components/auth-form-fallback";
-import { SignInForm } from "../../components/auth-forms";
-import { AuthPageHeader } from "../../components/auth-page-header";
+import { AuthFormFallback } from "../../_components/auth-form-fallback";
+import { SignInForm } from "../../_components/auth-forms";
+import { AuthPageHeader } from "../../_components/auth-page-header";
 import { readAuthQueryError } from "../../lib/read-auth-query-error";
 
 const title = "Welcome back";

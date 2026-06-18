@@ -4,7 +4,7 @@ import { getAuthUiSettings } from "@repo/auth/auth-ui-settings.server";
 import { AuthProvider } from "@repo/auth/provider";
 import { DesignSystemProvider } from "@repo/design-system";
 import { fonts } from "@repo/design-system/lib/fonts";
-import { Toolbar } from "@repo/feature-flags/components/toolbar";
+import { Toolbar } from "@repo/feature-flags/_components/toolbar";
 import { keys as nextConfigKeys } from "@repo/next-config/keys";
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";

@@ -495,7 +495,6 @@ export const AFENDA_AI_CONTEXT = {
       "navigation-menu-trigger",
       "navigation-menu-viewport",
       "operational-dashboard-shell-block",
-      "operator-app-sidebar",
       "page-header-block",
       "pagination",
       "pagination-content",

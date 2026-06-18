@@ -1,7 +1,7 @@
 import { requireEditor } from "@repo/auth/cms";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
-import { CollectionNav } from "./components/collection-nav";
+import { CollectionNav } from "./_components/collection-nav";
 
 interface CmsLayoutProperties {
   readonly children: ReactNode;

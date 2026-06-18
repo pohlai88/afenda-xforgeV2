@@ -3,8 +3,8 @@ import { requireOrg } from "@repo/auth/server";
 import { ensureSystemPushDefaults, listAdminPushRegistry } from "@repo/orbit-case/server";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { Header } from "../../components/header";
-import { OrbitPushRegistryAdmin } from "./components/orbit-push-registry-admin";
+import { Header } from "../../_components/header";
+import { OrbitPushRegistryAdmin } from "./_components/orbit-push-registry-admin";
 
 export const metadata: Metadata = {
   title: "Orbit Case push registry",

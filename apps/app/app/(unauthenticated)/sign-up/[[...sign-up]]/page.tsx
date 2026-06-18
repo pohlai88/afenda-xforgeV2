@@ -1,7 +1,7 @@
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
-import { SignUpForm } from "../../components/auth-forms";
-import { AuthPageHeader } from "../../components/auth-page-header";
+import { SignUpForm } from "../../_components/auth-forms";
+import { AuthPageHeader } from "../../_components/auth-page-header";
 
 const title = "Create an account";
 const description = "Create a workspace account with email verification.";

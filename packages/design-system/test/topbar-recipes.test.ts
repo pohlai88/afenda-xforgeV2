@@ -2,8 +2,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { operatorAppTopbarShellClass } from "../components/blocks/afenda-blocks/shadcn-dashboard-01/topbar/topbar-recipes";
-import { blockRecipe } from "../components/blocks/block-recipes";
+import { topbarBrandDiskClass } from "../components/blocks/afenda-blocks/shadcn-dashboard-01/topbar/topbar-recipes";
 
 const topbarsRoot = join(
   fileURLToPath(new URL(".", import.meta.url)),
@@ -18,8 +17,8 @@ const topbarsRoot = join(
 const forbiddenSelfPackageImports = [/from\s+["']@repo\/design-system(?:\/[^"']*)?["']/];
 
 describe("topbar block recipes", () => {
-  it("composes operator shell from blockShell", () => {
-    expect(operatorAppTopbarShellClass).toContain(blockRecipe("blockShell"));
+  it("exposes brand disk styling", () => {
+    expect(topbarBrandDiskClass).toContain("rounded-full");
   });
 
   it("does not self-import the public package from topbar components", () => {

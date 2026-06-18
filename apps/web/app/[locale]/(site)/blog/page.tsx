@@ -1,5 +1,5 @@
 import { blog } from "@repo/cms";
-import { Image } from "@repo/cms/components/image";
+import { Image } from "@repo/cms/_components/image";
 import { cn } from "@repo/design-system/lib/utils";
 import { getDictionary } from "@repo/internationalization";
 import type { Blog, WithContext } from "@repo/seo/json-ld";

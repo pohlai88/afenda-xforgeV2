@@ -4,7 +4,7 @@ import { page } from "@repo/database/schema";
 import { Badge } from "@repo/design-system";
 import { ilike } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
-import { Header } from "../components/header";
+import { Header } from "../_components/header";
 
 interface SearchPageProperties {
   searchParams: Promise<{

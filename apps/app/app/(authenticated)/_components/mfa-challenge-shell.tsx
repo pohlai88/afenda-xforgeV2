@@ -1,6 +1,6 @@
 import { ModeToggle } from "@repo/design-system";
 import type { ReactNode } from "react";
-import { AuthShell } from "../../(unauthenticated)/components/auth-shell";
+import { AuthShell } from "../../(unauthenticated)/_components/auth-shell";
 
 interface MfaChallengeShellProperties {
   readonly children: ReactNode;

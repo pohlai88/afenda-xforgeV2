@@ -18,18 +18,18 @@ interface ResendConfirmationFormProperties {
 }
 
 export const SignInForm: ComponentType<SignInFormProperties> = dynamic(
-  () => import("@repo/auth/components/sign-in").then((mod) => mod.SignIn),
+  () => import("@repo/auth/_components/sign-in").then((mod) => mod.SignIn),
   { loading: () => <AuthFormFallback label="Loading sign-in form" /> }
 );
 
 export const SignUpForm = dynamic(
-  () => import("@repo/auth/components/sign-up").then((mod) => mod.SignUp),
+  () => import("@repo/auth/_components/sign-up").then((mod) => mod.SignUp),
   { loading: () => <AuthFormFallback label="Loading sign-up form" /> }
 );
 
 export const ForgotPasswordForm = dynamic(
   () =>
-    import("@repo/auth/components/forgot-password-form").then(
+    import("@repo/auth/_components/forgot-password-form").then(
       (mod) => mod.ForgotPasswordForm
     ),
   { loading: () => <AuthFormFallback label="Loading password reset form" /> }
@@ -38,7 +38,7 @@ export const ForgotPasswordForm = dynamic(
 export const UpdatePasswordForm: ComponentType<UpdatePasswordFormProperties> =
   dynamic(
     () =>
-      import("@repo/auth/components/update-password-form").then(
+      import("@repo/auth/_components/update-password-form").then(
         (mod) => mod.UpdatePasswordForm
       ),
     { loading: () => <AuthFormFallback label="Loading password update form" /> }
@@ -47,7 +47,7 @@ export const UpdatePasswordForm: ComponentType<UpdatePasswordFormProperties> =
 export const ResendConfirmationForm: ComponentType<ResendConfirmationFormProperties> =
   dynamic(
     () =>
-      import("@repo/auth/components/resend-confirmation-form").then(
+      import("@repo/auth/_components/resend-confirmation-form").then(
         (mod) => mod.ResendConfirmationForm
       ),
     { loading: () => <AuthFormFallback label="Loading confirmation options" /> }

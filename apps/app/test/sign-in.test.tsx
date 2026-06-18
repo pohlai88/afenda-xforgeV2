@@ -5,7 +5,7 @@ import Page from "../app/(unauthenticated)/sign-in/[[...sign-in]]/page";
 const forbiddenReactWarnings = ["async Client Component", "act scope"] as const;
 const consoleErrors: string[] = [];
 
-vi.mock("../app/(unauthenticated)/components/auth-forms", () => ({
+vi.mock("../app/(unauthenticated)/_components/auth-forms", () => ({
   SignInForm: ({ initialError }: { readonly initialError?: string | null }) => (
     <form aria-label="Sign in form">
       {initialError ? <p role="alert">{initialError}</p> : null}

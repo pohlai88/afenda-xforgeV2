@@ -2,7 +2,7 @@ import { getDefaultFrontmatter } from "@repo/cms/collections";
 import { parseCmsRouteLocale } from "@repo/cms/locale";
 import { isCmsCollection } from "@repo/cms/writer";
 import { notFound } from "next/navigation";
-import { DocumentEditor } from "../../../components/document-editor";
+import { DocumentEditor } from "../../../_components/document-editor";
 
 interface NewDocumentPageProperties {
   readonly params: Promise<{ collection: string; locale: string }>;

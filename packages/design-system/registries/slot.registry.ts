@@ -264,7 +264,6 @@ export const AFENDA_SLOT_EXACT_IDENTITY_REGISTRY = [
   "navigation-menu-trigger",
   "navigation-menu-viewport",
   "operational-dashboard-shell-block",
-  "operator-app-sidebar",
   "page-header-block",
   "pagination",
   "pagination-content",

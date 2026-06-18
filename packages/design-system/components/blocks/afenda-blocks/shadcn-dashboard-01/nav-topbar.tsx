@@ -14,6 +14,7 @@ import { TopbarSidebarControl } from "./topbar/topbar-sidebar-control";
 import type {
   TopbarBrandDiskProps,
   TopbarScopeSwitcherConfig,
+  TopbarShortcutDefinition,
   TopbarSidebarControlProps,
   TopbarUtilitiesRailProps,
 } from "./topbar/topbar-types";
@@ -118,6 +119,61 @@ const DEFAULT_NAV_TOPBAR_NOTIFICATIONS = [
   },
 ];
 
+const DEFAULT_NAV_TOPBAR_SHORTCUTS: readonly TopbarShortcutDefinition[] = [
+  {
+    id: "shortcut-command-palette",
+    label: "Open command palette",
+    description: "Search records, routes, and operator actions.",
+    category: "global",
+    scope: "global",
+    keys: [["⌘", "K"], ["Ctrl", "K"]],
+    aliases: ["search", "command", "palette"],
+  },
+  {
+    id: "shortcut-shortcuts",
+    label: "Open keyboard shortcuts",
+    description: "Show the shortcut reference for this workspace.",
+    category: "utilities",
+    scope: "global",
+    keys: [["?"]],
+    aliases: ["help", "hotkeys"],
+  },
+  {
+    id: "shortcut-sidebar",
+    label: "Toggle sidebar",
+    description: "Collapse or expand the primary navigation rail.",
+    category: "navigation",
+    scope: "global",
+    keys: [["⌘", "B"]],
+  },
+  {
+    id: "shortcut-table-select-all",
+    label: "Select all rows",
+    description: "Select every visible row in the active table.",
+    category: "selection",
+    scope: "selection",
+    keys: [["⌘", "A"]],
+    when: "When a data table has focus",
+  },
+  {
+    id: "shortcut-table-focus",
+    label: "Focus data table",
+    description: "Move keyboard focus to the primary grid on this screen.",
+    category: "current-screen",
+    scope: "context",
+    keys: [["G"], ["T"]],
+    when: "Dashboard overview",
+  },
+  {
+    id: "shortcut-scope-switcher",
+    label: "Cycle scope switcher",
+    description: "Move focus across organization, department, team, and project scopes.",
+    category: "navigation",
+    scope: "context",
+    keys: [["⌘", "Shift", "S"]],
+  },
+];
+
 const DEFAULT_NAV_TOPBAR_BRAND: TopbarBrandDiskProps = {
   ariaLabel: "Afenda",
   description: "Afenda workspace identity.",
@@ -141,6 +197,10 @@ const DEFAULT_NAV_TOPBAR_UTILITIES_RAIL: TopbarUtilitiesRailProps = {
   enabledIds: [...DEFAULT_NAV_TOPBAR_ENABLED_UTILITY_IDS],
   notifications: {
     items: DEFAULT_NAV_TOPBAR_NOTIFICATIONS,
+  },
+  shortcuts: {
+    contextLabel: "Afenda workspace · Dashboard overview",
+    items: DEFAULT_NAV_TOPBAR_SHORTCUTS,
   },
   order: [...DEFAULT_NAV_TOPBAR_ENABLED_UTILITY_IDS],
   requestUtilityTitle: "Request utility shortcut",

@@ -1,14 +1,14 @@
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { legal } from "@repo/cms";
-import { Body } from "@repo/cms/components/body";
-import { TableOfContents } from "@repo/cms/components/toc";
+import { Body } from "@repo/cms/_components/body";
+import { TableOfContents } from "@repo/cms/_components/toc";
 import { getPreviewReaderOptions } from "@repo/cms/reader-options";
 import { buildLocaleSlugParams } from "@repo/cms/static-params";
 import { createMetadata } from "@repo/seo/metadata";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Sidebar } from "@/components/sidebar";
+import { Sidebar } from "@/_components/sidebar";
 
 interface LegalPageProperties {
   readonly params: Promise<{

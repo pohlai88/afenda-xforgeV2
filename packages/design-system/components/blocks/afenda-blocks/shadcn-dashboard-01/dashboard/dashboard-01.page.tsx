@@ -3,9 +3,14 @@
 import type { z } from "zod";
 import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
-import { AfendaAppShell } from "../../afenda-appshell";
+import {
+  AfendaAppShell,
+  AfendaAppSidebar,
+} from "../../afenda-appshell";
 import { schema } from "../data-table";
 import { DashboardContent, type DashboardContentProps } from "./dashboard-content";
+import { dashboardDemoSidebarNavDescriptor } from "./dashboard-demo-nav.descriptor";
+import { dashboardDemoSidebarNavIconRegistry } from "./dashboard-demo-nav.registry";
 
 type DashboardPageTableRow = z.infer<typeof schema>;
 
@@ -23,7 +28,15 @@ export interface DashboardDemoPageProps extends DashboardContentProps {}
 
 export function DashboardDemoPage(props: DashboardDemoPageProps) {
   return (
-    <AfendaAppShell>
+    <AfendaAppShell
+      sidebar={
+        <AfendaAppSidebar
+          navDescriptor={dashboardDemoSidebarNavDescriptor}
+          navIconRegistry={dashboardDemoSidebarNavIconRegistry}
+          pathname="/dashboard"
+        />
+      }
+    >
       <DashboardContent {...props} />
     </AfendaAppShell>
   );

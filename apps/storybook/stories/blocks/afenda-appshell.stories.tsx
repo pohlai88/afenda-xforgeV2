@@ -1,7 +1,18 @@
-import { AfendaAppShell } from "@repo/design-system";
+import type { ReactNode } from "react";
+import {
+  AfendaAppFooter,
+  AfendaAppShell,
+  AfendaAppSidebar,
+} from "@repo/design-system";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { layoutStoryParameters } from "../../.storybook/essentials";
+import {
+  storyAppShellFooterLinks,
+  storyAppShellSidebarNavDescriptor,
+  storyAppShellUser,
+} from "./afenda-appshell.fixtures";
+import { storyAppShellSidebarNavIconRegistry } from "./afenda-appshell.registry";
 
 const meta = {
   title: "Blocks/Foundation/App Shell",
@@ -14,7 +25,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Bento-grid application shell: full-width topbar and footer, sidebar in the middle row, and content with header, left rail, main, and right rail. Layout placeholders only.",
+          "Bento-grid application shell: full-width topbar and footer, sidebar in the middle row, and content with header, left rail, main, and right rail. Navigation and footer content are supplied by the host app or story fixtures — not embedded demo catalogs.",
       },
     },
   },
@@ -24,17 +35,46 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+function StoryAppShell({
+  children,
+  pathname = "/dashboard",
+}: {
+  readonly children?: ReactNode;
+  readonly pathname?: string;
+}) {
+  return (
+    <AfendaAppShell
+      footer={
+        <AfendaAppFooter
+          copyrightHolder="Afenda"
+          links={storyAppShellFooterLinks}
+        />
+      }
+      sidebar={
+        <AfendaAppSidebar
+          navDescriptor={storyAppShellSidebarNavDescriptor}
+          navIconRegistry={storyAppShellSidebarNavIconRegistry}
+          pathname={pathname}
+          user={storyAppShellUser}
+        />
+      }
+    >
+      {children}
+    </AfendaAppShell>
+  );
+}
+
 export const BentoLayoutDefault: Story = {
   name: "Bento Layout",
   parameters: {
     docs: {
       description: {
         story:
-          "Default shell showing all layout regions with placeholder labels.",
+          "Shell with story-local navigation fixtures and placeholder layout regions.",
       },
     },
   },
-  render: () => <AfendaAppShell />,
+  render: () => <StoryAppShell />,
 };
 
 export const BentoLayoutWithMainOverride: Story = {
@@ -47,10 +87,10 @@ export const BentoLayoutWithMainOverride: Story = {
     },
   },
   render: () => (
-    <AfendaAppShell>
+    <StoryAppShell>
       <div className="grid min-h-48 place-items-center text-text-secondary text-sm">
         Custom main slot
       </div>
-    </AfendaAppShell>
+    </StoryAppShell>
   ),
 };

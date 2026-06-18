@@ -22,7 +22,7 @@ import {
   resolveAppShellSidebarExpanded,
 } from "./app-shell-sidebar-utils";
 
-interface AppShellSidebarContextValue {
+export interface AfendaAppShellSidebarState {
   readonly behaviorMode: SidebarBehaviorMode;
   readonly collapsed: boolean;
   readonly hoverPeek: boolean;
@@ -34,7 +34,7 @@ interface AppShellSidebarContextValue {
   readonly toggleSidebar: () => void;
 }
 
-const AppShellSidebarContext = createContext<AppShellSidebarContextValue | null>(
+const AppShellSidebarContext = createContext<AfendaAppShellSidebarState | null>(
   null
 );
 
@@ -112,7 +112,7 @@ export function AppShellSidebarProvider({
   );
 }
 
-export function useAppShellSidebar(): AppShellSidebarContextValue {
+export function useAppShellSidebar(): AfendaAppShellSidebarState {
   const context = useContext(AppShellSidebarContext);
 
   if (!context) {

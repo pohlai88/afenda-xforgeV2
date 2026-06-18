@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { blockRecipe } from "../../block-recipes";
 import { cn } from "../../../../lib/utils";
 import { AppShellSidebarProvider, useAppShellSidebar } from "./app-shell-sidebar-context";
@@ -14,6 +13,7 @@ import {
   appShellContentInsetClass,
   appShellContentBodyClass,
 } from "./app-shell-recipes";
+import type { AfendaAppShellCssVars } from "./app-shell-css-vars";
 import type { AfendaAppShellProps } from "./app-shell-types";
 import { AfendaAppContent } from "./content/app-content";
 import { AfendaAppFooter } from "./footer/app-footer";
@@ -51,7 +51,7 @@ function AfendaAppShellInner({
           "--app-shell-sidebar-icon-rail-width": APP_SHELL_SIDEBAR_ICON_RAIL_WIDTH,
           "--app-shell-sidebar-width": APP_SHELL_SIDEBAR_WIDTH,
           "--app-shell-topbar-height": APP_SHELL_TOPBAR_HEIGHT,
-        } as React.CSSProperties
+        } as AfendaAppShellCssVars
       }
       {...properties}
     >

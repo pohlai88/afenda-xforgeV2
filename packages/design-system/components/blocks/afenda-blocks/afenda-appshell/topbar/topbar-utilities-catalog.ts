@@ -166,8 +166,12 @@ const utilityCatalogById = new Map(
   TOPBAR_UTILITY_CATALOG.map((entry) => [entry.id, entry])
 );
 
+const utilityCatalogIds = new Set<string>(
+  TOPBAR_UTILITY_CATALOG.map((entry) => entry.id)
+);
+
 export function isTopbarUtilityId(value: string): value is TopbarUtilityId {
-  return utilityCatalogById.has(value as TopbarUtilityId);
+  return utilityCatalogIds.has(value);
 }
 
 export function getTopbarUtilityDefinition(

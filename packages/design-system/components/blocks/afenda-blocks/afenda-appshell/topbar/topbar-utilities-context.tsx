@@ -44,6 +44,9 @@ export interface TopbarUtilitiesController {
   readonly visibleIds: readonly TopbarUtilityId[];
 }
 
+/** Public alias aligned with AfendaAppShell naming. */
+export type AfendaTopbarUtilitiesController = TopbarUtilitiesController;
+
 const TopbarUtilitiesContext = createContext<TopbarUtilitiesController | null>(
   null
 );
@@ -190,55 +193,3 @@ function useTopbarUtilitiesControllerValue({
   );
 }
 
-export function reorderTopbarUtilityIds(
-  orderedIds: readonly TopbarUtilityId[],
-  sourceId: TopbarUtilityId,
-  targetId: TopbarUtilityId
-): TopbarUtilityId[] {
-  if (sourceId === targetId) {
-    return [...orderedIds];
-  }
-
-  const next = [...orderedIds];
-  const sourceIndex = next.indexOf(sourceId);
-  const targetIndex = next.indexOf(targetId);
-
-  if (sourceIndex === -1 || targetIndex === -1) {
-    return next;
-  }
-
-  next.splice(sourceIndex, 1);
-  next.splice(targetIndex, 0, sourceId);
-
-  return next;
-}
-
-export function reorderTopbarVisibleUtilities(
-  state: TopbarUtilitiesState,
-  sourceId: TopbarUtilityId,
-  targetId: TopbarUtilityId
-): TopbarUtilitiesState {
-  const visible = getTopbarVisibleUtilityIds(state);
-
-  if (sourceId === targetId) {
-    return state;
-  }
-
-  const sourceIndex = visible.indexOf(sourceId);
-  const targetIndex = visible.indexOf(targetId);
-
-  if (sourceIndex === -1 || targetIndex === -1) {
-    return state;
-  }
-
-  const reorderedVisible = reorderTopbarUtilityIds(visible, sourceId, targetId);
-  const visibleSet = new Set(reorderedVisible);
-
-  return {
-    order: [
-      ...reorderedVisible,
-      ...state.order.filter((id) => !visibleSet.has(id)),
-    ],
-    visible: reorderedVisible,
-  };
-}

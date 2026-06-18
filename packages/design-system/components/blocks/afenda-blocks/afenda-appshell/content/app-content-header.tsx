@@ -28,34 +28,30 @@ import {
   appContentHeaderTriggerClass,
 } from "./content-recipes";
 
-const DEFAULT_CONTENT_HEADER_BREADCRUMBS: readonly AfendaAppContentBreadcrumbItem[] =
-  [
-    { href: "#", label: "Home" },
-    { href: "#", label: "Dashboard" },
-    { label: "Documents" },
-  ];
-
 function AfendaAppContentHeaderBreadcrumbs({
   items,
 }: {
-  readonly items?: readonly AfendaAppContentBreadcrumbItem[];
+  readonly items: readonly AfendaAppContentBreadcrumbItem[];
 }) {
-  const breadcrumbs = items ?? DEFAULT_CONTENT_HEADER_BREADCRUMBS;
+  if (items.length === 0) {
+    return null;
+  }
+
+  const breadcrumbs = items;
 
   return (
     <Breadcrumb className={cn(appContentHeaderBreadcrumbsClass)}>
       <BreadcrumbList>
         {breadcrumbs.map((item, index) => {
           const isLast = index === breadcrumbs.length - 1;
-          const href = "href" in item ? item.href : undefined;
 
           return (
             <span className="contents" key={`${item.label}-${index}`}>
               <BreadcrumbItem className={isLast ? "min-w-0 shrink" : undefined}>
-                {isLast || !href ? (
+                {isLast || !item.href ? (
                   <BreadcrumbPage className="truncate">{item.label}</BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink className="truncate" href={href}>
+                  <BreadcrumbLink className="truncate" href={item.href}>
                     {item.label}
                   </BreadcrumbLink>
                 )}
@@ -141,7 +137,7 @@ export function AfendaAppContentHeader({
         pressed={leftRailOpen}
       />
 
-      <AfendaAppContentHeaderBreadcrumbs items={breadcrumbs} />
+      <AfendaAppContentHeaderBreadcrumbs items={breadcrumbs ?? []} />
 
       <div className={cn(appContentHeaderActionsClass)}>
         <AppContentHeaderTrigger

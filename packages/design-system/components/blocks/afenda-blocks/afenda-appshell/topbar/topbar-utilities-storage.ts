@@ -99,6 +99,10 @@ export function normalizeTopbarVisibleUtilities(
     .slice(0, TOPBAR_UTILITY_MAX_PINNED);
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 function normalizeState(value: unknown): TopbarUtilitiesState {
   if (Array.isArray(value)) {
     const visible = normalizeTopbarVisibleUtilities(value, allCatalogIds());
@@ -113,10 +117,9 @@ function normalizeState(value: unknown): TopbarUtilitiesState {
     };
   }
 
-  if (value && typeof value === "object") {
-    const record = value as Partial<TopbarUtilitiesState>;
-    const order = normalizeOrder(record.order);
-    const visible = normalizeTopbarVisibleUtilities(record.visible, order);
+  if (isRecord(value)) {
+    const order = normalizeOrder(value.order);
+    const visible = normalizeTopbarVisibleUtilities(value.visible, order);
 
     return { order, visible };
   }
@@ -276,4 +279,57 @@ export function getTopbarVisibleUtilityIds(
   const visibleSet = new Set(state.visible);
 
   return state.order.filter((id) => visibleSet.has(id));
+}
+
+export function reorderTopbarUtilityIds(
+  orderedIds: readonly TopbarUtilityId[],
+  sourceId: TopbarUtilityId,
+  targetId: TopbarUtilityId
+): TopbarUtilityId[] {
+  if (sourceId === targetId) {
+    return [...orderedIds];
+  }
+
+  const next = [...orderedIds];
+  const sourceIndex = next.indexOf(sourceId);
+  const targetIndex = next.indexOf(targetId);
+
+  if (sourceIndex === -1 || targetIndex === -1) {
+    return next;
+  }
+
+  next.splice(sourceIndex, 1);
+  next.splice(targetIndex, 0, sourceId);
+
+  return next;
+}
+
+export function reorderTopbarVisibleUtilities(
+  state: TopbarUtilitiesState,
+  sourceId: TopbarUtilityId,
+  targetId: TopbarUtilityId
+): TopbarUtilitiesState {
+  const visible = getTopbarVisibleUtilityIds(state);
+
+  if (sourceId === targetId) {
+    return state;
+  }
+
+  const sourceIndex = visible.indexOf(sourceId);
+  const targetIndex = visible.indexOf(targetId);
+
+  if (sourceIndex === -1 || targetIndex === -1) {
+    return state;
+  }
+
+  const reorderedVisible = reorderTopbarUtilityIds(visible, sourceId, targetId);
+  const visibleSet = new Set(reorderedVisible);
+
+  return {
+    order: [
+      ...reorderedVisible,
+      ...state.order.filter((id) => !visibleSet.has(id)),
+    ],
+    visible: reorderedVisible,
+  };
 }

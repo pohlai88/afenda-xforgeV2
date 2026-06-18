@@ -12,13 +12,13 @@ import {
 import {
   reorderTopbarUtilityIds,
   reorderTopbarVisibleUtilities,
-  useTopbarUtilities,
-} from "./topbar-utilities-context";
+  getTopbarVisibleUtilityIds,
+} from "./topbar-utilities-storage";
+import { useTopbarUtilities } from "./topbar-utilities-context";
 import {
   TopbarHorizontalUtilitySortable,
   TopbarSortableHorizontalItem,
 } from "./topbar-utilities-sortable";
-import { getTopbarVisibleUtilityIds } from "./topbar-utilities-storage";
 import {
   topbarIconButtonClass,
   topbarUtilitiesBarClass,

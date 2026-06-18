@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, type ReactNode } from "react";
+import { useCallback, useMemo, type ReactNode } from "react";
 import { ScrollArea } from "../../../../afenda-ui/scroll-area";
 import {
   Tooltip,
@@ -13,21 +13,19 @@ import { cn } from "../../../../../lib/utils";
 import { useAppShellSidebar } from "../app-shell-sidebar-context";
 import type { AfendaAppSidebarProps } from "../app-shell-types";
 import {
+  collectSidebarNavItemDescriptors,
+  resolveAfendaAppSidebarNavLayout,
+} from "./sidebar-nav-descriptors";
+import {
   resolveSidebarLinkRenderer,
   type SidebarLinkRenderer,
 } from "../../shadcn-dashboard-01/sidebar-link";
-import type { AppSidebarNavItem } from "./sidebar-nav-catalog";
 import {
-  APP_SIDEBAR_DEMO_USER,
-  APP_SIDEBAR_ERP_NAV_ITEMS,
-  APP_SIDEBAR_ERP_NAV_LABEL,
-  APP_SIDEBAR_MAIN_NAV_ITEMS,
-  APP_SIDEBAR_MAIN_NAV_LABEL,
-  APP_SIDEBAR_PORTAL_NAV_ITEMS,
-  APP_SIDEBAR_PORTAL_NAV_LABEL,
-  APP_SIDEBAR_SETTINGS_NAV_ITEMS,
-  APP_SIDEBAR_SETTINGS_NAV_LABEL,
-} from "./sidebar-nav-catalog";
+  collectSidebarNavItems,
+  type AfendaAppSidebarNavGroup,
+  type AfendaAppSidebarNavGroupSlot,
+  type AppSidebarNavItem,
+} from "./sidebar-nav-types";
 import {
   appSidebarIconRailFooterClass,
   appSidebarIconRailGroupLabelClass,
@@ -59,12 +57,6 @@ import { SidebarNavUser } from "./sidebar-nav-user";
 import { resolveActiveSidebarNavItemIds } from "./sidebar-nav-utils";
 import { appSidebarShellClass } from "./sidebar-recipes";
 
-type AppSidebarNavGroupSlot =
-  | "app-sidebar-erp-nav"
-  | "app-sidebar-main-nav"
-  | "app-sidebar-portal-nav"
-  | "app-sidebar-settings-nav";
-
 function wrapIconRailTooltip(
   isIconRail: boolean,
   label: string,
@@ -95,7 +87,7 @@ function AppSidebarNavGroup({
 }: {
   readonly activeItemIds: ReadonlySet<string>;
   readonly className?: string;
-  readonly groupSlot: AppSidebarNavGroupSlot;
+  readonly groupSlot: AfendaAppSidebarNavGroupSlot;
   readonly isIconRail: boolean;
   readonly items: readonly AppSidebarNavItem[];
   readonly label: string;
@@ -180,17 +172,113 @@ function AppSidebarNavGroup({
   );
 }
 
+function AfendaAppSidebarNavTree({
+  activeItemIds,
+  isIconRail,
+  nav,
+  renderLink,
+  user,
+}: {
+  readonly activeItemIds: ReadonlySet<string>;
+  readonly isIconRail: boolean;
+  readonly nav: NonNullable<AfendaAppSidebarProps["nav"]>;
+  readonly renderLink?: SidebarLinkRenderer;
+  readonly user?: AfendaAppSidebarProps["user"];
+}) {
+  const scrollGroups = nav.scroll ?? [];
+
+  return (
+    <TooltipProvider delayDuration={0}>
+      {nav.main ? (
+        <div
+          className={cn(appSidebarMainNavShellClass)}
+          data-slot="app-sidebar-main-nav-shell"
+        >
+          <AppSidebarNavGroup
+            activeItemIds={activeItemIds}
+            groupSlot={nav.main.groupSlot}
+            isIconRail={isIconRail}
+            items={nav.main.items}
+            label={nav.main.label}
+            renderLink={renderLink}
+          />
+        </div>
+      ) : null}
+      {scrollGroups.length > 0 ? (
+        <ScrollArea
+          className={cn(
+            appSidebarScrollAreaClass,
+            isIconRail && appSidebarIconRailScrollAreaClass
+          )}
+          data-slot="app-sidebar-scroll"
+        >
+          <div className={cn(appSidebarScrollContentClass)}>
+            {scrollGroups.map((group) => (
+              <AppSidebarNavGroup
+                activeItemIds={activeItemIds}
+                groupSlot={group.groupSlot}
+                isIconRail={isIconRail}
+                items={group.items}
+                key={group.groupSlot}
+                label={group.label}
+                renderLink={renderLink}
+              />
+            ))}
+          </div>
+        </ScrollArea>
+      ) : null}
+      {nav.footer || user ? (
+        <div
+          className={cn(
+            appSidebarFooterClass,
+            isIconRail && appSidebarIconRailFooterClass
+          )}
+          data-slot="app-sidebar-footer"
+        >
+          {nav.footer ? (
+            <AppSidebarNavGroup
+              activeItemIds={activeItemIds}
+              className={cn(appSidebarFooterSettingsClass)}
+              groupSlot={nav.footer.groupSlot}
+              isIconRail={isIconRail}
+              items={nav.footer.items}
+              label={nav.footer.label}
+              renderLink={renderLink}
+            />
+          ) : null}
+          {user ? <SidebarNavUser isIconRail={isIconRail} user={user} /> : null}
+        </div>
+      ) : null}
+    </TooltipProvider>
+  );
+}
+
 export function AfendaAppSidebar({
   activeItemIds,
   children,
   className,
+  nav,
+  navDescriptor,
+  navIconRegistry,
   pathname = "",
   renderLink,
-  user = APP_SIDEBAR_DEMO_USER,
+  user,
   ...properties
 }: AfendaAppSidebarProps) {
   const { behaviorMode, isExpanded, setHoverPeek } = useAppShellSidebar();
   const isIconRail = !isExpanded;
+
+  const resolvedNav = useMemo(() => {
+    if (nav) {
+      return nav;
+    }
+
+    if (navDescriptor && navIconRegistry) {
+      return resolveAfendaAppSidebarNavLayout(navDescriptor, navIconRegistry);
+    }
+
+    return undefined;
+  }, [nav, navDescriptor, navIconRegistry]);
 
   const handlePointerEnter = useCallback(() => {
     if (behaviorMode === "hover") {
@@ -206,12 +294,14 @@ export function AfendaAppSidebar({
 
   const resolvedActiveItemIds =
     activeItemIds ??
-    resolveActiveSidebarNavItemIds(pathname, [
-      APP_SIDEBAR_MAIN_NAV_ITEMS,
-      APP_SIDEBAR_ERP_NAV_ITEMS,
-      APP_SIDEBAR_PORTAL_NAV_ITEMS,
-      APP_SIDEBAR_SETTINGS_NAV_ITEMS,
-    ]);
+    (resolvedNav
+      ? resolveActiveSidebarNavItemIds(pathname, collectSidebarNavItems(resolvedNav))
+      : navDescriptor
+        ? resolveActiveSidebarNavItemIds(
+            pathname,
+            collectSidebarNavItemDescriptors(navDescriptor)
+          )
+        : new Set<string>());
 
   return (
     <aside
@@ -228,69 +318,16 @@ export function AfendaAppSidebar({
       onPointerLeave={handlePointerLeave}
       {...properties}
     >
-      {children ?? (
-        <TooltipProvider delayDuration={0}>
-          <div
-            className={cn(appSidebarMainNavShellClass)}
-            data-slot="app-sidebar-main-nav-shell"
-          >
-            <AppSidebarNavGroup
-              activeItemIds={resolvedActiveItemIds}
-              groupSlot="app-sidebar-main-nav"
-              isIconRail={isIconRail}
-              items={APP_SIDEBAR_MAIN_NAV_ITEMS}
-              label={APP_SIDEBAR_MAIN_NAV_LABEL}
-              renderLink={renderLink}
-            />
-          </div>
-          <ScrollArea
-            className={cn(
-              appSidebarScrollAreaClass,
-              isIconRail && appSidebarIconRailScrollAreaClass
-            )}
-            data-slot="app-sidebar-scroll"
-          >
-            <div className={cn(appSidebarScrollContentClass)}>
-              <AppSidebarNavGroup
-                activeItemIds={resolvedActiveItemIds}
-                groupSlot="app-sidebar-erp-nav"
-                isIconRail={isIconRail}
-                items={APP_SIDEBAR_ERP_NAV_ITEMS}
-                label={APP_SIDEBAR_ERP_NAV_LABEL}
-                renderLink={renderLink}
-              />
-              <AppSidebarNavGroup
-                activeItemIds={resolvedActiveItemIds}
-                groupSlot="app-sidebar-portal-nav"
-                isIconRail={isIconRail}
-                items={APP_SIDEBAR_PORTAL_NAV_ITEMS}
-                label={APP_SIDEBAR_PORTAL_NAV_LABEL}
-                renderLink={renderLink}
-              />
-            </div>
-          </ScrollArea>
-          <div
-            className={cn(
-              appSidebarFooterClass,
-              isIconRail && appSidebarIconRailFooterClass
-            )}
-            data-slot="app-sidebar-footer"
-          >
-            <AppSidebarNavGroup
-              activeItemIds={resolvedActiveItemIds}
-              className={cn(appSidebarFooterSettingsClass)}
-              groupSlot="app-sidebar-settings-nav"
-              isIconRail={isIconRail}
-              items={APP_SIDEBAR_SETTINGS_NAV_ITEMS}
-              label={APP_SIDEBAR_SETTINGS_NAV_LABEL}
-              renderLink={renderLink}
-            />
-            <SidebarNavUser isIconRail={isIconRail} user={user} />
-          </div>
-        </TooltipProvider>
-      )}
+      {children ??
+        (resolvedNav ? (
+          <AfendaAppSidebarNavTree
+            activeItemIds={resolvedActiveItemIds}
+            isIconRail={isIconRail}
+            nav={resolvedNav}
+            renderLink={renderLink}
+            user={user}
+          />
+        ) : null)}
     </aside>
   );
 }
-
-export type { SidebarLinkRenderer };

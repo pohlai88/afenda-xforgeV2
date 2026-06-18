@@ -40,13 +40,11 @@ import {
   LogOutIcon,
 } from "lucide-react";
 
+import type { AfendaAppShellUserSummary } from "../app-shell-types";
+
 export interface SidebarNavUserProps {
   readonly isIconRail?: boolean;
-  readonly user: {
-    readonly avatar: string;
-    readonly email: string;
-    readonly name: string;
-  };
+  readonly user: AfendaAppShellUserSummary;
 }
 
 function resolveInitials(name: string): string {

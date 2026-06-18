@@ -5,15 +5,15 @@ import { cn } from "../../../../../lib/utils";
 import { TopbarContextSwitcher } from "./topbar-context-switcher";
 import { topbarScopeNavClass, topbarScopeSwitcherItemClass } from "./topbar-recipes";
 import type { TopbarContextSwitcherProps } from "./topbar-types";
-import { useTopbarLinkedNav } from "./use-topbar-linked-nav";
 
 export function TopbarScopeSwitchers({
-  switchers: switchersProp,
+  switchers,
 }: {
-  readonly switchers?: readonly TopbarContextSwitcherProps[];
+  readonly switchers: readonly TopbarContextSwitcherProps[];
 }) {
-  const linkedNav = useTopbarLinkedNav();
-  const switchers = switchersProp ?? linkedNav.switchers;
+  if (switchers.length === 0) {
+    return <div className="min-w-0 flex-1" data-slot="app-topbar-scope-switchers" />;
+  }
 
   return (
     <nav

@@ -24,15 +24,13 @@ import {
 } from "./topbar-utilities-catalog";
 import {
   reorderTopbarUtilityIds,
-  useTopbarUtilities,
-} from "./topbar-utilities-context";
+  getTopbarVisibleUtilityIds,
+} from "./topbar-utilities-storage";
+import { useTopbarUtilities } from "./topbar-utilities-context";
 import {
   TopbarSortableVerticalItem,
   TopbarVerticalUtilitySortable,
 } from "./topbar-utilities-sortable";
-import {
-  getTopbarVisibleUtilityIds,
-} from "./topbar-utilities-storage";
 import {
   topbarActionIconClass,
   topbarFeedbackHiddenTriggerClass,

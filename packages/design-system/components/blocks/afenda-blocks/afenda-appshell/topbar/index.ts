@@ -1,5 +1,4 @@
 export { AfendaAppTopbar } from "./app-topbar";
-export { TOPBAR_DEMO_ACTION_GROUPS } from "./topbar-actions-demo";
 export { TopbarActionsMenu } from "./topbar-actions-menu";
 export { TopbarBrandDisk } from "./topbar-brand-disk";
 export { TopbarContextSwitcher } from "./topbar-context-switcher";
@@ -20,11 +19,6 @@ export {
   useTopbarUtilities,
 } from "./topbar-utilities-context";
 export { TopbarUtilitiesMarketplace } from "./topbar-utilities-marketplace";
-export {
-  getTopbarDemoDefaultSelection,
-  resolveTopbarDemoSwitchers,
-  type TopbarDemoSelection,
-} from "./topbar-demo-seed";
 export type {
   AfendaAppTopbarProps,
   TopbarActionsMenuGroup,
@@ -36,4 +30,3 @@ export type {
   TopbarContextSwitcherProps,
   TopbarRightActionsProps,
 } from "./topbar-types";
-export { useTopbarLinkedNav, type TopbarLinkedNav } from "./use-topbar-linked-nav";

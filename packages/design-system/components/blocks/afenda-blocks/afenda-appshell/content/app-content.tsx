@@ -1,7 +1,6 @@
 "use client";
 
-import type { CSSProperties } from "react";
-
+import type { AfendaAppContentCssVars } from "../app-shell-css-vars";
 import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
 import { APP_SHELL_RAIL_WIDTH } from "../app-shell-recipes";
@@ -65,7 +64,7 @@ function AfendaAppContentInner({
           "--app-shell-content-right-rail-width": rightRailOpen
             ? APP_SHELL_RAIL_WIDTH
             : "0px",
-        } as CSSProperties
+        } as AfendaAppContentCssVars
       }
       {...properties}
     >

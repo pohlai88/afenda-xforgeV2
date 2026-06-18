@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 
-interface AfendaAppContentLayoutContextValue {
+export interface AfendaAppContentLayoutState {
   readonly bottomDrawerOpen: boolean;
   readonly leftRailOpen: boolean;
   readonly rightRailOpen: boolean;
@@ -22,7 +22,7 @@ interface AfendaAppContentLayoutContextValue {
 }
 
 const AfendaAppContentLayoutContext =
-  createContext<AfendaAppContentLayoutContextValue | null>(null);
+  createContext<AfendaAppContentLayoutState | null>(null);
 
 interface AfendaAppContentLayoutProviderProps {
   readonly children: ReactNode;
@@ -84,7 +84,7 @@ export function AfendaAppContentLayoutProvider({
   );
 }
 
-export function useAfendaAppContentLayout() {
+export function useAfendaAppContentLayout(): AfendaAppContentLayoutState {
   const context = useContext(AfendaAppContentLayoutContext);
 
   if (!context) {

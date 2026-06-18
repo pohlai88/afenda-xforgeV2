@@ -14,7 +14,6 @@ import {
   DropdownMenuTrigger,
 } from "../../../../afenda-ui/dropdown-menu";
 import { cn } from "../../../../../lib/utils";
-import { TOPBAR_DEMO_ACTION_GROUPS } from "./topbar-actions-demo";
 import {
   topbarActionIconClass,
   topbarActionsMenuContentClass,
@@ -29,12 +28,17 @@ import {
 import type { TopbarActionsMenuProps } from "./topbar-types";
 
 export function TopbarActionsMenu({
-  groups = TOPBAR_DEMO_ACTION_GROUPS,
+  groups = [],
   header,
   triggerLabel = "Actions",
 }: TopbarActionsMenuProps) {
   const [open, setOpen] = useState(false);
   const visibleGroups = groups.filter((group) => group.items.length > 0);
+
+  if (visibleGroups.length === 0) {
+    return null;
+  }
+
   const showHeader = Boolean(header?.name || header?.email);
 
   return (

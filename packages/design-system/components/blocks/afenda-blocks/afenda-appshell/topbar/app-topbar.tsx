@@ -5,7 +5,6 @@ import { cn } from "../../../../../lib/utils";
 import type { AfendaAppTopbarProps } from "./topbar-types";
 import { TopbarBrandDisk } from "./topbar-brand-disk";
 import { appTopbarShellClass } from "./topbar-recipes";
-import { TopbarScopeSwitchers } from "./topbar-scope-switchers";
 import { TopbarSidebarControl } from "./topbar-sidebar-control";
 import { TopbarRightActions } from "./topbar-right-actions";
 
@@ -50,7 +49,7 @@ export function AfendaAppTopbar({
       ) : null}
       <div data-slot="app-topbar-brand-slot">{brand ?? <TopbarBrandDisk />}</div>
       {showScopeSwitchers ? (
-        scopeSwitchers ?? <TopbarScopeSwitchers />
+        scopeSwitchers ?? <div className="min-w-0 flex-1" />
       ) : (
         <div className="min-w-0 flex-1" />
       )}

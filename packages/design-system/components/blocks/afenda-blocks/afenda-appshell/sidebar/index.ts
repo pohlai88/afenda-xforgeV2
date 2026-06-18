@@ -1,18 +1,32 @@
 export { AfendaAppSidebar } from "./app-sidebar";
-export {
-  APP_SIDEBAR_DEMO_USER,
-  APP_SIDEBAR_ERP_NAV_ITEMS,
-  APP_SIDEBAR_ERP_NAV_LABEL,
-  APP_SIDEBAR_MAIN_NAV_ITEMS,
-  APP_SIDEBAR_MAIN_NAV_LABEL,
-  APP_SIDEBAR_PORTAL_NAV_ITEMS,
-  APP_SIDEBAR_PORTAL_NAV_LABEL,
-  APP_SIDEBAR_PRIMARY_ICON_BASE,
-  APP_SIDEBAR_SETTINGS_NAV_ITEMS,
-  APP_SIDEBAR_SETTINGS_NAV_LABEL,
-} from "./sidebar-nav-catalog";
 export { SidebarNavUser } from "./sidebar-nav-user";
+export {
+  collectSidebarNavItemDescriptors,
+  resolveAfendaAppSidebarNavItemDescriptor,
+  resolveAfendaAppSidebarNavLayout,
+} from "./sidebar-nav-descriptors";
+export { collectSidebarNavItems } from "./sidebar-nav-types";
 export {
   resolveActiveSidebarNavItemId,
   resolveActiveSidebarNavItemIds,
 } from "./sidebar-nav-utils";
+export type {
+  AfendaAppSidebarNavGroupDescriptor,
+  AfendaAppSidebarNavIconDescriptor,
+  AfendaAppSidebarNavIconKeysOf,
+  AfendaAppSidebarNavIconRegistry,
+  AfendaAppSidebarNavItemDescriptor,
+  AfendaAppSidebarNavLayoutDescriptor,
+  AfendaAppSidebarNavProductDescriptor,
+} from "./sidebar-nav-descriptors";
+export type {
+  AfendaAppSidebarNavGroup,
+  AfendaAppSidebarNavGroupSlot,
+  AfendaAppSidebarNavIconItem,
+  AfendaAppSidebarNavItem,
+  AfendaAppSidebarNavLayout,
+  AfendaAppSidebarNavProductItem,
+  AppSidebarNavIconItem,
+  AppSidebarNavItem,
+  AppSidebarNavProductItem,
+} from "./sidebar-nav-types";

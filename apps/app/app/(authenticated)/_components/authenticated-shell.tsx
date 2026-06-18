@@ -7,6 +7,9 @@ import {
 } from "@repo/design-system";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { renderAuthenticatedSidebarLink } from "@/lib/app-shell/sidebar-link";
+import { authenticatedAppSidebarNavDescriptor } from "@/lib/app-shell/sidebar-nav.descriptor";
+import { authenticatedAppSidebarNavIconRegistry } from "@/lib/app-shell/sidebar-nav.registry";
 import { OrbitCaseLeftRail } from "../orbit-case/_components/orbit-case-left-rail";
 import { EvidenceDrawer } from "./evidence-drawer";
 import { LynxAiRightRail } from "./lynx-ai-right-rail";
@@ -69,7 +72,14 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProperties) {
       contentRightRail={<LynxAiRightRail />}
       defaultContentLeftRailOpen={defaultContentLeftRailOpen}
       defaultContentRightRailOpen
-      sidebar={<AfendaAppSidebar pathname={pathname} />}
+      sidebar={
+        <AfendaAppSidebar
+          navDescriptor={authenticatedAppSidebarNavDescriptor}
+          navIconRegistry={authenticatedAppSidebarNavIconRegistry}
+          pathname={pathname}
+          renderLink={renderAuthenticatedSidebarLink}
+        />
+      }
     >
       {children}
     </AfendaAppShell>

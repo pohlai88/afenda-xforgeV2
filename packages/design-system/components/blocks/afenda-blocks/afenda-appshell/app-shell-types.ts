@@ -1,11 +1,44 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import type { SidebarLinkRenderer } from "../shadcn-dashboard-01/sidebar-link";
+import type { AfendaAppSidebarNavLayout } from "./sidebar/sidebar-nav-types";
+import type {
+  AfendaAppSidebarNavIconRegistry,
+  AfendaAppSidebarNavLayoutDescriptor,
+} from "./sidebar/sidebar-nav-descriptors";
 
+export type { AfendaAppContentLayoutState } from "./content/app-content-layout-context";
+export type { AfendaAppShellSidebarState } from "./app-shell-sidebar-context";
 export type {
-  TopbarDemoSelection,
-} from "./topbar/topbar-demo-seed";
-export type { TopbarLinkedNav } from "./topbar/use-topbar-linked-nav";
+  AfendaAppContentCssVars,
+  AfendaAppShellCssVars,
+} from "./app-shell-css-vars";
+export type {
+  AfendaAppSidebarNavGroupDescriptor,
+  AfendaAppSidebarNavIconDescriptor,
+  AfendaAppSidebarNavIconKeysOf,
+  AfendaAppSidebarNavIconRegistry,
+  AfendaAppSidebarNavItemDescriptor,
+  AfendaAppSidebarNavLayoutDescriptor,
+  AfendaAppSidebarNavProductDescriptor,
+} from "./sidebar/sidebar-nav-descriptors";
+export type {
+  AfendaAppSidebarNavGroup,
+  AfendaAppSidebarNavGroupSlot,
+  AfendaAppSidebarNavIconItem,
+  AfendaAppSidebarNavItem,
+  AfendaAppSidebarNavLayout,
+  AfendaAppSidebarNavProductItem,
+  AppSidebarNavIconItem,
+  AppSidebarNavItem,
+  AppSidebarNavProductItem,
+} from "./sidebar/sidebar-nav-types";
+export type { SidebarNavUserProps } from "./sidebar/sidebar-nav-user";
 export type { TopbarUtilityId } from "./topbar/topbar-utilities-catalog";
+export type { AfendaTopbarUtilitiesController } from "./topbar/topbar-utilities-context";
+export type {
+  TopbarUtilitiesScope,
+  TopbarUtilitiesState,
+} from "./topbar/topbar-utilities-storage";
 export type {
   AfendaAppTopbarProps,
   TopbarActionsMenuGroup,
@@ -17,6 +50,20 @@ export type {
   TopbarContextSwitcherProps,
   TopbarRightActionsProps,
 } from "./topbar/topbar-types";
+
+/** Serializable user summary for sidebar chrome. */
+export interface AfendaAppShellUserSummary {
+  readonly avatar: string;
+  readonly email: string;
+  readonly name: string;
+}
+
+/** Serializable footer link descriptor. */
+export interface AfendaAppShellFooterLink {
+  readonly href: string;
+  readonly id: string;
+  readonly label: string;
+}
 
 export interface AfendaAppShellProps
   extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
@@ -37,24 +84,19 @@ export interface AfendaAppSidebarProps
   extends Omit<ComponentPropsWithoutRef<"aside">, "children"> {
   readonly activeItemIds?: ReadonlySet<string>;
   readonly children?: ReactNode;
+  readonly nav?: AfendaAppSidebarNavLayout;
+  readonly navDescriptor?: AfendaAppSidebarNavLayoutDescriptor;
+  readonly navIconRegistry?: AfendaAppSidebarNavIconRegistry;
   readonly pathname?: string;
   readonly renderLink?: SidebarLinkRenderer;
-  readonly user?: {
-    readonly avatar: string;
-    readonly email: string;
-    readonly name: string;
-  };
+  readonly user?: AfendaAppShellUserSummary;
 }
 
 export interface AfendaAppFooterProps
   extends Omit<ComponentPropsWithoutRef<"footer">, "children"> {
   readonly children?: ReactNode;
   readonly copyrightHolder?: string;
-  readonly links?: readonly {
-    readonly href: string;
-    readonly id: string;
-    readonly label: string;
-  }[];
+  readonly links?: readonly AfendaAppShellFooterLink[];
 }
 
 export interface AfendaAppContentBreadcrumbItem {

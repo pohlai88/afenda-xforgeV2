@@ -10,6 +10,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./afenda-ui/dropdown-menu";
+import { recipe } from "./afenda-ui/recipes";
+import {
+  modeToggleMoonIconClass,
+  modeToggleSunIconClass,
+} from "./mode-toggle-recipes";
 
 const themes = [
   { label: "Light", value: "light" },
@@ -19,10 +24,8 @@ const themes = [
 
 export const ModeToggle = ({
   buttonClassName,
-  buttonSize = "icon",
 }: {
   readonly buttonClassName?: string;
-  readonly buttonSize?: "icon" | "icon-sm" | "icon-lg";
 }) => {
   const { setTheme } = useTheme();
 
@@ -30,13 +33,13 @@ export const ModeToggle = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          className={cn("shrink-0 text-foreground", buttonClassName)}
-          size={buttonSize}
+          className={cn("shrink-0", buttonClassName)}
+          size="icon"
           variant="quiet"
         >
-          <SunIcon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-transform dark:-rotate-90 dark:scale-0" />
-          <MoonIcon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-transform dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
+          <SunIcon className={cn(modeToggleSunIconClass)} />
+          <MoonIcon className={cn(modeToggleMoonIconClass)} />
+          <span className={cn(recipe("visuallyHidden"))}>Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

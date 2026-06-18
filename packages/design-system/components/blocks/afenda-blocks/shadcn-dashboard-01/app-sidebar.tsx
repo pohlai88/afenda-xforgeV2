@@ -9,10 +9,17 @@ import {
   SettingsIcon,
 } from "lucide-react";
 import { type ComponentPropsWithoutRef } from "react";
+import { blockRecipe } from "../../block-recipes";
+import { cn } from "../../../../lib/utils";
 import { NavDocuments } from "./nav-documents";
 import { NavMain } from "./nav-main";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
+import {
+  dashboardAppSidebarBrandButtonClass,
+  dashboardAppSidebarBrandIconClass,
+  dashboardAppSidebarBrandLabelClass,
+} from "./dashboard-recipes";
 import {
   Sidebar,
   SidebarContent,
@@ -66,20 +73,30 @@ const data = {
 };
 
 export function AppSidebar({
+  className,
   ...props
 }: ComponentPropsWithoutRef<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar
+      className={cn(blockRecipe("blockShell"), className)}
+      collapsible="offcanvas"
+      data-slot="app-sidebar"
+      {...props}
+    >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
+              className={cn()}
             >
               <a href="#">
-                <GalleryVerticalEndIcon className="size-5!" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <GalleryVerticalEndIcon
+                  className={cn()}
+                />
+                <span className={cn()}>
+                  Acme Inc.
+                </span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

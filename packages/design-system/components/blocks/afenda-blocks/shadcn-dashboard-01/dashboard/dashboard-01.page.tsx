@@ -6,6 +6,14 @@ import { ChartAreaInteractive } from "../chart-area-interactive";
 import { DataTable } from "../data-table";
 import { SectionCards } from "../section-cards";
 import { SiteHeader } from "../site-header";
+import { blockRecipe } from "../../../block-recipes";
+import { cn } from "../../../../../lib/utils";
+import {
+  dashboardPageChartWrapperClass,
+  dashboardPageContentStackClass,
+  dashboardPageInsetStackClass,
+  dashboardPageMainStackClass,
+} from "../dashboard-recipes";
 import {
   SidebarInset,
   SidebarProvider,
@@ -15,6 +23,7 @@ import data from "./data.json";
 export function DashboardPage() {
   return (
     <SidebarProvider
+      data-slot="dashboard-page"
       style={
         {
           "--sidebar-width": "calc(var(--spacing) * 72)",
@@ -23,13 +32,18 @@ export function DashboardPage() {
       }
     >
       <AppSidebar variant="inset" />
-      <SidebarInset>
+      <SidebarInset className={cn(blockRecipe("blockStage"))}>
         <SiteHeader />
-        <div className="flex flex-1 flex-col">
-          <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        <div className={cn(dashboardPageInsetStackClass)}>
+          <div className={cn(dashboardPageMainStackClass)}>
+            <div
+              className={cn(
+                blockRecipe("blockStack"),
+                dashboardPageContentStackClass
+              )}
+            >
               <SectionCards />
-              <div className="px-4 lg:px-6">
+              <div className={cn(dashboardPageChartWrapperClass)}>
                 <ChartAreaInteractive />
               </div>
               <DataTable data={data} />

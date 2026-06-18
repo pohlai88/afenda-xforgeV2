@@ -20,6 +20,20 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "../../../afenda-ui/sidebar";
+import { blockRecipe } from "../../block-recipes";
+import { cn } from "../../../../lib/utils";
+import {
+  dashboardNavUserAvatarClass,
+  dashboardNavUserAvatarFallbackClass,
+  dashboardNavUserEmailClass,
+  dashboardNavUserIdentityClass,
+  dashboardNavUserMenuContentClass,
+  dashboardNavUserMenuIconClass,
+  dashboardNavUserMenuIdentityRowClass,
+  dashboardNavUserMenuLabelClass,
+  dashboardNavUserNameClass,
+  dashboardNavUserTriggerClass,
+} from "./dashboard-recipes";
 import {
   BellIcon,
   CircleUserIcon,
@@ -40,42 +54,54 @@ export function NavUser({
   const { isMobile } = useSidebar();
 
   return (
-    <SidebarMenu>
+    <SidebarMenu
+      className={cn(blockRecipe("blockSection"))}
+      data-slot="nav-user"
+    >
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className={cn(dashboardNavUserTriggerClass)}
+              data-slot="nav-user-trigger"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <Avatar className={cn(dashboardNavUserAvatarClass)}>
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className={cn(dashboardNavUserAvatarFallbackClass)}>
+                  CN
+                </AvatarFallback>
               </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs text-muted-foreground">
-                  {user.email}
-                </span>
+              <div className={cn(dashboardNavUserIdentityClass)}>
+                <span className={cn(dashboardNavUserNameClass)}>{user.name}</span>
+                <span className={cn(dashboardNavUserEmailClass)}>{user.email}</span>
               </div>
-              <EllipsisVerticalIcon className="ml-auto size-4" />
+              <EllipsisVerticalIcon className={cn(dashboardNavUserMenuIconClass)} />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className={cn(dashboardNavUserMenuContentClass)}
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
+            data-slot="nav-user-menu"
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
+            <DropdownMenuLabel className={cn(dashboardNavUserMenuLabelClass)}>
+              <div
+                className={cn(dashboardNavUserMenuIdentityRowClass)}
+                data-slot="nav-user-content"
+              >
+                <Avatar className={cn(dashboardNavUserAvatarClass)}>
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback
+                    className={cn(dashboardNavUserAvatarFallbackClass)}
+                  >
+                    CN
+                  </AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs text-muted-foreground">
+                <div className={cn(dashboardNavUserIdentityClass)}>
+                  <span className={cn(dashboardNavUserNameClass)}>{user.name}</span>
+                  <span className={cn(dashboardNavUserEmailClass)}>
                     {user.email}
                   </span>
                 </div>

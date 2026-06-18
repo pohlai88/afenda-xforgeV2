@@ -268,6 +268,7 @@ export const AFENDA_AI_CONTEXT = {
       "dashboard-nav-topbar",
       "dashboard-nav-topbar-left",
       "dashboard-nav-topbar-right",
+      "dashboard-page",
       "dashboard-sidebar-brand",
       "dashboard-sidebar-content",
       "dashboard-sidebar-footer",
@@ -407,6 +408,7 @@ export const AFENDA_AI_CONTEXT = {
       "nav-main-actions",
       "nav-main-items",
       "nav-secondary",
+      "nav-user",
       "nav-user-content",
       "nav-user-menu",
       "nav-user-trigger",
@@ -493,6 +495,7 @@ export const AFENDA_AI_CONTEXT = {
       "sidebar-inner",
       "sidebar-input",
       "sidebar-inset",
+      "sidebar-link",
       "sidebar-menu",
       "sidebar-menu-action",
       "sidebar-menu-badge",
@@ -561,6 +564,7 @@ export const AFENDA_AI_CONTEXT = {
       "^app-topbar-[a-z0-9-]+$",
       "^app-topbar-utility-[a-z0-9-]+$",
       "^nav-(secondary|main|documents)-(item|menu)-[a-z0-9-]+$",
+      "^nav-main-item-[a-z0-9-]+$",
       "^section-card-[a-z0-9-]+$"
     ]
   },

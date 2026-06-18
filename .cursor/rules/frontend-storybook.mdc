@@ -20,7 +20,7 @@ Do **not** refactor `packages/design-system/components/ui/**` for Storybook cont
 
 - CSF3 stories under `stories/afenda-ui/`, `stories/blocks/`, or allowlisted root files only
 - Sidebar titles: `Afenda UI/*`, `Blocks/*`, `Foundations/*`, `Governance/*`
-- Import from `@repo/design-system/components/afenda-ui` or `/blocks` — never `components/ui`
+- Import from `@repo/design-system` barrel — never `components/ui` or deep `components/afenda-ui/*`
 - CSF3 stories; co-locate decorators when a story needs shell chrome
 - Semantic design tokens in story `className` — no ad-hoc hex or raw pixel hacks
 

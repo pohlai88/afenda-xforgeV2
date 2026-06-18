@@ -7,6 +7,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../../../afenda-ui/sidebar";
+import { blockRecipe } from "../../block-recipes";
+import { cn } from "../../../../lib/utils";
 import { type ComponentPropsWithoutRef } from "react";
 import { type LucideIcon } from "lucide-react";
 
@@ -21,8 +23,8 @@ export function NavSecondary({
   }[];
 } & ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (
-    <SidebarGroup {...props}>
-      <SidebarGroupContent>
+    <SidebarGroup data-slot="nav-secondary" {...props}>
+      <SidebarGroupContent className={cn(blockRecipe("blockSection"))}>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>

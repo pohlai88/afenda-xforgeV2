@@ -42,10 +42,6 @@ const config: StorybookConfig = {
       directory: "../stories",
       files: "tokens.stories.tsx",
     },
-    {
-      directory: "../stories",
-      files: "primitive-readiness.stories.tsx",
-    },
   ],
   addons: [
     getAbsolutePath("@chromatic-com/storybook"),

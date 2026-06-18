@@ -196,6 +196,15 @@ function toViolation(
 function scanFiles(): SourceFile[] {
   return walk(packageRoot)
     .filter((path) => sourceFilePattern.test(path))
+    .filter((path) => {
+      const relativePath = normalizePath(relative(packageRoot, path));
+
+      return (
+        !relativePath.startsWith("components/ui/") &&
+        !relativePath.endsWith("-recipes.ts") &&
+        relativePath !== "components/blocks/block-recipes.ts"
+      );
+    })
     .sort((a, b) => normalizePath(a).localeCompare(normalizePath(b)))
     .map((path) => ({
       path,

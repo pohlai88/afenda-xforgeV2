@@ -65,6 +65,11 @@ export const AFENDA_FORBIDDEN_IMPORT_PATTERNS = [
   "./tokens/",
 ] as const;
 
+/** Internal shadcn source — excluded from layout/token/variant governance (afenda-ui wraps this layer). */
+export const AFENDA_INTERNAL_IMPLEMENTATION_PATH_PREFIXES = [
+  "components/ui/",
+] as const;
+
 export const AFENDA_EXPORT_FORBIDDEN_OWNERSHIP = {
   consumersMustNotDefineAccessSurface: true,
   componentsMustNotDefinePublicExports: true,

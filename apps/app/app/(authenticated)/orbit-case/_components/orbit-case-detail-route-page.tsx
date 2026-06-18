@@ -1,4 +1,4 @@
-import { Skeleton } from "@repo/design-system/components/ui/skeleton";
+import { Skeleton } from "@repo/design-system";
 import { Suspense } from "react";
 import { OrbitCaseDetailRouteContent } from "./orbit-case-detail-route-content";
 

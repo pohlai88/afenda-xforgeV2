@@ -16,6 +16,16 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "../../../afenda-ui/sidebar";
+import { blockRecipe } from "../../block-recipes";
+import { recipe } from "../../../afenda-ui/recipes";
+import { cn } from "../../../../lib/utils";
+import {
+  dashboardNavDocumentsActionClass,
+  dashboardNavDocumentsGroupClass,
+  dashboardNavDocumentsMenuClass,
+  dashboardNavDocumentsMoreButtonClass,
+  dashboardNavDocumentsMoreIconClass,
+} from "./dashboard-recipes";
 import {
   EllipsisIcon,
   FolderIcon,
@@ -36,8 +46,13 @@ export function NavDocuments({
   const { isMobile } = useSidebar();
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Documents</SidebarGroupLabel>
+    <SidebarGroup
+      className={cn(dashboardNavDocumentsGroupClass)}
+      data-slot="nav-documents"
+    >
+      <SidebarGroupLabel className={cn(blockRecipe("blockMetricLabel"))}>
+        Documents
+      </SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
@@ -51,16 +66,17 @@ export function NavDocuments({
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction
                   showOnHover
-                  className="rounded-sm data-[state=open]:bg-accent"
+                  className={cn(dashboardNavDocumentsActionClass)}
                 >
                   <EllipsisIcon />
-                  <span className="sr-only">More</span>
+                  <span className={cn(recipe("visuallyHidden"))}>More</span>
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-24 rounded-lg"
+                className={cn(dashboardNavDocumentsMenuClass)}
                 side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
+                data-slot="nav-documents-more"
               >
                 <DropdownMenuItem>
                   <FolderIcon />
@@ -80,8 +96,8 @@ export function NavDocuments({
           </SidebarMenuItem>
         ))}
         <SidebarMenuItem>
-          <SidebarMenuButton className="text-sidebar-foreground/70">
-            <EllipsisIcon className="text-sidebar-foreground/70" />
+          <SidebarMenuButton className={cn(dashboardNavDocumentsMoreButtonClass)}>
+            <EllipsisIcon className={cn(dashboardNavDocumentsMoreIconClass)} />
             <span>More</span>
           </SidebarMenuButton>
         </SidebarMenuItem>

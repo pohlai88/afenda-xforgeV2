@@ -29,7 +29,7 @@ export {
   type SidebarLinkRenderProps,
 } from "./sidebar-link";
 export { SectionCards } from "./section-cards";
-export { SiteHeader } from "./site-header";
+export { SiteHeader, type SiteHeaderProps } from "./site-header";
 
 export { DataTable as DashboardDataTable };
 

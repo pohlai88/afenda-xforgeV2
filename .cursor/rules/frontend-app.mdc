@@ -44,9 +44,8 @@ Runtime/uncached data → `<Suspense>`. Cache: MCP `/docs/app/getting-started/ca
 
 ## Styling & imports
 
-- Tailwind + `cn()` from `@repo/design-system/lib/utils`
-- Primitives: `@repo/design-system/components/afenda-ui/*` (not `components/ui/*`)
-- Blocks: `@repo/design-system/components/blocks`
+- Tailwind + `cn()` from `@repo/design-system` or `@repo/design-system/lib/utils`
+- Primitives and blocks: `@repo/design-system` barrel (not `components/ui/*` or deep `components/afenda-ui/*`)
 - Provider: `@repo/design-system` (`DesignSystemProvider`)
 - Web UI MUST rules: `web-interface-interactions.mdc`, `web-interface-accessibility.mdc`
 - Server-only logic: `@repo/*` packages with `server-only` — never import from client components

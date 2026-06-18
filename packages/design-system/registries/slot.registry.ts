@@ -113,6 +113,7 @@ export const AFENDA_SLOT_EXACT_IDENTITY_REGISTRY = [
   "dashboard-nav-topbar",
   "dashboard-nav-topbar-left",
   "dashboard-nav-topbar-right",
+  "dashboard-page",
   "dashboard-sidebar-brand",
   "dashboard-sidebar-content",
   "dashboard-sidebar-footer",
@@ -252,6 +253,7 @@ export const AFENDA_SLOT_EXACT_IDENTITY_REGISTRY = [
   "nav-main-actions",
   "nav-main-items",
   "nav-secondary",
+  "nav-user",
   "nav-user-content",
   "nav-user-menu",
   "nav-user-trigger",
@@ -342,6 +344,7 @@ export const AFENDA_SLOT_EXACT_IDENTITY_REGISTRY = [
   "sidebar-menu-action",
   "sidebar-menu-badge",
   "sidebar-menu-button",
+  "sidebar-link",
   "sidebar-menu-item",
   "sidebar-menu-skeleton",
   "sidebar-menu-sub",
@@ -410,6 +413,7 @@ export const AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY = [
   "^app-topbar-utility-[a-z0-9-]+$",
   "^app-sidebar-[a-z0-9-]+$",
   "^nav-(secondary|main|documents)-(item|menu)-[a-z0-9-]+$",
+  "^nav-main-item-[a-z0-9-]+$",
   "^section-card-[a-z0-9-]+$",
 ] as const;
 

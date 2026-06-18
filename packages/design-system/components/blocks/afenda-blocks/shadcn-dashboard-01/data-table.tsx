@@ -104,6 +104,57 @@ import {
   TabsTrigger,
 } from "../../../afenda-ui/tabs";
 import { useIsMobile } from "../../../../hooks/use-mobile";
+import { blockRecipe } from "../../block-recipes";
+import { cn } from "../../../../lib/utils";
+import { recipe } from "../../../afenda-ui/recipes";
+import {
+  dashboardDataTableBadgeClass,
+  dashboardDataTableBodyClass,
+  dashboardDataTableColumnItemClass,
+  dashboardDataTableColumnsMenuClass,
+  dashboardDataTableDragHandleClass,
+  dashboardDataTableDragIconClass,
+  dashboardDataTableDrawerBodyClass,
+  dashboardDataTableDrawerCopyClass,
+  dashboardDataTableDrawerFieldGridClass,
+  dashboardDataTableDrawerFieldStackClass,
+  dashboardDataTableDrawerFormClass,
+  dashboardDataTableDrawerSelectTriggerClass,
+  dashboardDataTableDrawerTrendClass,
+  dashboardDataTableDrawerTrendIconClass,
+  dashboardDataTableDrawerTriggerClass,
+  dashboardDataTableEmptyCellClass,
+  dashboardDataTableFirstPageButtonClass,
+  dashboardDataTableHeaderClass,
+  dashboardDataTableHeaderRightClass,
+  dashboardDataTableIconButtonClass,
+  dashboardDataTableInlineInputClass,
+  dashboardDataTableOutlineContentClass,
+  dashboardDataTablePageActionsClass,
+  dashboardDataTablePageIndicatorClass,
+  dashboardDataTablePaginationClass,
+  dashboardDataTablePaginationClusterClass,
+  dashboardDataTablePanelClass,
+  dashboardDataTablePlaceholderPanelClass,
+  dashboardDataTablePlaceholderTabClass,
+  dashboardDataTableReviewerSelectClass,
+  dashboardDataTableRootClass,
+  dashboardDataTableRowActionsButtonClass,
+  dashboardDataTableRowActionsMenuClass,
+  dashboardDataTableRowClass,
+  dashboardDataTableRowsPerPageClass,
+  dashboardDataTableRowsPerPageLabelClass,
+  dashboardDataTableRowsPerPageSelectClass,
+  dashboardDataTableSelectionSummaryClass,
+  dashboardDataTableSelectCellClass,
+  dashboardDataTableStatusIconDoneClass,
+  dashboardDataTableTabsListClass,
+  dashboardDataTableToolbarActionsClass,
+  dashboardDataTableToolbarClass,
+  dashboardDataTableTypeCellClass,
+  dashboardDataTableViewSelectClass,
+  dashboardDataTableVisibleLgHiddenClass,
+} from "./dashboard-recipes";
 
 export const schema = z.object({
   id: z.number(),
@@ -126,10 +177,10 @@ function DragHandle({ id }: { id: number }) {
       {...listeners}
       variant="quiet"
       size="icon-sm"
-      className="size-7 text-muted-foreground hover:bg-transparent"
+      className={cn()}
     >
-      <GripVerticalIcon className="size-3 text-muted-foreground" />
-      <span className="sr-only">Drag to reorder</span>
+      <GripVerticalIcon className={cn()} />
+      <span className={cn()}>Drag to reorder</span>
     </Button>
   );
 }
@@ -143,7 +194,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "select",
     header: ({ table }) => (
-      <div className="flex items-center justify-center">
+      <div className={cn()}>
         <Checkbox
           checked={
             table.getIsAllPageRowsSelected() ||
@@ -155,7 +206,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
       </div>
     ),
     cell: ({ row }) => (
-      <div className="flex items-center justify-center">
+      <div className={cn()}>
         <Checkbox
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
@@ -178,8 +229,8 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "type",
     header: "Section Type",
     cell: ({ row }) => (
-      <div className="w-32">
-        <Badge variant="outline" className="px-1.5 text-muted-foreground">
+      <div className={cn()}>
+        <Badge variant="outline" className={cn()}>
           {row.original.type}
         </Badge>
       </div>
@@ -189,9 +240,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <Badge variant="outline" className="px-1.5 text-muted-foreground">
+      <Badge variant="outline" className={cn()}>
         {row.original.status === "Done" ? (
-          <CheckCircle2Icon className="fill-green-500 dark:fill-green-400" />
+          <CheckCircle2Icon className={cn()} />
         ) : (
           <LoaderIcon />
         )}
@@ -201,7 +252,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     accessorKey: "target",
-    header: () => <div className="w-full text-right">Target</div>,
+    header: () => <div className={cn()}>Target</div>,
     cell: ({ row }) => (
       <form
         onSubmit={(e) => {
@@ -213,11 +264,11 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           });
         }}
       >
-        <Label htmlFor={`${row.original.id}-target`} className="sr-only">
+        <Label htmlFor={`${row.original.id}-target`} className={cn()}>
           Target
         </Label>
         <Input
-          className="h-8 w-16 border-transparent bg-transparent text-right shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background dark:bg-transparent dark:hover:bg-input/30 dark:focus-visible:bg-input/30"
+          className={cn()}
           defaultValue={row.original.target}
           id={`${row.original.id}-target`}
         />
@@ -226,7 +277,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     accessorKey: "limit",
-    header: () => <div className="w-full text-right">Limit</div>,
+    header: () => <div className={cn()}>Limit</div>,
     cell: ({ row }) => (
       <form
         onSubmit={(e) => {
@@ -238,11 +289,11 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           });
         }}
       >
-        <Label htmlFor={`${row.original.id}-limit`} className="sr-only">
+        <Label htmlFor={`${row.original.id}-limit`} className={cn()}>
           Limit
         </Label>
         <Input
-          className="h-8 w-16 border-transparent bg-transparent text-right shadow-none hover:bg-input/30 focus-visible:border focus-visible:bg-background dark:bg-transparent dark:hover:bg-input/30 dark:focus-visible:bg-input/30"
+          className={cn()}
           defaultValue={row.original.limit}
           id={`${row.original.id}-limit`}
         />
@@ -261,12 +312,12 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
 
       return (
         <>
-          <Label htmlFor={`${row.original.id}-reviewer`} className="sr-only">
+          <Label htmlFor={`${row.original.id}-reviewer`} className={cn()}>
             Reviewer
           </Label>
           <Select>
             <SelectTrigger
-              className="w-38 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate"
+              className={cn()}
               size="compact"
               id={`${row.original.id}-reviewer`}
             >
@@ -290,14 +341,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
         <DropdownMenuTrigger asChild>
           <Button
             variant="quiet"
-            className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
+            className={cn()}
             size="icon-sm"
           >
             <EllipsisVerticalIcon />
-            <span className="sr-only">Open menu</span>
+            <span className={cn()}>Open menu</span>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-32">
+        <DropdownMenuContent align="end" className={cn()}>
           <DropdownMenuItem>Edit</DropdownMenuItem>
           <DropdownMenuItem>Make a copy</DropdownMenuItem>
           <DropdownMenuItem>Favorite</DropdownMenuItem>
@@ -319,7 +370,7 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
       data-state={row.getIsSelected() && "selected"}
       data-dragging={isDragging}
       ref={setNodeRef}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+      className={cn()}
       style={{
         transform: CSS.Transform.toString(transform),
         transition: transition,
@@ -402,15 +453,16 @@ export function DataTable({
   return (
     <Tabs
       defaultValue="outline"
-      className="w-full flex-col justify-start gap-6"
+      className={cn(blockRecipe("blockShell"), dashboardDataTableRootClass)}
+      data-slot="dashboard-data-table"
     >
-      <div className="flex items-center justify-between px-4 lg:px-6">
-        <Label htmlFor="view-selector" className="sr-only">
+      <div className={cn()}>
+        <Label htmlFor="view-selector" className={cn()}>
           View
         </Label>
         <Select defaultValue="outline">
           <SelectTrigger
-            className="flex w-fit @4xl/main:hidden"
+            className={cn()}
             size="compact"
             id="view-selector"
           >
@@ -423,7 +475,7 @@ export function DataTable({
             <SelectItem value="focus-documents">Focus Documents</SelectItem>
           </SelectContent>
         </Select>
-        <TabsList className="hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:bg-muted-foreground/30 **:data-[slot=badge]:px-1 @4xl/main:flex">
+        <TabsList className={cn()}>
           <TabsTrigger value="outline">Outline</TabsTrigger>
           <TabsTrigger value="past-performance">
             Past Performance{" "}
@@ -439,17 +491,17 @@ export function DataTable({
           </TabsTrigger>
           <TabsTrigger value="focus-documents">Focus Documents</TabsTrigger>
         </TabsList>
-        <div className="flex items-center gap-2">
+        <div className={cn()}>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="sm">
                 <Columns3Icon />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
+                <span className={cn()}>Customize Columns</span>
+                <span className={cn()}>Columns</span>
                 <ChevronDownIcon />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuContent align="end" className={cn()}>
               {table
                 .getAllColumns()
                 .filter(
@@ -461,7 +513,7 @@ export function DataTable({
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
-                      className="capitalize"
+                      className={cn()}
                       checked={column.getIsVisible()}
                       onCheckedChange={(value) =>
                         column.toggleVisibility(!!value)
@@ -475,15 +527,15 @@ export function DataTable({
           </DropdownMenu>
           <Button variant="secondary" size="sm">
             <PlusIcon />
-            <span className="hidden lg:inline">Add Section</span>
+            <span className={cn()}>Add Section</span>
           </Button>
         </div>
       </div>
       <TabsContent
         value="outline"
-        className="relative flex flex-col gap-4 overflow-auto px-4 lg:px-6"
+        className={cn()}
       >
-        <div className="overflow-hidden rounded-lg border">
+        <div className={cn()}>
           <DndContext
             collisionDetection={closestCenter}
             modifiers={[restrictToVerticalAxis]}
@@ -492,7 +544,7 @@ export function DataTable({
             id={sortableId}
           >
             <Table>
-              <TableHeader className="sticky top-0 z-10 bg-muted">
+              <TableHeader className={cn()}>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow key={headerGroup.id}>
                     {headerGroup.headers.map((header) => {
@@ -510,7 +562,7 @@ export function DataTable({
                   </TableRow>
                 ))}
               </TableHeader>
-              <TableBody className="**:data-[slot=table-cell]:first:w-8">
+              <TableBody className={cn()}>
                 {table.getRowModel().rows?.length ? (
                   <SortableContext
                     items={dataIds}
@@ -524,7 +576,7 @@ export function DataTable({
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
-                      className="h-24 text-center"
+                      className={cn()}
                     >
                       No results.
                     </TableCell>
@@ -534,14 +586,14 @@ export function DataTable({
             </Table>
           </DndContext>
         </div>
-        <div className="flex items-center justify-between px-4">
-          <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
+        <div className={cn()}>
+          <div className={cn()}>
             {table.getFilteredSelectedRowModel().rows.length} of{" "}
             {table.getFilteredRowModel().rows.length} row(s) selected.
           </div>
-          <div className="flex w-full items-center gap-8 lg:w-fit">
-            <div className="hidden items-center gap-2 lg:flex">
-              <Label htmlFor="rows-per-page" className="text-sm font-medium">
+          <div className={cn()}>
+            <div className={cn()}>
+              <Label htmlFor="rows-per-page" className={cn()}>
                 Rows per page
               </Label>
               <Select
@@ -550,7 +602,7 @@ export function DataTable({
                   table.setPageSize(Number(value));
                 }}
               >
-                <SelectTrigger size="compact" className="w-20" id="rows-per-page">
+                <SelectTrigger size="compact" className={cn()} id="rows-per-page">
                   <SelectValue
                     placeholder={table.getState().pagination.pageSize}
                   />
@@ -564,48 +616,48 @@ export function DataTable({
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex w-fit items-center justify-center text-sm font-medium">
+            <div className={cn()}>
               Page {table.getState().pagination.pageIndex + 1} of{" "}
               {table.getPageCount()}
             </div>
-            <div className="ml-auto flex items-center gap-2 lg:ml-0">
+            <div className={cn()}>
               <Button
                 variant="secondary"
-                className="hidden h-8 w-8 p-0 lg:flex"
+                className={cn()}
                 onClick={() => table.setPageIndex(0)}
                 disabled={!table.getCanPreviousPage()}
               >
-                <span className="sr-only">Go to first page</span>
+                <span className={cn()}>Go to first page</span>
                 <ChevronsLeftIcon />
               </Button>
               <Button
                 variant="secondary"
-                className="size-8"
+                className={cn()}
                 size="icon-sm"
                 onClick={() => table.previousPage()}
                 disabled={!table.getCanPreviousPage()}
               >
-                <span className="sr-only">Go to previous page</span>
+                <span className={cn()}>Go to previous page</span>
                 <ChevronLeftIcon />
               </Button>
               <Button
                 variant="secondary"
-                className="size-8"
+                className={cn()}
                 size="icon-sm"
                 onClick={() => table.nextPage()}
                 disabled={!table.getCanNextPage()}
               >
-                <span className="sr-only">Go to next page</span>
+                <span className={cn()}>Go to next page</span>
                 <ChevronRightIcon />
               </Button>
               <Button
                 variant="secondary"
-                className="hidden size-8 lg:flex"
+                className={cn(dashboardDataTableIconButtonClass, "hidden lg:flex")}
                 size="icon-sm"
                 onClick={() => table.setPageIndex(table.getPageCount() - 1)}
                 disabled={!table.getCanNextPage()}
               >
-                <span className="sr-only">Go to last page</span>
+                <span className={cn()}>Go to last page</span>
                 <ChevronsRightIcon />
               </Button>
             </div>
@@ -614,18 +666,18 @@ export function DataTable({
       </TabsContent>
       <TabsContent
         value="past-performance"
-        className="flex flex-col px-4 lg:px-6"
+        className={cn()}
       >
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed" />
+        <div className={cn()} />
       </TabsContent>
-      <TabsContent value="key-personnel" className="flex flex-col px-4 lg:px-6">
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed" />
+      <TabsContent value="key-personnel" className={cn()}>
+        <div className={cn()} />
       </TabsContent>
       <TabsContent
         value="focus-documents"
-        className="flex flex-col px-4 lg:px-6"
+        className={cn()}
       >
-        <div className="aspect-video w-full flex-1 rounded-lg border border-dashed" />
+        <div className={cn()} />
       </TabsContent>
     </Tabs>
   );
@@ -643,10 +695,12 @@ const chartData = [
 const chartConfig = {
   desktop: {
     label: "Desktop",
+    // afenda-variant-ignore-next-line -- chart series color references design token, not component variant
     color: "var(--primary)",
   },
   mobile: {
     label: "Mobile",
+    // afenda-variant-ignore-next-line -- chart series color references design token, not component variant
     color: "var(--primary)",
   },
 } satisfies ChartConfig;
@@ -657,18 +711,18 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
-        <Button variant="link" className="w-fit px-0 text-left text-foreground">
+        <Button variant="link" className={cn()}>
           {item.header}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
-        <DrawerHeader className="gap-1">
+        <DrawerHeader className={cn()}>
           <DrawerTitle>{item.header}</DrawerTitle>
           <DrawerDescription>
             Showing total visitors for the last 6 months
           </DrawerDescription>
         </DrawerHeader>
-        <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
+        <div className={cn()}>
           {!isMobile && (
             <>
               <ChartContainer config={chartConfig}>
@@ -712,12 +766,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                 </AreaChart>
               </ChartContainer>
               <Separator />
-              <div className="grid gap-2">
-                <div className="flex gap-2 leading-none font-medium">
+              <div className={cn()}>
+                <div className={cn()}>
                   Trending up by 5.2% this month{" "}
-                  <TrendingUpIcon className="size-4" />
+                  <TrendingUpIcon className={cn()} />
                 </div>
-                <div className="text-muted-foreground">
+                <div className={cn()}>
                   Showing total visitors for the last 6 months. This is just
                   some random text to test the layout. It spans multiple lines
                   and should wrap around.
@@ -726,16 +780,16 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
               <Separator />
             </>
           )}
-          <form className="flex flex-col gap-4">
-            <div className="flex flex-col gap-3">
+          <form className={cn()}>
+            <div className={cn()}>
               <Label htmlFor="header">Header</Label>
               <Input id="header" defaultValue={item.header} />
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
+            <div className={cn()}>
+              <div className={cn()}>
                 <Label htmlFor="type">Type</Label>
                 <Select defaultValue={item.type}>
-                  <SelectTrigger id="type" className="w-full">
+                  <SelectTrigger id="type" className={cn()}>
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -758,10 +812,10 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex flex-col gap-3">
+              <div className={cn()}>
                 <Label htmlFor="status">Status</Label>
                 <Select defaultValue={item.status}>
-                  <SelectTrigger id="status" className="w-full">
+                  <SelectTrigger id="status" className={cn()}>
                     <SelectValue placeholder="Select a status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -772,20 +826,20 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                 </Select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
+            <div className={cn()}>
+              <div className={cn()}>
                 <Label htmlFor="target">Target</Label>
                 <Input id="target" defaultValue={item.target} />
               </div>
-              <div className="flex flex-col gap-3">
+              <div className={cn()}>
                 <Label htmlFor="limit">Limit</Label>
                 <Input id="limit" defaultValue={item.limit} />
               </div>
             </div>
-            <div className="flex flex-col gap-3">
+            <div className={cn()}>
               <Label htmlFor="reviewer">Reviewer</Label>
               <Select defaultValue={item.reviewer}>
-                <SelectTrigger id="reviewer" className="w-full">
+                <SelectTrigger id="reviewer" className={cn()}>
                   <SelectValue placeholder="Select a reviewer" />
                 </SelectTrigger>
                 <SelectContent>

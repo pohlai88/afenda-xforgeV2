@@ -276,6 +276,7 @@ function scanFiles(): SourceFile[] {
       const relativePath = normalizePath(relative(packageRoot, path));
 
       return (
+        !relativePath.startsWith("components/ui/") &&
         !relativePath.startsWith("contracts/") &&
         !relativePath.startsWith("scripts/") &&
         !relativePath.startsWith("test/") &&

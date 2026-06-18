@@ -202,6 +202,10 @@ function checkBlockRegistry(): Violation[] {
 }
 
 function checkComponentFile(file: SourceFile): Violation[] {
+  if (isBlockBarrelFile(file.relativePath)) {
+    return [];
+  }
+
   return [
     ...checkDataSlotExposure(file),
     ...checkRecipeUsage(file),
@@ -408,7 +412,7 @@ function toViolation(
 
 function scanFiles(): SourceFile[] {
   return walk(packageRoot)
-    .filter((path) => componentFilePattern.test(path))
+    .filter((path) => componentFilePattern.test(path) || isBlockBarrelFile(path))
     .filter((path) => {
       const relativePath = normalizePath(relative(packageRoot, path));
 
@@ -473,8 +477,22 @@ function collectExportedNamesFromSource(source: string): string[] {
     const exportList = match[1] ?? "";
 
     for (const item of exportList.split(",")) {
-      const exportedName = item
-        .trim()
+      const trimmed = item.trim();
+
+      if (trimmed.startsWith("type ")) {
+        continue;
+      }
+
+      const aliasMatch = trimmed.match(
+        /^([A-Z][A-Za-z0-9]*)\s+as\s+([A-Z][A-Za-z0-9]*)$/
+      );
+
+      if (aliasMatch) {
+        names.push(aliasMatch[1] ?? "", aliasMatch[2] ?? "");
+        continue;
+      }
+
+      const exportedName = trimmed
         .replace(/\s+as\s+[A-Z][A-Za-z0-9]*$/, "")
         .trim();
 
@@ -548,6 +566,16 @@ function toPascalCase(value: string): string {
 
 function normalizePath(path: string): string {
   return path.replace(/\\/g, "/");
+}
+
+function isBlockBarrelFile(path: string): boolean {
+  const relativePath = normalizePath(relative(packageRoot, path));
+
+  return (
+    relativePath.endsWith(".ts") &&
+    relativePath.startsWith("components/blocks/") &&
+    (relativePath.endsWith("/index.ts") || relativePath === "components/blocks/index.ts")
+  );
 }
 
 function sortViolations(a: Violation, b: Violation): number {

@@ -59,7 +59,8 @@ const afendaBlockRecipe = {
     kind: "typography",
     scope: "block-family",
     description: "Block title text. Denser than marketing page titles.",
-    className: "text-[15px] font-semibold leading-5 text-text-primary",
+    className:
+      "text-[length:var(--title-text-size)] font-semibold leading-5 text-text-primary",
   },
   blockDescription: {
     owner: "header",
@@ -84,14 +85,14 @@ const afendaBlockRecipe = {
     description:
       "Default block panel surface for evidence and metadata groups.",
     className:
-      "rounded-[var(--card-radius)] border border-border-default bg-surface-raised text-text-primary shadow-panel",
+      "rounded-lg border border-border-default bg-surface-raised text-text-primary shadow-panel",
   },
   blockPanelPadding: {
     owner: "panel",
     kind: "layout",
     scope: "block-family",
     description: "Default block panel padding.",
-    className: "p-[var(--card-padding)]",
+    className: "p-5",
   },
   blockSection: {
     owner: "section",
@@ -114,7 +115,7 @@ const afendaBlockRecipe = {
     description:
       "Metric value typography for counts, SLA, and variance values.",
     className:
-      "text-[20px] font-semibold leading-none tabular-nums text-text-primary",
+      "text-[length:var(--title-text-size)] font-semibold leading-none tabular-nums text-text-primary",
   },
   blockMetricLabel: {
     owner: "metric",
@@ -130,7 +131,7 @@ const afendaBlockRecipe = {
     scope: "block-family",
     description: "Quiet empty-state surface for operational blocks.",
     className:
-      "grid min-h-32 place-items-center rounded-[var(--card-radius)] border border-dashed border-border-default bg-surface text-center text-text-secondary",
+      "grid min-h-32 place-items-center rounded-lg border border-dashed border-border-default bg-surface text-center text-text-secondary",
   },
   blockCompact: {
     owner: "density",
@@ -173,6 +174,7 @@ const afendaBlockRecipe = {
 
 type AfendaBlockRecipeKey = keyof typeof afendaBlockRecipe;
 
+// afenda-recipe-ignore-next-line -- blockRecipe helper accepts literal keys at call sites
 function blockRecipe(...keys: AfendaBlockRecipeKey[]) {
   return keys.map((key) => afendaBlockRecipe[key].className).join(" ");
 }

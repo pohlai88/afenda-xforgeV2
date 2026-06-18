@@ -55,18 +55,18 @@ jobs:
       - name: Check generated AI context
         run: pnpm --filter @repo/design-system generate:ai-context:check
 
+      - name: Run governance gate
+        run: pnpm --filter @repo/design-system governance
+
       - name: Run governance report
+        if: always()
         id: governance
         shell: bash
         run: |
-          set +e
           node packages/design-system/scripts/check-design-system-governance.ts --json \
             > design-system-governance.json \
             2> design-system-governance.stderr.log
-          status=$?
-          set -e
-          echo "status=$status" >> "$GITHUB_OUTPUT"
-          exit 0
+          echo "status=0" >> "$GITHUB_OUTPUT"
 
       - name: Summarize governance report
         shell: bash
@@ -122,8 +122,3 @@ jobs:
             design-system-governance.stderr.log
           if-no-files-found: error
 
-      - name: Enforce governance gate
-        if: steps.governance.outputs.status != '0' && vars.DESIGN_SYSTEM_GOVERNANCE_ENFORCE == 'true'
-        run: |
-          echo "Design-system governance failed and DESIGN_SYSTEM_GOVERNANCE_ENFORCE=true."
-          exit 1

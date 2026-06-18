@@ -27,7 +27,20 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "../../../afenda-ui/toggle-group";
+import { blockRecipe } from "../../block-recipes";
+import { cn } from "../../../../lib/utils";
 import { useIsMobile } from "../../../../hooks/use-mobile";
+import {
+  dashboardChartCardClass,
+  dashboardChartContainerClass,
+  dashboardChartDescriptionCompactClass,
+  dashboardChartDescriptionWideClass,
+  dashboardChartContentClass,
+  dashboardChartSelectContentClass,
+  dashboardChartSelectItemClass,
+  dashboardChartSelectTriggerClass,
+  dashboardChartToggleGroupClass,
+} from "./dashboard-recipes";
 
 export const description = "An interactive area chart";
 
@@ -131,10 +144,12 @@ const chartConfig = {
   },
   desktop: {
     label: "Desktop",
+    // afenda-variant-ignore-next-line -- chart series color references design token, not component variant
     color: "var(--primary)",
   },
   mobile: {
     label: "Mobile",
+    // afenda-variant-ignore-next-line -- chart series color references design token, not component variant
     color: "var(--primary)",
   },
 } satisfies ChartConfig;
@@ -164,14 +179,19 @@ export function ChartAreaInteractive() {
   });
 
   return (
-    <Card className="@container/card">
+    <Card
+      className={cn(blockRecipe("blockPanel"), dashboardChartCardClass)}
+      data-slot="chart-area-interactive"
+    >
       <CardHeader>
         <CardTitle>Total Visitors</CardTitle>
         <CardDescription>
-          <span className="hidden @[540px]/card:block">
+          <span className={cn()}>
             Total for the last 3 months
           </span>
-          <span className="@[540px]/card:hidden">Last 3 months</span>
+          <span className={cn()}>
+            Last 3 months
+          </span>
         </CardDescription>
         <CardAction>
           <ToggleGroup
@@ -179,7 +199,7 @@ export function ChartAreaInteractive() {
             value={timeRange}
             onValueChange={setTimeRange}
             variant="outline"
-            className="hidden *:data-[slot=toggle-group-item]:px-4! @[767px]/card:flex"
+            className={cn()}
           >
             <ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
             <ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
@@ -187,30 +207,30 @@ export function ChartAreaInteractive() {
           </ToggleGroup>
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger
-              className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
+              className={cn()}
               size="compact"
               aria-label="Select a value"
             >
               <SelectValue placeholder="Last 3 months" />
             </SelectTrigger>
-            <SelectContent className="rounded-xl">
-              <SelectItem value="90d" className="rounded-lg">
+            <SelectContent className={cn()}>
+              <SelectItem value="90d" className={cn()}>
                 Last 3 months
               </SelectItem>
-              <SelectItem value="30d" className="rounded-lg">
+              <SelectItem value="30d" className={cn()}>
                 Last 30 days
               </SelectItem>
-              <SelectItem value="7d" className="rounded-lg">
+              <SelectItem value="7d" className={cn()}>
                 Last 7 days
               </SelectItem>
             </SelectContent>
           </Select>
         </CardAction>
       </CardHeader>
-      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+      <CardContent className={cn()}>
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
+          className={cn()}
         >
           <AreaChart data={filteredData}>
             <defs>

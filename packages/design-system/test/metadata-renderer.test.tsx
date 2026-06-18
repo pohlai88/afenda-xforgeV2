@@ -42,7 +42,7 @@ import {
   auditEvidenceReviewMetadata,
   tenantConfigurationDataSources,
   tenantConfigurationMetadata,
-} from "../components/blocks/fixtures";
+} from "./metadata-renderer-fixtures";
 import {
   createMetadataBlockRenderContext,
   resolveDefaultMetadataPermission,

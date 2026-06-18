@@ -2,7 +2,7 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { operatorAppTopbarShellClass } from "../components/blocks/afenda-blocks/topbars/topbar-recipes";
+import { operatorAppTopbarShellClass } from "../components/blocks/afenda-blocks/shadcn-dashboard-01/topbar/topbar-recipes";
 import { blockRecipe } from "../components/blocks/block-recipes";
 
 const topbarsRoot = join(
@@ -11,7 +11,8 @@ const topbarsRoot = join(
   "components",
   "blocks",
   "afenda-blocks",
-  "topbars"
+  "shadcn-dashboard-01",
+  "topbar"
 );
 
 const forbiddenSelfPackageImports = [/from\s+["']@repo\/design-system(?:\/[^"']*)?["']/];

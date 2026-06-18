@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { WorkspaceRouteShell } from "../components/workspace-route-shell";
+import { RouteSections } from "../components/route-sections";
 
 const title = "Codex Drive";
 const description =
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function CodexDrivePage() {
   return (
-    <WorkspaceRouteShell
+    <RouteSections
       description={description}
       eyebrow="Work / Codex Drive"
       items={[

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { resolveTopbarSidebarControl } from "../components/blocks/afenda-blocks/topbars/topbar-helpers";
+import { resolveTopbarSidebarControl } from "../components/blocks/afenda-blocks/shadcn-dashboard-01/topbar/topbar-helpers";
 
 describe("resolveTopbarSidebarControl", () => {
   it("returns null when sidebar control is omitted or false", () => {

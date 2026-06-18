@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { WorkspaceRouteShell } from "../../components/workspace-route-shell";
+import { RouteSections } from "../../components/route-sections";
 
 const systemAreas = {
   notifications: {
@@ -53,7 +53,7 @@ export default async function SystemAreaPage({
   }
 
   return (
-    <WorkspaceRouteShell
+    <RouteSections
       description={systemArea.description}
       eyebrow={`System / ${systemArea.title}`}
       items={systemArea.items.map((item) => ({

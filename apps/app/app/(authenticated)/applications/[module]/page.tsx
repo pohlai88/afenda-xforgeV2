@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { WorkspaceRouteShell } from "../../components/workspace-route-shell";
+import { RouteSections } from "../../components/route-sections";
 
 const applicationModules = {
   crm: {
@@ -78,7 +78,7 @@ export default async function ApplicationModulePage({
   }
 
   return (
-    <WorkspaceRouteShell
+    <RouteSections
       description={applicationModule.description}
       eyebrow={`Applications / ${applicationModule.title}`}
       items={applicationModule.items.map((item) => ({

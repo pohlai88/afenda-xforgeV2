@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   defaultSidebarLink,
   resolveSidebarLinkRenderer,
-} from "../components/blocks/afenda-blocks/sidebars/sidebar-link-defaults";
+} from "../components/blocks/afenda-blocks/shadcn-dashboard-01/sidebar-link";
 
 describe("resolveSidebarLinkRenderer", () => {
   it("returns the first provided renderer", () => {

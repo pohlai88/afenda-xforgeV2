@@ -4,7 +4,7 @@ import { gotoPasswordSignIn } from "./helpers/sign-in";
 
 const INVALID_AUTH_LINK_COPY_PATTERN = /invalid or has expired/i;
 const PASSWORD_POLICY_COPY_PATTERN = /uppercase/i;
-const ROOT_URL_PATTERN = /\/$/;
+const DASHBOARD_PATH_PATTERN = /\/dashboard/;
 const SIGN_IN_ERROR_URL_PATTERN = /\/sign-in\?error=/;
 const SIGN_IN_PATH_PATTERN = /\/sign-in/;
 const SIGN_IN_URL_PATTERN = /\/sign-in$/;
@@ -33,7 +33,7 @@ test.describe("Supabase auth flows @auth", () => {
     await expect(page).toHaveURL(SIGN_IN_PATH_PATTERN);
   });
 
-  test("signs in with valid credentials and loads workspace", async ({
+  test("signs in with valid credentials and loads dashboard", async ({
     page,
   }) => {
     const passwordField = await gotoPasswordSignIn(page);
@@ -41,10 +41,8 @@ test.describe("Supabase auth flows @auth", () => {
     await passwordField.fill(e2ePassword);
     await page.getByRole("button", { name: "Sign in" }).click();
 
-    await expect(page).toHaveURL(ROOT_URL_PATTERN, { timeout: 60_000 });
-    await expect(
-      page.getByRole("heading", { name: "Governed tenant dashboard" })
-    ).toBeVisible();
+    await expect(page).toHaveURL(DASHBOARD_PATH_PATTERN, { timeout: 60_000 });
+    await expect(page.getByRole("heading", { name: "Documents" })).toBeVisible();
   });
 
   test("signs out and blocks authenticated routes", async ({ page }) => {
@@ -52,12 +50,10 @@ test.describe("Supabase auth flows @auth", () => {
     await page.getByLabel("Email").fill(e2eEmail);
     await passwordField.fill(e2ePassword);
     await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page).toHaveURL(ROOT_URL_PATTERN, { timeout: 60_000 });
+    await expect(page).toHaveURL(DASHBOARD_PATH_PATTERN, { timeout: 60_000 });
 
-    await page.getByRole("button", { name: "Toggle Sidebar" }).click();
-    await page
-      .getByRole("button", { name: "Sign out" })
-      .evaluate((button) => (button as HTMLButtonElement).click());
+    await page.goto("/account/security");
+    await page.getByRole("button", { name: "Sign out this device" }).click();
 
     await expect(page).toHaveURL(SIGN_IN_URL_PATTERN);
 
@@ -133,7 +129,7 @@ test.describe("Supabase auth flows @auth", () => {
     await page.getByLabel("Email").fill(e2eEmail);
     await passwordField.fill(e2ePassword);
     await page.getByRole("button", { name: "Sign in" }).click();
-    await expect(page).toHaveURL(ROOT_URL_PATTERN, { timeout: 60_000 });
+    await expect(page).toHaveURL(DASHBOARD_PATH_PATTERN, { timeout: 60_000 });
 
     await page.goto("/search?q=Building");
     await expect(

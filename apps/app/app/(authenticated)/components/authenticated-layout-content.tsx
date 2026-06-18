@@ -1,4 +1,3 @@
-import { getUserDisplayName } from "@repo/auth/metadata";
 import { resolveServerMfaRedirect } from "@repo/auth/mfa-login.server";
 import {
   createOrganization,
@@ -13,9 +12,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { env } from "@/env";
-import { AuthenticatedAppShell } from "./authenticated-app-shell";
 import { MfaChallengeShell } from "./mfa-challenge-shell";
-import { isStandaloneAuthenticatedRoute } from "../standalone-routes";
 
 interface AuthenticatedLayoutContentProperties {
   readonly children: ReactNode;
@@ -66,22 +63,14 @@ export const AuthenticatedLayoutContent = async ({
     }
   }
 
-  if (isStandaloneAuthenticatedRoute(pathname)) {
-    return <>{children}</>;
-  }
-
   return (
-    <AuthenticatedAppShell
-      activeOrganizationId={orgId}
-      userEmail={user.email}
-      userName={getUserDisplayName(user.user_metadata)}
-    >
+    <>
       {betaFeature ? (
         <div className="rounded-[var(--card-radius)] border border-[var(--status-info)]/25 bg-[var(--status-info)]/10 px-3 py-2 text-center text-[length:var(--xforge-font-caption-size)] text-[var(--status-info)]">
           Beta feature now available
         </div>
       ) : null}
       {children}
-    </AuthenticatedAppShell>
+    </>
   );
 };

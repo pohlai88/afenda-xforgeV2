@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { WorkspaceRouteShell } from "../components/workspace-route-shell";
+import { RouteSections } from "../components/route-sections";
 
 const title = "Arcana Vault";
 const description =
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function ArcanaVaultPage() {
   return (
-    <WorkspaceRouteShell
+    <RouteSections
       description={description}
       eyebrow="Work / Arcana Vault"
       items={[

@@ -2,27 +2,19 @@ import type {
   ApprovalQueueRow,
   RiskEvidenceItem,
   StatsMetric,
-  TopbarActionMenuItem,
-  TopbarScopeSwitcherConfig,
 } from "@repo/design-system";
 import {
+  AppSidebar,
   ApprovalQueueBlock,
   AuthenticatedAppShellBlock,
   Badge,
   Button,
   blockRecipe,
-  DEFAULT_ERP_ACTIONS_MENU_ITEMS,
-  DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
-  DEMO_ERP_SIDEBAR_LABEL_GROUPS,
-  DEMO_ERP_SIDEBAR_NAV_GROUPS,
-  DEMO_ERP_SIDEBAR_QUICK_ACTIONS,
+  DashboardNavTopbar,
+  DEMO_DASHBOARD_NAV_TOPBAR_PROPS,
   EmptyPanel,
   Kbd,
-  OperatorAppSidebar,
-  OperatorAppTopbar,
   RiskEvidencePanel,
-  SidebarFooterProfile,
-  SidebarFooterTrailingControl,
   StatsStrip,
 } from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
@@ -268,98 +260,11 @@ function DemoCommandFilterBar() {
 }
 
 function DemoAppTopbar() {
-  const scopeSwitchers: TopbarScopeSwitcherConfig[] = [
-    {
-      id: "company",
-      label: "Company",
-      activeOptionId: "northwind",
-      options: [
-        { id: "northwind", label: "Northwind" },
-        { id: "aster", label: "Aster" },
-        { id: "mercury", label: "Mercury" },
-        { id: "atlas", label: "Atlas" },
-      ],
-    },
-    {
-      id: "department",
-      label: "Department",
-      activeOptionId: "finance",
-      options: [
-        { id: "finance", label: "Finance" },
-        { id: "operations", label: "Operations" },
-        { id: "hr", label: "HR" },
-        { id: "compliance", label: "Compliance" },
-      ],
-    },
-    {
-      id: "team",
-      label: "Team",
-      activeOptionId: "controls",
-      options: [
-        { id: "controls", label: "Controls" },
-        { id: "posting", label: "Posting" },
-        { id: "evidence", label: "Evidence" },
-        { id: "policy", label: "Policy" },
-      ],
-    },
-    {
-      id: "project",
-      label: "Project",
-      activeOptionId: "june-close",
-      options: [
-        { id: "june-close", label: "June close" },
-        { id: "q3-audit", label: "Q3 audit" },
-        { id: "vendor-review", label: "Vendor review" },
-        { id: "policy-cleanup", label: "Policy cleanup" },
-      ],
-    },
-  ];
-
-  const defaultEnabledUtilityIds = [
-    "help",
-    "feedback",
-    "notifications",
-  ] as const;
-  const actionsMenuItems: readonly TopbarActionMenuItem[] =
-    DEFAULT_ERP_ACTIONS_MENU_ITEMS;
-
-  return (
-    <OperatorAppTopbar
-      brand={{
-        icon: <Building2Icon aria-hidden="true" className="size-4" />,
-      }}
-      scopeSwitchers={scopeSwitchers}
-      sidebarControl
-      utilitiesRail={{
-        catalog: DEFAULT_ERP_UTILITIES_MARKET_ITEMS,
-        defaultEnabledIds: defaultEnabledUtilityIds,
-        defaultOrder: [...defaultEnabledUtilityIds],
-        actionsMenu: {
-          actions: actionsMenuItems,
-        },
-        onRequestUtility: () => undefined,
-      }}
-    />
-  );
+  return <DashboardNavTopbar {...DEMO_DASHBOARD_NAV_TOPBAR_PROPS} />;
 }
 
 function DemoAppSidebar() {
-  return (
-    <OperatorAppSidebar
-      footer={
-        <SidebarFooterProfile
-          avatarFallback="MS"
-          href="#profile"
-          primaryLabel="Mina Shah"
-          secondaryLabel="Control owner"
-          trailingControl={<SidebarFooterTrailingControl />}
-        />
-      }
-      groups={DEMO_ERP_SIDEBAR_NAV_GROUPS}
-      labelGroups={DEMO_ERP_SIDEBAR_LABEL_GROUPS}
-      quickActions={DEMO_ERP_SIDEBAR_QUICK_ACTIONS}
-    />
-  );
+  return <AppSidebar variant="inset" />;
 }
 
 function DemoSiteTopbar() {

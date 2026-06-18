@@ -69,7 +69,8 @@ const afendaRecipe = {
     kind: "composition",
     scope: "global",
     description: "Compact modal, sheet, and panel title text.",
-    className: "text-[14px] font-semibold leading-5 text-text-primary",
+    className:
+      "text-[length:var(--title-text-size)] font-semibold leading-5 text-text-primary",
   },
   captionText: {
     owner: "typography",
@@ -195,7 +196,7 @@ const afendaRecipe = {
     scope: "global",
     description: "Default bordered control surface.",
     className:
-      "rounded-[var(--button-radius)] border border-border-default bg-surface-raised",
+      "rounded-md border border-border-default bg-surface-raised",
   },
   flatControlSurface: {
     owner: "surface",
@@ -203,7 +204,7 @@ const afendaRecipe = {
     scope: "global",
     description: "Flat bordered control surface for ERP form controls.",
     className:
-      "rounded-[var(--button-radius)] border border-border-default bg-surface-raised shadow-none",
+      "rounded-md border border-border-default bg-surface-raised shadow-none",
   },
   overlaySurface: {
     owner: "surface",
@@ -211,7 +212,7 @@ const afendaRecipe = {
     scope: "component-family",
     description: "Floating overlay surface used by popover, select, and menus.",
     className:
-      "rounded-[var(--card-radius)] border border-border-default bg-surface-overlay text-text-primary shadow-popover",
+      "rounded-lg border border-border-default bg-surface-overlay text-text-primary shadow-popover",
   },
   panelSurface: {
     owner: "surface",
@@ -219,7 +220,7 @@ const afendaRecipe = {
     scope: "component-family",
     description: "Panel surface for cards and table containers.",
     className:
-      "rounded-[var(--card-radius)] border border-border-default bg-surface-raised text-text-primary shadow-panel",
+      "rounded-lg border border-border-default bg-surface-raised text-text-primary shadow-panel",
   },
   modalSurface: {
     owner: "surface",
@@ -227,7 +228,7 @@ const afendaRecipe = {
     scope: "component-family",
     description: "Modal surface used by dialog and alert dialog content.",
     className:
-      "rounded-[var(--modal-radius)] border border-border-default bg-surface-overlay text-text-primary shadow-overlay",
+      "rounded-2xl border border-border-default bg-surface-overlay text-text-primary shadow-overlay",
   },
   controlDefaultSize: {
     owner: "primitive",
@@ -258,7 +259,7 @@ const afendaRecipe = {
     description:
       "Base interactive row used by dropdown, command, select, menu, and listbox items.",
     className:
-      "group relative flex min-h-8 cursor-default select-none items-center gap-2 rounded-[var(--xforge-radius-sm)] px-2 py-1.5 text-[length:var(--xforge-font-body-size)] font-normal leading-none text-text-primary outline-none transition-colors",
+      "group relative flex min-h-8 cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-[length:var(--xforge-font-body-size)] font-normal leading-none text-text-primary outline-none transition-colors",
   },
   rowInset: {
     owner: "row",
@@ -366,7 +367,7 @@ const afendaRecipe = {
     scope: "component-family",
     description: "Base chart tooltip indicator geometry and color binding.",
     className:
-      "shrink-0 rounded-[var(--chart-indicator-radius)] border-(--color-border) bg-(--color-bg)",
+      "shrink-0 rounded-sm border-(--color-border) bg-(--color-bg)",
   },
   chartTooltipIndicatorDot: {
     owner: "icon",
@@ -424,7 +425,7 @@ const afendaRecipe = {
     kind: "composition",
     scope: "component-family",
     description: "Chart legend color swatch geometry.",
-    className: "size-2 shrink-0 rounded-[var(--chart-indicator-radius)]",
+    className: "size-2 shrink-0 rounded-sm",
   },
   checkboxIndicator: {
     owner: "icon",
@@ -548,7 +549,7 @@ const afendaRecipe = {
     scope: "component-family",
     description: "Shared close button chrome for dismissible overlays.",
     className:
-      "absolute top-4 right-4 inline-flex size-7 items-center justify-center rounded-[var(--xforge-radius-sm)] text-text-secondary hover:bg-surface-hover hover:text-text-primary disabled:pointer-events-none",
+      "absolute top-4 right-4 inline-flex size-7 items-center justify-center rounded-sm text-text-secondary hover:bg-surface-hover hover:text-text-primary disabled:pointer-events-none",
   },
   menuLabelInset: {
     owner: "spacing",
@@ -624,7 +625,7 @@ const afendaRecipe = {
     scope: "component-family",
     description: "Navigation menu indicator arrow surface.",
     className:
-      "relative top-[60%] size-2 rotate-45 rounded-tl-[var(--xforge-radius-sm)] border-border-default border-t border-l bg-surface-overlay shadow-popover",
+      "relative top-1/2 size-2 rotate-45 rounded-tl-sm border-border-default border-t border-l bg-surface-overlay shadow-popover",
   },
   paginationIcon: {
     owner: "icon",
@@ -883,7 +884,7 @@ const afendaRecipe = {
     kind: "layout",
     scope: "component-family",
     description: "Panel padding from globals.css card token.",
-    className: "p-[var(--card-padding)]",
+    className: "p-4",
   },
   modalPadding: {
     owner: "spacing",
@@ -910,9 +911,9 @@ const afendaRecipe = {
 
 type AfendaRecipeKey = keyof typeof afendaRecipe;
 
-function recipe(...keys: AfendaRecipeKey[]) {
+const recipe = (...keys: AfendaRecipeKey[]) => {
   return keys.map((key) => afendaRecipe[key].className).join(" ");
-}
+};
 
 export { afendaRecipe, recipe };
 export type { AfendaRecipeContract, AfendaRecipeEntry, AfendaRecipeKey };

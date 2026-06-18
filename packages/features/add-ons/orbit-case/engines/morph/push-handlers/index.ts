@@ -1,17 +1,15 @@
 import type { PushDestinationHandler } from "../push-types";
 import { executeApprovalRequestPush } from "./approval-request";
 import { executeBudgetRequestPush } from "./budget-request";
+import { executeCapaRequestPush } from "./capa-request";
+import { executeComplaintRequestPush } from "./complaint-request";
+import { executeContractReviewRequestPush } from "./contract-review-request";
+import { executeInvestigationRequestPush } from "./investigation-request";
+import { executeLeadRequestPush } from "./lead-request";
 import { executeMeetingRequestPush } from "./meeting-request";
-import {
-  executeCapaRequestPush,
-  executeComplaintRequestPush,
-  executeContractReviewRequestPush,
-  executeInvestigationRequestPush,
-  executeLeadRequestPush,
-  executeProjectRequestPush,
-  executePurchaseRequestPush,
-  executeRiskRequestPush,
-} from "../remaining-morph-requests";
+import { executeProjectRequestPush } from "./project-request";
+import { executePurchaseRequestPush } from "./purchase-request";
+import { executeRiskRequestPush } from "./risk-request";
 
 const pushDestinationHandlers: Readonly<Record<string, PushDestinationHandler>> =
   {

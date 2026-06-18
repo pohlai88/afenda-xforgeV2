@@ -3,6 +3,10 @@
  * Fails typecheck when Record/Dto drift apart.
  */
 import type {
+  OrbitMorphRequestDto,
+  OrbitMorphRequestRecord,
+} from "./morph-request-shared";
+import type {
   OrbitCaseActivityDto,
   OrbitCaseActivityRecord,
   OrbitCaseBoardColumn,
@@ -60,4 +64,8 @@ type _OrbitCaseActivityDtoMatchesRecord = AssertTrue<
 
 type _OrbitObjectLinkDtoMatchesRecord = AssertTrue<
   AssertEqual<OrbitObjectLinkDto, IsoDateRecord<OrbitObjectLinkRecord>>
+>;
+
+type _OrbitMorphRequestDtoMatchesRecord = AssertTrue<
+  AssertEqual<OrbitMorphRequestDto, IsoDateRecord<OrbitMorphRequestRecord>>
 >;

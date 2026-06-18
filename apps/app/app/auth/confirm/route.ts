@@ -1,8 +1,6 @@
 import { authRedirect } from "@repo/auth/auth-cache";
 import { confirmAuthLink } from "@repo/auth/confirm-link";
 
-export const dynamic = "force-dynamic";
-
 export const GET = async (request: Request) => {
   const { searchParams, origin } = new URL(request.url);
 

@@ -1,4 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
+import type { OrbitMorphTargetType } from "../../contract/morph-destination-manifest";
 import type { ExecutePushInput } from "../../contract/push.schema";
 import type { ExecutePushContext, PushDestinationHandler, PushHandlerMeta } from "./push-types";
 
@@ -6,7 +7,7 @@ const readOptionalString = (value: unknown): string | null =>
   typeof value === "string" && value.length > 0 ? value : null;
 
 export interface TwoFieldMorphPushHandlerConfig {
-  fieldKeys: readonly [string, string];
+  fieldKeys: readonly [string] | readonly [string, string];
   insertRow: (row: {
     createdAt: Date;
     createdBy: string;
@@ -17,13 +18,14 @@ export interface TwoFieldMorphPushHandlerConfig {
     originCaseId: string;
     title: string;
   }) => Promise<void>;
-  targetType: string;
+  targetType: OrbitMorphTargetType;
 }
 
 export const createTwoFieldMorphPushHandler = (
   config: TwoFieldMorphPushHandlerConfig
 ): PushDestinationHandler => {
-  const [fieldAKey, fieldBKey] = config.fieldKeys;
+  const fieldAKey = config.fieldKeys[0];
+  const fieldBKey = config.fieldKeys[1];
 
   return async (
     context: ExecutePushContext,
@@ -42,7 +44,9 @@ export const createTwoFieldMorphPushHandler = (
       createdAt: now,
       createdBy: context.actorId,
       fieldA: readOptionalString(input.fieldValues[fieldAKey]),
-      fieldB: readOptionalString(input.fieldValues[fieldBKey]),
+      fieldB: fieldBKey
+        ? readOptionalString(input.fieldValues[fieldBKey])
+        : null,
       id,
       organizationId: context.organizationId,
       originCaseId: input.caseId,

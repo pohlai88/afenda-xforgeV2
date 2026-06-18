@@ -20,8 +20,6 @@ import {
 } from "@repo/storage/client";
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
-
 const resolveUploadTokenFromBody = (
   body: HandleUploadBody
 ): string | undefined => {

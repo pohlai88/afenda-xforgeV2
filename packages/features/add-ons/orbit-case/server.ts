@@ -58,24 +58,6 @@ export {
   resolveOrbitMorphRouteLoader,
   ORBIT_MORPH_ROUTE_LOADERS,
 } from "./engines/morph/morph-route-loaders";
-export {
-  getCapaRequestById,
-  getComplaintRequestById,
-  getContractReviewRequestById,
-  getInvestigationRequestById,
-  getLeadRequestById,
-  getProjectRequestById,
-  getPurchaseRequestById,
-  getRiskRequestById,
-  listCapaRequestsForOrg,
-  listComplaintRequestsForOrg,
-  listContractReviewRequestsForOrg,
-  listInvestigationRequestsForOrg,
-  listLeadRequestsForOrg,
-  listProjectRequestsForOrg,
-  listPurchaseRequestsForOrg,
-  listRiskRequestsForOrg,
-} from "./engines/morph/remaining-morph-requests";
 export { listObjectLinksForCase } from "./engines/link/object-links";
 export {
   getMergedPushTemplate,

@@ -10,5 +10,6 @@ export {
 } from "./morph-destination-manifest";
 export type {
   OrbitMorphManifestSlice,
+  OrbitMorphSegment,
   OrbitMorphTargetType,
 } from "./morph-destination-manifest";

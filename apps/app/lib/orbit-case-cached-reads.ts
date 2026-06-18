@@ -10,6 +10,7 @@ import {
   listOrbitCases,
   resolveOrbitMorphRouteLoader,
 } from "@repo/orbit-case/server";
+import type { OrbitMorphSegment } from "@repo/orbit-case";
 import {
   getOrbitCaseCacheTags,
   getOrbitCaseMorphCacheTags,
@@ -93,7 +94,7 @@ export async function getCachedOrbitCaseTitle(
 }
 
 export async function getCachedMorphRequestsForOrg(
-  segment: string,
+  segment: OrbitMorphSegment,
   organizationId: string
 ) {
   "use cache";
@@ -104,10 +105,5 @@ export async function getCachedMorphRequestsForOrg(
   }
 
   const loader = resolveOrbitMorphRouteLoader(segment);
-
-  if (!loader) {
-    return [];
-  }
-
   return loader.listForOrg(organizationId);
 }

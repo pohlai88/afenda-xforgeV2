@@ -103,6 +103,7 @@ export const toOrbitObjectLinkDto = (
   createdAt: record.createdAt.toISOString(),
 });
 
+/** @deprecated Prefer `OrbitMorphRequestDto` via `toOrbitMorphRequestDto`. */
 export const toOrbitBudgetRequestDto = (
   record: OrbitBudgetRequestRecord
 ): OrbitBudgetRequestDto => ({
@@ -115,6 +116,7 @@ export const toOrbitBudgetRequestDto = (
   title: record.title,
 });
 
+/** @deprecated Prefer `OrbitMorphRequestDto` via `toOrbitMorphRequestDto`. */
 export const toOrbitMeetingRequestDto = (
   record: OrbitMeetingRequestRecord
 ): OrbitMeetingRequestDto => ({
@@ -128,6 +130,7 @@ export const toOrbitMeetingRequestDto = (
   title: record.title,
 });
 
+/** @deprecated Prefer `OrbitMorphRequestDto` via `toOrbitMorphRequestDto`. */
 export const toOrbitApprovalRequestDto = (
   record: OrbitApprovalRequestRecord
 ): OrbitApprovalRequestDto => ({

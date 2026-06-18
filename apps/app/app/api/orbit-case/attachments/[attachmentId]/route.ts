@@ -5,8 +5,6 @@ import { getOrbitCaseAttachmentById } from "@repo/orbit-case/server";
 import { readPrivateBlob } from "@repo/storage";
 import { buildOrbitCaseAttachmentDeliveryHeaders } from "@/lib/orbit-case-attachment-delivery";
 
-export const dynamic = "force-dynamic";
-
 interface RouteContext {
   params: Promise<{ attachmentId: string }>;
 }

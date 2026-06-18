@@ -1,23 +1,20 @@
+import type { OrbitMeetingDetailPageProps } from "@/lib/orbit-morph-page-types";
 import type { Metadata } from "next";
-import {
-  generateMorphDetailMetadata,
-  OrbitMorphDetailView,
-} from "../../components/orbit-morph-detail-view";
+import { generateMorphDetailMetadata } from "../../components/orbit-morph-detail-view";
+import { OrbitMorphDetailRoutePage } from "../../components/orbit-morph-route-page";
 
-interface OrbitMeetingDetailPageProps {
-  params: Promise<{ meetingId: string }>;
+export async function generateMetadata(): Promise<Metadata> {
+  return generateMorphDetailMetadata("meeting");
 }
 
-export async function generateMetadata({
-  params,
-}: OrbitMeetingDetailPageProps): Promise<Metadata> {
-  const { meetingId } = await params;
-  return generateMorphDetailMetadata("meeting", meetingId);
-}
-
-export default async function OrbitMeetingDetailPage({
+export default function OrbitMeetingDetailPage({
   params,
 }: OrbitMeetingDetailPageProps) {
-  const { meetingId } = await params;
-  return <OrbitMorphDetailView requestId={meetingId} segment="meeting" />;
+  return (
+    <OrbitMorphDetailRoutePage
+      paramKey="meetingId"
+      params={params}
+      segment="meeting"
+    />
+  );
 }

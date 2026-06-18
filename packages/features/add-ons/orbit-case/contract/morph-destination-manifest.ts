@@ -196,6 +196,18 @@ export const ORBIT_MORPH_DESTINATION_MANIFEST = [
 export type OrbitMorphManifestSlice =
   (typeof ORBIT_MORPH_DESTINATION_MANIFEST)[number];
 
+export type OrbitMorphSegment = OrbitMorphManifestSlice["segment"];
+
+export type OrbitMorphTargetType =
+  (typeof ORBIT_MORPH_DESTINATION_MANIFEST)[number]["targetType"];
+
+export const ORBIT_MORPH_ROUTED_SLICES = ORBIT_MORPH_DESTINATION_MANIFEST.filter(
+  (slice) => slice.hasAppRoute
+);
+
+export const listRoutedMorphSlices = (): OrbitMorphManifestSlice[] =>
+  ORBIT_MORPH_ROUTED_SLICES;
+
 export const ORBIT_BUDGET_REQUEST_TARGET_TYPE = "budget-request" as const;
 export const ORBIT_MEETING_REQUEST_TARGET_TYPE = "meeting-request" as const;
 export const ORBIT_APPROVAL_REQUEST_TARGET_TYPE = "approval-request" as const;
@@ -208,11 +220,12 @@ export const ORBIT_MORPH_DESTINATIONS = ORBIT_MORPH_DESTINATION_MANIFEST.map(
   })
 );
 
-export type OrbitMorphTargetType =
-  (typeof ORBIT_MORPH_DESTINATION_MANIFEST)[number]["targetType"];
-
-export const ORBIT_MORPH_ROUTED_DESTINATIONS = ORBIT_MORPH_DESTINATION_MANIFEST.filter(
-  (slice) => slice.hasAppRoute
+export const ORBIT_MORPH_ROUTED_DESTINATIONS = ORBIT_MORPH_ROUTED_SLICES.map(
+  (slice) => ({
+    hasAppRoute: slice.hasAppRoute,
+    segment: slice.segment,
+    targetType: slice.targetType,
+  })
 );
 
 export const resolveMorphSliceByTargetType = (

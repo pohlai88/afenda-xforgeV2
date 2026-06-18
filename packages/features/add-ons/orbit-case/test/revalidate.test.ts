@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { ORBIT_MORPH_ROUTED_SLICES } from "../contract/morph-destination-manifest";
 import {
   getOrbitCaseBudgetCacheTags,
   getOrbitCaseCacheTags,
@@ -32,13 +33,15 @@ describe("orbit case cache tags", () => {
     ]);
   });
 
-  it("builds generic morph list tags by segment", () => {
-    expect(orbitCaseMorphListTag("meeting", "org_1")).toBe(
-      "orbit-case:meeting-list:org_1"
-    );
-    expect(getOrbitCaseMorphCacheTags("meeting", "org_1")).toEqual([
-      "orbit-case:all",
-      "orbit-case:meeting-list:org_1",
-    ]);
-  });
+  for (const slice of ORBIT_MORPH_ROUTED_SLICES) {
+    it(`builds ${slice.segment} morph list tags`, () => {
+      expect(orbitCaseMorphListTag(slice.segment, "org_1")).toBe(
+        `orbit-case:${slice.segment}-list:org_1`
+      );
+      expect(getOrbitCaseMorphCacheTags(slice.segment, "org_1")).toEqual([
+        "orbit-case:all",
+        `orbit-case:${slice.segment}-list:org_1`,
+      ]);
+    });
+  }
 });

@@ -160,6 +160,141 @@ export type OrbitApprovalRequestDto = Omit<
   createdAt: string;
 };
 
+export interface OrbitPurchaseRequestRecord {
+  amount: string | null;
+  createdAt: Date;
+  createdBy: string;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  title: string;
+  vendor: string | null;
+}
+
+export type OrbitPurchaseRequestDto = Omit<
+  OrbitPurchaseRequestRecord,
+  "createdAt"
+> & {
+  createdAt: string;
+};
+
+export interface OrbitLeadRequestRecord {
+  company: string | null;
+  contact: string | null;
+  createdAt: Date;
+  createdBy: string;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  title: string;
+}
+
+export type OrbitLeadRequestDto = Omit<OrbitLeadRequestRecord, "createdAt"> & {
+  createdAt: string;
+};
+
+export interface OrbitComplaintRequestRecord {
+  category: string | null;
+  createdAt: Date;
+  createdBy: string;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  severity: string | null;
+  title: string;
+}
+
+export type OrbitComplaintRequestDto = Omit<
+  OrbitComplaintRequestRecord,
+  "createdAt"
+> & {
+  createdAt: string;
+};
+
+export interface OrbitRiskRequestRecord {
+  createdAt: Date;
+  createdBy: string;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  owner: string | null;
+  riskLevel: string | null;
+  title: string;
+}
+
+export type OrbitRiskRequestDto = Omit<OrbitRiskRequestRecord, "createdAt"> & {
+  createdAt: string;
+};
+
+export interface OrbitProjectRequestRecord {
+  budget: string | null;
+  createdAt: Date;
+  createdBy: string;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  startDate: string | null;
+  title: string;
+}
+
+export type OrbitProjectRequestDto = Omit<
+  OrbitProjectRequestRecord,
+  "createdAt"
+> & {
+  createdAt: string;
+};
+
+export interface OrbitInvestigationRequestRecord {
+  createdAt: Date;
+  createdBy: string;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  priority: string | null;
+  subject: string | null;
+  title: string;
+}
+
+export type OrbitInvestigationRequestDto = Omit<
+  OrbitInvestigationRequestRecord,
+  "createdAt"
+> & {
+  createdAt: string;
+};
+
+export interface OrbitCapaRequestRecord {
+  createdAt: Date;
+  createdBy: string;
+  dueDate: string | null;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  rootCause: string | null;
+  title: string;
+}
+
+export type OrbitCapaRequestDto = Omit<OrbitCapaRequestRecord, "createdAt"> & {
+  createdAt: string;
+};
+
+export interface OrbitContractReviewRequestRecord {
+  counterparty: string | null;
+  createdAt: Date;
+  createdBy: string;
+  expiryDate: string | null;
+  id: string;
+  organizationId: string;
+  originCaseId: string;
+  title: string;
+}
+
+export type OrbitContractReviewRequestDto = Omit<
+  OrbitContractReviewRequestRecord,
+  "createdAt"
+> & {
+  createdAt: string;
+};
+
 export interface OrbitCaseBoardColumn {
   cases: OrbitCaseRecord[];
   status: OrbitCaseStatus;

@@ -1,23 +1,20 @@
+import type { OrbitMorphRequestDetailPageProps } from "@/lib/orbit-morph-page-types";
 import type { Metadata } from "next";
-import {
-  generateMorphDetailMetadata,
-  OrbitMorphDetailView,
-} from "../../components/orbit-morph-detail-view";
+import { generateMorphDetailMetadata } from "../../components/orbit-morph-detail-view";
+import { OrbitMorphDetailRoutePage } from "../../components/orbit-morph-route-page";
 
-interface OrbitPurchaseDetailPageProps {
-  params: Promise<{ requestId: string }>;
+export async function generateMetadata(): Promise<Metadata> {
+  return generateMorphDetailMetadata("purchase");
 }
 
-export async function generateMetadata({
+export default function OrbitPurchaseDetailPage({
   params,
-}: OrbitPurchaseDetailPageProps): Promise<Metadata> {
-  const { requestId } = await params;
-  return generateMorphDetailMetadata("purchase", requestId);
-}
-
-export default async function OrbitPurchaseDetailPage({
-  params,
-}: OrbitPurchaseDetailPageProps) {
-  const { requestId } = await params;
-  return <OrbitMorphDetailView requestId={requestId} segment="purchase" />;
+}: OrbitMorphRequestDetailPageProps) {
+  return (
+    <OrbitMorphDetailRoutePage
+      paramKey="requestId"
+      params={params}
+      segment="purchase"
+    />
+  );
 }

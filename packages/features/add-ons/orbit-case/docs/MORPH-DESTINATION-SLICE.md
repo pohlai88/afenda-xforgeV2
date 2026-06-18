@@ -3,7 +3,7 @@
 **Package:** `@repo/orbit-case`  
 **Manifest:** [`contract/morph-destination-manifest.ts`](../contract/morph-destination-manifest.ts)
 
-Use this checklist when shipping a new Phase 3 morph destination. **All eleven destinations are shipped** — Budget, Meeting, and Approval are the first-class reference implementations; Purchase through Contract Review use the shared two-field morph pattern in `engines/morph/remaining-morph-requests.ts` and `OrbitMorphListView` / `OrbitMorphDetailView`.
+Use this checklist when shipping a new Phase 3 morph destination. **All eleven destinations follow the Budget slice pattern** — each has `engines/{segment}/{segment}-requests.ts`, `push-handlers/{destination-id}.ts`, typed Record/Dto, and E2E coverage in `orbit-case-push.spec.ts`.
 
 ---
 
@@ -55,12 +55,12 @@ Phase 3 complete — see [`PHASE3_COMPLETE.md`](./PHASE3_COMPLETE.md).
 
 ## Reference files
 
-| Concern | Budget | Meeting | Approval |
-|---------|--------|---------|----------|
-| Handler | `push-handlers/budget-request.ts` | `push-handlers/meeting-request.ts` | `push-handlers/approval-request.ts` |
-| Engine | `engines/budget/budget-requests.ts` | `engines/meeting/meeting-requests.ts` | `engines/approval/approval-requests.ts` |
-| Migration | `0024_orbit_case_push.sql` | `0029_orbit_meeting_requests.sql` | `0030_orbit_approval_requests.sql` |
-| List page | `apps/app/.../budget/page.tsx` | `apps/app/.../meeting/page.tsx` | `apps/app/.../approval/page.tsx` |
-| Detail page | `apps/app/.../budget/[budgetId]/page.tsx` | `apps/app/.../meeting/[meetingId]/page.tsx` | `apps/app/.../approval/[approvalId]/page.tsx` |
+| Concern | Example (Budget) | Two-field example (Purchase) |
+|---------|-------------------|------------------------------|
+| Handler | `push-handlers/budget-request.ts` | `push-handlers/purchase-request.ts` |
+| Engine | `engines/budget/budget-requests.ts` | `engines/purchase/purchase-requests.ts` |
+| Migration | `0024_orbit_case_push.sql` | `0031_orbit_remaining_morph_requests.sql` |
+| List page | `apps/app/.../budget/page.tsx` | `apps/app/.../purchase/page.tsx` |
+| Detail page | `apps/app/.../budget/[budgetId]/page.tsx` | `apps/app/.../purchase/[requestId]/page.tsx` |
 
 See also [`INTEGRATION.md`](./INTEGRATION.md) and [`REQUIREMENTS.md`](./REQUIREMENTS.md).

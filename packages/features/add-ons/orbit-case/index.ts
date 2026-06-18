@@ -24,6 +24,14 @@ export type {
   OrbitBudgetRequestDto,
   OrbitMeetingRequestDto,
   OrbitApprovalRequestDto,
+  OrbitPurchaseRequestDto,
+  OrbitLeadRequestDto,
+  OrbitComplaintRequestDto,
+  OrbitRiskRequestDto,
+  OrbitProjectRequestDto,
+  OrbitInvestigationRequestDto,
+  OrbitCapaRequestDto,
+  OrbitContractReviewRequestDto,
   OrbitObjectLinkDto,
   OrbitObjectLinkProjectionDto,
 } from "./contract/orbit-case.types";
@@ -91,6 +99,7 @@ export type {
   OrbitMorphRequestDto,
   OrbitMorphRequestRecord,
 } from "./contract/morph-request-shared";
+export type { OrbitMorphSegment } from "./contract/morph-destination-manifest";
 export {
   ORBIT_APPROVAL_REQUEST_TARGET_TYPE,
   ORBIT_BUDGET_REQUEST_TARGET_TYPE,

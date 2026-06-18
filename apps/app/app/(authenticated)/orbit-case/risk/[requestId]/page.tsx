@@ -1,23 +1,20 @@
+import type { OrbitMorphRequestDetailPageProps } from "@/lib/orbit-morph-page-types";
 import type { Metadata } from "next";
-import {
-  generateMorphDetailMetadata,
-  OrbitMorphDetailView,
-} from "../../components/orbit-morph-detail-view";
+import { generateMorphDetailMetadata } from "../../components/orbit-morph-detail-view";
+import { OrbitMorphDetailRoutePage } from "../../components/orbit-morph-route-page";
 
-interface OrbitRiskDetailPageProps {
-  params: Promise<{ requestId: string }>;
+export async function generateMetadata(): Promise<Metadata> {
+  return generateMorphDetailMetadata("risk");
 }
 
-export async function generateMetadata({
+export default function OrbitRiskDetailPage({
   params,
-}: OrbitRiskDetailPageProps): Promise<Metadata> {
-  const { requestId } = await params;
-  return generateMorphDetailMetadata("risk", requestId);
-}
-
-export default async function OrbitRiskDetailPage({
-  params,
-}: OrbitRiskDetailPageProps) {
-  const { requestId } = await params;
-  return <OrbitMorphDetailView requestId={requestId} segment="risk" />;
+}: OrbitMorphRequestDetailPageProps) {
+  return (
+    <OrbitMorphDetailRoutePage
+      paramKey="requestId"
+      params={params}
+      segment="risk"
+    />
+  );
 }

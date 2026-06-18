@@ -1,4 +1,5 @@
 import { requireOrg } from "@repo/auth/server";
+import type { OrbitMorphSegment } from "@repo/orbit-case";
 import {
   resolveRoutedMorphSliceBySegment,
   toOrbitMorphRequestDto,
@@ -17,25 +18,20 @@ import {
 
 interface OrbitMorphDetailViewProps {
   requestId: string;
-  segment: string;
+  segment: OrbitMorphSegment;
 }
 
 export async function generateMorphDetailMetadata(
-  segment: string,
-  requestId: string
+  segment: OrbitMorphSegment
 ): Promise<Metadata> {
   const slice = resolveRoutedMorphSliceBySegment(segment);
-  const loader = slice ? resolveOrbitMorphRouteLoader(segment) : null;
 
-  if (!slice || !loader) {
+  if (!slice) {
     return { title: "Morph request" };
   }
 
-  const { orgId } = await requireOrg();
-  const record = await loader.getById(orgId, requestId);
-
   return {
-    title: record?.title ?? slice.label,
+    title: slice.label,
   };
 }
 
@@ -44,14 +40,16 @@ export async function OrbitMorphDetailView({
   segment,
 }: OrbitMorphDetailViewProps) {
   const slice = resolveRoutedMorphSliceBySegment(segment);
-  const loader = slice ? resolveOrbitMorphRouteLoader(segment) : null;
 
-  if (!slice || !loader) {
+  if (!slice) {
     notFound();
   }
 
   const { orgId } = await requireOrg();
-  const record = await loader.getById(orgId, requestId);
+  const record = await resolveOrbitMorphRouteLoader(segment).getById(
+    orgId,
+    requestId
+  );
 
   if (!record) {
     notFound();

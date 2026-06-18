@@ -1,6 +1,6 @@
 import { requireOrg } from "@repo/auth/server";
+import type { OrbitMorphSegment } from "@repo/orbit-case";
 import {
-  listRoutedMorphSlices,
   readMorphRequestFieldValue,
   resolveRoutedMorphSliceBySegment,
   toOrbitMorphRequestDto,
@@ -15,11 +15,11 @@ import { Header } from "../../components/header";
 
 interface OrbitMorphListViewProps {
   caseId?: string;
-  segment: string;
+  segment: OrbitMorphSegment;
 }
 
 export async function generateMorphListMetadata(
-  segment: string
+  segment: OrbitMorphSegment
 ): Promise<Metadata> {
   const slice = resolveRoutedMorphSliceBySegment(segment);
 
@@ -93,9 +93,3 @@ export async function OrbitMorphListView({
     </>
   );
 }
-
-export const listMorphNavLinks = () =>
-  listRoutedMorphSlices().map((slice) => ({
-    href: `/orbit-case/${slice.segment}`,
-    label: `${slice.label}s`,
-  }));

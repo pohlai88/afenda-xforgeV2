@@ -1,23 +1,20 @@
+import type { OrbitApprovalDetailPageProps } from "@/lib/orbit-morph-page-types";
 import type { Metadata } from "next";
-import {
-  generateMorphDetailMetadata,
-  OrbitMorphDetailView,
-} from "../../components/orbit-morph-detail-view";
+import { generateMorphDetailMetadata } from "../../components/orbit-morph-detail-view";
+import { OrbitMorphDetailRoutePage } from "../../components/orbit-morph-route-page";
 
-interface OrbitApprovalDetailPageProps {
-  params: Promise<{ approvalId: string }>;
+export async function generateMetadata(): Promise<Metadata> {
+  return generateMorphDetailMetadata("approval");
 }
 
-export async function generateMetadata({
-  params,
-}: OrbitApprovalDetailPageProps): Promise<Metadata> {
-  const { approvalId } = await params;
-  return generateMorphDetailMetadata("approval", approvalId);
-}
-
-export default async function OrbitApprovalDetailPage({
+export default function OrbitApprovalDetailPage({
   params,
 }: OrbitApprovalDetailPageProps) {
-  const { approvalId } = await params;
-  return <OrbitMorphDetailView requestId={approvalId} segment="approval" />;
+  return (
+    <OrbitMorphDetailRoutePage
+      paramKey="approvalId"
+      params={params}
+      segment="approval"
+    />
+  );
 }

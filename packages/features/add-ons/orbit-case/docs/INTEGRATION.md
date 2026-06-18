@@ -84,6 +84,38 @@ All eleven morph destinations in `contract/morph-destination-manifest.ts` have `
 
 **Per-slice checklist:** see [`MORPH-DESTINATION-SLICE.md`](./MORPH-DESTINATION-SLICE.md).
 
+### Per-destination checklist (copy from Budget)
+
+For each morph destination, complete all nine items. Source of truth for routing is `contract/morph-destination-manifest.ts` (`hasAppRoute`, `registerSystemDefaults`).
+
+| # | Item | Location |
+|---|------|----------|
+| 1 | Push handler | `engines/morph/push-handlers/{destination-id}.ts` |
+| 2 | Persistence engine + Drizzle table | `engines/{segment}/{segment}-requests.ts` + `packages/database` |
+| 3 | Register handler + system defaults | `push-handlers/index.ts` + `lib/registry/system-defaults.ts` (manifest loop) |
+| 4 | Routed in manifest | `hasAppRoute: true` in `morph-destination-manifest.ts` |
+| 5 | App list/detail routes | `/orbit-case/{segment}/` + detail param |
+| 6 | Cache tags + revalidate | `getOrbitCaseMorphCacheTags` + `revalidateOrbitCaseMorphMutation` |
+| 7 | Link projection unit test | `test/link-projection.test.ts` (manifest-driven) |
+| 8 | Integration push test | `test/integration/orbit-case.push.integration.test.ts` |
+| 9 | E2E push flow | `apps/app/e2e/orbit-case-push.spec.ts` (table-driven) |
+
+| Destination | 1–6 | 7 | 8 | 9 |
+|-------------|-----|---|---|---|
+| Budget | ✓ | ✓ | ✓ | ✓ |
+| Meeting | ✓ | ✓ | ✓ | ✓ |
+| Approval | ✓ | ✓ | ✓ | ✓ |
+| Purchase | ✓ | ✓ | ✓ | ✓ |
+| Lead | ✓ | ✓ | ✓ | ✓ |
+| Complaint | ✓ | ✓ | ✓ | ✓ |
+| Risk | ✓ | ✓ | ✓ | ✓ |
+| Project | ✓ | ✓ | ✓ | ✓ |
+| Investigation | ✓ | ✓ | ✓ | ✓ |
+| CAPA | ✓ | ✓ | ✓ | ✓ |
+| Contract Review | ✓ | ✓ | ✓ | ✓ |
+
+Revalidate on push: `apps/app/app/actions/orbit-case/push/execute.ts` resolves the manifest slice by `targetType` and calls `revalidateOrbitCaseMorphMutation(segment, orgId, targetId)` when `hasAppRoute` is true.
+
 ---
 
 ## Database tables (Phase 1)
@@ -119,9 +151,7 @@ After migration `0025`, push authorization uses live DB role with JWT claims cap
 - `orbit-case:list:{orgId}`
 - `orbit-case:board:{orgId}`
 - `orbit-case:detail:{caseId}`
-- `orbit-case:budget-list:{orgId}`
-- `orbit-case:meeting-list:{orgId}`
-- `orbit-case:approval-list:{orgId}`
+- `orbit-case:{segment}-list:{orgId}` for each routed morph segment (budget, meeting, approval, purchase, lead, complaint, risk, project, investigation, capa, contract-review)
 
 Use `revalidateTag` in Server Actions after successful mutations. Tag helpers live in `@repo/orbit-case/revalidate` (`orbitCaseMorphListTag`, `getOrbitCaseMorphCacheTags`); app mutations call `revalidateOrbitCaseMutation` and `revalidateOrbitCaseMorphMutation` in `apps/app/lib/orbit-case-revalidate.ts`.
 

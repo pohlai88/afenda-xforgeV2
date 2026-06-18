@@ -1,25 +1,20 @@
+import type { OrbitMorphRequestDetailPageProps } from "@/lib/orbit-morph-page-types";
 import type { Metadata } from "next";
-import {
-  generateMorphDetailMetadata,
-  OrbitMorphDetailView,
-} from "../../components/orbit-morph-detail-view";
+import { generateMorphDetailMetadata } from "../../components/orbit-morph-detail-view";
+import { OrbitMorphDetailRoutePage } from "../../components/orbit-morph-route-page";
 
-interface OrbitContractReviewDetailPageProps {
-  params: Promise<{ requestId: string }>;
+export async function generateMetadata(): Promise<Metadata> {
+  return generateMorphDetailMetadata("contract-review");
 }
 
-export async function generateMetadata({
+export default function OrbitContractReviewDetailPage({
   params,
-}: OrbitContractReviewDetailPageProps): Promise<Metadata> {
-  const { requestId } = await params;
-  return generateMorphDetailMetadata("contract-review", requestId);
-}
-
-export default async function OrbitContractReviewDetailPage({
-  params,
-}: OrbitContractReviewDetailPageProps) {
-  const { requestId } = await params;
+}: OrbitMorphRequestDetailPageProps) {
   return (
-    <OrbitMorphDetailView requestId={requestId} segment="contract-review" />
+    <OrbitMorphDetailRoutePage
+      paramKey="requestId"
+      params={params}
+      segment="contract-review"
+    />
   );
 }

@@ -1,9 +1,6 @@
 import "server-only";
 
-import type { OrbitApprovalRequestRecord } from "../../contract/orbit-case.types";
-import type { OrbitBudgetRequestRecord } from "../../contract/orbit-case.types";
-import type { OrbitMeetingRequestRecord } from "../../contract/orbit-case.types";
-import type { OrbitMorphRequestRecord } from "../../contract/morph-request-shared";
+import type { OrbitMorphSegment } from "../../contract/morph-destination-manifest";
 import {
   getApprovalRequestById,
   listApprovalRequestsForOrg,
@@ -13,140 +10,139 @@ import {
   listBudgetRequestsForOrg,
 } from "../budget/budget-requests";
 import {
+  getCapaRequestById,
+  listCapaRequestsForOrg,
+} from "../capa/capa-requests";
+import {
+  getComplaintRequestById,
+  listComplaintRequestsForOrg,
+} from "../complaint/complaint-requests";
+import {
+  getContractReviewRequestById,
+  listContractReviewRequestsForOrg,
+} from "../contract-review/contract-review-requests";
+import {
+  getInvestigationRequestById,
+  listInvestigationRequestsForOrg,
+} from "../investigation/investigation-requests";
+import {
+  getLeadRequestById,
+  listLeadRequestsForOrg,
+} from "../lead/lead-requests";
+import {
   getMeetingRequestById,
   listMeetingRequestsForOrg,
 } from "../meeting/meeting-requests";
 import {
-  getCapaRequestById,
-  getComplaintRequestById,
-  getContractReviewRequestById,
-  getInvestigationRequestById,
-  getLeadRequestById,
   getProjectRequestById,
-  getPurchaseRequestById,
-  getRiskRequestById,
-  listCapaRequestsForOrg,
-  listComplaintRequestsForOrg,
-  listContractReviewRequestsForOrg,
-  listInvestigationRequestsForOrg,
-  listLeadRequestsForOrg,
   listProjectRequestsForOrg,
+} from "../project/project-requests";
+import {
+  getPurchaseRequestById,
   listPurchaseRequestsForOrg,
+} from "../purchase/purchase-requests";
+import {
+  getRiskRequestById,
   listRiskRequestsForOrg,
-} from "./remaining-morph-requests";
+} from "../risk/risk-requests";
+import {
+  mapApprovalToMorphRecord,
+  mapBudgetToMorphRecord,
+  mapCapaToMorphRecord,
+  mapComplaintToMorphRecord,
+  mapContractReviewToMorphRecord,
+  mapInvestigationToMorphRecord,
+  mapLeadToMorphRecord,
+  mapMeetingToMorphRecord,
+  mapProjectToMorphRecord,
+  mapPurchaseToMorphRecord,
+  mapRiskToMorphRecord,
+} from "./legacy-morph-record-mapper";
+import type { OrbitMorphRouteLoader } from "./morph-route-loader.types";
+import { wrapMorphRouteLoader } from "./wrap-morph-route-loader";
 
-const toMorphRecord = (
-  record: {
-    createdAt: Date;
-    createdBy: string;
-    id: string;
-    organizationId: string;
-    originCaseId: string;
-    title: string;
-  },
-  values: Record<string, string | null>
-): OrbitMorphRequestRecord => ({
-  createdAt: record.createdAt,
-  createdBy: record.createdBy,
-  id: record.id,
-  organizationId: record.organizationId,
-  originCaseId: record.originCaseId,
-  title: record.title,
-  values,
-});
+export type { OrbitMorphRouteLoader } from "./morph-route-loader.types";
 
-const mapBudget = (record: OrbitBudgetRequestRecord): OrbitMorphRequestRecord =>
-  toMorphRecord(record, { amount: record.amount });
-
-const mapMeeting = (
-  record: OrbitMeetingRequestRecord
-): OrbitMorphRequestRecord =>
-  toMorphRecord(record, {
-    location: record.location,
-    scheduledAt: record.scheduledAt,
-  });
-
-const mapApproval = (
-  record: OrbitApprovalRequestRecord
-): OrbitMorphRequestRecord =>
-  toMorphRecord(record, {
-    amount: record.amount,
-    approver: record.approver,
-  });
-
-export interface OrbitMorphRouteLoader {
-  getById: (
-    organizationId: string,
-    requestId: string
-  ) => Promise<OrbitMorphRequestRecord | null>;
-  listForOrg: (organizationId: string) => Promise<OrbitMorphRequestRecord[]>;
-}
-
-export const ORBIT_MORPH_ROUTE_LOADERS: Record<string, OrbitMorphRouteLoader> = {
-  approval: {
-    getById: async (organizationId, requestId) => {
-      const record = await getApprovalRequestById(organizationId, requestId);
-      return record ? mapApproval(record) : null;
+export const ORBIT_MORPH_ROUTE_LOADERS = {
+  approval: wrapMorphRouteLoader(
+    {
+      getById: getApprovalRequestById,
+      listForOrg: listApprovalRequestsForOrg,
     },
-    listForOrg: async (organizationId) => {
-      const records = await listApprovalRequestsForOrg(organizationId);
-      return records.map(mapApproval);
+    mapApprovalToMorphRecord
+  ),
+  budget: wrapMorphRouteLoader(
+    {
+      getById: getBudgetRequestById,
+      listForOrg: listBudgetRequestsForOrg,
     },
-  },
-  budget: {
-    getById: async (organizationId, requestId) => {
-      const record = await getBudgetRequestById(organizationId, requestId);
-      return record ? mapBudget(record) : null;
+    mapBudgetToMorphRecord
+  ),
+  capa: wrapMorphRouteLoader(
+    {
+      getById: getCapaRequestById,
+      listForOrg: listCapaRequestsForOrg,
     },
-    listForOrg: async (organizationId) => {
-      const records = await listBudgetRequestsForOrg(organizationId);
-      return records.map(mapBudget);
+    mapCapaToMorphRecord
+  ),
+  complaint: wrapMorphRouteLoader(
+    {
+      getById: getComplaintRequestById,
+      listForOrg: listComplaintRequestsForOrg,
     },
-  },
-  capa: {
-    getById: getCapaRequestById,
-    listForOrg: listCapaRequestsForOrg,
-  },
-  complaint: {
-    getById: getComplaintRequestById,
-    listForOrg: listComplaintRequestsForOrg,
-  },
-  "contract-review": {
-    getById: getContractReviewRequestById,
-    listForOrg: listContractReviewRequestsForOrg,
-  },
-  investigation: {
-    getById: getInvestigationRequestById,
-    listForOrg: listInvestigationRequestsForOrg,
-  },
-  lead: {
-    getById: getLeadRequestById,
-    listForOrg: listLeadRequestsForOrg,
-  },
-  meeting: {
-    getById: async (organizationId, requestId) => {
-      const record = await getMeetingRequestById(organizationId, requestId);
-      return record ? mapMeeting(record) : null;
+    mapComplaintToMorphRecord
+  ),
+  "contract-review": wrapMorphRouteLoader(
+    {
+      getById: getContractReviewRequestById,
+      listForOrg: listContractReviewRequestsForOrg,
     },
-    listForOrg: async (organizationId) => {
-      const records = await listMeetingRequestsForOrg(organizationId);
-      return records.map(mapMeeting);
+    mapContractReviewToMorphRecord
+  ),
+  investigation: wrapMorphRouteLoader(
+    {
+      getById: getInvestigationRequestById,
+      listForOrg: listInvestigationRequestsForOrg,
     },
-  },
-  project: {
-    getById: getProjectRequestById,
-    listForOrg: listProjectRequestsForOrg,
-  },
-  purchase: {
-    getById: getPurchaseRequestById,
-    listForOrg: listPurchaseRequestsForOrg,
-  },
-  risk: {
-    getById: getRiskRequestById,
-    listForOrg: listRiskRequestsForOrg,
-  },
-};
+    mapInvestigationToMorphRecord
+  ),
+  lead: wrapMorphRouteLoader(
+    {
+      getById: getLeadRequestById,
+      listForOrg: listLeadRequestsForOrg,
+    },
+    mapLeadToMorphRecord
+  ),
+  meeting: wrapMorphRouteLoader(
+    {
+      getById: getMeetingRequestById,
+      listForOrg: listMeetingRequestsForOrg,
+    },
+    mapMeetingToMorphRecord
+  ),
+  project: wrapMorphRouteLoader(
+    {
+      getById: getProjectRequestById,
+      listForOrg: listProjectRequestsForOrg,
+    },
+    mapProjectToMorphRecord
+  ),
+  purchase: wrapMorphRouteLoader(
+    {
+      getById: getPurchaseRequestById,
+      listForOrg: listPurchaseRequestsForOrg,
+    },
+    mapPurchaseToMorphRecord
+  ),
+  risk: wrapMorphRouteLoader(
+    {
+      getById: getRiskRequestById,
+      listForOrg: listRiskRequestsForOrg,
+    },
+    mapRiskToMorphRecord
+  ),
+} satisfies Record<OrbitMorphSegment, OrbitMorphRouteLoader>;
 
 export const resolveOrbitMorphRouteLoader = (
-  segment: string
-): OrbitMorphRouteLoader | null => ORBIT_MORPH_ROUTE_LOADERS[segment] ?? null;
+  segment: OrbitMorphSegment
+): OrbitMorphRouteLoader => ORBIT_MORPH_ROUTE_LOADERS[segment];

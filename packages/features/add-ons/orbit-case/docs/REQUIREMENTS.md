@@ -107,9 +107,73 @@ Destinations (incremental): Approval, Meeting, Budget, Purchase, Lead, Complaint
 - [x] UI shows linked projection from case detail
 - [x] E2E: case → push → open target → origin visible
 
-### Remaining Phase 3 destinations
+### Per-destination DoD (Purchase Request)
 
-All morph destinations are shipped. See [`PHASE3_COMPLETE.md`](./PHASE3_COMPLETE.md).
+- [x] Template in manifest + registry
+- [x] Target owned by destination module (`engines/purchase/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/purchase-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
+
+### Per-destination DoD (Lead Request)
+
+- [x] Template in manifest + registry
+- [x] Target owned by destination module (`engines/lead/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/lead-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
+
+### Per-destination DoD (Complaint Request)
+
+- [x] Template in manifest + registry
+- [x] Target owned by destination module (`engines/complaint/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/complaint-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
+
+### Per-destination DoD (Risk Request)
+
+- [x] Template in manifest + registry
+- [x] Target owned by destination module (`engines/risk/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/risk-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
+
+### Per-destination DoD (Project Request)
+
+- [x] Template in manifest + registry
+- [x] Target owned by destination module (`engines/project/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/project-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
+
+### Per-destination DoD (Investigation Request)
+
+- [x] Template in manifest + registry
+- [x] Target owned by destination module (`engines/investigation/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/investigation-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
+
+### Per-destination DoD (CAPA Request)
+
+- [x] Template in manifest + registry
+- [x] Target owned by destination module (`engines/capa/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/capa-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
+
+### Per-destination DoD (Contract Review Request)
+
+- [x] Template in manifest + registry
+- [x] Target owned by destination module (`engines/contract-review/`)
+- [x] Push creates target + `orbit_object_links` (via `push-handlers/contract-review-request`)
+- [x] UI shows linked projection from case detail
+- [x] E2E: case → push → open target → origin visible
+
+### Phase 3 summary
+
+All eleven morph destinations follow the Budget slice pattern. See [`PHASE3_COMPLETE.md`](./PHASE3_COMPLETE.md) and [`MORPH-DESTINATION-SLICE.md`](./MORPH-DESTINATION-SLICE.md).
 
 ---
 

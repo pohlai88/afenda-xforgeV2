@@ -1,23 +1,20 @@
+import type { OrbitMorphRequestDetailPageProps } from "@/lib/orbit-morph-page-types";
 import type { Metadata } from "next";
-import {
-  generateMorphDetailMetadata,
-  OrbitMorphDetailView,
-} from "../../components/orbit-morph-detail-view";
+import { generateMorphDetailMetadata } from "../../components/orbit-morph-detail-view";
+import { OrbitMorphDetailRoutePage } from "../../components/orbit-morph-route-page";
 
-interface OrbitComplaintDetailPageProps {
-  params: Promise<{ requestId: string }>;
+export async function generateMetadata(): Promise<Metadata> {
+  return generateMorphDetailMetadata("complaint");
 }
 
-export async function generateMetadata({
+export default function OrbitComplaintDetailPage({
   params,
-}: OrbitComplaintDetailPageProps): Promise<Metadata> {
-  const { requestId } = await params;
-  return generateMorphDetailMetadata("complaint", requestId);
-}
-
-export default async function OrbitComplaintDetailPage({
-  params,
-}: OrbitComplaintDetailPageProps) {
-  const { requestId } = await params;
-  return <OrbitMorphDetailView requestId={requestId} segment="complaint" />;
+}: OrbitMorphRequestDetailPageProps) {
+  return (
+    <OrbitMorphDetailRoutePage
+      paramKey="requestId"
+      params={params}
+      segment="complaint"
+    />
+  );
 }

@@ -1,20 +1,16 @@
+import type { OrbitMorphListPageProps } from "@/lib/orbit-morph-page-types";
 import type { Metadata } from "next";
-import {
-  generateMorphListMetadata,
-  OrbitMorphListView,
-} from "../components/orbit-morph-list-view";
-
-interface OrbitMeetingListPageProps {
-  searchParams: Promise<{ caseId?: string }>;
-}
+import { OrbitMorphListRoutePage } from "../components/orbit-morph-route-page";
+import { generateMorphListMetadata } from "../components/orbit-morph-list-view";
 
 export async function generateMetadata(): Promise<Metadata> {
   return generateMorphListMetadata("meeting");
 }
 
-export default async function OrbitMeetingListPage({
+export default function OrbitMeetingListPage({
   searchParams,
-}: OrbitMeetingListPageProps) {
-  const { caseId } = await searchParams;
-  return <OrbitMorphListView caseId={caseId} segment="meeting" />;
+}: OrbitMorphListPageProps) {
+  return (
+    <OrbitMorphListRoutePage searchParams={searchParams} segment="meeting" />
+  );
 }

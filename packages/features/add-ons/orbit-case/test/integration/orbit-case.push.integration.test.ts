@@ -6,14 +6,12 @@ import {
   orbitCaseActivity,
   orbitApprovalRequest,
   orbitMeetingRequest,
-  orbitPurchaseRequest,
   orbitObjectLink,
   orbitPushEvent,
   organization,
 } from "@repo/database/schema";
 import { eq } from "drizzle-orm";
 import { afterEach, describe, expect, it } from "vitest";
-import { getPurchaseRequestById } from "../../engines/morph/remaining-morph-requests";
 import { getApprovalRequestById } from "../../engines/approval/approval-requests";
 import { getBudgetRequestById } from "../../engines/budget/budget-requests";
 import { getMeetingRequestById } from "../../engines/meeting/meeting-requests";
@@ -27,6 +25,7 @@ import {
   clearPushTemplates,
   registerPushTemplate,
 } from "../../lib/registry/template-registry";
+import { TWO_FIELD_MORPH_PUSH_INTEGRATION_CASES } from "./morph-push-destination-cases";
 import { hasIntegrationDatabase } from "./has-integration-database";
 
 const hasDatabase = hasIntegrationDatabase();
@@ -37,7 +36,10 @@ const createdPushEventIds: string[] = [];
 const createdBudgetIds: string[] = [];
 const createdMeetingIds: string[] = [];
 const createdApprovalIds: string[] = [];
-const createdPurchaseIds: string[] = [];
+const createdMorphTargetIds: Array<{
+  deleteTarget: (targetId: string) => Promise<void>;
+  targetId: string;
+}> = [];
 const createdLinkIds: string[] = [];
 
 afterEach(async () => {
@@ -71,10 +73,8 @@ afterEach(async () => {
       .where(eq(orbitApprovalRequest.id, approvalId));
   }
 
-  for (const purchaseId of createdPurchaseIds.splice(0)) {
-    await database
-      .delete(orbitPurchaseRequest)
-      .where(eq(orbitPurchaseRequest.id, purchaseId));
+  for (const entry of createdMorphTargetIds.splice(0)) {
+    await entry.deleteTarget(entry.targetId);
   }
 
   for (const caseId of createdCaseIds.splice(0)) {
@@ -358,69 +358,76 @@ describe.skipIf(!hasDatabase)("orbit case push idempotency", () => {
     }
   });
 
-  it("allows editor to push purchase when capability is present", async () => {
-    clearPushDestinations();
-    clearPushTemplates();
+  for (const testCase of TWO_FIELD_MORPH_PUSH_INTEGRATION_CASES) {
+    it(`allows ${testCase.role} to push ${testCase.label} when capability is present`, async () => {
+      clearPushDestinations();
+      clearPushTemplates();
 
-    registerPushDestination({
-      id: "purchase-request",
-      label: "Purchase Request",
-      templateId: "purchase-request-template",
-      requiredCapabilities: ["purchase"],
-      visibleToRoles: ["owner", "editor"],
-    });
+      const templateId = `${testCase.destinationId}-template`;
 
-    registerPushTemplate({
-      id: "purchase-request-template",
-      destinationId: "purchase-request",
-      label: "Purchase Request",
-      fields: [{ key: "title", label: "Title", type: "text", required: true }],
-    });
+      registerPushDestination({
+        id: testCase.destinationId,
+        label: testCase.label,
+        templateId,
+        requiredCapabilities: [testCase.capability],
+        visibleToRoles: ["owner", "editor"],
+      });
 
-    const orgId = createId();
-    createdOrgIds.push(orgId);
-    const now = new Date();
+      registerPushTemplate({
+        id: templateId,
+        destinationId: testCase.destinationId,
+        label: testCase.label,
+        fields: [{ key: "title", label: "Title", type: "text", required: true }],
+      });
 
-    await database.insert(organization).values({
-      id: orgId,
-      name: "Purchase Push Org",
-      updatedAt: now,
-    });
+      const orgId = createId();
+      createdOrgIds.push(orgId);
+      const now = new Date();
 
-    const created = await createOrbitCase(orgId, "user_editor", {
-      title: "Purchase push case",
-    });
-    createdCaseIds.push(created.id);
+      await database.insert(organization).values({
+        id: orgId,
+        name: testCase.orgName,
+        updatedAt: now,
+      });
 
-    const result = await executePush(
-      {
-        organizationId: orgId,
-        actorId: "user_editor",
-        role: "editor",
-        userCapabilities: ["purchase"],
-      },
-      {
-        caseId: created.id,
-        destinationId: "purchase-request",
-        idempotencyKey: createId(),
-        fieldValues: {
-          title: "Purchase push case",
-          vendor: "Acme Corp",
+      const created = await createOrbitCase(orgId, testCase.actorId, {
+        title: testCase.caseTitle,
+      });
+      createdCaseIds.push(created.id);
+
+      const result = await executePush(
+        {
+          organizationId: orgId,
+          actorId: testCase.actorId,
+          role: testCase.role,
+          userCapabilities: [testCase.capability],
         },
+        {
+          caseId: created.id,
+          destinationId: testCase.destinationId,
+          idempotencyKey: createId(),
+          fieldValues: testCase.fieldValues,
+        }
+      );
+
+      expect(result.ok).toBe(true);
+
+      if (result.ok) {
+        createdPushEventIds.push(result.pushEventId);
+        createdLinkIds.push(result.linkId);
+
+        createdMorphTargetIds.push({
+          deleteTarget: testCase.deleteTarget,
+          targetId: result.targetId,
+        });
+
+        const record = await testCase.getById(orgId, result.targetId);
+        expect(record?.originCaseId).toBe(created.id);
+
+        if (record) {
+          testCase.assertRecord(record);
+        }
       }
-    );
-
-    expect(result.ok).toBe(true);
-
-    if (result.ok) {
-      createdPushEventIds.push(result.pushEventId);
-      createdPurchaseIds.push(result.targetId);
-      createdLinkIds.push(result.linkId);
-
-      const purchase = await getPurchaseRequestById(orgId, result.targetId);
-      expect(purchase?.originCaseId).toBe(created.id);
-      expect(purchase?.title).toBe("Purchase push case");
-      expect(purchase?.values.vendor).toBe("Acme Corp");
-    }
-  });
+    });
+  }
 });

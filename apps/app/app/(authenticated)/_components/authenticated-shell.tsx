@@ -1,6 +1,6 @@
 "use client";
 
-import { AfendaAppShell } from "@repo/design-system";
+import { AfendaAppShell, AfendaAppSidebar } from "@repo/design-system";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 
@@ -24,5 +24,9 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProperties) {
     return <div className="min-h-svh bg-background" />;
   }
 
-  return <AfendaAppShell>{children}</AfendaAppShell>;
+  return (
+    <AfendaAppShell sidebar={<AfendaAppSidebar pathname={pathname} />}>
+      {children}
+    </AfendaAppShell>
+  );
 }

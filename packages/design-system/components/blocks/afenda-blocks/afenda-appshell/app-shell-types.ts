@@ -1,4 +1,22 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { SidebarLinkRenderer } from "../shadcn-dashboard-01/sidebar-link";
+
+export type {
+  TopbarDemoSelection,
+} from "./topbar/topbar-demo-seed";
+export type { TopbarLinkedNav } from "./topbar/use-topbar-linked-nav";
+export type { TopbarUtilityId } from "./topbar/topbar-utilities-catalog";
+export type {
+  AfendaAppTopbarProps,
+  TopbarActionsMenuGroup,
+  TopbarActionsMenuItem,
+  TopbarActionsMenuProps,
+  TopbarBrandDiskProps,
+  TopbarContextOption,
+  TopbarContextScope,
+  TopbarContextSwitcherProps,
+  TopbarRightActionsProps,
+} from "./topbar/topbar-types";
 
 export interface AfendaAppShellProps
   extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
@@ -13,17 +31,26 @@ export interface AfendaAppShellProps
 
 export interface AfendaAppSidebarProps
   extends Omit<ComponentPropsWithoutRef<"aside">, "children"> {
+  readonly activeItemIds?: ReadonlySet<string>;
   readonly children?: ReactNode;
-}
-
-export interface AfendaAppTopbarProps
-  extends Omit<ComponentPropsWithoutRef<"header">, "children"> {
-  readonly children?: ReactNode;
+  readonly pathname?: string;
+  readonly renderLink?: SidebarLinkRenderer;
+  readonly user?: {
+    readonly avatar: string;
+    readonly email: string;
+    readonly name: string;
+  };
 }
 
 export interface AfendaAppFooterProps
   extends Omit<ComponentPropsWithoutRef<"footer">, "children"> {
   readonly children?: ReactNode;
+  readonly copyrightHolder?: string;
+  readonly links?: readonly {
+    readonly href: string;
+    readonly id: string;
+    readonly label: string;
+  }[];
 }
 
 export interface AfendaAppContentProps

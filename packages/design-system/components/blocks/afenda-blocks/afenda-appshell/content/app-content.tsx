@@ -10,7 +10,7 @@ import { AfendaAppContentRightRail } from "./app-content-right-rail";
 import {
   appContentBentoGridClass,
   appContentMainShellClass,
-  appContentShellClass,
+  appContentPanelClass,
 } from "./content-recipes";
 
 export function AfendaAppContent({
@@ -24,9 +24,8 @@ export function AfendaAppContent({
   return (
     <section
       className={cn(
-        blockRecipe("blockPanel"),
         blockRecipe("blockShell"),
-        appContentShellClass,
+        appContentPanelClass,
         appContentBentoGridClass,
         className
       )}

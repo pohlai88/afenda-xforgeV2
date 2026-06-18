@@ -13,7 +13,7 @@ export function AfendaAppContentLeftRail({
 }: AfendaAppContentLeftRailProps) {
   return (
     <aside
-      className={cn(blockRecipe("blockRail"), appContentLeftRailShellClass, className)}
+      className={cn(blockRecipe("blockToolbar"), appContentLeftRailShellClass, className)}
       data-slot="app-content-left-rail"
       {...properties}
     >

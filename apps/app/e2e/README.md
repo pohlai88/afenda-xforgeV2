@@ -85,7 +85,7 @@ MCP and the test runner share viewport **1280×800**.
 | `auth-completion.spec.ts` | auth-flows | Post-auth onboarding |
 | `email-auth.spec.ts` | auth-flows | Email magic-link flows |
 | `orbit-case.spec.ts` | authenticated | Case lifecycle, calendar/timeline |
-| `orbit-case-push.spec.ts` | authenticated | Push to budget, origin link |
+| `orbit-case-push.spec.ts` | authenticated | Push to all 11 morph destinations + origin link (table-driven) |
 | `orbit-case-blob.spec.ts` | authenticated-blob | Public/private blob uploads (`@blob`) |
 
 Tags: `@auth`, `@orbit-case`, `@blob`.

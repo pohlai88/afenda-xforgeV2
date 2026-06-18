@@ -1,0 +1,79 @@
+name: App E2E (Orbit Case)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: app-e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  orbit-case-e2e:
+    name: Playwright orbit-case tier
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.ref == 'refs/heads/main' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'e2e'))
+    env:
+      CI: "true"
+      SKIP_ENV_VALIDATION: "true"
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter app-e2e install:browsers
+
+      - name: Build app
+        run: pnpm --filter app build
+
+      - name: Start production server
+        run: pnpm --filter app exec next start -p 3000 &
+        env:
+          NODE_ENV: production
+
+      - name: Wait for app
+        run: npx --yes wait-on http://localhost:3000/icon.png --timeout 120000
+
+      - name: Preflight E2E env
+        run: pnpm test:e2e:preflight
+        env:
+          E2E_CHECK_PROJECT: orbit-case
+
+      - name: Run orbit-case Playwright suite
+        run: pnpm test:e2e:orbit-case
+        env:
+          PLAYWRIGHT_SKIP_WEBSERVER: "1"
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-orbit-case-report
+          path: apps/app/output/playwright/
+          retention-days: 7

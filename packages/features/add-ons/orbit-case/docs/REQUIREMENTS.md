@@ -177,6 +177,46 @@ All eleven morph destinations follow the Budget slice pattern. See [`PHASE3_COMP
 
 ---
 
+## Phase 4 — Hardening & release
+
+Phase 3 morph destinations are complete in code. Phase 4 is verification, CI, and polish — not new destinations.
+
+### DoD
+
+| ID | Requirement | Status |
+|----|-------------|--------|
+| H-1 | `pnpm --filter app build` green with Cache Components | Done |
+| H-2 | Authenticated layout + morph/case detail routes use Suspense for runtime data | Done |
+| H-3 | E2E `orbit-case-push.spec.ts` green (11 destinations + auth setup) | Done |
+| H-4 | E2E `orbit-case.spec.ts` lifecycle green | Done (exact label locator for Cache Components UI preservation) |
+| H-5 | E2E `orbit-case-blob.spec.ts` green (opt-in blob env) | Pending |
+| H-6 | Optional CI workflow (label `e2e`) for Playwright orbit-case tier | Done |
+| H-7 | `apps/app/e2e/README.md` documents all 11 push destinations | Done |
+
+### Run E2E locally
+
+```bash
+pnpm --filter app build
+pnpm --filter app exec next start -p 3000   # terminal 1 — ensure port 3000 is free
+
+cd apps/app/e2e
+$env:PLAYWRIGHT_SKIP_WEBSERVER = "1"        # PowerShell
+pnpm test:e2e:orbit-case
+```
+
+Or let Playwright start dev server (port 3000 must be free):
+
+```bash
+pnpm test:e2e:preflight
+pnpm test:e2e:orbit-case
+```
+
+### Deferred (post-v1 product)
+
+See [`ARCHITECTURE.md`](./ARCHITECTURE.md) non-goals: BPMN, AI auto-routing, per-tenant custom status workflows, full ERP modules inside `@repo/orbit-case`. Richer morph detail UX, notifications, and real ERP handoff are Phase 4+ product work.
+
+---
+
 ## Database migrations
 
 Apply schema changes **only** via Drizzle:

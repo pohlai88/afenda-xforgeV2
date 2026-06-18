@@ -10,13 +10,15 @@ test.describe("Orbit Case lifecycle @orbit-case", () => {
     uniqueTitle,
   }) => {
     await createOrbitCaseOnDetailPage(page, uniqueTitle);
-    await expect(page.getByLabel("Case title")).toHaveValue(uniqueTitle);
+    await expect(page.getByLabel("Case title", { exact: true })).toHaveValue(
+      uniqueTitle
+    );
 
     await page.getByLabel("Comment").fill("E2E comment");
     await page.getByRole("button", { name: "Post comment" }).click();
     await expect(page.getByText("E2E comment")).toBeVisible();
 
-    await page.getByLabel("Status").click();
+    await page.locator("#case-status").click();
     await page.getByRole("option", { name: "Doing" }).click();
     await expect(
       page.getByRole("button", { name: "Archive case" })

@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "../../lib/utils";
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react";
@@ -15,6 +14,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { cn } from "../../lib/utils";
 import { Button } from "./button";
 import { recipe } from "./recipes";
 

@@ -1,8 +1,8 @@
 import {
+  isTopbarUtilityId,
   TOPBAR_UTILITY_CATALOG,
   TOPBAR_UTILITY_DEFAULT_PINNED,
   TOPBAR_UTILITY_MAX_PINNED,
-  isTopbarUtilityId,
   type TopbarUtilityId,
 } from "./topbar-utilities-catalog";
 
@@ -222,7 +222,9 @@ export function getTopbarUtilitiesServerSnapshot(): TopbarUtilitiesState {
   return TOPBAR_UTILITIES_SERVER_SNAPSHOT;
 }
 
-export function subscribeTopbarUtilities(onStoreChange: () => void): () => void {
+export function subscribeTopbarUtilities(
+  onStoreChange: () => void
+): () => void {
   listeners.add(onStoreChange);
 
   const onStorage = (event: StorageEvent): void => {

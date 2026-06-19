@@ -1,5 +1,5 @@
-import { cn } from "../../lib/utils";
 import type * as React from "react";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 function Skeleton({ className, ...props }: React.ComponentProps<"div">) {

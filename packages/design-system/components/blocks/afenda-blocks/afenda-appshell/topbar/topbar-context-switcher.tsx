@@ -2,7 +2,7 @@
 
 import { ChevronDownIcon } from "lucide-react";
 import { useState } from "react";
-import { blockRecipe } from "../../../block-recipes";
+import { cn } from "../../../../../lib/utils";
 import { Button } from "../../../../afenda-ui/button";
 import {
   DropdownMenu,
@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "../../../../afenda-ui/dropdown-menu";
-import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
 import {
   APP_TOPBAR_SWITCHER_MAX_CHARS,
   TOPBAR_CONTEXT_LABELS,
@@ -62,50 +62,50 @@ export function TopbarContextSwitcher({
   return (
     <div data-slot="app-topbar-context-switcher">
       <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          className={cn(
-            topbarSwitcherButtonGroupClass,
-            blockRecipe("blockToolbar"),
-            topbarSwitcherButtonClass
-          )}
-          data-slot={TOPBAR_SWITCHER_TRIGGER_SLOTS[scope]}
-          size="sm"
-          type="button"
-          variant="quiet"
-        >
-          <span className={cn(topbarSwitcherStackClass)}>
-            <span className={cn(topbarSwitcherScopeLabelClass)}>
-              {truncateSwitcherLabel(scopeIndicator)}
-            </span>
-            <span className={cn(topbarSwitcherValueClass)}>
-              {truncateSwitcherLabel(activeOption.name)}
-            </span>
-          </span>
-          <ChevronDownIcon className={cn(topbarSwitcherChevronClass)} />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="start"
-        className={cn(topbarSwitcherMenuClass)}
-        data-slot={TOPBAR_SWITCHER_CONTENT_SLOTS[scope]}
-      >
-        <DropdownMenuLabel>{resolvedMenuLabel}</DropdownMenuLabel>
-        {options.map((option) => (
-          <DropdownMenuItem
-            key={option.id}
-            onSelect={(event) => {
-              event.preventDefault();
-              if (activeOptionIdProp === undefined) {
-                setInternalActiveOptionId(option.id);
-              }
-              onOptionChange?.(option);
-            }}
+        <DropdownMenuTrigger asChild>
+          <Button
+            className={cn(
+              topbarSwitcherButtonGroupClass,
+              blockRecipe("blockToolbar"),
+              topbarSwitcherButtonClass
+            )}
+            data-slot={TOPBAR_SWITCHER_TRIGGER_SLOTS[scope]}
+            size="sm"
+            type="button"
+            variant="quiet"
           >
-            {option.name}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
+            <span className={cn(topbarSwitcherStackClass)}>
+              <span className={cn(topbarSwitcherScopeLabelClass)}>
+                {truncateSwitcherLabel(scopeIndicator)}
+              </span>
+              <span className={cn(topbarSwitcherValueClass)}>
+                {truncateSwitcherLabel(activeOption.name)}
+              </span>
+            </span>
+            <ChevronDownIcon className={cn(topbarSwitcherChevronClass)} />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="start"
+          className={cn(topbarSwitcherMenuClass)}
+          data-slot={TOPBAR_SWITCHER_CONTENT_SLOTS[scope]}
+        >
+          <DropdownMenuLabel>{resolvedMenuLabel}</DropdownMenuLabel>
+          {options.map((option) => (
+            <DropdownMenuItem
+              key={option.id}
+              onSelect={(event) => {
+                event.preventDefault();
+                if (activeOptionIdProp === undefined) {
+                  setInternalActiveOptionId(option.id);
+                }
+                onOptionChange?.(option);
+              }}
+            >
+              {option.name}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
       </DropdownMenu>
     </div>
   );

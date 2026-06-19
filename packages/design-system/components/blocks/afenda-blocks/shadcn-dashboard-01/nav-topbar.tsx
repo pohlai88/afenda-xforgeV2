@@ -1,20 +1,15 @@
 "use client";
 
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { cn } from "../../../../lib/utils";
 import { Button } from "../../../afenda-ui/button";
 import { Separator } from "../../../afenda-ui/separator";
 import { SidebarTrigger } from "../../../afenda-ui/sidebar";
 import { blockRecipe } from "../../block-recipes";
-import { cn } from "../../../../lib/utils";
 import {
-  dashboardNavTopbarActionsClass,
-  dashboardNavTopbarGithubButtonClass,
-  dashboardNavTopbarInnerClass,
-  dashboardNavTopbarSeparatorClass,
   dashboardNavTopbarShellClass,
   dashboardNavTopbarTitleClass,
-  dashboardNavTopbarTriggerClass,
 } from "./dashboard-recipes";
-import { type ComponentPropsWithoutRef, type ReactNode } from "react";
 
 const NAV_TOPBAR_HEIGHT = "calc(var(--spacing) * 12)";
 
@@ -48,26 +43,21 @@ export function NavTopbar({
       {...properties}
     >
       <div className={cn()}>
+        {showSidebarTrigger ? <SidebarTrigger className={cn()} /> : null}
         {showSidebarTrigger ? (
-          <SidebarTrigger className={cn()} />
+          <Separator className={cn()} orientation="vertical" />
         ) : null}
-        {showSidebarTrigger ? (
-          <Separator
-            className={cn()}
-            orientation="vertical"
-          />
-        ) : null}
-        <h1 className={cn(blockRecipe("blockTitle"), dashboardNavTopbarTitleClass)}>
+        <h1
+          className={cn(
+            blockRecipe("blockTitle"),
+            dashboardNavTopbarTitleClass
+          )}
+        >
           {title}
         </h1>
         <div className={cn()}>
           {trailing ?? (
-            <Button
-              asChild
-              className={cn()}
-              size="sm"
-              variant="quiet"
-            >
+            <Button asChild className={cn()} size="sm" variant="quiet">
               <a
                 href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
                 rel="noopener noreferrer"

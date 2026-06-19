@@ -1,24 +1,26 @@
 #!/usr/bin/env node
 
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { existsSync, readdirSync, statSync } from "node:fs";
 import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { spawnSync } from "node:child_process";
 import {
   AFENDA_AI_DRIFT_SCORE_GATE,
   AFENDA_AI_VIBE_CODING_GATE,
 } from "../contracts/afenda-design-system.contract.ts";
 
+const TS_EXTENSION_RE = /\.tsx?$/;
+
 type Severity = "error" | "warning";
 
 interface Violation {
-  readonly ruleId: string;
-  readonly severity: Severity;
-  readonly file: string;
-  readonly line: number;
   readonly column: number;
   readonly evidence: string;
+  readonly file: string;
+  readonly line: number;
   readonly message: string;
+  readonly ruleId: string;
+  readonly severity: Severity;
 }
 
 interface GovernanceResult {
@@ -28,8 +30,8 @@ interface GovernanceResult {
 
 interface FileScore {
   readonly file: string;
-  readonly score: number;
   readonly passed: boolean;
+  readonly score: number;
   readonly violations: readonly ScoredViolation[];
 }
 
@@ -64,7 +66,11 @@ const passed = files.every((file) => file.passed);
 
 if (outputJson) {
   console.log(
-    JSON.stringify({ passed, minimumScore, score: packageScore, files }, null, 2)
+    JSON.stringify(
+      { passed, minimumScore, score: packageScore, files },
+      null,
+      2
+    )
   );
   process.exit(passed ? 0 : 1);
 }
@@ -161,7 +167,7 @@ function scoreFiles(violations: readonly Violation[]): FileScore[] {
 function penaltyFor(violation: Violation): number {
   if (
     violation.severity === "warning" &&
-    (!strict || !violation.ruleId.startsWith("example/"))
+    !(strict && violation.ruleId.startsWith("example/"))
   ) {
     return 5;
   }
@@ -279,7 +285,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function displayName(file: string): string {
   const filename = file.split("/").at(-1) ?? file;
-  const stem = filename.replace(/\.tsx?$/, "");
+  const stem = filename.replace(TS_EXTENSION_RE, "");
   const extension = filename.slice(stem.length);
 
   return `${stem
@@ -301,9 +307,6 @@ function sortViolations(a: Violation, b: Violation): number {
   );
 }
 
-function sortScoredViolations(
-  a: ScoredViolation,
-  b: ScoredViolation
-): number {
+function sortScoredViolations(a: ScoredViolation, b: ScoredViolation): number {
   return sortViolations(a, b) || b.penalty - a.penalty;
 }

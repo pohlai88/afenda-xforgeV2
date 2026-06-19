@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { defineConfig, devices } from "@playwright/test";
 import {
   appDir,
+  e2eOutputDir,
   getE2eAuthStoragePath,
   getE2eWebServerEnv,
   getPlaywrightBaseUrl,
@@ -35,11 +36,11 @@ export default defineConfig({
       "html",
       {
         open: "never",
-        outputFolder: path.join(appDir, "output/playwright/report"),
+        outputFolder: path.join(e2eOutputDir, "report"),
       },
     ],
   ],
-  outputDir: path.join(appDir, "output/playwright/test-results"),
+  outputDir: path.join(e2eOutputDir, "test-results"),
   use: {
     baseURL,
     trace: isCi ? "on-first-retry" : "retain-on-failure",

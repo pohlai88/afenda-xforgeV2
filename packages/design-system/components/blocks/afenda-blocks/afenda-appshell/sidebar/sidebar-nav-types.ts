@@ -19,7 +19,9 @@ export interface AppSidebarNavIconItem extends AppSidebarNavItemBase {
   readonly kind: "icon";
 }
 
-export type AppSidebarNavItem = AppSidebarNavProductItem | AppSidebarNavIconItem;
+export type AppSidebarNavItem =
+  | AppSidebarNavProductItem
+  | AppSidebarNavIconItem;
 
 /** Public alias aligned with `AfendaAppSidebar*` naming. */
 export type AfendaAppSidebarNavItem = AppSidebarNavItem;

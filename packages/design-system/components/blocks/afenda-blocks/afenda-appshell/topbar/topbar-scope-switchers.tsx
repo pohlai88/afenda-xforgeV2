@@ -1,9 +1,12 @@
 "use client";
 
-import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
 import { TopbarContextSwitcher } from "./topbar-context-switcher";
-import { topbarScopeNavClass, topbarScopeSwitcherItemClass } from "./topbar-recipes";
+import {
+  topbarScopeNavClass,
+  topbarScopeSwitcherItemClass,
+} from "./topbar-recipes";
 import type { TopbarContextSwitcherProps } from "./topbar-types";
 
 export function TopbarScopeSwitchers({
@@ -12,7 +15,9 @@ export function TopbarScopeSwitchers({
   readonly switchers: readonly TopbarContextSwitcherProps[];
 }) {
   if (switchers.length === 0) {
-    return <div className="min-w-0 flex-1" data-slot="app-topbar-scope-switchers" />;
+    return (
+      <div className="min-w-0 flex-1" data-slot="app-topbar-scope-switchers" />
+    );
   }
 
   return (

@@ -1,12 +1,12 @@
 "use client";
 
-import { cn } from "../../lib/utils";
 import { Label as LabelPrimitive } from "radix-ui";
 import {
   type ComponentPropsWithoutRef,
   type ElementRef,
   forwardRef,
 } from "react";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 const Label = forwardRef<

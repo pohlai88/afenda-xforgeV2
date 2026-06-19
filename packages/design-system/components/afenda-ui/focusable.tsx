@@ -1,6 +1,6 @@
-import { cn } from "../../lib/utils";
 import { Slot as SlotPrimitive } from "radix-ui";
 import type * as React from "react";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 interface FocusableProps extends React.ComponentProps<"div"> {

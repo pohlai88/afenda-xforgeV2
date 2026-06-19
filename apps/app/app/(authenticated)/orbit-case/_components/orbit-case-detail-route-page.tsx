@@ -11,7 +11,7 @@ const OrbitCaseDetailFallback = () => (
 );
 
 interface OrbitCaseDetailRoutePageProps {
-  params: Promise<{ caseId: string }>;
+  readonly params: Promise<{ readonly caseId: string }>;
 }
 
 export const OrbitCaseDetailRoutePage = ({

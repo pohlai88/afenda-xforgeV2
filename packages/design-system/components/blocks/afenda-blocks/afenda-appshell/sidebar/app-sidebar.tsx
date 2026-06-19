@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useMemo, type ReactNode } from "react";
+import { type ReactNode, useCallback, useMemo } from "react";
+import { cn } from "../../../../../lib/utils";
 import { ScrollArea } from "../../../../afenda-ui/scroll-area";
 import {
   Tooltip,
@@ -9,23 +10,12 @@ import {
   TooltipTrigger,
 } from "../../../../afenda-ui/tooltip";
 import { blockRecipe } from "../../../block-recipes";
-import { cn } from "../../../../../lib/utils";
-import { useAppShellSidebar } from "../app-shell-sidebar-context";
-import type { AfendaAppSidebarProps } from "../app-shell-types";
-import {
-  collectSidebarNavItemDescriptors,
-  resolveAfendaAppSidebarNavLayout,
-} from "./sidebar-nav-descriptors";
 import {
   resolveSidebarLinkRenderer,
   type SidebarLinkRenderer,
-} from "../../shadcn-dashboard-01/sidebar-link";
-import {
-  collectSidebarNavItems,
-  type AfendaAppSidebarNavGroup,
-  type AfendaAppSidebarNavGroupSlot,
-  type AppSidebarNavItem,
-} from "./sidebar-nav-types";
+} from "./sidebar-link";
+import { useAppShellSidebar } from "../app-shell-sidebar-context";
+import type { AfendaAppSidebarProps } from "../app-shell-types";
 import {
   appSidebarIconRailFooterClass,
   appSidebarIconRailGroupLabelClass,
@@ -36,6 +26,10 @@ import {
   appSidebarIconRailScrollAreaClass,
   appSidebarIconRailShellClass,
 } from "./sidebar-icon-rail-recipes";
+import {
+  collectSidebarNavItemDescriptors,
+  resolveAfendaAppSidebarNavLayout,
+} from "./sidebar-nav-descriptors";
 import {
   appSidebarFooterClass,
   appSidebarFooterSettingsClass,
@@ -53,6 +47,11 @@ import {
   navItemSelectedClass,
   sidebarLinkClass,
 } from "./sidebar-nav-recipes";
+import {
+  type AfendaAppSidebarNavGroupSlot,
+  type AppSidebarNavItem,
+  collectSidebarNavItems,
+} from "./sidebar-nav-types";
 import { SidebarNavUser } from "./sidebar-nav-user";
 import { resolveActiveSidebarNavItemIds } from "./sidebar-nav-utils";
 import { appSidebarShellClass } from "./sidebar-recipes";
@@ -136,6 +135,7 @@ function AppSidebarNavGroup({
             children: (
               <>
                 {item.kind === "product" ? (
+                  // biome-ignore lint/performance/noImgElement: design-system is framework-agnostic; Next.js Image is app-layer responsibility
                   <img
                     alt=""
                     className={cn(appSidebarNavProductIconClass)}
@@ -146,7 +146,10 @@ function AppSidebarNavGroup({
                 ) : (
                   <item.icon
                     aria-hidden="true"
-                    className={cn(navItemIconClass, appSidebarIconRailNavIconClass)}
+                    className={cn(
+                      navItemIconClass,
+                      appSidebarIconRailNavIconClass
+                    )}
                   />
                 )}
                 <span
@@ -309,16 +312,23 @@ export function AfendaAppSidebar({
     }
   }, [behaviorMode, setHoverPeek]);
 
-  const resolvedActiveItemIds =
-    activeItemIds ??
-    (resolvedNav
-      ? resolveActiveSidebarNavItemIds(pathname, collectSidebarNavItems(resolvedNav))
-      : navDescriptor
-        ? resolveActiveSidebarNavItemIds(
-            pathname,
-            collectSidebarNavItemDescriptors(navDescriptor)
-          )
-        : new Set<string>());
+  function deriveActiveItemIds(): ReadonlySet<string> {
+    if (resolvedNav) {
+      return resolveActiveSidebarNavItemIds(
+        pathname,
+        collectSidebarNavItems(resolvedNav)
+      );
+    }
+    if (navDescriptor) {
+      return resolveActiveSidebarNavItemIds(
+        pathname,
+        collectSidebarNavItemDescriptors(navDescriptor)
+      );
+    }
+    return new Set<string>();
+  }
+
+  const resolvedActiveItemIds = activeItemIds ?? deriveActiveItemIds();
 
   return (
     <aside

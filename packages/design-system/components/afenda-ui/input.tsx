@@ -1,5 +1,5 @@
-import { cn } from "../../lib/utils";
 import { type ComponentProps, forwardRef } from "react";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 const Input = forwardRef<HTMLInputElement, ComponentProps<"input">>(

@@ -29,7 +29,7 @@ Env load order (first wins per key): `.env.config` → `.env.secret` → `.env` 
 # From repo root
 pnpm test:e2e                    # full suite
 pnpm test:e2e:auth               # sign-in / email flows only
-pnpm test:e2e:orbit-case         # core orbit-case (no blob uploads)
+pnpm test:e2e:orbit-case         # orbit-case lifecycle, push, morph status, notifications (no blob uploads)
 pnpm test:e2e:orbit-case:blob    # blob upload specs only
 pnpm test:e2e:env
 pnpm test:e2e:preflight          # orbit-case tier + live Supabase user probe
@@ -42,9 +42,9 @@ Typecheck (app + E2E): `pnpm --filter app typecheck`
 
 | Project | Specs | Auth |
 |---------|-------|------|
-| `setup` | `auth.setup.ts` | Signs in once, writes `output/playwright/.auth/e2e-user.json` |
+| `setup` | `auth.setup.ts` | Signs in once, writes `output/playwright/app/.auth/e2e-user.json` from the repo root |
 | `auth-flows` | `auth*.spec.ts`, `email-auth.spec.ts` | Fresh session per test |
-| `authenticated` | `orbit-case.spec.ts`, `orbit-case-push.spec.ts` | Reuses `storageState` from setup |
+| `authenticated` | `orbit-case.spec.ts`, `orbit-case-push.spec.ts`, `orbit-case-morph-lifecycle.spec.ts`, `orbit-case-notifications.spec.ts` | Reuses `storageState` from setup |
 | `authenticated-blob` | `orbit-case-blob.spec.ts` | Reuses `storageState`; opt-in blob lane |
 
 Global user provisioning: [`global-setup.ts`](global-setup.ts) (skipped when `PLAYWRIGHT_SKIP_GLOBAL_SETUP=1`).
@@ -59,7 +59,7 @@ Global user provisioning: [`global-setup.ts`](global-setup.ts) (skipped when `PL
 | `PLAYWRIGHT_BASE_URL` | Override base URL (default `http://localhost:3000`) |
 | `E2E_CHECK_PROJECT` | Tier gate for `pnpm test:e2e:env` exit code |
 
-Reports: `apps/app/output/playwright/report`
+Reports: `output/playwright/app/report`
 
 ## Cursor Playwright MCP
 
@@ -86,6 +86,8 @@ MCP and the test runner share viewport **1280×800**.
 | `email-auth.spec.ts` | auth-flows | Email magic-link flows |
 | `orbit-case.spec.ts` | authenticated | Case lifecycle, calendar/timeline |
 | `orbit-case-push.spec.ts` | authenticated | Push to all 11 morph destinations + origin link (table-driven) |
+| `orbit-case-morph-lifecycle.spec.ts` | authenticated | Budget morph status update + persistence after reload |
+| `orbit-case-notifications.spec.ts` | authenticated | Persisted notification feed rendering, unread state, deep link navigation, mark-read |
 | `orbit-case-blob.spec.ts` | authenticated-blob | Public/private blob uploads (`@blob`) |
 
 Tags: `@auth`, `@orbit-case`, `@blob`.
@@ -97,6 +99,6 @@ Credentials: [`helpers/credentials.ts`](helpers/credentials.ts).
 | Layer | Command | Orbit Case |
 |-------|---------|------------|
 | Unit | `pnpm --filter @repo/orbit-case test` | Schema, push registry, link projection |
-| Integration | `pnpm --filter @repo/orbit-case test:integration` | DB push idempotency (skips without `DATABASE_URL`) |
+| Integration | `pnpm --filter @repo/orbit-case test:integration` | DB push idempotency; notification persistence/emission |
 | Component | `pnpm --filter app test` | Page shells via happy-dom |
-| E2E | `pnpm test:e2e:orbit-case` | Full UI + auth (blob optional via separate script) |
+| E2E | `pnpm test:e2e:orbit-case` | Full UI + auth: lifecycle, all 11 push destinations, morph status update, notification feed rendering/navigation (blob optional via separate script) |

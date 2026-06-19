@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from "../../lib/utils";
 import { OTPInput, OTPInputContext } from "input-otp";
 import { type ComponentProps, useContext } from "react";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 function InputOTP({

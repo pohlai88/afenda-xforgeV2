@@ -11,7 +11,8 @@ export interface SidebarNavUserLinkMenuItem extends SidebarNavUserMenuItemBase {
 }
 
 /** Client action item — handled via `onMenuItemSelect`. */
-export interface SidebarNavUserActionMenuItem extends SidebarNavUserMenuItemBase {
+export interface SidebarNavUserActionMenuItem
+  extends SidebarNavUserMenuItemBase {
   readonly href?: never;
 }
 

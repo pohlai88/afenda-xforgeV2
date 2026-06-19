@@ -23,8 +23,7 @@ const navItemIconClass = "size-4 shrink-0";
 const navItemLabelClass =
   "min-w-0 flex-1 truncate group-data-[collapsible=icon]:hidden";
 
-const sidebarLinkClass =
-  "flex w-full min-w-0 items-center gap-2 outline-none";
+const sidebarLinkClass = "flex w-full min-w-0 items-center gap-2 outline-none";
 
 export {
   navGroupLabelClass,

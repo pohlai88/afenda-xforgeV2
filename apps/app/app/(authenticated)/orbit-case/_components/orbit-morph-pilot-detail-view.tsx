@@ -3,6 +3,8 @@
 import {
   Badge,
   Button,
+  blockRecipe,
+  cn,
   Input,
   Label,
   Select,
@@ -10,31 +12,31 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  blockRecipe,
 } from "@repo/design-system";
-import { cn } from "@repo/design-system/lib/utils";
 import {
-  ORBIT_MORPH_STATUSES,
-  ORBIT_MORPH_STATUS_LABELS,
-  resolveMorphLifecycleSegmentConfig,
   type MorphLifecycleSegment,
+  ORBIT_MORPH_STATUS_LABELS,
+  ORBIT_MORPH_STATUSES,
   type OrbitMorphStatus,
+  resolveMorphLifecycleSegmentConfig,
 } from "@repo/orbit-case";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import {
-  updateMorphPilotRequest,
   type MorphPilotUpdateResult,
+  updateMorphPilotRequest,
 } from "@/app/actions/orbit-case/morph/update-pilot";
+import type {
+  MorphPilotFieldConfig,
+  MorphPilotRequestViewModel,
+} from "@/lib/morph-pilot-ui";
+import { toMorphPilotViewModel } from "@/lib/morph-pilot-ui";
 import { OrgMemberCombobox } from "./org-member-combobox";
 
-import type { MorphPilotFieldConfig, MorphPilotRequestViewModel } from "@/lib/morph-pilot-ui";
-import { toMorphPilotViewModel } from "@/lib/morph-pilot-ui";
-
 interface OrbitMorphPilotDetailViewProps {
-  fields: MorphPilotFieldConfig[];
-  request: MorphPilotRequestViewModel;
-  segment: MorphLifecycleSegment;
+  readonly fields: readonly MorphPilotFieldConfig[];
+  readonly request: MorphPilotRequestViewModel;
+  readonly segment: MorphLifecycleSegment;
 }
 
 export function OrbitMorphPilotDetailView({
@@ -56,27 +58,38 @@ export function OrbitMorphPilotDetailView({
     setFieldValues(result.values);
   };
 
-  const saveFields = (patch: Record<string, string | null | OrbitMorphStatus>) => {
+  const buildFieldValues = (
+    patch: Record<string, string | null | OrbitMorphStatus>
+  ): Record<string, string | null> => {
+    const values: Record<string, string | null> = { ...request.fields };
+
+    for (const field of fields) {
+      if (patch[field.key] !== undefined) {
+        values[field.key] =
+          typeof patch[field.key] === "string" ? patch[field.key] : null;
+      }
+    }
+
+    return values;
+  };
+
+  const saveFields = (
+    patch: Record<string, string | null | OrbitMorphStatus>
+  ) => {
     startTransition(async () => {
       setError(null);
 
-      const values: Record<string, string | null> = { ...request.fields };
-
-      for (const field of fields) {
-        if (patch[field.key] !== undefined) {
-          values[field.key] =
-            typeof patch[field.key] === "string" ? patch[field.key] : null;
-        }
-      }
-
       const result = await updateMorphPilotRequest({
         assigneeId:
-          patch.assigneeId === undefined ? request.assigneeId : patch.assigneeId,
+          patch.assigneeId === undefined
+            ? request.assigneeId
+            : patch.assigneeId,
         requestId: request.id,
         segment,
-        status: (patch.status as OrbitMorphStatus | undefined) ?? request.status,
+        status:
+          (patch.status as OrbitMorphStatus | undefined) ?? request.status,
         title: typeof patch.title === "string" ? patch.title : request.title,
-        values,
+        values: buildFieldValues(patch),
       });
 
       if (!result.ok) {
@@ -98,7 +111,9 @@ export function OrbitMorphPilotDetailView({
     >
       <div className="flex flex-wrap items-center gap-2">
         <h2 className={blockRecipe("blockTitle")}>{config.panelTitle}</h2>
-        <Badge variant="outline">{ORBIT_MORPH_STATUS_LABELS[request.status]}</Badge>
+        <Badge variant="outline">
+          {ORBIT_MORPH_STATUS_LABELS[request.status]}
+        </Badge>
       </div>
 
       <div className="grid gap-2">
@@ -179,11 +194,11 @@ export function OrbitMorphPilotDetailView({
 
       <dl className="grid gap-2 border-t pt-4 text-sm">
         <div>
-          <dt className="text-muted-foreground">Created</dt>
+          <dt className="text-text-secondary">Created</dt>
           <dd>{new Date(request.createdAt).toLocaleString()}</dd>
         </div>
         <div>
-          <dt className="text-muted-foreground">Updated</dt>
+          <dt className="text-text-secondary">Updated</dt>
           <dd>{new Date(request.updatedAt).toLocaleString()}</dd>
         </div>
       </dl>

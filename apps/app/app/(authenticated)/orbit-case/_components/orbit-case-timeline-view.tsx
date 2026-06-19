@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  Badge,
-  blockRecipe,
-} from "@repo/design-system";
+import { Badge, blockRecipe } from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { OrbitCaseTimelineDto } from "@repo/orbit-case";
 import { formatOrbitCaseDueDateLabel } from "@repo/orbit-case";
@@ -22,7 +19,9 @@ const statusLabel = {
   cancelled: "Cancelled",
 } as const;
 
-export function OrbitCaseTimelineView({ timeline }: OrbitCaseTimelineViewProps) {
+export function OrbitCaseTimelineView({
+  timeline,
+}: OrbitCaseTimelineViewProps) {
   return (
     <div className="grid gap-4">
       {timeline.groups.map((group) => (
@@ -35,7 +34,9 @@ export function OrbitCaseTimelineView({ timeline }: OrbitCaseTimelineViewProps) 
         >
           <h3 className={blockRecipe("blockTitle")}>{group.label}</h3>
           {group.cases.length === 0 ? (
-            <p className="text-muted-foreground text-sm">No cases in this bucket.</p>
+            <p className="text-muted-foreground text-sm">
+              No cases in this bucket.
+            </p>
           ) : (
             group.cases.map((orbitCase) => (
               <Link href={`/orbit-case/${orbitCase.id}`} key={orbitCase.id}>

@@ -1,12 +1,21 @@
 "use client";
 
 import {
+  EllipsisIcon,
+  FolderIcon,
+  type LucideIcon,
+  Share2Icon,
+  TrashIcon,
+} from "lucide-react";
+import { cn } from "../../../../lib/utils";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../../afenda-ui/dropdown-menu";
+import { recipe } from "../../../afenda-ui/recipes";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -17,8 +26,6 @@ import {
   useSidebar,
 } from "../../../afenda-ui/sidebar";
 import { blockRecipe } from "../../block-recipes";
-import { recipe } from "../../../afenda-ui/recipes";
-import { cn } from "../../../../lib/utils";
 import {
   dashboardNavDocumentsActionClass,
   dashboardNavDocumentsGroupClass,
@@ -32,13 +39,6 @@ import {
   navItemIdleClass,
   navItemLabelClass,
 } from "./nav-main-recipes";
-import {
-  EllipsisIcon,
-  FolderIcon,
-  Share2Icon,
-  TrashIcon,
-  type LucideIcon,
-} from "lucide-react";
 
 export function NavDocuments({
   items,
@@ -74,18 +74,18 @@ export function NavDocuments({
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction
-                  showOnHover
                   className={cn(dashboardNavDocumentsActionClass)}
+                  showOnHover
                 >
                   <EllipsisIcon />
                   <span className={cn(recipe("visuallyHidden"))}>More</span>
                 </SidebarMenuAction>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className={cn(dashboardNavDocumentsMenuClass)}
-                side={isMobile ? "bottom" : "right"}
                 align={isMobile ? "end" : "start"}
+                className={cn(dashboardNavDocumentsMenuClass)}
                 data-slot="nav-documents-more"
+                side={isMobile ? "bottom" : "right"}
               >
                 <DropdownMenuItem>
                   <FolderIcon />

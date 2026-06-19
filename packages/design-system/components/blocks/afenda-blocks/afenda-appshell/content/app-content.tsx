@@ -1,8 +1,8 @@
 "use client";
 
-import type { AfendaAppContentCssVars } from "../app-shell-css-vars";
-import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
+import type { AfendaAppContentCssVars } from "../app-shell-css-vars";
 import { APP_SHELL_RAIL_WIDTH } from "../app-shell-recipes";
 import type { AfendaAppContentProps } from "../app-shell-types";
 import { AfendaAppContentBottomDrawer } from "./app-content-bottom-drawer";
@@ -14,11 +14,12 @@ import {
 import { AfendaAppContentLeftRail } from "./app-content-left-rail";
 import { AfendaAppContentRightRail } from "./app-content-right-rail";
 import {
+  APP_SHELL_CONTENT_CLOSED_RAIL_WIDTH,
+  APP_SHELL_CONTENT_HEADER_TRIGGER_SIZE,
   appContentBentoGridClass,
   appContentBentoGridWithDrawerClass,
   appContentMainShellClass,
   appContentPanelClass,
-  APP_SHELL_CONTENT_HEADER_TRIGGER_SIZE,
 } from "./content-recipes";
 
 function AfendaAppContentInner({
@@ -55,15 +56,15 @@ function AfendaAppContentInner({
         {
           "--app-shell-bottom-drawer-height": bottomDrawerOpen
             ? "var(--xforge-layout-site-bottom-drawer-min, 10rem)"
-            : "0px",
+            : APP_SHELL_CONTENT_CLOSED_RAIL_WIDTH,
           "--app-shell-content-header-trigger-size":
             APP_SHELL_CONTENT_HEADER_TRIGGER_SIZE,
           "--app-shell-content-left-rail-width": leftRailOpen
             ? APP_SHELL_RAIL_WIDTH
-            : "0px",
+            : APP_SHELL_CONTENT_CLOSED_RAIL_WIDTH,
           "--app-shell-content-right-rail-width": rightRailOpen
             ? APP_SHELL_RAIL_WIDTH
-            : "0px",
+            : APP_SHELL_CONTENT_CLOSED_RAIL_WIDTH,
         } as AfendaAppContentCssVars
       }
       {...properties}
@@ -71,7 +72,9 @@ function AfendaAppContentInner({
       {header ?? <AfendaAppContentHeader breadcrumbs={breadcrumbs} />}
       {leftRailOpen
         ? (leftRail ?? (
-            <AfendaAppContentLeftRail data-open={leftRailOpen ? "true" : "false"} />
+            <AfendaAppContentLeftRail
+              data-open={leftRailOpen ? "true" : "false"}
+            />
           ))
         : null}
       <main
@@ -116,7 +119,7 @@ export function AfendaAppContent({
       <AfendaAppContentInner
         bottomDrawer={bottomDrawer}
         breadcrumbs={breadcrumbs}
-        className={className}
+        {...{ className }}
         header={header}
         leftRail={leftRail}
         rightRail={rightRail}

@@ -1,13 +1,12 @@
-import { Badge, blockRecipe } from "@repo/design-system";
-import { cn } from "@repo/design-system/lib/utils";
+import { Badge, blockRecipe, cn } from "@repo/design-system";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
 interface OrbitMorphOriginAsideProps {
-  allItemsHref: string;
-  allItemsLabel: string;
-  originCaseId: string;
-  originCaseTitle: string | null;
+  readonly allItemsHref: string;
+  readonly allItemsLabel: string;
+  readonly originCaseId: string;
+  readonly originCaseTitle: string | null;
 }
 
 export const OrbitMorphOriginAside = ({
@@ -32,11 +31,11 @@ export const OrbitMorphOriginAside = ({
           {originCaseTitle}
         </Link>
       ) : (
-        <p className="text-muted-foreground text-sm">Origin case unavailable</p>
+        <p className="text-sm text-text-secondary">Origin case unavailable</p>
       )}
     </div>
     <Link
-      className="text-muted-foreground text-sm hover:text-foreground"
+      className="text-sm text-text-secondary hover:text-text-primary"
       href={allItemsHref}
     >
       {allItemsLabel}
@@ -45,8 +44,8 @@ export const OrbitMorphOriginAside = ({
 );
 
 interface OrbitMorphDetailLayoutProps {
-  aside: ReactNode;
-  children: ReactNode;
+  readonly aside: ReactNode;
+  readonly children: ReactNode;
 }
 
 export const OrbitMorphDetailLayout = ({

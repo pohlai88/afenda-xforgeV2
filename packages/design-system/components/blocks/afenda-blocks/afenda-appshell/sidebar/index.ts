@@ -1,15 +1,4 @@
 export { AfendaAppSidebar } from "./app-sidebar";
-export { SidebarNavUser } from "./sidebar-nav-user";
-export {
-  collectSidebarNavItemDescriptors,
-  resolveAfendaAppSidebarNavItemDescriptor,
-  resolveAfendaAppSidebarNavLayout,
-} from "./sidebar-nav-descriptors";
-export { collectSidebarNavItems } from "./sidebar-nav-types";
-export {
-  resolveActiveSidebarNavItemId,
-  resolveActiveSidebarNavItemIds,
-} from "./sidebar-nav-utils";
 export type {
   AfendaAppSidebarNavGroupDescriptor,
   AfendaAppSidebarNavIconDescriptor,
@@ -18,6 +7,11 @@ export type {
   AfendaAppSidebarNavItemDescriptor,
   AfendaAppSidebarNavLayoutDescriptor,
   AfendaAppSidebarNavProductDescriptor,
+} from "./sidebar-nav-descriptors";
+export {
+  collectSidebarNavItemDescriptors,
+  resolveAfendaAppSidebarNavItemDescriptor,
+  resolveAfendaAppSidebarNavLayout,
 } from "./sidebar-nav-descriptors";
 export type {
   AfendaAppSidebarNavGroup,
@@ -30,10 +24,23 @@ export type {
   AppSidebarNavItem,
   AppSidebarNavProductItem,
 } from "./sidebar-nav-types";
+export { collectSidebarNavItems } from "./sidebar-nav-types";
+export type { SidebarNavUserProps } from "./sidebar-nav-user";
+export { SidebarNavUser } from "./sidebar-nav-user";
 export type {
   SidebarNavUserActionMenuItem,
   SidebarNavUserLinkMenuItem,
   SidebarNavUserMenuGroup,
   SidebarNavUserMenuItem,
 } from "./sidebar-nav-user-menu.types";
-export type { SidebarNavUserProps } from "./sidebar-nav-user";
+export {
+  resolveActiveSidebarNavItemId,
+  resolveActiveSidebarNavItemIds,
+} from "./sidebar-nav-utils";
+export {
+  defaultSidebarLink,
+  resolveSidebarLinkRenderer,
+  type SidebarLinkRenderProps,
+  type SidebarLinkRenderer,
+} from "./sidebar-link";
+export { sidebarLinkClass } from "./sidebar-nav-recipes";

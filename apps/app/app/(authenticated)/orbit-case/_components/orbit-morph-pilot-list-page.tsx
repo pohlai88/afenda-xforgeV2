@@ -1,12 +1,15 @@
-import type { OrbitMorphListPageProps } from "@/lib/orbit-morph-page-types";
-import { orbitMorphStatusSchema, type MorphLifecycleSegment } from "@repo/orbit-case";
+import { Skeleton } from "@repo/design-system";
+import {
+  type MorphLifecycleSegment,
+  orbitMorphStatusSchema,
+} from "@repo/orbit-case";
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import type { OrbitMorphListPageProps } from "@/lib/orbit-morph-page-types";
 import {
-  OrbitMorphPilotListView,
   generateMorphPilotListMetadata,
+  OrbitMorphPilotListView,
 } from "./orbit-morph-pilot-list-view";
-import { Skeleton } from "@repo/design-system";
 
 const OrbitMorphPilotListFallback = () => (
   <div className="flex flex-col gap-4 p-[var(--xforge-space-8)]">
@@ -16,13 +19,18 @@ const OrbitMorphPilotListFallback = () => (
 );
 
 interface OrbitMorphPilotListPageProps extends OrbitMorphListPageProps {
-  segment: MorphLifecycleSegment;
+  readonly segment: MorphLifecycleSegment;
 }
 
-export const createOrbitMorphPilotListPage = (segment: MorphLifecycleSegment) => {
+export const createOrbitMorphPilotListPage = (
+  segment: MorphLifecycleSegment
+) => {
   const Page = ({ searchParams }: OrbitMorphListPageProps) => (
     <Suspense fallback={<OrbitMorphPilotListFallback />}>
-      <OrbitMorphPilotListPageContent searchParams={searchParams} segment={segment} />
+      <OrbitMorphPilotListPageContent
+        searchParams={searchParams}
+        segment={segment}
+      />
     </Suspense>
   );
 

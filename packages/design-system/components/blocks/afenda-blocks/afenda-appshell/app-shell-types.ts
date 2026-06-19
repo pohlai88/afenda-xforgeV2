@@ -1,22 +1,22 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import type { SidebarBehaviorMode } from "../../../afenda-ui/sidebar-behavior";
-import type { SidebarLinkRenderer } from "../shadcn-dashboard-01/sidebar-link";
-import type { AfendaAppSidebarNavLayout } from "./sidebar/sidebar-nav-types";
+import type { SidebarLinkRenderer } from "./sidebar/sidebar-link";
 import type {
   AfendaAppSidebarNavIconRegistry,
   AfendaAppSidebarNavLayoutDescriptor,
 } from "./sidebar/sidebar-nav-descriptors";
+import type { AfendaAppSidebarNavLayout } from "./sidebar/sidebar-nav-types";
 import type {
   SidebarNavUserMenuGroup,
   SidebarNavUserMenuItem,
 } from "./sidebar/sidebar-nav-user-menu.types";
 
-export type { AfendaAppContentLayoutState } from "./content/app-content-layout-context";
-export type { AfendaAppShellSidebarState } from "./app-shell-sidebar-context";
 export type {
   AfendaAppContentCssVars,
   AfendaAppShellCssVars,
 } from "./app-shell-css-vars";
+export type { AfendaAppShellSidebarState } from "./app-shell-sidebar-context";
+export type { AfendaAppContentLayoutState } from "./content/app-content-layout-context";
 export type {
   AfendaAppSidebarNavGroupDescriptor,
   AfendaAppSidebarNavIconDescriptor,
@@ -44,12 +44,6 @@ export type {
   SidebarNavUserMenuGroup,
   SidebarNavUserMenuItem,
 } from "./sidebar/sidebar-nav-user-menu.types";
-export type { TopbarUtilityId } from "./topbar/topbar-utilities-catalog";
-export type { AfendaTopbarUtilitiesController } from "./topbar/topbar-utilities-context";
-export type {
-  TopbarUtilitiesScope,
-  TopbarUtilitiesState,
-} from "./topbar/topbar-utilities-storage";
 export type {
   AfendaAppTopbarProps,
   TopbarActionsMenuGroup,
@@ -61,6 +55,12 @@ export type {
   TopbarContextSwitcherProps,
   TopbarRightActionsProps,
 } from "./topbar/topbar-types";
+export type { TopbarUtilityId } from "./topbar/topbar-utilities-catalog";
+export type { AfendaTopbarUtilitiesController } from "./topbar/topbar-utilities-context";
+export type {
+  TopbarUtilitiesScope,
+  TopbarUtilitiesState,
+} from "./topbar/topbar-utilities-storage";
 
 /** Serializable user summary for sidebar chrome. */
 export interface AfendaAppShellUserSummary {
@@ -79,8 +79,6 @@ export interface AfendaAppShellFooterLink {
 export interface AfendaAppShellProps
   extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
   readonly children?: ReactNode;
-  /** Initial sidebar behavior before client cookie hydration (match server `cookies()` read). */
-  readonly defaultSidebarBehaviorMode?: SidebarBehaviorMode;
   readonly contentBottomDrawer?: ReactNode;
   readonly contentHeader?: ReactNode;
   readonly contentLeftRail?: ReactNode;
@@ -88,6 +86,8 @@ export interface AfendaAppShellProps
   readonly defaultContentBottomDrawerOpen?: boolean;
   readonly defaultContentLeftRailOpen?: boolean;
   readonly defaultContentRightRailOpen?: boolean;
+  /** Initial sidebar behavior before client cookie hydration (match server `cookies()` read). */
+  readonly defaultSidebarBehaviorMode?: SidebarBehaviorMode;
   readonly footer?: ReactNode;
   readonly sidebar?: ReactNode;
   readonly topbar?: ReactNode;
@@ -106,27 +106,25 @@ interface AfendaAppSidebarPropsBase
 }
 
 /** Resolved nav tree supplied by the host (client-only icons). */
-type AfendaAppSidebarResolvedNavProps = {
+interface AfendaAppSidebarResolvedNavProps {
   readonly nav: AfendaAppSidebarNavLayout;
   readonly navDescriptor?: never;
   readonly navIconRegistry?: never;
-};
+}
 
 /** Serializable nav descriptor + client icon registry (official app boundary). */
-type AfendaAppSidebarDescriptorNavProps<
-  IconKey extends string = string,
-> = {
+interface AfendaAppSidebarDescriptorNavProps<IconKey extends string = string> {
   readonly nav?: never;
   readonly navDescriptor: AfendaAppSidebarNavLayoutDescriptor<IconKey>;
   readonly navIconRegistry: AfendaAppSidebarNavIconRegistry<IconKey>;
-};
+}
 
 /** Custom sidebar slot — host supplies `children` only. */
-type AfendaAppSidebarCustomNavProps = {
+interface AfendaAppSidebarCustomNavProps {
   readonly nav?: never;
   readonly navDescriptor?: never;
   readonly navIconRegistry?: never;
-};
+}
 
 export type AfendaAppSidebarProps<IconKey extends string = string> =
   AfendaAppSidebarPropsBase &

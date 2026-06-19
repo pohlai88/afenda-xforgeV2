@@ -23,7 +23,15 @@ describe("collectSidebarNavItemDescriptors", () => {
       main: {
         groupSlot: "app-sidebar-main-nav",
         label: "Main",
-        items: [{ id: "home", kind: "product", label: "Home", href: "/", iconSrc: "/x.png" }],
+        items: [
+          {
+            id: "home",
+            kind: "product",
+            label: "Home",
+            href: "/",
+            iconSrc: "/x.png",
+          },
+        ],
       },
       scroll: [
         {
@@ -115,7 +123,15 @@ describe("collectSidebarNavItems", () => {
       main: {
         groupSlot: "app-sidebar-main-nav",
         label: "Main",
-        items: [{ id: "home", kind: "icon", label: "Home", href: "/", icon: () => null }],
+        items: [
+          {
+            id: "home",
+            kind: "icon",
+            label: "Home",
+            href: "/",
+            icon: () => null,
+          },
+        ],
       },
       scroll: [
         {
@@ -168,7 +184,9 @@ describe("resolveActiveSidebarNavItemId", () => {
   });
 
   it("matches exact paths", () => {
-    expect(resolveActiveSidebarNavItemId("/dashboard", items)).toBe("dashboard");
+    expect(resolveActiveSidebarNavItemId("/dashboard", items)).toBe(
+      "dashboard"
+    );
   });
 });
 
@@ -181,6 +199,8 @@ describe("normalizeTopbarUtilitiesState", () => {
 
     expect(normalized.visible).toEqual(["search"]);
     expect(normalized.order.includes("help")).toBe(true);
-    expect(normalized.order.includes("not-a-real-utility" as never)).toBe(false);
+    expect(normalized.order.includes("not-a-real-utility" as never)).toBe(
+      false
+    );
   });
 });

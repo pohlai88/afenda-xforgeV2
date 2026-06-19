@@ -1,10 +1,12 @@
 "use client";
 
-import { blockRecipe } from "../../block-recipes";
 import { cn } from "../../../../lib/utils";
-import { NavTopbar, type NavTopbarProps } from "./nav-topbar";
+import { blockRecipe } from "../../block-recipes";
+import { NavTopbar } from "./nav-topbar";
 
-export function SiteHeader(props: NavTopbarProps) {
+export type { NavTopbarProps as SiteHeaderProps } from "./nav-topbar";
+
+export function SiteHeader(props: Parameters<typeof NavTopbar>[0]) {
   return (
     <NavTopbar
       className={cn(blockRecipe("blockChrome"))}
@@ -13,5 +15,3 @@ export function SiteHeader(props: NavTopbarProps) {
     />
   );
 }
-
-export type { NavTopbarProps as SiteHeaderProps };

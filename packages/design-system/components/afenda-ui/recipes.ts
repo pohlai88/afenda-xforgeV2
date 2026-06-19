@@ -195,8 +195,7 @@ const afendaRecipe = {
     kind: "composition",
     scope: "global",
     description: "Default bordered control surface.",
-    className:
-      "rounded-md border border-border-default bg-surface-raised",
+    className: "rounded-md border border-border-default bg-surface-raised",
   },
   flatControlSurface: {
     owner: "surface",
@@ -366,8 +365,7 @@ const afendaRecipe = {
     kind: "composition",
     scope: "component-family",
     description: "Base chart tooltip indicator geometry and color binding.",
-    className:
-      "shrink-0 rounded-sm border-(--color-border) bg-(--color-bg)",
+    className: "shrink-0 rounded-sm border-(--color-border) bg-(--color-bg)",
   },
   chartTooltipIndicatorDot: {
     owner: "icon",
@@ -667,7 +665,8 @@ const afendaRecipe = {
     kind: "interaction",
     scope: "component-family",
     description: "Scroll area thumb radius and hover surface.",
-    className: "relative flex-1 rounded-full bg-border-default hover:bg-border-hover",
+    className:
+      "relative flex-1 rounded-full bg-border-default hover:bg-border-hover",
   },
   selectIcon: {
     owner: "icon",
@@ -752,7 +751,8 @@ const afendaRecipe = {
     kind: "motion",
     scope: "component-family",
     description: "Loading toast spinner icon.",
-    className: "size-4 animate-spin text-text-secondary motion-reduce:transition-none",
+    className:
+      "size-4 animate-spin text-text-secondary motion-reduce:transition-none",
   },
   sidebarTooltipLabel: {
     owner: "typography",
@@ -812,8 +812,7 @@ const afendaRecipe = {
     kind: "composition",
     scope: "component-family",
     description: "Sidebar behavior menu item row text.",
-    className:
-      "gap-2 text-[length:var(--xforge-font-caption-size)]",
+    className: "gap-2 text-[length:var(--xforge-font-caption-size)]",
   },
   sidebarMenuButtonSmallText: {
     owner: "typography",

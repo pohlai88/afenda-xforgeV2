@@ -3,37 +3,46 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { AFENDA_COMPONENT_FORBIDDEN_PATTERNS } from "../contracts/afenda-component.contract.ts";
 import {
   AFENDA_BLOCK_COMPONENT_IDS,
   AFENDA_PRIMITIVE_COMPONENT_IDS,
 } from "../registries/component.registry.ts";
-import { AFENDA_COMPONENT_FORBIDDEN_PATTERNS } from "../contracts/afenda-component.contract.ts";
 import {
   AFENDA_SLOT_EXACT_IDENTITY_REGISTRY,
   AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY,
 } from "../registries/slot.registry.ts";
 
+const NEWLINE_RE = /\r?\n/;
+const COMPONENT_IGNORE_NEXT_LINE_RE =
+  /^\s*\/\/ afenda-component-ignore-next-line -- \S.+$/;
+const RECIPE_CALL_RE = /\b(?:recipe|blockRecipe)\s*\(/;
+const EXPORT_ALIAS_RE = /^([A-Z][A-Za-z0-9]*)\s+as\s+([A-Z][A-Za-z0-9]*)$/;
+const ALIAS_SUFFIX_RE = /\s+as\s+[A-Z][A-Za-z0-9]*$/;
+const PASCAL_NAME_RE = /^[A-Z][A-Za-z0-9]*$/;
+
 interface SourceFile {
+  readonly lines: readonly string[];
   readonly path: string;
   readonly relativePath: string;
   readonly source: string;
-  readonly lines: readonly string[];
 }
 
 type Severity = "error" | "warning";
 
 interface Violation {
-  readonly ruleId: string;
-  readonly severity: Severity;
-  readonly file: string;
-  readonly line: number;
   readonly column: number;
   readonly evidence: string;
+  readonly file: string;
+  readonly line: number;
   readonly message: string;
+  readonly ruleId: string;
+  readonly severity: Severity;
 }
 
 const RULES = {
-  missingPrimitiveImplementation: "component/no-missing-primitive-implementation",
+  missingPrimitiveImplementation:
+    "component/no-missing-primitive-implementation",
   missingBlockImplementation: "component/no-missing-block-implementation",
   unknownPrimitiveFile: "component/no-unknown-primitive-file",
   forbiddenPattern: "component/no-forbidden-pattern",
@@ -159,7 +168,10 @@ function checkPrimitiveRegistry(): Violation[] {
   for (const componentId of AFENDA_PRIMITIVE_COMPONENT_IDS) {
     const componentName = toPascalCase(componentId);
 
-    if (implementedFileIds.has(componentId) || exportedNames.has(componentName)) {
+    if (
+      implementedFileIds.has(componentId) ||
+      exportedNames.has(componentName)
+    ) {
       continue;
     }
 
@@ -236,15 +248,25 @@ function checkComponentFile(file: SourceFile): Violation[] {
       RULES.environmentRead,
       "Environment reads are forbidden because components must not own runtime configuration."
     ),
-    ...findMatches(file, databaseImportPattern, RULES.databaseImport, (evidence) => ({
-      evidence,
-      message:
-        "Database imports are forbidden because components must not own data access.",
-    })),
-    ...findMatches(file, dataFetchingPattern, RULES.dataFetching, (evidence) => ({
-      evidence,
-      message: `Data fetching call "${evidence.trim()}" is forbidden because components own behavior, not data access.`,
-    })),
+    ...findMatches(
+      file,
+      databaseImportPattern,
+      RULES.databaseImport,
+      (evidence) => ({
+        evidence,
+        message:
+          "Database imports are forbidden because components must not own data access.",
+      })
+    ),
+    ...findMatches(
+      file,
+      dataFetchingPattern,
+      RULES.dataFetching,
+      (evidence) => ({
+        evidence,
+        message: `Data fetching call "${evidence.trim()}" is forbidden because components own behavior, not data access.`,
+      })
+    ),
   ];
 }
 
@@ -268,7 +290,7 @@ function checkDataSlotExposure(file: SourceFile): Violation[] {
 }
 
 function checkRecipeUsage(file: SourceFile): Violation[] {
-  if (/\b(?:recipe|blockRecipe)\s*\(/.test(file.source)) {
+  if (RECIPE_CALL_RE.test(file.source)) {
     return [];
   }
 
@@ -412,7 +434,9 @@ function toViolation(
 
 function scanFiles(): SourceFile[] {
   return walk(packageRoot)
-    .filter((path) => componentFilePattern.test(path) || isBlockBarrelFile(path))
+    .filter(
+      (path) => componentFilePattern.test(path) || isBlockBarrelFile(path)
+    )
     .filter((path) => {
       const relativePath = normalizePath(relative(packageRoot, path));
 
@@ -429,7 +453,7 @@ function scanFiles(): SourceFile[] {
         path,
         relativePath: normalizePath(relative(packageRoot, path)),
         source,
-        lines: source.split(/\r?\n/),
+        lines: source.split(NEWLINE_RE),
       };
     });
 }
@@ -466,50 +490,56 @@ function collectExportedNames(files: readonly SourceFile[]): Set<string> {
   return names;
 }
 
+function collectNamesFromExportList(exportList: string): string[] {
+  const names: string[] = [];
+
+  for (const item of exportList.split(",")) {
+    const trimmed = item.trim();
+
+    if (trimmed.startsWith("type ")) {
+      continue;
+    }
+
+    const aliasMatch = trimmed.match(EXPORT_ALIAS_RE);
+
+    if (aliasMatch) {
+      names.push(aliasMatch[1] ?? "", aliasMatch[2] ?? "");
+      continue;
+    }
+
+    const exportedName = trimmed.replace(ALIAS_SUFFIX_RE, "").trim();
+
+    if (PASCAL_NAME_RE.test(exportedName)) {
+      names.push(exportedName);
+    }
+  }
+
+  return names;
+}
+
 function collectExportedNamesFromSource(source: string): string[] {
   const names: string[] = [];
 
-  for (const match of source.matchAll(/\bexport\s+(?:function|const)\s+([A-Z][A-Za-z0-9]*)/g)) {
+  for (const match of source.matchAll(
+    /\bexport\s+(?:function|const)\s+([A-Z][A-Za-z0-9]*)/g
+  )) {
     names.push(match[1] ?? "");
   }
 
   for (const match of source.matchAll(/\bexport\s*{([^}]+)}/g)) {
-    const exportList = match[1] ?? "";
-
-    for (const item of exportList.split(",")) {
-      const trimmed = item.trim();
-
-      if (trimmed.startsWith("type ")) {
-        continue;
-      }
-
-      const aliasMatch = trimmed.match(
-        /^([A-Z][A-Za-z0-9]*)\s+as\s+([A-Z][A-Za-z0-9]*)$/
-      );
-
-      if (aliasMatch) {
-        names.push(aliasMatch[1] ?? "", aliasMatch[2] ?? "");
-        continue;
-      }
-
-      const exportedName = trimmed
-        .replace(/\s+as\s+[A-Z][A-Za-z0-9]*$/, "")
-        .trim();
-
-      if (/^[A-Z][A-Za-z0-9]*$/.test(exportedName)) {
-        names.push(exportedName);
-      }
-    }
+    names.push(...collectNamesFromExportList(match[1] ?? ""));
   }
 
-  for (const match of source.matchAll(/\bmemo\s*\(\s*function\s+([A-Z][A-Za-z0-9]*)/g)) {
+  for (const match of source.matchAll(
+    /\bmemo\s*\(\s*function\s+([A-Z][A-Za-z0-9]*)/g
+  )) {
     names.push(match[1] ?? "");
   }
 
   for (const match of source.matchAll(/\bfunction\s+([A-Z][A-Za-z0-9]*)/g)) {
     const name = match[1] ?? "";
 
-    if (source.includes(`export {\n`) && source.includes(name)) {
+    if (source.includes("export {\n") && source.includes(name)) {
       names.push(name);
     }
   }
@@ -539,9 +569,7 @@ function isIgnored(file: SourceFile, line: number): boolean {
     return false;
   }
 
-  return /^\s*\/\/ afenda-component-ignore-next-line -- \S.+$/.test(
-    previousLine
-  );
+  return COMPONENT_IGNORE_NEXT_LINE_RE.test(previousLine);
 }
 
 function lineAndColumn(
@@ -574,7 +602,8 @@ function isBlockBarrelFile(path: string): boolean {
   return (
     relativePath.endsWith(".ts") &&
     relativePath.startsWith("components/blocks/") &&
-    (relativePath.endsWith("/index.ts") || relativePath === "components/blocks/index.ts")
+    (relativePath.endsWith("/index.ts") ||
+      relativePath === "components/blocks/index.ts")
   );
 }
 

@@ -30,6 +30,7 @@
     "@repo/feature-flags": "workspace:*",
     "@repo/next-config": "workspace:*",
     "@repo/observability": "workspace:*",
+    "@repo/account-settings": "workspace:*",
     "@repo/orbit-case": "workspace:*",
     "@repo/security": "workspace:*",
     "@repo/seo": "workspace:*",

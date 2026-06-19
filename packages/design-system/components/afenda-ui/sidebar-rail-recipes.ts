@@ -108,8 +108,6 @@ const sidebarIconRailFooterMenuClass = [
   "group-data-[collapsible=icon]:p-0",
 ].join(" ");
 
-const sidebarIconRailHeaderClass = "";
-const sidebarIconRailFooterRowClass = "";
 const sidebarIconRailInnerClass =
   "group-data-[collapsible=icon]:max-w-full group-data-[collapsible=icon]:overflow-x-hidden";
 
@@ -146,9 +144,7 @@ export {
   sidebarIconRailControlTriggerClass,
   sidebarIconRailFooterClass,
   sidebarIconRailFooterMenuClass,
-  sidebarIconRailFooterRowClass,
   sidebarIconRailGroupLabelClass,
-  sidebarIconRailHeaderClass,
   sidebarIconRailHiddenClass,
   sidebarIconRailIconClass,
   sidebarIconRailInnerClass,

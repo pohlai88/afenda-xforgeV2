@@ -1,8 +1,8 @@
 "use client";
 
-import { cn } from "../../lib/utils";
 import { Progress as ProgressPrimitive } from "radix-ui";
 import type * as React from "react";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 type ProgressTone = "neutral" | "info" | "success" | "warning" | "critical";

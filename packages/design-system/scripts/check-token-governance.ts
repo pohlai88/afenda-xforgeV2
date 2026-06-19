@@ -5,23 +5,27 @@ import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { AFENDA_TOKEN_SOURCE_OF_TRUTH } from "../registries/token.registry.ts";
 
+const NEWLINE_RE = /\r?\n/;
+const TOKEN_IGNORE_NEXT_LINE_RE =
+  /^\s*\/\/ afenda-token-ignore-next-line -- \S.+$/;
+
 interface SourceFile {
+  readonly lines: readonly string[];
   readonly path: string;
   readonly relativePath: string;
   readonly source: string;
-  readonly lines: readonly string[];
 }
 
 type Severity = "error" | "warning";
 
 interface Violation {
-  readonly ruleId: string;
-  readonly severity: Severity;
-  readonly file: string;
-  readonly line: number;
   readonly column: number;
   readonly evidence: string;
+  readonly file: string;
+  readonly line: number;
   readonly message: string;
+  readonly ruleId: string;
+  readonly severity: Severity;
 }
 
 const packageRoot = fileURLToPath(new URL("..", import.meta.url));
@@ -45,8 +49,7 @@ const RULES = {
 
 const rawTailwindColorPattern =
   /(?<![a-zA-Z0-9_-])(?:[a-zA-Z0-9_:/[\]=.-]+:)*(?:bg|text|border|ring|outline|decoration|accent|caret|fill|stroke|from|via|to)-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950)(?:\/\d+)?(?![a-zA-Z0-9_-])/g;
-const rawCssColorPattern =
-  /#[0-9a-fA-F]{3,8}\b|(?:rgb|rgba|hsl|hsla|oklch)\(/g;
+const rawCssColorPattern = /#[0-9a-fA-F]{3,8}\b|(?:rgb|rgba|hsl|hsla|oklch)\(/g;
 const rawArbitraryValuePattern =
   /\[[^\]\n\r]*(?:\d+(?:\.\d+)?(?:px|rem|em|ms)|cubic-bezier\()[^\]\n\r]*\]/g;
 const rawStringValuePattern =
@@ -99,10 +102,15 @@ console.log(`Warnings: ${warningCount}`);
 
 function checkFile(file: SourceFile): Violation[] {
   return [
-    ...findMatches(file, rawTailwindColorPattern, RULES.rawTailwindColor, (evidence) => ({
-      evidence,
-      message: `Raw Tailwind color utility "${evidence}" is forbidden because Token owns value.`,
-    })),
+    ...findMatches(
+      file,
+      rawTailwindColorPattern,
+      RULES.rawTailwindColor,
+      (evidence) => ({
+        evidence,
+        message: `Raw Tailwind color utility "${evidence}" is forbidden because Token owns value.`,
+      })
+    ),
     ...findMatches(file, rawCssColorPattern, RULES.rawCssColor, (evidence) => ({
       evidence,
       message: `Raw color value "${evidence}" is forbidden because Token owns raw values.`,
@@ -112,21 +120,26 @@ function checkFile(file: SourceFile): Violation[] {
       rawArbitraryValuePattern,
       RULES.rawArbitraryValue,
       (evidence) => ({
-      evidence,
-      message: `Raw arbitrary value "${evidence}" is forbidden unless it references a token.`,
+        evidence,
+        message: `Raw arbitrary value "${evidence}" is forbidden unless it references a token.`,
       })
     ).filter((violation) => !violation.evidence.includes("var(--")),
-    ...findMatches(file, rawStringValuePattern, RULES.rawStringValue, (evidence) => ({
-      evidence,
-      message: `Raw unit value "${evidence}" is forbidden because Token owns raw values.`,
-    })).filter((violation) => !violation.evidence.includes("var(--")),
+    ...findMatches(
+      file,
+      rawStringValuePattern,
+      RULES.rawStringValue,
+      (evidence) => ({
+        evidence,
+        message: `Raw unit value "${evidence}" is forbidden because Token owns raw values.`,
+      })
+    ).filter((violation) => !violation.evidence.includes("var(--")),
     ...findMatches(
       file,
       cssVariableDeclarationPattern,
       RULES.cssVariableDeclaration,
       (evidence) => ({
-      evidence,
-      message: `CSS variable declaration "${evidence}" is forbidden because Token owns CSS variables.`,
+        evidence,
+        message: `CSS variable declaration "${evidence}" is forbidden because Token owns CSS variables.`,
       })
     ),
     ...findMatches(
@@ -134,8 +147,8 @@ function checkFile(file: SourceFile): Violation[] {
       unknownTokenReferencePattern,
       RULES.unknownTokenReference,
       (evidence) => ({
-      evidence,
-      message: `Unknown token reference "${evidence}" is forbidden.`,
+        evidence,
+        message: `Unknown token reference "${evidence}" is forbidden.`,
       })
     ),
   ];
@@ -200,9 +213,10 @@ function scanFiles(): SourceFile[] {
       const relativePath = normalizePath(relative(packageRoot, path));
 
       return (
-        !relativePath.startsWith("components/ui/") &&
-        !relativePath.endsWith("-recipes.ts") &&
-        relativePath !== "components/blocks/block-recipes.ts"
+        !(
+          relativePath.startsWith("components/ui/") ||
+          relativePath.endsWith("-recipes.ts")
+        ) && relativePath !== "components/blocks/block-recipes.ts"
       );
     })
     .sort((a, b) => normalizePath(a).localeCompare(normalizePath(b)))
@@ -213,7 +227,7 @@ function scanFiles(): SourceFile[] {
     }))
     .map((file) => ({
       ...file,
-      lines: file.source.split(/\r?\n/),
+      lines: file.source.split(NEWLINE_RE),
     }));
 }
 
@@ -279,7 +293,7 @@ function isIgnored(file: SourceFile, line: number): boolean {
     return false;
   }
 
-  return /^\s*\/\/ afenda-token-ignore-next-line -- \S.+$/.test(previousLine);
+  return TOKEN_IGNORE_NEXT_LINE_RE.test(previousLine);
 }
 
 function sortViolations(a: Violation, b: Violation): number {

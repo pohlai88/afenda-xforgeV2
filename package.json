@@ -49,7 +49,7 @@
     "blob:probe": "node packages/storage/scripts/blob-cli.mjs probe-public",
     "blob:probe:private": "node packages/storage/scripts/blob-cli.mjs probe-private",
     "blob:stores": "node scripts/list-blob-stores.mjs",
-    "governance": "pnpm check:ci && pnpm boundaries && pnpm env:doctor",
+    "governance": "pnpm check:ci && pnpm design-system:governance && pnpm boundaries && pnpm env:doctor",
     "mcp:configure": "node scripts/configure-github-mcp.mjs && node scripts/configure-supabase-mcp.mjs && node scripts/configure-playwright-mcp.mjs",
     "mcp:configure:supabase": "node scripts/configure-supabase-mcp.mjs",
     "mcp:configure:playwright": "node scripts/configure-playwright-mcp.mjs",

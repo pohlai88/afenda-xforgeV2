@@ -1,5 +1,5 @@
-import { cn } from "../../lib/utils";
 import { Loader2Icon } from "lucide-react";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 type SpinnerSize = "sm" | "md" | "lg";

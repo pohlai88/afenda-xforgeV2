@@ -20,5 +20,5 @@
     "action": 15000,
     "navigation": 30000
   },
-  "outputDir": "apps/app/output/playwright/mcp"
+  "outputDir": "output/playwright/app/mcp"
 }

@@ -3,12 +3,14 @@
 import {
   Badge,
   Button,
+  blockRecipe,
   Calendar,
   Input,
   Label,
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Progress,
   Select,
   SelectContent,
   SelectItem,
@@ -16,18 +18,16 @@ import {
   SelectValue,
   Switch,
   Textarea,
-  Progress,
-  blockRecipe,
 } from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import {
-  ORBIT_CASE_ATTACHMENT_MAX_BYTES,
-  ORBIT_CASE_PRIORITIES,
-  ORBIT_CASE_STATUSES,
   formatOrbitCaseAttachmentSize,
   formatOrbitCaseDueDateLabel,
   isOrbitCaseAttachmentContentTypeAllowed,
   isOrbitCasePrivateBlobAccess,
+  ORBIT_CASE_ATTACHMENT_MAX_BYTES,
+  ORBIT_CASE_PRIORITIES,
+  ORBIT_CASE_STATUSES,
   type OrbitCaseActivityDto,
   type OrbitCaseAttachmentDto,
   type OrbitCaseBlobAccess,
@@ -51,16 +51,16 @@ import {
 import { removeAttachment } from "@/app/actions/orbit-case/attachment/delete";
 import { addComment } from "@/app/actions/orbit-case/comment/create";
 import { deleteCase } from "@/app/actions/orbit-case/delete";
+import { executeCasePush } from "@/app/actions/orbit-case/push/execute";
 import { updateCase } from "@/app/actions/orbit-case/update";
 import { watchCase } from "@/app/actions/orbit-case/watch";
-import { executeCasePush } from "@/app/actions/orbit-case/push/execute";
-import { OrbitCasePushForm } from "./orbit-case-push-form";
-import { OrgMemberCombobox } from "./org-member-combobox";
 import {
   getOrbitCaseAttachmentDownloadHref,
   readOrbitCaseAttachmentAccessPreference,
   writeOrbitCaseAttachmentAccessPreference,
 } from "@/lib/orbit-case-attachment-privacy";
+import { OrbitCasePushForm } from "./orbit-case-push-form";
+import { OrgMemberCombobox } from "./org-member-combobox";
 
 interface OrbitCaseDetailViewProps {
   activity: OrbitCaseActivityDto[];
@@ -70,8 +70,8 @@ interface OrbitCaseDetailViewProps {
   comments: OrbitCaseCommentDto[];
   destinations: PushDestinationDefinition[];
   linkProjections: OrbitObjectLinkProjectionDto[];
-  pushTemplatesByDestinationId: Record<string, PushTemplateDefinition>;
   orbitCase: OrbitCaseDto;
+  pushTemplatesByDestinationId: Record<string, PushTemplateDefinition>;
   watching: boolean;
 }
 
@@ -433,7 +433,9 @@ export function OrbitCaseDetailView({
             <h2 className={blockRecipe("blockTitle")}>Comments</h2>
             <div className="grid gap-3">
               {comments.length === 0 ? (
-                <p className="text-muted-foreground text-sm">No comments yet.</p>
+                <p className="text-muted-foreground text-sm">
+                  No comments yet.
+                </p>
               ) : (
                 comments.map((comment) => (
                   <article
@@ -471,7 +473,9 @@ export function OrbitCaseDetailView({
           >
             <h2 className={blockRecipe("blockTitle")}>Attachments</h2>
             <div className="grid max-w-sm gap-2">
-              <Label htmlFor="attachment-access">Default privacy for uploads</Label>
+              <Label htmlFor="attachment-access">
+                Default privacy for uploads
+              </Label>
               <Select
                 onValueChange={(value) => {
                   const next = value as OrbitCaseBlobAccess;
@@ -493,8 +497,8 @@ export function OrbitCaseDetailView({
                 </SelectContent>
               </Select>
               <p className="text-muted-foreground text-xs">
-                Saved in this browser as your upload default. Private files never
-                use a direct blob URL in the UI.
+                Saved in this browser as your upload default. Private files
+                never use a direct blob URL in the UI.
               </p>
             </div>
             <input
@@ -517,7 +521,9 @@ export function OrbitCaseDetailView({
               </div>
             ) : null}
             {attachments.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No attachments yet.</p>
+              <p className="text-muted-foreground text-sm">
+                No attachments yet.
+              </p>
             ) : (
               attachments.map((attachment) => (
                 <article
@@ -575,7 +581,10 @@ export function OrbitCaseDetailView({
               <p className="text-muted-foreground text-sm">No activity yet.</p>
             ) : (
               initialActivity.map((entry) => (
-                <div className="border-border border-b pb-2 text-sm" key={entry.id}>
+                <div
+                  className="border-border border-b pb-2 text-sm"
+                  key={entry.id}
+                >
                   <p>{entry.summary}</p>
                   <p className="text-muted-foreground text-xs">
                     {new Date(entry.createdAt).toLocaleString()}
@@ -615,7 +624,10 @@ export function OrbitCaseDetailView({
                 disabled={isPending || !pushDestinationId}
                 fieldValues={pushFieldValues}
                 onFieldChange={(key, value) =>
-                  setPushFieldValues((current) => ({ ...current, [key]: value }))
+                  setPushFieldValues((current) => ({
+                    ...current,
+                    [key]: value,
+                  }))
                 }
                 onSubmit={handlePush}
                 template={activePushTemplate}
@@ -634,7 +646,10 @@ export function OrbitCaseDetailView({
               {initialLinkProjections.map((link) => (
                 <div className="text-sm" key={link.id}>
                   {link.href ? (
-                    <Link className="font-medium hover:underline" href={link.href}>
+                    <Link
+                      className="font-medium hover:underline"
+                      href={link.href}
+                    >
                       {link.label}
                     </Link>
                   ) : (
@@ -764,6 +779,7 @@ export function OrbitCaseDetailView({
           <div className="grid gap-2">
             <Label htmlFor="case-tags">Tags (comma-separated)</Label>
             <Input
+              defaultValue={orbitCase.tags.join(", ")}
               id="case-tags"
               onBlur={(event) => {
                 const tags = event.target.value
@@ -772,7 +788,6 @@ export function OrbitCaseDetailView({
                   .filter(Boolean);
                 saveFields({ tags });
               }}
-              defaultValue={orbitCase.tags.join(", ")}
             />
           </div>
 

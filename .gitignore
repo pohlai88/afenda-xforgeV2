@@ -293,6 +293,7 @@ packages/database/generated
 
 # Playwright (apps/app/e2e)
 apps/app/output/playwright/
+output/playwright/
 **/test-results/
 **/playwright-report/
 **/blob-report/

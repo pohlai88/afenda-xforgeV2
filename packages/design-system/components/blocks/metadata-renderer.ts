@@ -31,7 +31,11 @@ export {
   resolveMetadataBlockPermission,
   resolveMetadataPermission,
 } from "./metadata-renderer-core";
-export type { MetadataDataSources, MetadataLayoutItem, MetadataPageLayout } from "./metadata-schema";
+export type {
+  MetadataDataSources,
+  MetadataLayoutItem,
+  MetadataPageLayout,
+} from "./metadata-schema";
 export {
   metadataLayoutBreakpointValues,
   metadataLayoutDependencyModeValues,

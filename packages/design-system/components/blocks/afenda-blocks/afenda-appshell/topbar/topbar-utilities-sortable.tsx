@@ -1,32 +1,26 @@
 "use client";
 
 import {
-  DndContext,
-  DragOverlay,
-  PointerSensor,
   closestCenter,
+  DndContext,
   type DragEndEvent,
+  DragOverlay,
   type DragStartEvent,
+  PointerSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import {
-  SortableContext,
   horizontalListSortingStrategy,
+  SortableContext,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { CSSProperties, ReactElement, ReactNode } from "react";
 import { useId, useState } from "react";
-import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
-import {
-  getTopbarUtilityDefinition,
-  isTopbarUtilityId,
-  renderTopbarUtilityIcon,
-  type TopbarUtilityId,
-} from "./topbar-utilities-catalog";
+import { blockRecipe } from "../../../block-recipes";
 import {
   topbarUtilitiesSortableDraggingClass,
   topbarUtilitiesSortableHorizontalItemClass,
@@ -37,6 +31,12 @@ import {
   topbarUtilitiesSortableVerticalItemClass,
   topbarUtilitiesSortableVerticalItemOverClass,
 } from "./topbar-recipes";
+import {
+  getTopbarUtilityDefinition,
+  isTopbarUtilityId,
+  renderTopbarUtilityIcon,
+  type TopbarUtilityId,
+} from "./topbar-utilities-catalog";
 
 function useUtilitySortableSensors(): ReturnType<typeof useSensors> {
   return useSensors(
@@ -84,8 +84,7 @@ export function TopbarHorizontalUtilitySortable({
     const overUtilityId = String(over.id);
 
     if (
-      !isTopbarUtilityId(activeUtilityId) ||
-      !isTopbarUtilityId(overUtilityId)
+      !(isTopbarUtilityId(activeUtilityId) && isTopbarUtilityId(overUtilityId))
     ) {
       return;
     }
@@ -102,7 +101,10 @@ export function TopbarHorizontalUtilitySortable({
         onDragStart={handleDragStart}
         sensors={sensors}
       >
-        <SortableContext items={[...ids]} strategy={horizontalListSortingStrategy}>
+        <SortableContext
+          items={[...ids]}
+          strategy={horizontalListSortingStrategy}
+        >
           {children}
         </SortableContext>
         <DragOverlay dropAnimation={{ duration: 160 }}>
@@ -165,8 +167,7 @@ export function TopbarVerticalUtilitySortable({
     const overUtilityId = String(over.id);
 
     if (
-      !isTopbarUtilityId(activeUtilityId) ||
-      !isTopbarUtilityId(overUtilityId)
+      !(isTopbarUtilityId(activeUtilityId) && isTopbarUtilityId(overUtilityId))
     ) {
       return;
     }
@@ -183,7 +184,10 @@ export function TopbarVerticalUtilitySortable({
         onDragStart={handleDragStart}
         sensors={sensors}
       >
-        <SortableContext items={[...ids]} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={[...ids]}
+          strategy={verticalListSortingStrategy}
+        >
           {children}
         </SortableContext>
         <DragOverlay dropAnimation={{ duration: 160 }}>

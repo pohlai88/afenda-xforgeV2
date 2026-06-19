@@ -1,14 +1,14 @@
 "use client";
 
 import type { z } from "zod";
-import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
+import { AfendaAppShell, AfendaAppSidebar } from "../../afenda-appshell";
+import type { schema } from "../data-table";
 import {
-  AfendaAppShell,
-  AfendaAppSidebar,
-} from "../../afenda-appshell";
-import { schema } from "../data-table";
-import { DashboardContent, type DashboardContentProps } from "./dashboard-content";
+  DashboardContent,
+  type DashboardContentProps,
+} from "./dashboard-content";
 import { dashboardDemoSidebarNavDescriptor } from "./dashboard-demo-nav.descriptor";
 import { dashboardDemoSidebarNavIconRegistry } from "./dashboard-demo-nav.registry";
 

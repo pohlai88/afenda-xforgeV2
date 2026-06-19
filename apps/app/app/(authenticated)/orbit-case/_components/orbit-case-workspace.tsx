@@ -25,9 +25,9 @@ import type {
   OrbitCaseTimelineDto,
 } from "@repo/orbit-case";
 import {
-  ORBIT_CASE_STATUSES,
   formatOrbitCaseDueDateLabel,
   listRoutedMorphSlices,
+  ORBIT_CASE_STATUSES,
 } from "@repo/orbit-case";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -115,9 +115,7 @@ export function OrbitCaseWorkspace({
         ...(filterStatus !== "all"
           ? { status: filterStatus as OrbitCaseStatus }
           : {}),
-        ...(filterAssignee
-          ? { assigneeId: filterAssignee }
-          : {}),
+        ...(filterAssignee ? { assigneeId: filterAssignee } : {}),
         ...(filterTag.trim() ? { tag: filterTag.trim() } : {}),
       });
 
@@ -219,7 +217,11 @@ export function OrbitCaseWorkspace({
               placeholder="Tag"
               value={filterTag}
             />
-            <Button disabled={isPending} onClick={applyFilters} variant="secondary">
+            <Button
+              disabled={isPending}
+              onClick={applyFilters}
+              variant="secondary"
+            >
               Apply filters
             </Button>
           </div>

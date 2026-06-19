@@ -1,24 +1,24 @@
 "use client";
 
-import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
 import { TopbarActionsMenu } from "./topbar-actions-menu";
-import { TopbarThemeToggle } from "./topbar-theme-toggle";
 import {
   topbarRightClusterClass,
   topbarUtilitiesFixedClusterClass,
   topbarUtilitiesRailSeparatorClass,
 } from "./topbar-recipes";
+import { TopbarThemeToggle } from "./topbar-theme-toggle";
 import type { TopbarRightActionsProps } from "./topbar-types";
 import { TopbarUtilitiesBar } from "./topbar-utilities-bar";
-import {
-  TopbarFeedbackMenu,
-  TopbarUtilitiesMarketplace,
-} from "./topbar-utilities-marketplace";
 import {
   TopbarUtilitiesProvider,
   useTopbarUtilities,
 } from "./topbar-utilities-context";
+import {
+  TopbarFeedbackMenu,
+  TopbarUtilitiesMarketplace,
+} from "./topbar-utilities-marketplace";
 
 function TopbarRightActionsInner({
   actionGroups,
@@ -29,11 +29,9 @@ function TopbarRightActionsInner({
     <>
       <TopbarUtilitiesBar />
       <div
-        aria-orientation="vertical"
         aria-hidden
         className={cn(topbarUtilitiesRailSeparatorClass)}
         data-slot="app-topbar-utilities-rail"
-        role="separator"
       />
       <div
         className={cn(topbarUtilitiesFixedClusterClass)}

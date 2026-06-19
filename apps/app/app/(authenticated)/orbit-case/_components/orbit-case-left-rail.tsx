@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  AfendaAppContentLeftRail,
-  blockRecipe,
-  cn,
-} from "@repo/design-system";
+import { AfendaAppContentLeftRail, blockRecipe, cn } from "@repo/design-system";
 import { ArrowLeftIcon, SettingsIcon, WorkflowIcon } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -14,8 +10,23 @@ import {
   ORBIT_CASE_BASE_PATH,
 } from "@/lib/app-shell/orbit-case-route-context";
 
-interface OrbitCaseLeftRailProperties {
+interface OrbitCaseLeftRailProps {
   readonly context: OrbitCaseRouteContext;
+}
+
+function getContextDescription(context: OrbitCaseRouteContext): string {
+  switch (context.kind) {
+    case "workspace":
+      return "Capture work here, then push to governed morph destinations.";
+    case "morph-list":
+      return `Browse ${context.label.toLowerCase()} pushed from cases.`;
+    case "morph-detail":
+      return `Detail view for this ${context.label.toLowerCase()}.`;
+    case "case":
+      return "Push this case to a morph destination from the main panel.";
+    default:
+      return "Configure push destinations and templates.";
+  }
 }
 
 function OrbitCaseLeftRailLink({
@@ -55,7 +66,7 @@ function OrbitCaseLeftRailSection({
       <h2
         className={cn(
           blockRecipe("blockMetricLabel"),
-          "px-2 text-[length:var(--xforge-font-caption-size)] uppercase tracking-wide text-text-secondary"
+          "px-2 text-[length:var(--xforge-font-caption-size)] text-text-secondary uppercase tracking-wide"
         )}
       >
         {title}
@@ -67,7 +78,7 @@ function OrbitCaseLeftRailSection({
   );
 }
 
-export function OrbitCaseLeftRail({ context }: OrbitCaseLeftRailProperties) {
+export function OrbitCaseLeftRail({ context }: OrbitCaseLeftRailProps) {
   const morphItems = listOrbitCaseMorphNavItems();
 
   return (
@@ -101,7 +112,8 @@ export function OrbitCaseLeftRail({ context }: OrbitCaseLeftRailProperties) {
           {morphItems.map((item) => (
             <OrbitCaseLeftRailLink
               active={
-                context.kind === "morph-list" && context.segment === item.segment
+                context.kind === "morph-list" &&
+                context.segment === item.segment
               }
               href={item.href}
               key={item.id}
@@ -124,15 +136,7 @@ export function OrbitCaseLeftRail({ context }: OrbitCaseLeftRailProperties) {
               className="mt-0.5 size-3.5 shrink-0"
             />
             <p className="text-[length:var(--xforge-font-caption-size)] leading-snug">
-              {context.kind === "workspace"
-                ? "Capture work here, then push to governed morph destinations."
-                : context.kind === "morph-list"
-                  ? `Browse ${context.label.toLowerCase()} pushed from cases.`
-                  : context.kind === "morph-detail"
-                    ? `Detail view for this ${context.label.toLowerCase()}.`
-                    : context.kind === "case"
-                      ? "Push this case to a morph destination from the main panel."
-                      : "Configure push destinations and templates."}
+              {getContextDescription(context)}
             </p>
           </div>
         </OrbitCaseLeftRailSection>

@@ -1,8 +1,8 @@
 "use client";
 
-import { blockRecipe } from "../../block-recipes";
 import { cn } from "../../../../lib/utils";
-import { AppShellSidebarProvider, useAppShellSidebar } from "./app-shell-sidebar-context";
+import { blockRecipe } from "../../block-recipes";
+import type { AfendaAppShellCssVars } from "./app-shell-css-vars";
 import {
   APP_SHELL_FOOTER_HEIGHT,
   APP_SHELL_RAIL_WIDTH,
@@ -10,10 +10,13 @@ import {
   APP_SHELL_SIDEBAR_WIDTH,
   APP_SHELL_TOPBAR_HEIGHT,
   appShellBentoGridClass,
-  appShellContentInsetClass,
   appShellContentBodyClass,
+  appShellContentInsetClass,
 } from "./app-shell-recipes";
-import type { AfendaAppShellCssVars } from "./app-shell-css-vars";
+import {
+  AppShellSidebarProvider,
+  useAppShellSidebar,
+} from "./app-shell-sidebar-context";
 import type { AfendaAppShellProps } from "./app-shell-types";
 import { AfendaAppContent } from "./content/app-content";
 import { AfendaAppFooter } from "./footer/app-footer";
@@ -39,7 +42,11 @@ function AfendaAppShellInner({
 
   return (
     <div
-      className={cn(blockRecipe("blockShell"), appShellBentoGridClass, className)}
+      className={cn(
+        blockRecipe("blockShell"),
+        appShellBentoGridClass,
+        className
+      )}
       data-sidebar-expanded={isExpanded ? "true" : "false"}
       data-sidebar-mode={behaviorMode}
       data-slot="afenda-app-shell"
@@ -48,7 +55,8 @@ function AfendaAppShellInner({
           "--app-shell-footer-height": APP_SHELL_FOOTER_HEIGHT,
           "--app-shell-rail-width": APP_SHELL_RAIL_WIDTH,
           "--app-shell-sidebar-active-width": sidebarActiveWidth,
-          "--app-shell-sidebar-icon-rail-width": APP_SHELL_SIDEBAR_ICON_RAIL_WIDTH,
+          "--app-shell-sidebar-icon-rail-width":
+            APP_SHELL_SIDEBAR_ICON_RAIL_WIDTH,
           "--app-shell-sidebar-width": APP_SHELL_SIDEBAR_WIDTH,
           "--app-shell-topbar-height": APP_SHELL_TOPBAR_HEIGHT,
         } as AfendaAppShellCssVars
@@ -58,7 +66,10 @@ function AfendaAppShellInner({
       {topbar ?? <AfendaAppTopbar />}
       {sidebar ?? <AfendaAppSidebar />}
       <div className={cn(appShellContentInsetClass)}>
-        <div className={cn(appShellContentBodyClass)} data-slot="app-content-body">
+        <div
+          className={cn(appShellContentBodyClass)}
+          data-slot="app-content-body"
+        >
           <AfendaAppContent
             bottomDrawer={contentBottomDrawer}
             defaultBottomDrawerOpen={defaultContentBottomDrawerOpen}

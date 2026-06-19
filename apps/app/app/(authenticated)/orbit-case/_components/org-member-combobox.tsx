@@ -12,8 +12,8 @@ import { cn } from "@repo/design-system/lib/utils";
 import { useEffect, useState, useTransition } from "react";
 import {
   getOrgMemberOption,
-  searchOrgMemberOptions,
   type OrgMemberOption,
+  searchOrgMemberOptions,
 } from "@/app/actions/users/search";
 
 interface OrgMemberComboboxProps {
@@ -90,9 +90,7 @@ export function OrgMemberCombobox({
             type="button"
             variant="secondary"
           >
-            <span className="truncate">
-              {selectedLabel ?? placeholder}
-            </span>
+            <span className="truncate">{selectedLabel ?? placeholder}</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent align="start" className="grid w-72 gap-2 p-3">
@@ -107,10 +105,14 @@ export function OrgMemberCombobox({
           />
           <div className="grid max-h-48 gap-1 overflow-y-auto">
             {isPending && options.length === 0 ? (
-              <p className="text-muted-foreground px-2 py-1 text-sm">Searching…</p>
+              <p className="px-2 py-1 text-muted-foreground text-sm">
+                Searching…
+              </p>
             ) : null}
             {!isPending && options.length === 0 ? (
-              <p className="text-muted-foreground px-2 py-1 text-sm">No members found.</p>
+              <p className="px-2 py-1 text-muted-foreground text-sm">
+                No members found.
+              </p>
             ) : null}
             {options.map((member) => (
               <Button

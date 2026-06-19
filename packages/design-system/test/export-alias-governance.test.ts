@@ -4,10 +4,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { AFENDA_INTERNAL_IMPLEMENTATION_PATH_PREFIXES } from "../contracts/afenda-export.contract";
 
-const packageRoot = join(
-  dirname(fileURLToPath(import.meta.url)),
-  ".."
-);
+const packageRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
 
 function collectExportedNamesFromSource(source: string): string[] {
   const names: string[] = [];

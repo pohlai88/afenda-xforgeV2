@@ -3,31 +3,33 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { AFENDA_SLOT_FORBIDDEN_PATTERNS } from "../contracts/afenda-slot.contract.ts";
 import {
   AFENDA_SLOT_EXACT_IDENTITY_REGISTRY,
   AFENDA_SLOT_IDENTITY_PATTERN_REGISTRY,
 } from "../registries/slot.registry.ts";
-import {
-  AFENDA_SLOT_FORBIDDEN_PATTERNS,
-} from "../contracts/afenda-slot.contract.ts";
+
+const NEWLINE_RE = /\r?\n/;
+const SLOT_IGNORE_NEXT_LINE_RE =
+  /^\s*\/\/ afenda-slot-ignore-next-line -- \S.+$/;
 
 interface SourceFile {
+  readonly lines: readonly string[];
   readonly path: string;
   readonly relativePath: string;
   readonly source: string;
-  readonly lines: readonly string[];
 }
 
 type Severity = "error" | "warning";
 
 interface Violation {
-  readonly ruleId: string;
-  readonly severity: Severity;
-  readonly file: string;
-  readonly line: number;
   readonly column: number;
   readonly evidence: string;
+  readonly file: string;
+  readonly line: number;
   readonly message: string;
+  readonly ruleId: string;
+  readonly severity: Severity;
 }
 
 const RULES = {
@@ -292,13 +294,13 @@ function scanFiles(): SourceFile[] {
     .filter((path) => {
       const relativePath = normalizePath(relative(packageRoot, path));
 
-      return (
-        !relativePath.startsWith("components/ui/") &&
-        !relativePath.startsWith("contracts/") &&
-        !relativePath.startsWith("scripts/") &&
-        !relativePath.startsWith("test/") &&
-        !relativePath.endsWith(".test.ts") &&
-        !relativePath.endsWith(".test.tsx")
+      return !(
+        relativePath.startsWith("components/ui/") ||
+        relativePath.startsWith("contracts/") ||
+        relativePath.startsWith("scripts/") ||
+        relativePath.startsWith("test/") ||
+        relativePath.endsWith(".test.ts") ||
+        relativePath.endsWith(".test.tsx")
       );
     })
     .sort((a, b) => normalizePath(a).localeCompare(normalizePath(b)))
@@ -309,7 +311,7 @@ function scanFiles(): SourceFile[] {
         path,
         relativePath: normalizePath(relative(packageRoot, path)),
         source,
-        lines: source.split(/\r?\n/),
+        lines: source.split(NEWLINE_RE),
       };
     });
 }
@@ -349,7 +351,7 @@ function isIgnored(file: SourceFile, line: number): boolean {
     return false;
   }
 
-  return /^\s*\/\/ afenda-slot-ignore-next-line -- \S.+$/.test(previousLine);
+  return SLOT_IGNORE_NEXT_LINE_RE.test(previousLine);
 }
 
 function lineAndColumn(

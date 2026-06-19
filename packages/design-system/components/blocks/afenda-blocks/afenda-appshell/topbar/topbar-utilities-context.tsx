@@ -2,21 +2,22 @@
 
 import {
   createContext,
+  type ReactElement,
+  type ReactNode,
   useCallback,
   useContext,
   useMemo,
   useState,
   useSyncExternalStore,
-  type ReactElement,
-  type ReactNode,
 } from "react";
-import { blockRecipe } from "../../../block-recipes";
-import { cn } from "../../../../../lib/utils";
 import { toast } from "sonner";
+import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
+import { topbarUtilitiesContextWrapClass } from "./topbar-recipes";
 import {
+  getTopbarUtilityDefinition,
   TOPBAR_UTILITY_CATALOG,
   TOPBAR_UTILITY_DEFAULT_PINNED,
-  getTopbarUtilityDefinition,
   type TopbarUtilityId,
 } from "./topbar-utilities-catalog";
 import {
@@ -26,11 +27,10 @@ import {
   normalizeTopbarUtilitiesState,
   readTopbarUtilitiesState,
   subscribeTopbarUtilities,
-  writeTopbarUtilitiesState,
   type TopbarUtilitiesScope,
   type TopbarUtilitiesState,
+  writeTopbarUtilitiesState,
 } from "./topbar-utilities-storage";
-import { topbarUtilitiesContextWrapClass } from "./topbar-recipes";
 
 export interface TopbarUtilitiesController {
   readonly feedbackMenuOpen: boolean;
@@ -88,7 +88,10 @@ export function TopbarUtilitiesProvider({
   return (
     <TopbarUtilitiesContext.Provider value={controller}>
       <span
-        className={cn(blockRecipe("blockShell"), topbarUtilitiesContextWrapClass)}
+        className={cn(
+          blockRecipe("blockShell"),
+          topbarUtilitiesContextWrapClass
+        )}
         data-slot="app-topbar-utilities-context"
       >
         {children}
@@ -145,44 +148,49 @@ function useTopbarUtilitiesControllerValue({
     [preview, scope]
   );
 
-  const handleUtilityAction = useCallback((utilityId: TopbarUtilityId): void => {
-    const override = utilityActionOverrides?.[utilityId];
+  const handleUtilityAction = useCallback(
+    (utilityId: TopbarUtilityId): void => {
+      const override = utilityActionOverrides?.[utilityId];
 
-    if (override) {
-      override();
-      return;
-    }
-
-    const definition = getTopbarUtilityDefinition(utilityId);
-
-    switch (definition.action) {
-      case "help":
-        toast.message("Help is not wired yet.");
+      if (override) {
+        override();
         return;
-      case "feedback-menu":
-        setFeedbackMenuOpen(true);
-        return;
-      case "keyboard-shortcuts":
-        toast.message("Keyboard shortcuts panel is not wired yet.");
-        return;
-      case "notifications-menu":
-        toast.message("Notifications panel is not wired yet.");
-        return;
-      case "search":
-        toast.message("Quick search is not wired yet.");
-        return;
-      case "settings":
-        toast.message(`${definition.label} is not wired yet.`);
-        return;
-      case "stub":
-        toast.message(`${definition.label} is not wired yet.`);
-        return;
-      default: {
-        const exhaustiveAction: never = definition.action;
-        throw new Error(`Unhandled topbar utility action: ${exhaustiveAction}`);
       }
-    }
-  }, [utilityActionOverrides]);
+
+      const definition = getTopbarUtilityDefinition(utilityId);
+
+      switch (definition.action) {
+        case "help":
+          toast.message("Help is not wired yet.");
+          return;
+        case "feedback-menu":
+          setFeedbackMenuOpen(true);
+          return;
+        case "keyboard-shortcuts":
+          toast.message("Keyboard shortcuts panel is not wired yet.");
+          return;
+        case "notifications-menu":
+          toast.message("Notifications panel is not wired yet.");
+          return;
+        case "search":
+          toast.message("Quick search is not wired yet.");
+          return;
+        case "settings":
+          toast.message(`${definition.label} is not wired yet.`);
+          return;
+        case "stub":
+          toast.message(`${definition.label} is not wired yet.`);
+          return;
+        default: {
+          const exhaustiveAction: never = definition.action;
+          throw new Error(
+            `Unhandled topbar utility action: ${exhaustiveAction}`
+          );
+        }
+      }
+    },
+    [utilityActionOverrides]
+  );
 
   return useMemo(
     () => ({
@@ -208,4 +216,3 @@ function useTopbarUtilitiesControllerValue({
     ]
   );
 }
-

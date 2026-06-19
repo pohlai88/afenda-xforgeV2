@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "../../lib/utils";
 import { AspectRatio as AspectRatioPrimitive } from "radix-ui";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 function AspectRatio({

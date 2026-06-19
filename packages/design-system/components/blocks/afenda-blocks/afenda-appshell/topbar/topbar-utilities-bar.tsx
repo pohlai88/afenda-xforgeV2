@@ -1,24 +1,8 @@
 "use client";
 
-import { blockRecipe } from "../../../block-recipes";
-import { Button } from "../../../../afenda-ui/button";
 import { cn } from "../../../../../lib/utils";
-import {
-  getTopbarUtilityDefinition,
-  getTopbarUtilitySlotId,
-  renderTopbarUtilityIcon,
-  type TopbarUtilityId,
-} from "./topbar-utilities-catalog";
-import {
-  reorderTopbarUtilityIds,
-  reorderTopbarVisibleUtilities,
-  getTopbarVisibleUtilityIds,
-} from "./topbar-utilities-storage";
-import { useTopbarUtilities } from "./topbar-utilities-context";
-import {
-  TopbarHorizontalUtilitySortable,
-  TopbarSortableHorizontalItem,
-} from "./topbar-utilities-sortable";
+import { Button } from "../../../../afenda-ui/button";
+import { blockRecipe } from "../../../block-recipes";
 import {
   topbarIconButtonClass,
   topbarUtilitiesBarClass,
@@ -26,6 +10,22 @@ import {
   topbarUtilitiesBarLegendClass,
   topbarUtilitiesBarSortableItemClass,
 } from "./topbar-recipes";
+import {
+  getTopbarUtilityDefinition,
+  getTopbarUtilitySlotId,
+  renderTopbarUtilityIcon,
+  type TopbarUtilityId,
+} from "./topbar-utilities-catalog";
+import { useTopbarUtilities } from "./topbar-utilities-context";
+import {
+  TopbarHorizontalUtilitySortable,
+  TopbarSortableHorizontalItem,
+} from "./topbar-utilities-sortable";
+import {
+  getTopbarVisibleUtilityIds,
+  reorderTopbarUtilityIds,
+  reorderTopbarVisibleUtilities,
+} from "./topbar-utilities-storage";
 
 export function TopbarUtilitiesBar() {
   const {
@@ -92,7 +92,10 @@ export function TopbarUtilitiesBar() {
             >
               <Button
                 aria-label={definition.label}
-                className={cn(blockRecipe("blockToolbar"), topbarIconButtonClass)}
+                className={cn(
+                  blockRecipe("blockToolbar"),
+                  topbarIconButtonClass
+                )}
                 data-slot={getTopbarUtilitySlotId(utilityId)}
                 onClick={() => {
                   handleUtilityAction(utilityId);

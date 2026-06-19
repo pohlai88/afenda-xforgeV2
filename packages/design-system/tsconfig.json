@@ -3,6 +3,7 @@
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "baseUrl": ".",
+    "noUncheckedIndexedAccess": true,
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "types": ["node", "react", "react-dom"],
     "paths": {

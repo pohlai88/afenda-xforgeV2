@@ -8,10 +8,10 @@ const dashboardNavTopbarTitleClass = "text-base font-medium";
 
 const dashboardNavTopbarActionsClass = "ml-auto flex items-center gap-2";
 
-const dashboardNavTopbarGithubButtonClass = "hidden sm:flex dark:text-foreground";
+const dashboardNavTopbarGithubButtonClass =
+  "hidden sm:flex dark:text-foreground";
 
-const dashboardNavTopbarSeparatorClass =
-  "mx-2 data-[orientation=vertical]:h-4";
+const dashboardNavTopbarSeparatorClass = "mx-2 data-[orientation=vertical]:h-4";
 
 const dashboardNavTopbarTriggerClass = "-ml-1";
 
@@ -42,8 +42,7 @@ const dashboardSectionCardClass = "@container/card";
 const dashboardSectionCardTitleClass =
   "text-2xl font-semibold tabular-nums @[250px]/card:text-3xl";
 
-const dashboardSectionCardFooterClass =
-  "flex-col items-start gap-1.5 text-sm";
+const dashboardSectionCardFooterClass = "flex-col items-start gap-1.5 text-sm";
 
 const dashboardSectionCardFooterPrimaryClass =
   "line-clamp-1 flex gap-2 font-medium";
@@ -107,9 +106,11 @@ const dashboardNavDocumentsMoreIconClass = "text-sidebar-foreground/70";
 
 const dashboardPageInsetStackClass = "flex flex-1 flex-col";
 
-const dashboardPageMainStackClass = "@container/main flex flex-1 flex-col gap-2";
+const dashboardPageMainStackClass =
+  "@container/main flex flex-1 flex-col gap-2";
 
-const dashboardPageContentStackClass = "flex flex-col gap-4 py-4 md:gap-6 md:py-6";
+const dashboardPageContentStackClass =
+  "flex flex-col gap-4 py-4 md:gap-6 md:py-6";
 
 const dashboardPageChartWrapperClass = "px-4 lg:px-6";
 
@@ -161,7 +162,8 @@ const dashboardDataTableRowsPerPageSelectClass = "w-20";
 const dashboardDataTablePageIndicatorClass =
   "flex w-fit items-center justify-center text-sm font-medium";
 
-const dashboardDataTablePageActionsClass = "ml-auto flex items-center gap-2 lg:ml-0";
+const dashboardDataTablePageActionsClass =
+  "ml-auto flex items-center gap-2 lg:ml-0";
 
 const dashboardDataTableFirstPageButtonClass = "hidden h-8 w-8 p-0 lg:flex";
 
@@ -205,7 +207,8 @@ const dashboardDataTableDrawerTriggerClass =
 const dashboardDataTableDrawerBodyClass =
   "flex flex-col gap-4 overflow-y-auto px-4 text-sm";
 
-const dashboardDataTableDrawerTrendClass = "flex gap-2 leading-none font-medium";
+const dashboardDataTableDrawerTrendClass =
+  "flex gap-2 leading-none font-medium";
 
 const dashboardDataTableDrawerTrendIconClass = "size-4";
 

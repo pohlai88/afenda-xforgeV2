@@ -1,4 +1,30 @@
 export type {
+  AccountSettingsNavGroup,
+  AccountSettingsNavItem,
+  AccountSettingsNavProps,
+  AccountSettingsPageProps,
+  AccountSettingsPreferencesData,
+  AccountSettingsPreferencesProps,
+  AccountSettingsProfileData,
+  AccountSettingsProfileProps,
+  AccountSettingsSecurityProps,
+  AccountSettingsShellProps,
+  AccountSettingsTheme,
+  ActiveSessionInfo,
+} from "./afenda-blocks/shadcn-account-settings-01";
+export {
+  ACCOUNT_SETTINGS_NAV_GROUPS,
+  AccountSettingsDemoPage,
+  AccountSettingsNav,
+  AccountSettingsPage,
+  AccountSettingsPreferences,
+  AccountSettingsProfile,
+  AccountSettingsSecurity,
+  AccountSettingsShell,
+  accountSettingsNavDescriptor,
+  accountSettingsNavIconRegistry,
+} from "./afenda-blocks/shadcn-account-settings-01";
+export type {
   AfendaAppContentBottomDrawerProps,
   AfendaAppContentBreadcrumbItem,
   AfendaAppContentCssVars,
@@ -26,10 +52,10 @@ export type {
   AfendaAppSidebarProps,
   AfendaAppTopbarProps,
   AfendaTopbarUtilitiesController,
-  SidebarNavUserMenuGroup,
-  SidebarNavUserMenuItem,
   SidebarNavUserActionMenuItem,
   SidebarNavUserLinkMenuItem,
+  SidebarNavUserMenuGroup,
+  SidebarNavUserMenuItem,
   SidebarNavUserProps,
   TopbarBrandDiskProps,
   TopbarContextOption,
@@ -37,6 +63,35 @@ export type {
   TopbarContextSwitcherProps,
   TopbarUtilitiesScope,
   TopbarUtilitiesState,
+} from "./afenda-blocks/afenda-appshell";
+export {
+  AfendaAppContent,
+  AfendaAppContentBottomDrawer,
+  AfendaAppContentHeader,
+  AfendaAppContentLayoutProvider,
+  AfendaAppContentLeftRail,
+  AfendaAppContentRightRail,
+  AfendaAppFooter,
+  AfendaAppShell,
+  AfendaAppSidebar,
+  AfendaAppSidebar as AppSidebar,
+  AfendaAppTopbar,
+  AfendaAppTopbar as AppTopbar,
+  APP_SHELL_FOOTER_HEIGHT as AFENDA_APP_SHELL_FOOTER_HEIGHT,
+  APP_SHELL_RAIL_WIDTH as AFENDA_APP_SHELL_RAIL_WIDTH,
+  APP_SHELL_SIDEBAR_WIDTH as AFENDA_APP_SHELL_SIDEBAR_WIDTH,
+  APP_SHELL_TOPBAR_HEIGHT as AFENDA_APP_SHELL_TOPBAR_HEIGHT,
+  collectSidebarNavItemDescriptors,
+  collectSidebarNavItems,
+  resolveActiveSidebarNavItemId,
+  resolveActiveSidebarNavItemIds,
+  resolveAfendaAppSidebarNavLayout,
+  TopbarBrandDisk,
+  TopbarContextSwitcher,
+  TopbarScopeSwitchers,
+  TopbarSidebarTrigger,
+  useAfendaAppContentLayout,
+  useAppShellSidebar,
 } from "./afenda-blocks/afenda-appshell";
 export type {
   DashboardContentProps,
@@ -47,36 +102,9 @@ export type {
   DashboardPageProps,
   NavMainItem,
   NavMainProps,
+  SidebarLinkRenderer,
+  SidebarLinkRenderProps,
 } from "./afenda-blocks/shadcn-dashboard-01";
-export {
-  AfendaAppContent,
-  AfendaAppContentBottomDrawer,
-  AfendaAppContentHeader,
-  AfendaAppContentLayoutProvider,
-  AfendaAppContentLeftRail,
-  AfendaAppContentRightRail,
-  useAfendaAppContentLayout,
-  AfendaAppFooter,
-  AfendaAppShell,
-  AfendaAppSidebar,
-  AfendaAppTopbar,
-  AfendaAppSidebar as AppSidebar,
-  AfendaAppTopbar as AppTopbar,
-  collectSidebarNavItemDescriptors,
-  collectSidebarNavItems,
-  resolveActiveSidebarNavItemId,
-  resolveActiveSidebarNavItemIds,
-  resolveAfendaAppSidebarNavLayout,
-  TopbarBrandDisk,
-  TopbarContextSwitcher,
-  TopbarScopeSwitchers,
-  TopbarSidebarTrigger,
-  useAppShellSidebar,
-  APP_SHELL_FOOTER_HEIGHT as AFENDA_APP_SHELL_FOOTER_HEIGHT,
-  APP_SHELL_RAIL_WIDTH as AFENDA_APP_SHELL_RAIL_WIDTH,
-  APP_SHELL_SIDEBAR_WIDTH as AFENDA_APP_SHELL_SIDEBAR_WIDTH,
-  APP_SHELL_TOPBAR_HEIGHT as AFENDA_APP_SHELL_TOPBAR_HEIGHT,
-} from "./afenda-blocks/afenda-appshell";
 export {
   AppSidebar as ShadcnDemoAppSidebar,
   ChartAreaInteractive,
@@ -90,28 +118,16 @@ export {
   DEMO_DASHBOARD_DATA_TABLE_ROWS,
   DEMO_DASHBOARD_NAV_TOPBAR_PROPS,
   dashboardDataTableSchema,
+  defaultSidebarLink,
   NavDocuments,
   NavMain,
   NavSecondary,
   NavUser,
+  resolveSidebarLinkRenderer,
   SectionCards,
   SiteHeader,
-} from "./afenda-blocks/shadcn-dashboard-01";
-export type {
-  SidebarLinkRenderer,
-  SidebarLinkRenderProps,
-} from "./afenda-blocks/shadcn-dashboard-01";
-export {
-  defaultSidebarLink,
-  resolveSidebarLinkRenderer,
   sidebarLinkClass,
 } from "./afenda-blocks/shadcn-dashboard-01";
-export type {
-  AfendaBlockRecipeContract,
-  AfendaBlockRecipeEntry,
-  AfendaBlockRecipeKey,
-} from "./block-recipes";
-export { afendaBlockRecipe, blockRecipe } from "./block-recipes";
 export type {
   BlockAction,
   BlockBaseProps,
@@ -122,6 +138,12 @@ export type {
   ErpRiskLevel,
   ErpSaveState,
 } from "./block-governance-types";
+export type {
+  AfendaBlockRecipeContract,
+  AfendaBlockRecipeEntry,
+  AfendaBlockRecipeKey,
+} from "./block-recipes";
+export { afendaBlockRecipe, blockRecipe } from "./block-recipes";
 export type { BlockType } from "./block-types";
 export { supportedBlockTypes } from "./block-types";
 export type {
@@ -129,43 +151,6 @@ export type {
   AfendaBlockLayoutContract,
 } from "./layout-contracts";
 export { afendaBlockLayoutContracts } from "./layout-contracts";
-export type {
-  MetadataBlock,
-  MetadataBlockAction,
-  MetadataDataBinding,
-  MetadataDataSourceEnvelope,
-  MetadataDataSourceState,
-  MetadataPage,
-  MetadataScalar,
-  MetadataValue,
-} from "./metadata-schema";
-export {
-  blockActionVariantValues,
-  blockDensityValues,
-  blockIntentValues,
-  blockRuntimeStateValues,
-  blockToneValues,
-  metadataBlockActionSchema,
-  metadataBlockBaseSchema,
-  metadataBlockSchema,
-  metadataBlockSchemas,
-  metadataBlockToneSchema,
-  metadataBlockTypeSchema,
-  metadataBulkActionBarBlockSchema,
-  metadataDataBindingSchema,
-  metadataDataSourceEnvelopeSchema,
-  metadataDataSourceStateSchema,
-  metadataDataSourcesSchema,
-  metadataDataTableBlockSchema,
-  metadataEmptyPanelBlockSchema,
-  metadataFilterBarBlockSchema,
-  metadataPageHeaderBlockSchema,
-  metadataPageSchema,
-  metadataRuntimeStateBlockSchema,
-  metadataScalarSchema,
-  metadataStatsStripBlockSchema,
-  metadataValueSchema,
-} from "./metadata-schema";
 export type {
   MetadataActionSurface,
   MetadataAuditEvent,
@@ -203,6 +188,43 @@ export {
   resolveMetadataBlockPermission,
   resolveMetadataPermission,
 } from "./metadata-renderer";
+export type {
+  MetadataBlock,
+  MetadataBlockAction,
+  MetadataDataBinding,
+  MetadataDataSourceEnvelope,
+  MetadataDataSourceState,
+  MetadataPage,
+  MetadataScalar,
+  MetadataValue,
+} from "./metadata-schema";
+export {
+  blockActionVariantValues,
+  blockDensityValues,
+  blockIntentValues,
+  blockRuntimeStateValues,
+  blockToneValues,
+  metadataBlockActionSchema,
+  metadataBlockBaseSchema,
+  metadataBlockSchema,
+  metadataBlockSchemas,
+  metadataBlockToneSchema,
+  metadataBlockTypeSchema,
+  metadataBulkActionBarBlockSchema,
+  metadataDataBindingSchema,
+  metadataDataSourceEnvelopeSchema,
+  metadataDataSourceStateSchema,
+  metadataDataSourcesSchema,
+  metadataDataTableBlockSchema,
+  metadataEmptyPanelBlockSchema,
+  metadataFilterBarBlockSchema,
+  metadataPageHeaderBlockSchema,
+  metadataPageSchema,
+  metadataRuntimeStateBlockSchema,
+  metadataScalarSchema,
+  metadataStatsStripBlockSchema,
+  metadataValueSchema,
+} from "./metadata-schema";
 export type {
   BlockStateInput,
   OrchestratedBlockState,

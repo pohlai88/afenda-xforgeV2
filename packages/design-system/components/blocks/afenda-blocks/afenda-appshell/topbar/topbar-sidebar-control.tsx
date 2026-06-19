@@ -1,7 +1,7 @@
 "use client";
 
 import { PanelLeftIcon } from "lucide-react";
-import { blockRecipe } from "../../../block-recipes";
+import { cn } from "../../../../../lib/utils";
 import { Button } from "../../../../afenda-ui/button";
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import {
 } from "../../../../afenda-ui/dropdown-menu";
 import { recipe } from "../../../../afenda-ui/recipes";
 import { SIDEBAR_BEHAVIOR_OPTIONS } from "../../../../afenda-ui/sidebar-behavior";
-import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
 import { useAppShellSidebar } from "../app-shell-sidebar-context";
 import { topbarSidebarTriggerClass } from "./topbar-recipes";
 
@@ -33,7 +33,11 @@ export function TopbarSidebarControl({
       <DropdownMenuTrigger asChild>
         <Button
           aria-label={triggerLabel}
-          className={cn(blockRecipe("blockShell"), topbarSidebarTriggerClass, className)}
+          className={cn(
+            blockRecipe("blockShell"),
+            topbarSidebarTriggerClass,
+            className
+          )}
           data-slot="app-topbar-sidebar-trigger"
           size="icon-sm"
           type="button"

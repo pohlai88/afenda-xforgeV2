@@ -19,12 +19,12 @@ export async function pushCaseToDestination(
   destinationLabel: string,
   fieldValues: Record<string, string> = {}
 ): Promise<void> {
-  await expect(page.getByRole("heading", { name: "Push to module" })).toBeVisible(
-    {
-      timeout: 15_000,
-    }
-  );
-  await page.getByLabel("Destination").click();
+  await expect(
+    page.getByRole("heading", { name: "Push to module" })
+  ).toBeVisible({
+    timeout: 15_000,
+  });
+  await page.getByRole("combobox", { name: "Destination" }).click();
   await page.getByRole("option", { name: destinationLabel }).click();
 
   for (const [label, value] of Object.entries(fieldValues)) {

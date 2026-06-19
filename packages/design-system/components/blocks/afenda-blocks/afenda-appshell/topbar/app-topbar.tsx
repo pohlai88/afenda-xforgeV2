@@ -1,12 +1,12 @@
 "use client";
 
-import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
-import type { AfendaAppTopbarProps } from "./topbar-types";
+import { blockRecipe } from "../../../block-recipes";
 import { TopbarBrandDisk } from "./topbar-brand-disk";
 import { appTopbarShellClass } from "./topbar-recipes";
-import { TopbarSidebarControl } from "./topbar-sidebar-control";
 import { TopbarRightActions } from "./topbar-right-actions";
+import { TopbarSidebarControl } from "./topbar-sidebar-control";
+import type { AfendaAppTopbarProps } from "./topbar-types";
 
 export function AfendaAppTopbar({
   actions,
@@ -28,7 +28,11 @@ export function AfendaAppTopbar({
   if (children) {
     return (
       <header
-        className={cn(blockRecipe("blockShell"), appTopbarShellClass, className)}
+        className={cn(
+          blockRecipe("blockShell"),
+          appTopbarShellClass,
+          className
+        )}
         data-slot="app-topbar"
         {...properties}
       >
@@ -48,9 +52,11 @@ export function AfendaAppTopbar({
           {sidebarTrigger ?? <TopbarSidebarControl />}
         </div>
       ) : null}
-      <div data-slot="app-topbar-brand-slot">{brand ?? <TopbarBrandDisk />}</div>
+      <div data-slot="app-topbar-brand-slot">
+        {brand ?? <TopbarBrandDisk />}
+      </div>
       {showScopeSwitchers ? (
-        scopeSwitchers ?? <div className="min-w-0 flex-1" />
+        (scopeSwitchers ?? <div className="min-w-0 flex-1" />)
       ) : (
         <div className="min-w-0 flex-1" />
       )}

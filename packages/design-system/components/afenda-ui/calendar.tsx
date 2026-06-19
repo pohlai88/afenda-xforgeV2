@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "../../lib/utils";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -12,6 +11,7 @@ import {
   DayPicker,
   getDefaultClassNames,
 } from "react-day-picker";
+import { cn } from "../../lib/utils";
 import { Button, buttonVariants } from "./button";
 import { recipe } from "./recipes";
 
@@ -191,9 +191,7 @@ function CalendarChevron({
 function CalendarWeekNumber({ children, ...props }: CalendarWeekNumberProps) {
   return (
     <td {...props}>
-      <div className={cn(recipe("calendarWeekNumberCell"))}>
-        {children}
-      </div>
+      <div className={cn(recipe("calendarWeekNumberCell"))}>{children}</div>
     </td>
   );
 }

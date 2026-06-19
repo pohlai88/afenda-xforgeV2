@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const e2eDir = path.dirname(fileURLToPath(import.meta.url));
 export const appDir = path.resolve(e2eDir, "../..");
 export const repoRoot = path.resolve(appDir, "../..");
+export const e2eOutputDir = path.join(repoRoot, "output/playwright/app");
 
 /** Mirrors `scripts/sync-env.mjs` source → destination resolution. */
 const ENV_LOAD_ORDER = [
@@ -143,7 +144,7 @@ export const getPlaywrightBaseUrl = (): string =>
   process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000";
 
 export const getE2eAuthStoragePath = (): string =>
-  path.join(appDir, "output/playwright/.auth/e2e-user.json");
+  path.join(e2eOutputDir, ".auth/e2e-user.json");
 
 export const getE2eBlobWebServerEnv = (): Record<string, string> => {
   const entries = {

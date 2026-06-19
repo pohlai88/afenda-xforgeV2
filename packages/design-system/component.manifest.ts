@@ -39,13 +39,13 @@ export type AfendaComponentManifestState =
   | "warning";
 
 export interface AfendaComponentManifestEntry {
+  readonly examples: readonly string[];
   readonly id: AfendaComponentIdentity;
   readonly kind: AfendaComponentManifestKind;
-  readonly slots: readonly string[];
-  readonly variants: readonly AfendaVariantProp[];
   readonly recipes: readonly AfendaRecipeRegistryIdentity[];
+  readonly slots: readonly string[];
   readonly states: readonly AfendaComponentManifestState[];
-  readonly examples: readonly string[];
+  readonly variants: readonly AfendaVariantProp[];
 }
 
 const componentOverrides: Partial<
@@ -491,7 +491,13 @@ const componentOverrides: Partial<
       "item-footer",
     ],
     variants: ["variant", "size"],
-    recipes: ["colorTransition", "focusRing", "motionReduce", "bodyText", "captionText"],
+    recipes: [
+      "colorTransition",
+      "focusRing",
+      "motionReduce",
+      "bodyText",
+      "captionText",
+    ],
     states: ["default", "hover", "focus"],
     examples: [],
   },
@@ -595,7 +601,12 @@ const componentOverrides: Partial<
       "pagination-ellipsis",
     ],
     variants: [],
-    recipes: ["motionReduce", "captionText", "paginationIcon", "visuallyHidden"],
+    recipes: [
+      "motionReduce",
+      "captionText",
+      "paginationIcon",
+      "visuallyHidden",
+    ],
     states: ["default", "active", "disabled"],
     examples: [],
   },
@@ -1032,7 +1043,13 @@ const componentOverrides: Partial<
       "app-content-right-rail",
     ],
     variants: [],
-    recipes: ["blockPanel", "blockShell", "blockRail", "blockHeader", "blockMetricLabel"],
+    recipes: [
+      "blockPanel",
+      "blockShell",
+      "blockRail",
+      "blockHeader",
+      "blockMetricLabel",
+    ],
     states: ["default"],
     examples: [],
   },
@@ -1093,7 +1110,12 @@ const componentOverrides: Partial<
     examples: [],
   },
   NavUser: {
-    slots: ["nav-user", "nav-user-trigger", "nav-user-menu", "nav-user-content"],
+    slots: [
+      "nav-user",
+      "nav-user-trigger",
+      "nav-user-menu",
+      "nav-user-content",
+    ],
     variants: [],
     recipes: ["blockSection"],
     states: ["default", "open", "closed"],

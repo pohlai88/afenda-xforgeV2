@@ -1,5 +1,7 @@
 "use client";
 
+import { EllipsisVerticalIcon } from "lucide-react";
+import { cn } from "../../../../../lib/utils";
 import {
   Avatar,
   AvatarFallback,
@@ -15,12 +17,16 @@ import {
   DropdownMenuTrigger,
 } from "../../../../afenda-ui/dropdown-menu";
 import { blockRecipe } from "../../../block-recipes";
-import { cn } from "../../../../../lib/utils";
 import {
   resolveSidebarLinkRenderer,
   type SidebarLinkRenderer,
-} from "../../shadcn-dashboard-01/sidebar-link";
+} from "./sidebar-link";
 import type { AfendaAppShellUserSummary } from "../app-shell-types";
+import {
+  appSidebarIconRailHiddenClass,
+  appSidebarIconRailUserAvatarClass,
+  appSidebarIconRailUserTriggerClass,
+} from "./sidebar-icon-rail-recipes";
 import {
   appSidebarFooterUserAvatarClass,
   appSidebarFooterUserAvatarFallbackClass,
@@ -33,29 +39,28 @@ import {
   appSidebarFooterUserShellClass,
   appSidebarFooterUserTriggerClass,
 } from "./sidebar-nav-recipes";
-import {
-  appSidebarIconRailHiddenClass,
-  appSidebarIconRailUserAvatarClass,
-  appSidebarIconRailUserTriggerClass,
-} from "./sidebar-icon-rail-recipes";
-import { EllipsisVerticalIcon } from "lucide-react";
 import type {
+  SidebarNavUserMenuGroup as SidebarNavUserMenuGroupValue,
+  SidebarNavUserMenuItem as SidebarNavUserMenuItemValue,
+} from "./sidebar-nav-user-menu.types";
+
+export type {
   SidebarNavUserMenuGroup,
   SidebarNavUserMenuItem,
 } from "./sidebar-nav-user-menu.types";
 
-export type { SidebarNavUserMenuGroup, SidebarNavUserMenuItem };
-
 export interface SidebarNavUserProps {
   readonly isIconRail?: boolean;
-  readonly menuGroups?: readonly SidebarNavUserMenuGroup[];
-  readonly onMenuItemSelect?: (item: SidebarNavUserMenuItem) => void;
+  readonly menuGroups?: readonly SidebarNavUserMenuGroupValue[];
+  readonly onMenuItemSelect?: (item: SidebarNavUserMenuItemValue) => void;
   readonly renderMenuLink?: SidebarLinkRenderer;
   readonly user: AfendaAppShellUserSummary;
 }
 
+const WHITESPACE_PATTERN = /\s+/;
+
 function resolveInitials(name: string): string {
-  const parts = name.trim().split(/\s+/).filter(Boolean);
+  const parts = name.trim().split(WHITESPACE_PATTERN).filter(Boolean);
 
   if (parts.length === 0) {
     return "U";
@@ -73,8 +78,8 @@ function SidebarNavUserMenu({
   onMenuItemSelect,
   renderMenuLink,
 }: {
-  readonly menuGroups: readonly SidebarNavUserMenuGroup[];
-  readonly onMenuItemSelect?: (item: SidebarNavUserMenuItem) => void;
+  readonly menuGroups: readonly SidebarNavUserMenuGroupValue[];
+  readonly onMenuItemSelect?: (item: SidebarNavUserMenuItemValue) => void;
   readonly renderMenuLink?: SidebarLinkRenderer;
 }) {
   const linkRenderer = resolveSidebarLinkRenderer(renderMenuLink);
@@ -103,13 +108,27 @@ function SidebarNavUserMenu({
               );
             }
 
+            if (item.destructive) {
+              return (
+                <DropdownMenuItem
+                  key={item.id}
+                  onSelect={() => {
+                    onMenuItemSelect?.(item);
+                  }}
+                  variant="critical"
+                >
+                  {item.label}
+                </DropdownMenuItem>
+              );
+            }
+
             return (
               <DropdownMenuItem
                 key={item.id}
                 onSelect={() => {
                   onMenuItemSelect?.(item);
                 }}
-                variant={item.destructive ? "critical" : "default"}
+                variant="default"
               >
                 {item.label}
               </DropdownMenuItem>
@@ -161,8 +180,12 @@ export function SidebarNavUser({
                 isIconRail && appSidebarIconRailHiddenClass
               )}
             >
-              <span className={cn(appSidebarFooterUserNameClass)}>{user.name}</span>
-              <span className={cn(appSidebarFooterUserEmailClass)}>{user.email}</span>
+              <span className={cn(appSidebarFooterUserNameClass)}>
+                {user.name}
+              </span>
+              <span className={cn(appSidebarFooterUserEmailClass)}>
+                {user.email}
+              </span>
             </div>
             <EllipsisVerticalIcon
               aria-hidden="true"
@@ -180,7 +203,9 @@ export function SidebarNavUser({
           side="right"
           sideOffset={8}
         >
-          <DropdownMenuLabel className={cn(blockRecipe("blockMetricLabel"), "p-0 font-normal")}>
+          <DropdownMenuLabel
+            className={cn(blockRecipe("blockMetricLabel"), "p-0 font-normal")}
+          >
             <div
               className={cn(appSidebarFooterUserMenuIdentityRowClass)}
               data-slot="nav-user-content"
@@ -194,8 +219,12 @@ export function SidebarNavUser({
                 </AvatarFallback>
               </Avatar>
               <div className={cn(appSidebarFooterUserIdentityClass)}>
-                <span className={cn(appSidebarFooterUserNameClass)}>{user.name}</span>
-                <span className={cn(appSidebarFooterUserEmailClass)}>{user.email}</span>
+                <span className={cn(appSidebarFooterUserNameClass)}>
+                  {user.name}
+                </span>
+                <span className={cn(appSidebarFooterUserEmailClass)}>
+                  {user.email}
+                </span>
               </div>
             </div>
           </DropdownMenuLabel>

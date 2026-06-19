@@ -1,10 +1,14 @@
 "use client";
 
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "../../../afenda-ui/avatar";
+  BellIcon,
+  CircleUserIcon,
+  CreditCardIcon,
+  EllipsisVerticalIcon,
+  LogOutIcon,
+} from "lucide-react";
+import { cn } from "../../../../lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "../../../afenda-ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,27 +25,19 @@ import {
   useSidebar,
 } from "../../../afenda-ui/sidebar";
 import { blockRecipe } from "../../block-recipes";
-import { cn } from "../../../../lib/utils";
 import {
   dashboardNavUserAvatarClass,
   dashboardNavUserAvatarFallbackClass,
   dashboardNavUserEmailClass,
   dashboardNavUserIdentityClass,
+  dashboardNavUserMenuClass,
   dashboardNavUserMenuContentClass,
   dashboardNavUserMenuIconClass,
   dashboardNavUserMenuIdentityRowClass,
   dashboardNavUserMenuLabelClass,
-  dashboardNavUserMenuClass,
   dashboardNavUserNameClass,
   dashboardNavUserTriggerClass,
 } from "./dashboard-recipes";
-import {
-  BellIcon,
-  CircleUserIcon,
-  CreditCardIcon,
-  EllipsisVerticalIcon,
-  LogOutIcon,
-} from "lucide-react";
 
 export function NavUser({
   user,
@@ -63,29 +59,37 @@ export function NavUser({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
-              size="lg"
               className={cn(dashboardNavUserTriggerClass)}
               data-slot="nav-user-trigger"
+              size="lg"
             >
               <Avatar className={cn(dashboardNavUserAvatarClass)}>
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className={cn(dashboardNavUserAvatarFallbackClass)}>
+                <AvatarImage alt={user.name} src={user.avatar} />
+                <AvatarFallback
+                  className={cn(dashboardNavUserAvatarFallbackClass)}
+                >
                   CN
                 </AvatarFallback>
               </Avatar>
               <div className={cn(dashboardNavUserIdentityClass)}>
-                <span className={cn(dashboardNavUserNameClass)}>{user.name}</span>
-                <span className={cn(dashboardNavUserEmailClass)}>{user.email}</span>
+                <span className={cn(dashboardNavUserNameClass)}>
+                  {user.name}
+                </span>
+                <span className={cn(dashboardNavUserEmailClass)}>
+                  {user.email}
+                </span>
               </div>
-              <EllipsisVerticalIcon className={cn(dashboardNavUserMenuIconClass)} />
+              <EllipsisVerticalIcon
+                className={cn(dashboardNavUserMenuIconClass)}
+              />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className={cn(dashboardNavUserMenuContentClass)}
-            side={isMobile ? "bottom" : "right"}
             align="end"
-            sideOffset={4}
+            className={cn(dashboardNavUserMenuContentClass)}
             data-slot="nav-user-menu"
+            side={isMobile ? "bottom" : "right"}
+            sideOffset={4}
           >
             <DropdownMenuLabel className={cn(dashboardNavUserMenuLabelClass)}>
               <div
@@ -93,7 +97,7 @@ export function NavUser({
                 data-slot="nav-user-content"
               >
                 <Avatar className={cn(dashboardNavUserAvatarClass)}>
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage alt={user.name} src={user.avatar} />
                   <AvatarFallback
                     className={cn(dashboardNavUserAvatarFallbackClass)}
                   >
@@ -101,7 +105,9 @@ export function NavUser({
                   </AvatarFallback>
                 </Avatar>
                 <div className={cn(dashboardNavUserIdentityClass)}>
-                  <span className={cn(dashboardNavUserNameClass)}>{user.name}</span>
+                  <span className={cn(dashboardNavUserNameClass)}>
+                    {user.name}
+                  </span>
                   <span className={cn(dashboardNavUserEmailClass)}>
                     {user.email}
                   </span>

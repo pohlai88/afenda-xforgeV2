@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import type * as React from "react";
-import { buttonVariants, type Button } from "./button";
+import { cn } from "../../lib/utils";
+import { type Button, buttonVariants } from "./button";
 import { Input } from "./input";
 import { recipe } from "./recipes";
 import { Textarea } from "./textarea";

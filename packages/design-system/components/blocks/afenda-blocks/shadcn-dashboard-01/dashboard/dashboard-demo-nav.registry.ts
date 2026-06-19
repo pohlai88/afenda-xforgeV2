@@ -1,12 +1,8 @@
+import { LayoutDashboardIcon, SettingsIcon, ShieldIcon } from "lucide-react";
 import type {
   AfendaAppSidebarNavIconKeysOf,
   AfendaAppSidebarNavIconRegistry,
 } from "../../afenda-appshell/sidebar/sidebar-nav-descriptors";
-import {
-  LayoutDashboardIcon,
-  SettingsIcon,
-  ShieldIcon,
-} from "lucide-react";
 
 export const dashboardDemoSidebarNavIconRegistry = {
   "layout-dashboard": LayoutDashboardIcon,

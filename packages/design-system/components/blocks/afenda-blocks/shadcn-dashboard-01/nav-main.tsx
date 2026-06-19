@@ -1,6 +1,16 @@
 "use client";
 
-import { sidebarIconRailBlockItemClass } from "../../../afenda-ui/sidebar-rail-recipes";
+import { GalleryVerticalEndIcon } from "lucide-react";
+import { type ComponentPropsWithoutRef, type ComponentType, memo } from "react";
+import { cn } from "../../../../lib/utils";
+import {
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "../../../afenda-ui/sidebar";
+import { blockRecipe } from "../../block-recipes";
 import {
   navGroupLabelClass,
   navGroupShellClass,
@@ -11,19 +21,8 @@ import {
   navItemSelectedClass,
   sidebarLinkClass,
 } from "./nav-main-recipes";
-import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "../../../afenda-ui/sidebar";
-import { blockRecipe } from "../../block-recipes";
-import { resolveSidebarLinkRenderer } from "./sidebar-link";
 import type { SidebarLinkRenderer } from "./sidebar-link";
-import { cn } from "../../../../lib/utils";
-import { GalleryVerticalEndIcon } from "lucide-react";
-import { memo, type ComponentPropsWithoutRef, type ComponentType } from "react";
+import { resolveSidebarLinkRenderer } from "./sidebar-link";
 
 const MAIN_NAV_GROUP_LABEL = "Main navigation";
 

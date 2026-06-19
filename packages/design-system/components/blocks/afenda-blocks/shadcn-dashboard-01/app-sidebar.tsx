@@ -8,7 +8,7 @@ import {
   SearchIcon,
   SettingsIcon,
 } from "lucide-react";
-import { blockRecipe } from "../../block-recipes";
+import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "../../../../lib/utils";
 import {
   Sidebar,
@@ -19,6 +19,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../../../afenda-ui/sidebar";
+import { blockRecipe } from "../../block-recipes";
 import {
   dashboardAppSidebarBrandButtonClass,
   dashboardAppSidebarBrandIconClass,
@@ -32,7 +33,6 @@ import { NavMain } from "./nav-main";
 import { sidebarLinkClass } from "./nav-main-recipes";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
-import type { ComponentPropsWithoutRef } from "react";
 import type { SidebarLinkRenderer } from "./sidebar-link";
 
 const sidebarDemoData = {
@@ -94,7 +94,10 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent
-        className={cn(blockRecipe("blockStack"), dashboardAppSidebarContentClass)}
+        className={cn(
+          blockRecipe("blockStack"),
+          dashboardAppSidebarContentClass
+        )}
       >
         <NavMain activeItemIds={activeItemIds} renderLink={renderLink} />
         <NavDocuments items={[...sidebarDemoData.documents]} />
@@ -104,7 +107,10 @@ export function AppSidebar({
         />
       </SidebarContent>
       <SidebarFooter
-        className={cn(blockRecipe("blockPanel"), dashboardAppSidebarFooterClass)}
+        className={cn(
+          blockRecipe("blockPanel"),
+          dashboardAppSidebarFooterClass
+        )}
       >
         <NavUser user={sidebarDemoData.user} />
       </SidebarFooter>

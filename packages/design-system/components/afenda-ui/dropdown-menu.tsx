@@ -1,9 +1,9 @@
 "use client";
 
-import { cn } from "../../lib/utils";
 import { CheckIcon, ChevronRightIcon, CircleIcon } from "lucide-react";
 import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui";
 import type * as React from "react";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 function DropdownMenu({
@@ -248,7 +248,9 @@ function DropdownMenuSubTrigger({
       {...props}
     >
       {children}
-      <ChevronRightIcon className={cn("ml-auto", recipe("submenuChevronIcon"))} />
+      <ChevronRightIcon
+        className={cn("ml-auto", recipe("submenuChevronIcon"))}
+      />
     </DropdownMenuPrimitive.SubTrigger>
   );
 }

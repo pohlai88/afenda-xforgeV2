@@ -1,4 +1,5 @@
 const APP_SHELL_CONTENT_HEADER_TRIGGER_SIZE = "2rem";
+const APP_SHELL_CONTENT_CLOSED_RAIL_WIDTH = "var(--xforge-layout-zero, 0px)";
 
 const appContentPanelClass =
   "grid min-h-0 min-w-0 flex-1 overflow-hidden rounded-xl border border-border-default bg-background shadow-none";
@@ -18,7 +19,18 @@ const appContentHeaderActionsClass =
 const appContentHeaderTriggerClass =
   "size-8 shrink-0 text-text-secondary hover:bg-surface-muted hover:text-text-primary data-[pressed=true]:bg-surface-muted data-[pressed=true]:text-text-primary";
 
+const appContentHeaderTriggerIconClass = "size-4";
+
 const appContentHeaderBreadcrumbsClass = "min-w-0 flex-1 overflow-hidden";
+
+const appContentHeaderBreadcrumbItemWrapperClass = "contents";
+
+const appContentHeaderBreadcrumbCurrentItemClass = "min-w-0 shrink";
+
+const appContentHeaderBreadcrumbLabelClass = "truncate";
+
+const appContentHeaderBreadcrumbSeparatorClass =
+  "hidden shrink-0 sm:inline-flex";
 
 const appContentLeftRailShellClass =
   "flex min-h-0 flex-col overflow-hidden [grid-area:left-rail] border-r border-border-default p-3 data-[open=false]:hidden";
@@ -34,13 +46,19 @@ const appContentMainShellClass =
 
 export {
   APP_SHELL_CONTENT_HEADER_TRIGGER_SIZE,
+  APP_SHELL_CONTENT_CLOSED_RAIL_WIDTH,
   appContentBentoGridClass,
   appContentBentoGridWithDrawerClass,
   appContentBottomDrawerShellClass,
   appContentHeaderActionsClass,
   appContentHeaderBreadcrumbsClass,
+  appContentHeaderBreadcrumbCurrentItemClass,
+  appContentHeaderBreadcrumbItemWrapperClass,
+  appContentHeaderBreadcrumbLabelClass,
+  appContentHeaderBreadcrumbSeparatorClass,
   appContentHeaderShellClass,
   appContentHeaderTriggerClass,
+  appContentHeaderTriggerIconClass,
   appContentLeftRailShellClass,
   appContentMainShellClass,
   appContentPanelClass,

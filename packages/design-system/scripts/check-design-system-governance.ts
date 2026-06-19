@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
+import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { spawnSync } from "node:child_process";
 import {
   AFENDA_AI_DRIFT_SCORE_GATE,
   AFENDA_AI_REQUIRED_CONTRACTS,
@@ -13,13 +13,13 @@ import {
 type Severity = "error" | "warning";
 
 interface Violation {
-  readonly ruleId: string;
-  readonly severity: Severity;
-  readonly file: string;
-  readonly line: number;
   readonly column: number;
   readonly evidence: string;
+  readonly file: string;
+  readonly line: number;
   readonly message: string;
+  readonly ruleId: string;
+  readonly severity: Severity;
 }
 
 interface GovernanceResult {
@@ -28,13 +28,13 @@ interface GovernanceResult {
 }
 
 interface DriftScoreResult {
-  readonly passed: boolean;
-  readonly score: number;
   readonly files: readonly {
     readonly file: string;
     readonly score: number;
     readonly passed: boolean;
   }[];
+  readonly passed: boolean;
+  readonly score: number;
 }
 
 const RULES = {
@@ -67,12 +67,6 @@ const violations = [
   ...runGovernanceScripts(),
 ].sort(sortViolations);
 
-const errorCount = violations.filter(
-  (violation) => violation.severity === "error"
-).length;
-const warningCount = violations.filter(
-  (violation) => violation.severity === "warning"
-).length;
 const driftScoreResult = runDriftScore();
 const score = driftScoreResult?.score ?? 0;
 const minimumScore = Math.max(
@@ -214,11 +208,7 @@ function runGovernanceScripts(): Violation[] {
 
     const result = spawnSync(
       process.execPath,
-      [
-        governanceScriptPath,
-        "--json",
-        ...(strict ? ["--strict"] : []),
-      ],
+      [governanceScriptPath, "--json", ...(strict ? ["--strict"] : [])],
       {
         cwd: packageRoot,
         encoding: "utf8",
@@ -272,7 +262,7 @@ function runGovernanceScripts(): Violation[] {
 }
 
 function parseGovernanceResult(
-  script: string,
+  _script: string,
   output: string
 ): GovernanceResult | undefined {
   try {
@@ -333,9 +323,7 @@ function isDriftFileScore(value: unknown): value is {
   );
 }
 
-function isGovernanceResultShape(
-  value: unknown
-): value is {
+function isGovernanceResultShape(value: unknown): value is {
   readonly passed: boolean;
   readonly violations: readonly unknown[];
 } {
@@ -343,9 +331,7 @@ function isGovernanceResultShape(
     return false;
   }
 
-  return (
-    typeof value.passed === "boolean" && Array.isArray(value.violations)
-  );
+  return typeof value.passed === "boolean" && Array.isArray(value.violations);
 }
 
 function isViolation(value: unknown): value is Violation {

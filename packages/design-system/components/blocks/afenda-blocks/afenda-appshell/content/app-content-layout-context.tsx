@@ -2,12 +2,18 @@
 
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useMemo,
   useState,
-  type ReactNode,
 } from "react";
+import { blockRecipe } from "../../../block-recipes";
+
+export const appContentLayoutProviderGovernance = {
+  className: blockRecipe("blockShell"),
+  "data-slot": "app-shell-sidebar-context",
+} as const;
 
 export interface AfendaAppContentLayoutState {
   readonly bottomDrawerOpen: boolean;

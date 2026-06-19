@@ -2,7 +2,7 @@
 
 import { EllipsisVerticalIcon } from "lucide-react";
 import { useState } from "react";
-import { blockRecipe } from "../../../block-recipes";
+import { cn } from "../../../../../lib/utils";
 import { Button } from "../../../../afenda-ui/button";
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../../../../afenda-ui/dropdown-menu";
-import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
 import {
   topbarActionIconClass,
   topbarActionsMenuContentClass,
@@ -53,7 +53,10 @@ export function TopbarActionsMenu({
           type="button"
           variant="quiet"
         >
-          <EllipsisVerticalIcon aria-hidden="true" className={cn(topbarActionIconClass)} />
+          <EllipsisVerticalIcon
+            aria-hidden="true"
+            className={cn(topbarActionIconClass)}
+          />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -64,7 +67,9 @@ export function TopbarActionsMenu({
         {showHeader ? (
           <div className={cn(topbarActionsMenuHeaderClass)}>
             {header?.name ? (
-              <p className={cn(topbarActionsMenuHeaderNameClass)}>{header.name}</p>
+              <p className={cn(topbarActionsMenuHeaderNameClass)}>
+                {header.name}
+              </p>
             ) : null}
             {header?.email ? (
               <p className={cn(topbarActionsMenuHeaderEmailClass)}>
@@ -77,7 +82,9 @@ export function TopbarActionsMenu({
           <DropdownMenuGroup key={group.key}>
             {groupIndex > 0 ? <DropdownMenuSeparator /> : null}
             {group.label ? (
-              <DropdownMenuLabel className={cn(topbarActionsMenuGroupLabelClass)}>
+              <DropdownMenuLabel
+                className={cn(topbarActionsMenuGroupLabelClass)}
+              >
                 {group.label}
               </DropdownMenuLabel>
             ) : null}

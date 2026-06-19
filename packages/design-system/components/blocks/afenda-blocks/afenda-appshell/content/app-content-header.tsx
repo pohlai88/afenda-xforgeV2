@@ -1,6 +1,13 @@
 "use client";
 
 import {
+  PanelBottomDashedIcon,
+  PanelLeftDashedIcon,
+  PanelRightDashedIcon,
+} from "lucide-react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { cn } from "../../../../../lib/utils";
+import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -9,13 +16,7 @@ import {
   BreadcrumbSeparator,
 } from "../../../../afenda-ui/breadcrumb";
 import { Button } from "../../../../afenda-ui/button";
-import { cn } from "../../../../../lib/utils";
-import {
-  PanelBottomDashedIcon,
-  PanelLeftDashedIcon,
-  PanelRightDashedIcon,
-} from "lucide-react";
-import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import { blockRecipe } from "../../../block-recipes";
 import type {
   AfendaAppContentBreadcrumbItem,
   AfendaAppContentHeaderProps,
@@ -23,9 +24,14 @@ import type {
 import { useAfendaAppContentLayout } from "./app-content-layout-context";
 import {
   appContentHeaderActionsClass,
+  appContentHeaderBreadcrumbCurrentItemClass,
+  appContentHeaderBreadcrumbItemWrapperClass,
+  appContentHeaderBreadcrumbLabelClass,
+  appContentHeaderBreadcrumbSeparatorClass,
   appContentHeaderBreadcrumbsClass,
   appContentHeaderShellClass,
   appContentHeaderTriggerClass,
+  appContentHeaderTriggerIconClass,
 } from "./content-recipes";
 
 function AfendaAppContentHeaderBreadcrumbs({
@@ -44,20 +50,37 @@ function AfendaAppContentHeaderBreadcrumbs({
       <BreadcrumbList>
         {breadcrumbs.map((item, index) => {
           const isLast = index === breadcrumbs.length - 1;
+          const breadcrumbKey = item.href ?? item.label;
 
           return (
-            <span className="contents" key={`${item.label}-${index}`}>
-              <BreadcrumbItem className={isLast ? "min-w-0 shrink" : undefined}>
+            <span
+              className={cn(appContentHeaderBreadcrumbItemWrapperClass)}
+              key={breadcrumbKey}
+            >
+              <BreadcrumbItem
+                className={cn(
+                  isLast && appContentHeaderBreadcrumbCurrentItemClass
+                )}
+              >
                 {isLast || !item.href ? (
-                  <BreadcrumbPage className="truncate">{item.label}</BreadcrumbPage>
+                  <BreadcrumbPage
+                    className={cn(appContentHeaderBreadcrumbLabelClass)}
+                  >
+                    {item.label}
+                  </BreadcrumbPage>
                 ) : (
-                  <BreadcrumbLink className="truncate" href={item.href}>
+                  <BreadcrumbLink
+                    className={cn(appContentHeaderBreadcrumbLabelClass)}
+                    href={item.href}
+                  >
                     {item.label}
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
               {isLast ? null : (
-                <BreadcrumbSeparator className="hidden shrink-0 sm:inline-flex" />
+                <BreadcrumbSeparator
+                  className={cn(appContentHeaderBreadcrumbSeparatorClass)}
+                />
               )}
             </span>
           );
@@ -111,7 +134,11 @@ export function AfendaAppContentHeader({
   if (children) {
     return (
       <div
-        className={cn(appContentHeaderShellClass, className)}
+        className={cn(
+          blockRecipe("blockShell"),
+          appContentHeaderShellClass,
+          className
+        )}
         data-slot="app-content-header"
         {...properties}
       >
@@ -122,7 +149,11 @@ export function AfendaAppContentHeader({
 
   return (
     <div
-      className={cn(appContentHeaderShellClass, className)}
+      className={cn(
+        blockRecipe("blockShell"),
+        appContentHeaderShellClass,
+        className
+      )}
       data-slot="app-content-header"
       {...properties}
     >
@@ -132,7 +163,12 @@ export function AfendaAppContentHeader({
         aria-label={leftRailOpen ? "Hide left rail" : "Show left rail"}
         aria-pressed={leftRailOpen}
         data-slot="app-content-left-rail-trigger"
-        icon={<PanelLeftDashedIcon aria-hidden="true" className="size-4" />}
+        icon={
+          <PanelLeftDashedIcon
+            aria-hidden="true"
+            className={cn(appContentHeaderTriggerIconClass)}
+          />
+        }
         onClick={toggleLeftRail}
         pressed={leftRailOpen}
       />
@@ -148,7 +184,12 @@ export function AfendaAppContentHeader({
           }
           aria-pressed={bottomDrawerOpen}
           data-slot="app-content-bottom-drawer-trigger"
-          icon={<PanelBottomDashedIcon aria-hidden="true" className="size-4" />}
+          icon={
+            <PanelBottomDashedIcon
+              aria-hidden="true"
+              className={cn(appContentHeaderTriggerIconClass)}
+            />
+          }
           onClick={toggleBottomDrawer}
           pressed={bottomDrawerOpen}
         />
@@ -158,7 +199,12 @@ export function AfendaAppContentHeader({
           aria-label={rightRailOpen ? "Hide right rail" : "Show right rail"}
           aria-pressed={rightRailOpen}
           data-slot="app-content-right-rail-trigger"
-          icon={<PanelRightDashedIcon aria-hidden="true" className="size-4" />}
+          icon={
+            <PanelRightDashedIcon
+              aria-hidden="true"
+              className={cn(appContentHeaderTriggerIconClass)}
+            />
+          }
           onClick={toggleRightRail}
           pressed={rightRailOpen}
         />

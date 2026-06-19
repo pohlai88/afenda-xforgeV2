@@ -1,7 +1,9 @@
 "use client";
 
-import * as React from "react";
+import { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { useIsMobile } from "../../../../hooks/use-mobile";
+import { cn } from "../../../../lib/utils";
 import {
   Card,
   CardAction,
@@ -11,10 +13,10 @@ import {
   CardTitle,
 } from "../../../afenda-ui/card";
 import {
+  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig,
 } from "../../../afenda-ui/chart";
 import {
   Select,
@@ -23,24 +25,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../afenda-ui/select";
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "../../../afenda-ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem } from "../../../afenda-ui/toggle-group";
 import { blockRecipe } from "../../block-recipes";
-import { cn } from "../../../../lib/utils";
-import { useIsMobile } from "../../../../hooks/use-mobile";
-import {
-  dashboardChartCardClass,
-  dashboardChartContainerClass,
-  dashboardChartDescriptionCompactClass,
-  dashboardChartDescriptionWideClass,
-  dashboardChartContentClass,
-  dashboardChartSelectContentClass,
-  dashboardChartSelectItemClass,
-  dashboardChartSelectTriggerClass,
-  dashboardChartToggleGroupClass,
-} from "./dashboard-recipes";
+import { dashboardChartCardClass } from "./dashboard-recipes";
 
 export const description = "An interactive area chart";
 
@@ -156,9 +143,9 @@ const chartConfig = {
 
 export function ChartAreaInteractive() {
   const isMobile = useIsMobile();
-  const [timeRange, setTimeRange] = React.useState("90d");
+  const [timeRange, setTimeRange] = useState("90d");
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isMobile) {
       setTimeRange("7d");
     }
@@ -186,41 +173,37 @@ export function ChartAreaInteractive() {
       <CardHeader>
         <CardTitle>Total Visitors</CardTitle>
         <CardDescription>
-          <span className={cn()}>
-            Total for the last 3 months
-          </span>
-          <span className={cn()}>
-            Last 3 months
-          </span>
+          <span className={cn()}>Total for the last 3 months</span>
+          <span className={cn()}>Last 3 months</span>
         </CardDescription>
         <CardAction>
           <ToggleGroup
+            className={cn()}
+            onValueChange={setTimeRange}
             type="single"
             value={timeRange}
-            onValueChange={setTimeRange}
             variant="outline"
-            className={cn()}
           >
             <ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
             <ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
             <ToggleGroupItem value="7d">Last 7 days</ToggleGroupItem>
           </ToggleGroup>
-          <Select value={timeRange} onValueChange={setTimeRange}>
+          <Select onValueChange={setTimeRange} value={timeRange}>
             <SelectTrigger
+              aria-label="Select a value"
               className={cn()}
               size="compact"
-              aria-label="Select a value"
             >
               <SelectValue placeholder="Last 3 months" />
             </SelectTrigger>
             <SelectContent className={cn()}>
-              <SelectItem value="90d" className={cn()}>
+              <SelectItem className={cn()} value="90d">
                 Last 3 months
               </SelectItem>
-              <SelectItem value="30d" className={cn()}>
+              <SelectItem className={cn()} value="30d">
                 Last 30 days
               </SelectItem>
-              <SelectItem value="7d" className={cn()}>
+              <SelectItem className={cn()} value="7d">
                 Last 7 days
               </SelectItem>
             </SelectContent>
@@ -228,13 +211,10 @@ export function ChartAreaInteractive() {
         </CardAction>
       </CardHeader>
       <CardContent className={cn()}>
-        <ChartContainer
-          config={chartConfig}
-          className={cn()}
-        >
+        <ChartContainer className={cn()} config={chartConfig}>
           <AreaChart data={filteredData}>
             <defs>
-              <linearGradient id="fillDesktop" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillDesktop" x1="0" x2="0" y1="0" y2="1">
                 <stop
                   offset="5%"
                   stopColor="var(--color-desktop)"
@@ -246,7 +226,7 @@ export function ChartAreaInteractive() {
                   stopOpacity={0.1}
                 />
               </linearGradient>
-              <linearGradient id="fillMobile" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="fillMobile" x1="0" x2="0" y1="0" y2="1">
                 <stop
                   offset="5%"
                   stopColor="var(--color-mobile)"
@@ -261,10 +241,8 @@ export function ChartAreaInteractive() {
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="date"
-              tickLine={false}
               axisLine={false}
-              tickMargin={8}
+              dataKey="date"
               minTickGap={32}
               tickFormatter={(value) => {
                 const date = new Date(value);
@@ -273,34 +251,36 @@ export function ChartAreaInteractive() {
                   day: "numeric",
                 });
               }}
+              tickLine={false}
+              tickMargin={8}
             />
             <ChartTooltip
-              cursor={false}
               content={
                 <ChartTooltipContent
+                  indicator="dot"
                   labelFormatter={(value) => {
                     return new Date(String(value)).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                     });
                   }}
-                  indicator="dot"
                 />
               }
+              cursor={false}
             />
             <Area
               dataKey="mobile"
-              type="natural"
               fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
               stackId="a"
+              stroke="var(--color-mobile)"
+              type="natural"
             />
             <Area
               dataKey="desktop"
-              type="natural"
               fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
               stackId="a"
+              stroke="var(--color-desktop)"
+              type="natural"
             />
           </AreaChart>
         </ChartContainer>

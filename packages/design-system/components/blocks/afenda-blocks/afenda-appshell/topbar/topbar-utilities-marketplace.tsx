@@ -1,9 +1,16 @@
 "use client";
 
-import { BugIcon, GripVerticalIcon, LayersPlusIcon, SendIcon, StoreIcon, ZapIcon } from "lucide-react";
+import {
+  BugIcon,
+  GripVerticalIcon,
+  LayersPlusIcon,
+  SendIcon,
+  StoreIcon,
+  ZapIcon,
+} from "lucide-react";
 import { useId, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { blockRecipe } from "../../../block-recipes";
+import { cn } from "../../../../../lib/utils";
 import { Button } from "../../../../afenda-ui/button";
 import { Checkbox } from "../../../../afenda-ui/checkbox";
 import { Label } from "../../../../afenda-ui/label";
@@ -14,23 +21,7 @@ import {
 } from "../../../../afenda-ui/popover";
 import { ScrollArea } from "../../../../afenda-ui/scroll-area";
 import { Textarea } from "../../../../afenda-ui/textarea";
-import { cn } from "../../../../../lib/utils";
-import {
-  TOPBAR_UTILITY_CATALOG,
-  TOPBAR_UTILITY_MAX_PINNED,
-  getTopbarUtilityDefinition,
-  renderTopbarUtilityIcon,
-  type TopbarUtilityId,
-} from "./topbar-utilities-catalog";
-import {
-  reorderTopbarUtilityIds,
-  getTopbarVisibleUtilityIds,
-} from "./topbar-utilities-storage";
-import { useTopbarUtilities } from "./topbar-utilities-context";
-import {
-  TopbarSortableVerticalItem,
-  TopbarVerticalUtilitySortable,
-} from "./topbar-utilities-sortable";
+import { blockRecipe } from "../../../block-recipes";
 import {
   topbarActionIconClass,
   topbarFeedbackHiddenTriggerClass,
@@ -62,6 +53,22 @@ import {
   topbarUtilitiesMarketRowLabelClass,
   topbarUtilitiesMarketTitleClass,
 } from "./topbar-recipes";
+import {
+  getTopbarUtilityDefinition,
+  renderTopbarUtilityIcon,
+  TOPBAR_UTILITY_CATALOG,
+  TOPBAR_UTILITY_MAX_PINNED,
+  type TopbarUtilityId,
+} from "./topbar-utilities-catalog";
+import { useTopbarUtilities } from "./topbar-utilities-context";
+import {
+  TopbarSortableVerticalItem,
+  TopbarVerticalUtilitySortable,
+} from "./topbar-utilities-sortable";
+import {
+  getTopbarVisibleUtilityIds,
+  reorderTopbarUtilityIds,
+} from "./topbar-utilities-storage";
 
 export function TopbarUtilitiesMarketplace() {
   const {
@@ -157,10 +164,12 @@ export function TopbarUtilitiesMarketplace() {
         sideOffset={4}
       >
         <div className={cn(topbarUtilitiesMarketHeaderClass)}>
-          <p className={cn(topbarUtilitiesMarketTitleClass)}>Utilities marketplace</p>
+          <p className={cn(topbarUtilitiesMarketTitleClass)}>
+            Utilities marketplace
+          </p>
           <p className={cn(topbarUtilitiesMarketDescriptionClass)}>
-            Choose which icons appear on the topbar. Drag here or on the topbar to
-            reorder.
+            Choose which icons appear on the topbar. Drag here or on the topbar
+            to reorder.
           </p>
         </div>
         <p className={cn(topbarUtilitiesMarketMetaClass)}>
@@ -178,8 +187,7 @@ export function TopbarUtilitiesMarketplace() {
                   const utility = getTopbarUtilityDefinition(utilityId);
                   const checked = visibleSet.has(utilityId);
                   const disabled =
-                    !checked &&
-                    visibleIds.length >= TOPBAR_UTILITY_MAX_PINNED;
+                    !checked && visibleIds.length >= TOPBAR_UTILITY_MAX_PINNED;
 
                   return (
                     <TopbarSortableVerticalItem
@@ -220,10 +228,14 @@ export function TopbarUtilitiesMarketplace() {
                           type="button"
                           variant="quiet"
                         >
-                          <span className={cn(topbarUtilitiesMarketRowIconClass)}>
+                          <span
+                            className={cn(topbarUtilitiesMarketRowIconClass)}
+                          >
                             {renderTopbarUtilityIcon(utilityId)}
                           </span>
-                          <span className={cn(topbarUtilitiesMarketRowLabelClass)}>
+                          <span
+                            className={cn(topbarUtilitiesMarketRowLabelClass)}
+                          >
                             {utility.label}
                           </span>
                         </Button>
@@ -279,7 +291,9 @@ export function TopbarUtilitiesMarketplace() {
                 size="sm"
                 type="submit"
               >
-                <SendIcon className={cn(topbarUtilitiesMarketRequestSendIconClass)} />
+                <SendIcon
+                  className={cn(topbarUtilitiesMarketRequestSendIconClass)}
+                />
                 Send
               </Button>
             </div>

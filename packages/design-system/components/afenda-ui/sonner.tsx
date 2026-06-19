@@ -29,9 +29,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           <TriangleAlertIcon className={cn(recipe("toastWarningIcon"))} />
         ),
         error: <OctagonXIcon className={cn(recipe("toastCriticalIcon"))} />,
-        loading: (
-          <Loader2Icon className={cn(recipe("toastLoadingIcon"))} />
-        ),
+        loading: <Loader2Icon className={cn(recipe("toastLoadingIcon"))} />,
       }}
       position="top-right"
       richColors={false}

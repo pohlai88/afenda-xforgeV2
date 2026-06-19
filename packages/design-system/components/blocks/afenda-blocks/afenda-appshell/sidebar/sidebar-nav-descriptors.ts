@@ -29,9 +29,7 @@ export interface AfendaAppSidebarNavIconDescriptor<
   readonly kind: "icon";
 }
 
-export type AfendaAppSidebarNavItemDescriptor<
-  IconKey extends string = string,
-> =
+export type AfendaAppSidebarNavItemDescriptor<IconKey extends string = string> =
   | AfendaAppSidebarNavProductDescriptor
   | AfendaAppSidebarNavIconDescriptor<IconKey>;
 
@@ -52,9 +50,8 @@ export interface AfendaAppSidebarNavLayoutDescriptor<
 }
 
 /** Client-side map from descriptor `iconKey` to a Lucide (or compatible) icon component. */
-export type AfendaAppSidebarNavIconRegistry<
-  IconKey extends string = string,
-> = Readonly<Record<IconKey, AppSidebarNavIcon>>;
+export type AfendaAppSidebarNavIconRegistry<IconKey extends string = string> =
+  Readonly<Record<IconKey, AppSidebarNavIcon>>;
 
 /** Infer the icon-key union from a concrete registry object (literal keys preserved via `satisfies`). */
 export type AfendaAppSidebarNavIconKeysOf<

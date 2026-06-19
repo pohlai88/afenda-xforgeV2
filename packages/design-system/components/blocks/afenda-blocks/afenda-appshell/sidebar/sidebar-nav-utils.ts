@@ -1,3 +1,5 @@
+const TRAILING_SLASH_RE = /\/+$/;
+
 interface SidebarNavMatchItem {
   readonly href: string;
   readonly id: string;
@@ -7,11 +9,11 @@ function resolveActiveSidebarNavItemId(
   pathname: string,
   items: readonly SidebarNavMatchItem[]
 ): string | undefined {
-  const normalizedPath = pathname.replace(/\/+$/, "") || "/";
+  const normalizedPath = pathname.replace(TRAILING_SLASH_RE, "") || "/";
 
   const matches = items
     .filter((item) => {
-      const normalizedHref = item.href.replace(/\/+$/, "") || "/";
+      const normalizedHref = item.href.replace(TRAILING_SLASH_RE, "") || "/";
 
       if (normalizedPath === normalizedHref) {
         return true;

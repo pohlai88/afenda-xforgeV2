@@ -1,9 +1,5 @@
+export type { SidebarBehaviorMode } from "../../../afenda-ui/sidebar-behavior";
 export { AfendaAppShell } from "./app-shell";
-export { AppShellSidebarProvider, useAppShellSidebar } from "./app-shell-sidebar-context";
-export {
-  resolveAppShellSidebarActiveWidth,
-  resolveAppShellSidebarExpanded,
-} from "./app-shell-sidebar-utils";
 export {
   APP_SHELL_FOOTER_HEIGHT,
   APP_SHELL_RAIL_WIDTH,
@@ -11,7 +7,14 @@ export {
   APP_SHELL_SIDEBAR_WIDTH,
   APP_SHELL_TOPBAR_HEIGHT,
 } from "./app-shell-recipes";
-export type { SidebarBehaviorMode } from "../../../afenda-ui/sidebar-behavior";
+export {
+  AppShellSidebarProvider,
+  useAppShellSidebar,
+} from "./app-shell-sidebar-context";
+export {
+  resolveAppShellSidebarActiveWidth,
+  resolveAppShellSidebarExpanded,
+} from "./app-shell-sidebar-utils";
 export type {
   AfendaAppContentBottomDrawerProps,
   AfendaAppContentBreadcrumbItem,
@@ -46,18 +49,18 @@ export type {
   AppSidebarNavIconItem,
   AppSidebarNavItem,
   AppSidebarNavProductItem,
-  SidebarNavUserProps,
-  SidebarNavUserMenuGroup,
-  SidebarNavUserMenuItem,
   SidebarNavUserActionMenuItem,
   SidebarNavUserLinkMenuItem,
+  SidebarNavUserMenuGroup,
+  SidebarNavUserMenuItem,
+  SidebarNavUserProps,
+  TopbarActionsMenuGroup,
+  TopbarActionsMenuItem,
+  TopbarActionsMenuProps,
   TopbarBrandDiskProps,
   TopbarContextOption,
   TopbarContextScope,
   TopbarContextSwitcherProps,
-  TopbarActionsMenuGroup,
-  TopbarActionsMenuItem,
-  TopbarActionsMenuProps,
   TopbarRightActionsProps,
   TopbarUtilitiesScope,
   TopbarUtilitiesState,
@@ -77,12 +80,17 @@ export {
   AfendaAppSidebar,
   collectSidebarNavItemDescriptors,
   collectSidebarNavItems,
+  defaultSidebarLink,
   resolveActiveSidebarNavItemId,
   resolveActiveSidebarNavItemIds,
   resolveAfendaAppSidebarNavItemDescriptor,
   resolveAfendaAppSidebarNavLayout,
+  resolveSidebarLinkRenderer,
   SidebarNavUser,
+  type SidebarLinkRenderProps,
+  type SidebarLinkRenderer,
 } from "./sidebar";
+export { sidebarLinkClass } from "./sidebar/sidebar-nav-recipes";
 export {
   AfendaAppTopbar,
   TOPBAR_UTILITY_CATALOG,

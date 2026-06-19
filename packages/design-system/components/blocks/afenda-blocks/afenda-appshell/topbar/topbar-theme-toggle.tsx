@@ -2,7 +2,7 @@
 
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useTheme } from "next-themes";
-import { blockRecipe } from "../../../block-recipes";
+import { cn } from "../../../../../lib/utils";
 import { Button } from "../../../../afenda-ui/button";
 import {
   DropdownMenu,
@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "../../../../afenda-ui/dropdown-menu";
 import { recipe } from "../../../../afenda-ui/recipes";
-import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
 import {
   topbarActionIconClass,
   topbarIconButtonClass,

@@ -1,15 +1,14 @@
 import { requireOrg } from "@repo/auth/server";
+import { Badge, blockRecipe, cn } from "@repo/design-system";
 import {
   listMorphLifecycleFilterSchema,
-  ORBIT_MORPH_STATUSES,
-  ORBIT_MORPH_STATUS_LABELS,
-  resolveMorphLifecycleSegmentConfig,
   type MorphLifecycleSegment,
+  ORBIT_MORPH_STATUS_LABELS,
+  ORBIT_MORPH_STATUSES,
   type OrbitMorphStatus,
+  resolveMorphLifecycleSegmentConfig,
 } from "@repo/orbit-case";
 import { resolveMorphLifecycleLoader } from "@repo/orbit-case/server";
-import { Badge, blockRecipe } from "@repo/design-system";
-import { cn } from "@repo/design-system/lib/utils";
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
@@ -19,15 +18,15 @@ import {
 import { Header } from "../../_components/header";
 
 interface OrbitMorphPilotListViewProps {
-  assigneeId?: string;
-  caseId?: string;
-  segment: MorphLifecycleSegment;
-  status?: OrbitMorphStatus;
+  readonly assigneeId?: string;
+  readonly caseId?: string;
+  readonly segment: MorphLifecycleSegment;
+  readonly status?: OrbitMorphStatus;
 }
 
-export async function generateMorphPilotListMetadata(
+export function generateMorphPilotListMetadata(
   segment: MorphLifecycleSegment
-): Promise<Metadata> {
+): Metadata {
   const config = resolveMorphLifecycleSegmentConfig(segment);
   return { title: config.eyebrowLabel };
 }
@@ -77,7 +76,7 @@ export async function OrbitMorphPilotListView({
         </div>
 
         {items.length === 0 ? (
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-text-secondary">
             No {config.singularLabel}s yet.
           </p>
         ) : (
@@ -86,7 +85,7 @@ export async function OrbitMorphPilotListView({
               <article
                 className={cn(
                   blockRecipe("blockPanel", "blockPanelPadding"),
-                  "grid gap-2 transition-colors hover:bg-muted/30"
+                  "grid gap-2 transition-colors hover:bg-surface-muted/30"
                 )}
               >
                 <div className="flex flex-wrap items-center gap-2">
@@ -100,7 +99,7 @@ export async function OrbitMorphPilotListView({
                     </Badge>
                   ))}
                 </div>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-sm text-text-secondary">
                   From case {item.originCaseId}
                 </p>
               </article>

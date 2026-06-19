@@ -1,7 +1,7 @@
 "use client";
 
-import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
 import type { AfendaAppFooterProps } from "../app-shell-types";
 import {
   appFooterCopyrightBrandClass,
@@ -25,7 +25,11 @@ export function AfendaAppFooter({
   if (children) {
     return (
       <footer
-        className={cn(blockRecipe("blockShell"), appFooterShellClass, className)}
+        className={cn(
+          blockRecipe("blockShell"),
+          appFooterShellClass,
+          className
+        )}
         data-slot="app-footer"
         {...properties}
       >
@@ -34,10 +38,14 @@ export function AfendaAppFooter({
     );
   }
 
-  if (!showCopyright && !showLinks) {
+  if (!(showCopyright || showLinks)) {
     return (
       <footer
-        className={cn(blockRecipe("blockShell"), appFooterShellClass, className)}
+        className={cn(
+          blockRecipe("blockShell"),
+          appFooterShellClass,
+          className
+        )}
         data-slot="app-footer"
         {...properties}
       />

@@ -2,20 +2,20 @@
 
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useState,
-  type ReactNode,
 } from "react";
+import { cn } from "../../../../lib/utils";
 import {
   persistSidebarBehaviorMode,
   readSidebarBehaviorCookie,
   type SidebarBehaviorMode,
 } from "../../../afenda-ui/sidebar-behavior";
 import { blockRecipe } from "../../block-recipes";
-import { cn } from "../../../../lib/utils";
 import { appShellSidebarContextWrapClass } from "./app-shell-recipes";
 import {
   resolveAppShellSidebarActiveWidth,
@@ -63,9 +63,12 @@ export function AppShellSidebarProvider({
     persistSidebarBehaviorMode(mode);
   }, []);
 
-  const setCollapsed = useCallback((collapsed: boolean) => {
-    setBehaviorMode(collapsed ? "icon" : "expanded");
-  }, [setBehaviorMode]);
+  const setCollapsed = useCallback(
+    (collapsed: boolean) => {
+      setBehaviorMode(collapsed ? "icon" : "expanded");
+    },
+    [setBehaviorMode]
+  );
 
   const toggleSidebar = useCallback(() => {
     setBehaviorMode(behaviorMode === "expanded" ? "icon" : "expanded");
@@ -103,7 +106,10 @@ export function AppShellSidebarProvider({
   return (
     <AppShellSidebarContext.Provider value={value}>
       <span
-        className={cn(blockRecipe("blockShell"), appShellSidebarContextWrapClass)}
+        className={cn(
+          blockRecipe("blockShell"),
+          appShellSidebarContextWrapClass
+        )}
         data-slot="app-shell-sidebar-context"
       >
         {children}
@@ -116,7 +122,9 @@ export function useAppShellSidebar(): AfendaAppShellSidebarState {
   const context = useContext(AppShellSidebarContext);
 
   if (!context) {
-    throw new Error("useAppShellSidebar must be used within AppShellSidebarProvider.");
+    throw new Error(
+      "useAppShellSidebar must be used within AppShellSidebarProvider."
+    );
   }
 
   return context;

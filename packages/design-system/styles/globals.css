@@ -40,6 +40,9 @@
   --xforge-space-8: 28px;
   --xforge-space-9: 36px;
   --xforge-layout-sidebar: 248px;
+  --xforge-layout-rail: 56px;
+  --xforge-layout-app-footer: 24px;
+  --xforge-layout-zero: 0px;
   --xforge-layout-audit-rail: 324px;
   --xforge-layout-app-topbar: 3.5rem;
   --xforge-layout-site-topbar: 3rem;

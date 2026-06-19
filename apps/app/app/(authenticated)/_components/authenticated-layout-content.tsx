@@ -12,13 +12,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { env } from "@/env";
-import {
-  resolveAuthenticatedAppShellChrome,
-  resolveAuthenticatedSidebarBehaviorMode,
-} from "@/lib/app-shell";
+import { resolveAuthenticatedAppShellChrome } from "@/lib/app-shell";
+import { resolveAuthenticatedSidebarBehaviorMode } from "@/lib/app-shell/resolve-sidebar-behavior-mode.server";
 import { resolveOrbitCaseEnabled } from "@/lib/orbit-case-access";
-import { MfaChallengeShell } from "./mfa-challenge-shell";
 import { AuthenticatedShell } from "./authenticated-shell";
+import { MfaChallengeShell } from "./mfa-challenge-shell";
 
 interface AuthenticatedLayoutContentProperties {
   readonly children: ReactNode;
@@ -91,7 +89,10 @@ export const AuthenticatedLayoutContent = async ({
           Beta feature now available
         </div>
       ) : null}
-      <AuthenticatedShell showOrbitCaseNav={showOrbitCaseNav} {...appShellChrome}>
+      <AuthenticatedShell
+        showOrbitCaseNav={showOrbitCaseNav}
+        {...appShellChrome}
+      >
         {children}
       </AuthenticatedShell>
     </>

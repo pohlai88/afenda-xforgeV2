@@ -9,23 +9,27 @@ import {
   AFENDA_FORBIDDEN_CLASS_NAME_PREFIXES,
 } from "../contracts/afenda-class-name-policy.contract.ts";
 
+const NEWLINE_RE = /\r?\n/;
+const CLASSNAME_IGNORE_NEXT_LINE_RE =
+  /^\s*\/\/ afenda-classname-ignore-next-line -- \S.+$/;
+
 interface SourceFile {
+  readonly lines: readonly string[];
   readonly path: string;
   readonly relativePath: string;
   readonly source: string;
-  readonly lines: readonly string[];
 }
 
 type Severity = "error" | "warning";
 
 interface Violation {
-  readonly ruleId: string;
-  readonly severity: Severity;
-  readonly file: string;
-  readonly line: number;
   readonly column: number;
   readonly evidence: string;
+  readonly file: string;
+  readonly line: number;
   readonly message: string;
+  readonly ruleId: string;
+  readonly severity: Severity;
 }
 
 const RULES = {
@@ -50,8 +54,7 @@ const classNameLiteralPatterns = [
   /className\s*=\s*'([^']*)'/g,
   /className\s*=\s*{`([^`]*)`}/g,
 ] as const;
-const dynamicClassNamePattern =
-  /className\s*=\s*{(?!\s*cn\s*\(|\s*`)[^}]+}/g;
+const dynamicClassNamePattern = /className\s*=\s*{(?!\s*cn\s*\(|\s*`)[^}]+}/g;
 const classTokenPattern = /\S+/g;
 const variantPrefixPattern = /^(?:[a-z0-9_:[\]=.-]+:)+(.+)$/;
 const arbitraryValuePattern = /\[[^\]\n\r]+\]/;
@@ -101,10 +104,7 @@ console.log(`Errors: ${errorCount}`);
 console.log(`Warnings: ${warningCount}`);
 
 function checkClassNameFile(file: SourceFile): Violation[] {
-  return [
-    ...checkLiteralClassNames(file),
-    ...checkDynamicClassNames(file),
-  ];
+  return [...checkLiteralClassNames(file), ...checkDynamicClassNames(file)];
 }
 
 function checkLiteralClassNames(file: SourceFile): Violation[] {
@@ -164,8 +164,8 @@ function checkClassNameValue(
       continue;
     }
 
-    const forbiddenPrefix = AFENDA_FORBIDDEN_CLASS_NAME_PREFIXES.find((prefix) =>
-      token.startsWith(prefix)
+    const forbiddenPrefix = AFENDA_FORBIDDEN_CLASS_NAME_PREFIXES.find(
+      (prefix) => token.startsWith(prefix)
     );
 
     if (forbiddenPrefix) {
@@ -275,13 +275,13 @@ function scanFiles(): SourceFile[] {
     .filter((path) => {
       const relativePath = normalizePath(relative(packageRoot, path));
 
-      return (
-        !relativePath.startsWith("components/ui/") &&
-        !relativePath.startsWith("contracts/") &&
-        !relativePath.startsWith("scripts/") &&
-        !relativePath.startsWith("test/") &&
-        !relativePath.endsWith(".test.ts") &&
-        !relativePath.endsWith(".test.tsx")
+      return !(
+        relativePath.startsWith("components/ui/") ||
+        relativePath.startsWith("contracts/") ||
+        relativePath.startsWith("scripts/") ||
+        relativePath.startsWith("test/") ||
+        relativePath.endsWith(".test.ts") ||
+        relativePath.endsWith(".test.tsx")
       );
     })
     .sort((a, b) => normalizePath(a).localeCompare(normalizePath(b)))
@@ -292,7 +292,7 @@ function scanFiles(): SourceFile[] {
         path,
         relativePath: normalizePath(relative(packageRoot, path)),
         source,
-        lines: source.split(/\r?\n/),
+        lines: source.split(NEWLINE_RE),
       };
     });
 }
@@ -342,9 +342,7 @@ function isIgnored(file: SourceFile, line: number): boolean {
     return false;
   }
 
-  return /^\s*\/\/ afenda-classname-ignore-next-line -- \S.+$/.test(
-    previousLine
-  );
+  return CLASSNAME_IGNORE_NEXT_LINE_RE.test(previousLine);
 }
 
 function lineAndColumn(

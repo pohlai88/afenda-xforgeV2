@@ -9,23 +9,27 @@ import {
   AFENDA_EXAMPLE_WARNING_PATTERNS,
 } from "../contracts/afenda-example.contract.ts";
 
+const NEWLINE_RE = /\r?\n/;
+const EXAMPLE_IGNORE_NEXT_LINE_RE =
+  /^\s*\/\/ afenda-example-ignore-next-line -- \S.+$/;
+
 interface SourceFile {
+  readonly lines: readonly string[];
   readonly path: string;
   readonly relativePath: string;
   readonly source: string;
-  readonly lines: readonly string[];
 }
 
 type Severity = "error" | "warning";
 
 interface Violation {
-  readonly ruleId: string;
-  readonly severity: Severity;
-  readonly file: string;
-  readonly line: number;
   readonly column: number;
   readonly evidence: string;
+  readonly file: string;
+  readonly line: number;
   readonly message: string;
+  readonly ruleId: string;
+  readonly severity: Severity;
 }
 
 const RULES = {
@@ -55,9 +59,7 @@ const packageInternalImportPattern =
 const exampleContractVersionPattern =
   /AFENDA_EXAMPLE_CONTRACT_VERSION\s*[:=]\s*["']([^"']+)["']|exampleContractVersion\s*[:=]\s*["']([^"']+)["']/g;
 
-const violations = scanFiles()
-  .flatMap(checkExampleFile)
-  .sort(sortViolations);
+const violations = scanFiles().flatMap(checkExampleFile).sort(sortViolations);
 
 const errorCount = violations.filter(
   (violation) => violation.severity === "error"
@@ -105,15 +107,27 @@ function checkExampleFile(file: SourceFile): Violation[] {
     ...AFENDA_EXAMPLE_WARNING_PATTERNS.flatMap((pattern) =>
       findLiteralPattern(file, pattern, RULES.warningPattern, "warning")
     ),
-    ...findMatches(file, privateImportPattern, RULES.privateImport, "error", (evidence) => ({
-      evidence,
-      message:
-        "Examples must not import private shadcn implementation modules; use public design-system exports.",
-    })),
-    ...findMatches(file, internalPathPattern, RULES.internalPath, "error", (evidence) => ({
-      evidence,
-      message: `Examples must not import internal paths. Evidence: ${evidence}`,
-    })),
+    ...findMatches(
+      file,
+      privateImportPattern,
+      RULES.privateImport,
+      "error",
+      (evidence) => ({
+        evidence,
+        message:
+          "Examples must not import private shadcn implementation modules; use public design-system exports.",
+      })
+    ),
+    ...findMatches(
+      file,
+      internalPathPattern,
+      RULES.internalPath,
+      "error",
+      (evidence) => ({
+        evidence,
+        message: `Examples must not import internal paths. Evidence: ${evidence}`,
+      })
+    ),
     ...findMatches(
       file,
       packageInternalImportPattern,
@@ -248,7 +262,7 @@ function scanFiles(): SourceFile[] {
         path,
         relativePath: normalizePath(relative(packageRoot, path)),
         source,
-        lines: source.split(/\r?\n/),
+        lines: source.split(NEWLINE_RE),
       };
     });
 }
@@ -291,9 +305,7 @@ function isIgnored(file: SourceFile, line: number): boolean {
     return false;
   }
 
-  return /^\s*\/\/ afenda-example-ignore-next-line -- \S.+$/.test(
-    previousLine
-  );
+  return EXAMPLE_IGNORE_NEXT_LINE_RE.test(previousLine);
 }
 
 function lineAndColumn(

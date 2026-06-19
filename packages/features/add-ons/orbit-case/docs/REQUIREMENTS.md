@@ -311,7 +311,7 @@ Webhook events (`orbit.case.created`, `orbit.case.pushed`) exist from Phase 2. P
 - [x] Event schemas + emit calls from work/morph engines
 - [x] Notification persistence + list/mark-read API
 - [x] App UI wired; integration test: assign case → assignee notification row persisted
-- [x] E2E: notifications panel opens from topbar bell (`orbit-case-notifications.spec.ts`)
+- [x] E2E: persisted notification renders in the topbar feed, deep-links, and marks read (`orbit-case-notifications.spec.ts`)
 
 ---
 

@@ -55,12 +55,8 @@ describe("token css sync", () => {
     expect(globalsCss).toMatch(
       /--text-secondary:\s*var\(--xforge-color-muted\)/
     );
-    expect(globalsCss).toMatch(
-      /--card-radius:\s*var\(--xforge-radius-lg\)/
-    );
-    expect(globalsCss).toMatch(
-      /--card-padding:\s*var\(--xforge-space-5\)/
-    );
+    expect(globalsCss).toMatch(/--card-radius:\s*var\(--xforge-radius-lg\)/);
+    expect(globalsCss).toMatch(/--card-padding:\s*var\(--xforge-space-5\)/);
     expect(globalsCss).toContain("--title-text-size");
   });
 });

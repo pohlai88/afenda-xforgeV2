@@ -1,5 +1,6 @@
 import { getOrganizationRole } from "@repo/auth/cms";
 import { requireOrg } from "@repo/auth/server";
+import type { PushTemplateDefinition } from "@repo/orbit-case";
 import {
   toOrbitCaseActivityDto,
   toOrbitCaseAttachmentDto,
@@ -8,7 +9,6 @@ import {
   toOrbitObjectLinkDto,
   toOrbitObjectLinkProjectionDto,
 } from "@repo/orbit-case";
-import type { PushTemplateDefinition } from "@repo/orbit-case";
 import {
   canHardDeleteOrbitCase,
   ensureSystemPushDefaults,
@@ -23,7 +23,7 @@ import { Header } from "../../_components/header";
 import { OrbitCaseDetailView } from "./orbit-case-detail-view";
 
 interface OrbitCaseDetailRouteContentProps {
-  params: Promise<{ caseId: string }>;
+  readonly params: Promise<{ readonly caseId: string }>;
 }
 
 export const OrbitCaseDetailRouteContent = async ({
@@ -63,7 +63,10 @@ export const OrbitCaseDetailRouteContent = async ({
 
   await Promise.all(
     destinations.map(async (destination) => {
-      const template = await getMergedPushTemplate(orgId, destination.templateId);
+      const template = await getMergedPushTemplate(
+        orgId,
+        destination.templateId
+      );
 
       if (template) {
         pushTemplatesByDestinationId[destination.id] = template;
@@ -90,8 +93,8 @@ export const OrbitCaseDetailRouteContent = async ({
         comments={comments.map(toOrbitCaseCommentDto)}
         destinations={destinations}
         linkProjections={linkProjections}
-        pushTemplatesByDestinationId={pushTemplatesByDestinationId}
         orbitCase={toOrbitCaseDto(record)}
+        pushTemplatesByDestinationId={pushTemplatesByDestinationId}
         watching={watching}
       />
     </>

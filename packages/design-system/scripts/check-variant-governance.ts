@@ -4,6 +4,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
+  AFENDA_ACTION_VARIANTS,
   AFENDA_COMPONENT_SIZE_VARIANTS,
   AFENDA_DENSITIES,
   AFENDA_EMPHASIS,
@@ -12,26 +13,29 @@ import {
   AFENDA_STRUCTURAL_VARIANTS,
   AFENDA_TEXT_COLOR_VARIANTS,
   AFENDA_TONES,
-  AFENDA_ACTION_VARIANTS,
 } from "../registries/variant.registry.ts";
 
+const NEWLINE_RE = /\r?\n/;
+const VARIANT_IGNORE_NEXT_LINE_RE =
+  /^\s*\/\/ afenda-variant-ignore-next-line -- \S.+$/;
+
 interface SourceFile {
+  readonly lines: readonly string[];
   readonly path: string;
   readonly relativePath: string;
   readonly source: string;
-  readonly lines: readonly string[];
 }
 
 type Severity = "error" | "warning";
 
 interface Violation {
-  readonly ruleId: string;
-  readonly severity: Severity;
-  readonly file: string;
-  readonly line: number;
   readonly column: number;
   readonly evidence: string;
+  readonly file: string;
+  readonly line: number;
   readonly message: string;
+  readonly ruleId: string;
+  readonly severity: Severity;
 }
 
 const RULES = {
@@ -299,8 +303,10 @@ function scanFiles(): SourceFile[] {
       const relativePath = normalizePath(relative(packageRoot, path));
 
       return (
-        !relativePath.startsWith("components/ui/") &&
-        !relativePath.endsWith("-recipes.ts") &&
+        !(
+          relativePath.startsWith("components/ui/") ||
+          relativePath.endsWith("-recipes.ts")
+        ) &&
         relativePath !== "components/blocks/block-recipes.ts" &&
         !relativePath.startsWith("contracts/") &&
         !relativePath.startsWith("scripts/") &&
@@ -317,7 +323,7 @@ function scanFiles(): SourceFile[] {
         path,
         relativePath: normalizePath(relative(packageRoot, path)),
         source,
-        lines: source.split(/\r?\n/),
+        lines: source.split(NEWLINE_RE),
       };
     });
 }
@@ -374,9 +380,7 @@ function isIgnored(file: SourceFile, line: number): boolean {
     return false;
   }
 
-  return /^\s*\/\/ afenda-variant-ignore-next-line -- \S.+$/.test(
-    previousLine
-  );
+  return VARIANT_IGNORE_NEXT_LINE_RE.test(previousLine);
 }
 
 function lineAndColumn(

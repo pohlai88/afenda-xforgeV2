@@ -1,5 +1,8 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
+import type { ComponentPropsWithoutRef } from "react";
+import { cn } from "../../../../lib/utils";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -7,17 +10,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../../../afenda-ui/sidebar";
-import { cn } from "../../../../lib/utils";
 import { blockRecipe } from "../../block-recipes";
+import { dashboardNavSecondaryContentClass } from "./dashboard-recipes";
 import {
   navItemBaseClass,
   navItemIconClass,
   navItemIdleClass,
   navItemLabelClass,
 } from "./nav-main-recipes";
-import { dashboardNavSecondaryContentClass } from "./dashboard-recipes";
-import { type ComponentPropsWithoutRef } from "react";
-import { type LucideIcon } from "lucide-react";
 
 export function NavSecondary({
   items,
@@ -32,7 +32,10 @@ export function NavSecondary({
   return (
     <SidebarGroup data-slot="nav-secondary" {...props}>
       <SidebarGroupContent
-        className={cn(blockRecipe("blockStack"), dashboardNavSecondaryContentClass)}
+        className={cn(
+          blockRecipe("blockStack"),
+          dashboardNavSecondaryContentClass
+        )}
       >
         <SidebarMenu>
           {items.map((item) => (

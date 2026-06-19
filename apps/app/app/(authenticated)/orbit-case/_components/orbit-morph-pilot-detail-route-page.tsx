@@ -1,25 +1,25 @@
 import { requireOrg } from "@repo/auth/server";
+import { Skeleton } from "@repo/design-system";
 import {
   MORPH_LIFECYCLE_DETAIL_PARAM_KEYS,
-  resolveMorphLifecycleSegmentConfig,
   type MorphLifecycleSegment,
+  resolveMorphLifecycleSegmentConfig,
 } from "@repo/orbit-case";
 import { resolveMorphLifecycleLoader } from "@repo/orbit-case/server";
-import { Skeleton } from "@repo/design-system";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { getCachedOrbitCaseTitle } from "@/lib/orbit-case-cached-reads";
 import {
   getMorphPilotFieldConfigs,
   toMorphPilotViewModel,
 } from "@/lib/morph-pilot-ui";
+import { getCachedOrbitCaseTitle } from "@/lib/orbit-case-cached-reads";
 import { Header } from "../../_components/header";
-import { OrbitMorphPilotDetailView } from "./orbit-morph-pilot-detail-view";
 import {
   OrbitMorphDetailLayout,
   OrbitMorphOriginAside,
 } from "./orbit-morph-origin-aside";
+import { OrbitMorphPilotDetailView } from "./orbit-morph-pilot-detail-view";
 
 const OrbitMorphPilotDetailFallback = () => (
   <div className="flex flex-col gap-4">
@@ -29,13 +29,13 @@ const OrbitMorphPilotDetailFallback = () => (
 );
 
 interface OrbitMorphPilotDetailRoutePageProps {
-  params: Promise<Record<string, string>>;
-  segment: MorphLifecycleSegment;
+  readonly params: Promise<Record<string, string>>;
+  readonly segment: MorphLifecycleSegment;
 }
 
-export async function generateMorphPilotDetailMetadata(
+export function generateMorphPilotDetailMetadata(
   segment: MorphLifecycleSegment
-): Promise<Metadata> {
+): Metadata {
   const config = resolveMorphLifecycleSegmentConfig(segment);
   return { title: config.eyebrowLabel };
 }
@@ -70,7 +70,10 @@ const OrbitMorphPilotDetailRoutePageContent = async ({
     notFound();
   }
 
-  const originCaseTitle = await getCachedOrbitCaseTitle(orgId, dto.originCaseId);
+  const originCaseTitle = await getCachedOrbitCaseTitle(
+    orgId,
+    dto.originCaseId
+  );
 
   return (
     <>

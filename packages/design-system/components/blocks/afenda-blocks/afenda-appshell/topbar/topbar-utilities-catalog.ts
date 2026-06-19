@@ -8,12 +8,12 @@ import {
   Keyboard,
   Lightbulb,
   LineChart,
+  type LucideIcon,
   MessageSquareWarning,
   MessagesSquare,
   MonitorCog,
   ScanSearch,
   Settings2,
-  type LucideIcon,
 } from "lucide-react";
 import { createElement, type ReactElement } from "react";
 import { topbarUtilityIconClass } from "./topbar-recipes";

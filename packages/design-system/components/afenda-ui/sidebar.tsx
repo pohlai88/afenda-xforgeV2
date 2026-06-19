@@ -1,7 +1,5 @@
 "use client";
 
-import { useIsMobile } from "../../hooks/use-mobile";
-import { cn } from "../../lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeftIcon } from "lucide-react";
 import { Slot as SlotPrimitive } from "radix-ui";
@@ -14,6 +12,8 @@ import {
   useMemo,
   useState,
 } from "react";
+import { useIsMobile } from "../../hooks/use-mobile";
+import { cn } from "../../lib/utils";
 import { Button } from "./button";
 import {
   DropdownMenu,
@@ -72,7 +72,10 @@ const sidebarVariantAttributes = {
   floating: { "data-variant": "floating" },
   inset: { "data-variant": "inset" },
   sidebar: { "data-variant": "sidebar" },
-} as const satisfies Record<SidebarVariant, { readonly "data-variant": string }>;
+} as const satisfies Record<
+  SidebarVariant,
+  { readonly "data-variant": string }
+>;
 
 const sidebarMenuButtonSizeAttributes = {
   default: { "data-size": "default" },
@@ -190,6 +193,7 @@ function SidebarProvider({
   );
   const open = openProp ?? _open;
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: _setBehaviorMode and _setOpen are stable useState setters; including them would add unnecessary churn
   useEffect(() => {
     const fromCookie = readSidebarBehaviorCookie();
     if (!fromCookie) {
@@ -382,7 +386,10 @@ function Sidebar({
     return (
       <Sheet onOpenChange={setOpenMobile} open={openMobile} {...props}>
         <SheetContent
-          className={cn("w-(--sidebar-width)", recipe("sidebarMobileSheetContent"))}
+          className={cn(
+            "w-(--sidebar-width)",
+            recipe("sidebarMobileSheetContent")
+          )}
           data-mobile="true"
           data-sidebar="sidebar"
           data-slot="sidebar"

@@ -1,10 +1,10 @@
-import { cn } from "../../lib/utils";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   MoreHorizontalIcon,
 } from "lucide-react";
 import type * as React from "react";
+import { cn } from "../../lib/utils";
 import { buttonVariants } from "./button";
 import { recipe } from "./recipes";
 

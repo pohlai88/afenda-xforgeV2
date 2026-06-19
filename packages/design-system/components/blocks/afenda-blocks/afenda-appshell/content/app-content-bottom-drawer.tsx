@@ -1,7 +1,7 @@
 "use client";
 
-import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
 import { appShellRegionLabelClass } from "../app-shell-recipes";
 import type { AfendaAppContentBottomDrawerProps } from "../app-shell-types";
 import { appContentBottomDrawerShellClass } from "./content-recipes";
@@ -24,7 +24,12 @@ export function AfendaAppContentBottomDrawer({
       {...properties}
     >
       {children ?? (
-        <span className={cn(blockRecipe("blockMetricLabel"), appShellRegionLabelClass)}>
+        <span
+          className={cn(
+            blockRecipe("blockMetricLabel"),
+            appShellRegionLabelClass
+          )}
+        >
           Bottom drawer
         </span>
       )}

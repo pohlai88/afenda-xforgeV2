@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "../../lib/utils";
 import {
   type ComponentProps,
   type ComponentType,
@@ -17,6 +16,7 @@ import type {
   Props as DefaultTooltipContentProps,
   Payload as TooltipPayload,
 } from "recharts/types/component/DefaultTooltipContent";
+import { cn } from "../../lib/utils";
 import { recipe } from "./recipes";
 
 const THEMES = { light: "", dark: ".dark" } as const;
@@ -202,7 +202,10 @@ function ChartTooltipContent({
     }
 
     const [item] = payload;
-    const key = `${labelKey || item?.dataKey || item?.name || "value"}`;
+    if (!item) {
+      return null;
+    }
+    const key = `${labelKey || item.dataKey || item.name || "value"}`;
     const itemConfig = getPayloadConfigFromPayload(config, item, key);
     const value =
       !labelKey && typeof label === "string"
@@ -273,19 +276,16 @@ function ChartTooltipContent({
                     ) : (
                       !hideIndicator && (
                         <div
-                          className={cn(
-                            recipe("chartTooltipIndicator"),
-                            {
-                              [recipe("chartTooltipIndicatorDot")]:
-                                indicator === "dot",
-                              [recipe("chartTooltipIndicatorLine")]:
-                                indicator === "line",
-                              [recipe("chartTooltipIndicatorDashed")]:
-                                indicator === "dashed",
-                              [recipe("chartTooltipIndicatorNested")]:
-                                nestLabel && indicator === "dashed",
-                            }
-                          )}
+                          className={cn(recipe("chartTooltipIndicator"), {
+                            [recipe("chartTooltipIndicatorDot")]:
+                              indicator === "dot",
+                            [recipe("chartTooltipIndicatorLine")]:
+                              indicator === "line",
+                            [recipe("chartTooltipIndicatorDashed")]:
+                              indicator === "dashed",
+                            [recipe("chartTooltipIndicatorNested")]:
+                              nestLabel && indicator === "dashed",
+                          })}
                           style={
                             {
                               "--color-bg": indicatorColor,
@@ -359,10 +359,7 @@ function ChartLegendContent({
           const itemConfig = getPayloadConfigFromPayload(config, item, key);
 
           return (
-            <div
-              className={cn(recipe("chartLegendItem"))}
-              key={item.value}
-            >
+            <div className={cn(recipe("chartLegendItem"))} key={item.value}>
               {itemConfig?.icon && !hideIcon ? (
                 <itemConfig.icon />
               ) : (

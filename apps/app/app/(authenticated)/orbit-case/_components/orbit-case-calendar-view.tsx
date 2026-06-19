@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Badge,
-  Button,
-  Calendar,
-  blockRecipe,
-} from "@repo/design-system";
+import { Badge, Button, blockRecipe, Calendar } from "@repo/design-system";
 import { cn } from "@repo/design-system/lib/utils";
 import type { OrbitCaseCalendarDto, OrbitCaseDto } from "@repo/orbit-case";
 import { formatOrbitCaseDueDateLabel } from "@repo/orbit-case";
@@ -33,9 +28,7 @@ const statusLabel = {
   cancelled: "Cancelled",
 } as const;
 
-const parseCalendarMonth = (
-  month: string
-): { month: number; year: number } => {
+const parseCalendarMonth = (month: string): { month: number; year: number } => {
   const [yearText, monthText] = month.split("-");
   return {
     year: Number(yearText),
@@ -77,7 +70,10 @@ export function OrbitCaseCalendarView({
     const nextMonth = nextDate.getUTCMonth() + 1;
 
     startTransition(async () => {
-      const result = await getCalendarBoard({ year: nextYear, month: nextMonth });
+      const result = await getCalendarBoard({
+        year: nextYear,
+        month: nextMonth,
+      });
 
       if (result.ok) {
         setCalendar(result.data);
@@ -115,14 +111,14 @@ export function OrbitCaseCalendarView({
         </div>
         <Calendar
           mode="single"
-          month={visibleMonth}
-          onMonthChange={() => undefined}
-          onSelect={setSelectedDate}
-          selected={selectedDate}
           modifiers={{ due: dueDates }}
           modifiersClassNames={{
             due: "bg-primary/15 font-medium",
           }}
+          month={visibleMonth}
+          onMonthChange={() => undefined}
+          onSelect={setSelectedDate}
+          selected={selectedDate}
         />
       </section>
 
@@ -147,9 +143,7 @@ export function OrbitCaseCalendarView({
             <article className="rounded-md border bg-background p-3 text-sm transition-colors hover:bg-muted/30">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="font-medium">{orbitCase.title}</p>
-                <Badge variant="outline">
-                  {statusLabel[orbitCase.status]}
-                </Badge>
+                <Badge variant="outline">{statusLabel[orbitCase.status]}</Badge>
               </div>
             </article>
           </Link>

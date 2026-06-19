@@ -24,7 +24,7 @@ const topbarSwitcherButtonClass =
   "h-8 min-h-8 w-auto max-w-[calc(20ch+1.75rem)] gap-0.5 rounded-md px-1.5 py-0 font-normal has-[>svg]:px-1";
 
 const topbarSwitcherScopeLabelClass =
-  "text-[8px] font-medium uppercase leading-[9px] tracking-[0.04em] text-text-secondary/65";
+  "text-[length:var(--xforge-font-label-size)] font-medium uppercase leading-none tracking-[0.04em] text-text-secondary/65";
 
 const topbarSwitcherValueClass =
   "max-w-[20ch] truncate text-[length:var(--xforge-font-caption-size)] leading-[13px] tracking-[-0.01em] text-text-primary";
@@ -92,8 +92,7 @@ const topbarUtilitiesMarketDescriptionClass =
 const topbarUtilitiesMarketMetaClass =
   "px-4 pb-1 pt-3 text-[length:var(--xforge-font-label-size)] text-text-secondary";
 
-const topbarUtilitiesMarketListScrollClass =
-  "h-[min(12rem,calc(70vh-16rem))]";
+const topbarUtilitiesMarketListScrollClass = "h-[min(12rem,calc(70vh-16rem))]";
 
 const topbarUtilitiesMarketListRegionClass = "px-2 pb-2 pr-3";
 
@@ -129,8 +128,7 @@ const topbarUtilitiesMarketRowIconClass = "text-text-secondary";
 const topbarUtilitiesMarketRowLabelClass =
   "truncate text-[length:var(--xforge-font-caption-size)]";
 
-const topbarUtilitiesMarketRequestHeaderClass =
-  "mb-2 flex items-center gap-2";
+const topbarUtilitiesMarketRequestHeaderClass = "mb-2 flex items-center gap-2";
 
 const topbarUtilitiesMarketRequestIconClass =
   "size-4 shrink-0 text-text-secondary";

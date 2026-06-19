@@ -1,7 +1,7 @@
 "use client";
 
-import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
+import { blockRecipe } from "../../../block-recipes";
 import { APP_TOPBAR_BRAND_ICON } from "./topbar-constants";
 import {
   topbarBrandDiskImageClass,
@@ -25,6 +25,7 @@ export function TopbarBrandDisk({
 
   const images = (
     <>
+      {/* biome-ignore lint/performance/noImgElement: design-system is framework-agnostic; Next.js Image is app-layer responsibility */}
       <img
         alt=""
         className={cn(topbarBrandDiskImageClass, "dark:hidden")}
@@ -33,6 +34,7 @@ export function TopbarBrandDisk({
         src={lightIconSrc}
         width={BRAND_DISK_SIZE_PX}
       />
+      {/* biome-ignore lint/performance/noImgElement: design-system is framework-agnostic; Next.js Image is app-layer responsibility */}
       <img
         alt=""
         className={cn(topbarBrandDiskImageClass, "hidden dark:block")}
@@ -48,7 +50,10 @@ export function TopbarBrandDisk({
     return (
       <a
         aria-label="Afenda home"
-        className={cn(shellClass, "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring")}
+        className={cn(
+          shellClass,
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        )}
         data-slot="app-topbar-brand-disk"
         href={homeHref}
       >

@@ -5,31 +5,33 @@ import { basename, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afendaRecipe } from "../components/afenda-ui/recipes.ts";
 import { afendaBlockRecipe } from "../components/blocks/block-recipes.ts";
+import { AFENDA_RECIPE_FORBIDDEN_PATTERNS } from "../contracts/afenda-recipe.contract.ts";
 import {
   AFENDA_BLOCK_RECIPE_IDENTITY_REGISTRY,
   AFENDA_RECIPE_IDENTITY_REGISTRY,
 } from "../registries/recipe.registry.ts";
-import {
-  AFENDA_RECIPE_FORBIDDEN_PATTERNS,
-} from "../contracts/afenda-recipe.contract.ts";
+
+const NEWLINE_RE = /\r?\n/;
+const RECIPE_IGNORE_NEXT_LINE_RE =
+  /^\s*\/\/ afenda-recipe-ignore-next-line -- \S.+$/;
 
 interface SourceFile {
+  readonly lines: readonly string[];
   readonly path: string;
   readonly relativePath: string;
   readonly source: string;
-  readonly lines: readonly string[];
 }
 
 type Severity = "error" | "warning";
 
 interface Violation {
-  readonly ruleId: string;
-  readonly severity: Severity;
-  readonly file: string;
-  readonly line: number;
   readonly column: number;
   readonly evidence: string;
+  readonly file: string;
+  readonly line: number;
   readonly message: string;
+  readonly ruleId: string;
+  readonly severity: Severity;
 }
 
 const RULES = {
@@ -162,10 +164,15 @@ function checkRecipeFile(file: SourceFile): Violation[] {
     ...AFENDA_RECIPE_FORBIDDEN_PATTERNS.flatMap((pattern) =>
       findLiteralPattern(file, pattern)
     ),
-    ...findMatches(file, dynamicRecipeIdPattern, RULES.dynamicRecipeId, (evidence) => ({
-      evidence,
-      message: `Dynamic recipe call "${evidence.trim()}" is forbidden because recipe identity must be stable.`,
-    })),
+    ...findMatches(
+      file,
+      dynamicRecipeIdPattern,
+      RULES.dynamicRecipeId,
+      (evidence) => ({
+        evidence,
+        message: `Dynamic recipe call "${evidence.trim()}" is forbidden because recipe identity must be stable.`,
+      })
+    ),
   ];
 }
 
@@ -271,7 +278,7 @@ function scanFiles(): SourceFile[] {
         path,
         relativePath: normalizePath(relative(packageRoot, path)),
         source,
-        lines: source.split(/\r?\n/),
+        lines: source.split(NEWLINE_RE),
       };
     });
 }
@@ -311,9 +318,7 @@ function isIgnored(file: SourceFile, line: number): boolean {
     return false;
   }
 
-  return /^\s*\/\/ afenda-recipe-ignore-next-line -- \S.+$/.test(
-    previousLine
-  );
+  return RECIPE_IGNORE_NEXT_LINE_RE.test(previousLine);
 }
 
 function lineAndColumn(

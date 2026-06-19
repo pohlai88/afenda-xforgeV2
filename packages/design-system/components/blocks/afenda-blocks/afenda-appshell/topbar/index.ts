@@ -7,6 +7,17 @@ export { TopbarScopeSwitchers } from "./topbar-scope-switchers";
 export { TopbarSidebarControl } from "./topbar-sidebar-control";
 export { TopbarSidebarTrigger } from "./topbar-sidebar-trigger";
 export { TopbarThemeToggle } from "./topbar-theme-toggle";
+export type {
+  AfendaAppTopbarProps,
+  TopbarActionsMenuGroup,
+  TopbarActionsMenuItem,
+  TopbarActionsMenuProps,
+  TopbarBrandDiskProps,
+  TopbarContextOption,
+  TopbarContextScope,
+  TopbarContextSwitcherProps,
+  TopbarRightActionsProps,
+} from "./topbar-types";
 export { TopbarUtilitiesBar } from "./topbar-utilities-bar";
 export {
   TOPBAR_UTILITY_CATALOG,
@@ -19,14 +30,3 @@ export {
   useTopbarUtilities,
 } from "./topbar-utilities-context";
 export { TopbarUtilitiesMarketplace } from "./topbar-utilities-marketplace";
-export type {
-  AfendaAppTopbarProps,
-  TopbarActionsMenuGroup,
-  TopbarActionsMenuItem,
-  TopbarActionsMenuProps,
-  TopbarBrandDiskProps,
-  TopbarContextOption,
-  TopbarContextScope,
-  TopbarContextSwitcherProps,
-  TopbarRightActionsProps,
-} from "./topbar-types";

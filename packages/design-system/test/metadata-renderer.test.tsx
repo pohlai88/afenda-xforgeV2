@@ -5,19 +5,22 @@ import {
   metadataBlockSchema as publicMetadataBlockSchema,
   metadataBlockSchemas as publicMetadataBlockSchemas,
   metadataPageSchema as publicMetadataPageSchema,
-  resolveDefaultMetadataPermission,
   resolveMetadataBinding as publicResolveMetadataBinding,
+  resolveDefaultMetadataPermission,
   resolveMetadataBlockActions,
   resolveMetadataPermission,
   supportedBlockTypes,
 } from "../components/blocks";
+import type {
+  MetadataBlock,
+  MetadataPage,
+} from "../components/blocks/metadata-schema";
+import { metadataPageSchema } from "../components/blocks/metadata-schema";
 import {
   approvalControlCenterMetadata,
   auditEvidenceReviewMetadata,
   tenantConfigurationMetadata,
 } from "./metadata-renderer-fixtures";
-import type { MetadataBlock, MetadataPage } from "../components/blocks/metadata-schema";
-import { metadataPageSchema } from "../components/blocks/metadata-schema";
 
 describe("metadata renderer contract", () => {
   it("resolves raw object sources as ready data", () => {
@@ -105,29 +108,44 @@ describe("metadata renderer contract", () => {
 
   it("reports loading, error, forbidden, empty, and stale source states", () => {
     expect(
-      publicResolveMetadataBinding({ path: "rows", source: "queue" }, {
-        queue: { state: "loading" },
-      }).status
+      publicResolveMetadataBinding(
+        { path: "rows", source: "queue" },
+        {
+          queue: { state: "loading" },
+        }
+      ).status
     ).toBe("loading");
     expect(
-      publicResolveMetadataBinding({ path: "rows", source: "queue" }, {
-        queue: { error: { message: "Failed" }, state: "error" },
-      }).status
+      publicResolveMetadataBinding(
+        { path: "rows", source: "queue" },
+        {
+          queue: { error: { message: "Failed" }, state: "error" },
+        }
+      ).status
     ).toBe("error");
     expect(
-      publicResolveMetadataBinding({ path: "rows", source: "queue" }, {
-        queue: { state: "forbidden" },
-      }).status
+      publicResolveMetadataBinding(
+        { path: "rows", source: "queue" },
+        {
+          queue: { state: "forbidden" },
+        }
+      ).status
     ).toBe("forbidden");
     expect(
-      publicResolveMetadataBinding({ path: "rows", source: "queue" }, {
-        queue: { state: "empty" },
-      }).status
+      publicResolveMetadataBinding(
+        { path: "rows", source: "queue" },
+        {
+          queue: { state: "empty" },
+        }
+      ).status
     ).toBe("empty");
     expect(
-      publicResolveMetadataBinding({ path: "rows", source: "queue" }, {
-        queue: { data: { rows: [] }, state: "stale" },
-      }).status
+      publicResolveMetadataBinding(
+        { path: "rows", source: "queue" },
+        {
+          queue: { data: { rows: [] }, state: "stale" },
+        }
+      ).status
     ).toBe("stale");
   });
 

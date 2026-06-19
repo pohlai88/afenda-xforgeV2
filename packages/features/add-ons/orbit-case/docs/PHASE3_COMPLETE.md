@@ -28,8 +28,9 @@ All eleven morph destinations follow the **Budget slice pattern**:
 Shared infrastructure:
 
 - Manifest: [`contract/morph-destination-manifest.ts`](../contract/morph-destination-manifest.ts)
-- Typed reads factory: [`engines/morph/create-typed-morph-reads.ts`](../engines/morph/create-typed-morph-reads.ts)
+- Lifecycle registry: [`engines/morph/morph-lifecycle-registry.ts`](../engines/morph/morph-lifecycle-registry.ts)
 - Push handler factory: [`engines/morph/create-two-field-morph-push-handler.ts`](../engines/morph/create-two-field-morph-push-handler.ts)
+- Pilot push handler factory: [`engines/morph/create-morph-field-push-handler.ts`](../engines/morph/create-morph-field-push-handler.ts)
 - Route loaders: [`engines/morph/morph-route-loaders.ts`](../engines/morph/morph-route-loaders.ts)
 - App list/detail: [`OrbitMorphListView`](../../../../apps/app/app/(authenticated)/orbit-case/_components/orbit-morph-list-view.tsx) / [`OrbitMorphDetailView`](../../../../apps/app/app/(authenticated)/orbit-case/_components/orbit-morph-detail-view.tsx)
 

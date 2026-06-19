@@ -1,7 +1,7 @@
 # Orbit Case — Architecture
 
 **Version:** 0.1  
-**Status:** Phase 3 complete — all eleven morph destinations are routed  
+**Status:** Phase 4 complete (v1 shipped) — Phase 5 (product depth) in [`REQUIREMENTS.md`](./REQUIREMENTS.md)  
 **Package:** `@repo/orbit-case`  
 **Route:** `/orbit-case`
 

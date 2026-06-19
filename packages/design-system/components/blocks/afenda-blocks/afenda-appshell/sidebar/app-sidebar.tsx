@@ -176,13 +176,19 @@ function AfendaAppSidebarNavTree({
   activeItemIds,
   isIconRail,
   nav,
+  navUserMenuGroups,
+  onNavUserMenuItemSelect,
   renderLink,
+  renderNavUserMenuLink,
   user,
 }: {
   readonly activeItemIds: ReadonlySet<string>;
   readonly isIconRail: boolean;
   readonly nav: NonNullable<AfendaAppSidebarProps["nav"]>;
+  readonly navUserMenuGroups?: AfendaAppSidebarProps["navUserMenuGroups"];
+  readonly onNavUserMenuItemSelect?: AfendaAppSidebarProps["onNavUserMenuItemSelect"];
   readonly renderLink?: SidebarLinkRenderer;
+  readonly renderNavUserMenuLink?: SidebarLinkRenderer;
   readonly user?: AfendaAppSidebarProps["user"];
 }) {
   const scrollGroups = nav.scroll ?? [];
@@ -246,7 +252,15 @@ function AfendaAppSidebarNavTree({
               renderLink={renderLink}
             />
           ) : null}
-          {user ? <SidebarNavUser isIconRail={isIconRail} user={user} /> : null}
+          {user ? (
+            <SidebarNavUser
+              isIconRail={isIconRail}
+              menuGroups={navUserMenuGroups}
+              onMenuItemSelect={onNavUserMenuItemSelect}
+              renderMenuLink={renderNavUserMenuLink}
+              user={user}
+            />
+          ) : null}
         </div>
       ) : null}
     </TooltipProvider>
@@ -260,8 +274,11 @@ export function AfendaAppSidebar({
   nav,
   navDescriptor,
   navIconRegistry,
+  navUserMenuGroups,
+  onNavUserMenuItemSelect,
   pathname = "",
   renderLink,
+  renderNavUserMenuLink,
   user,
   ...properties
 }: AfendaAppSidebarProps) {
@@ -324,7 +341,10 @@ export function AfendaAppSidebar({
             activeItemIds={resolvedActiveItemIds}
             isIconRail={isIconRail}
             nav={resolvedNav}
+            navUserMenuGroups={navUserMenuGroups}
+            onNavUserMenuItemSelect={onNavUserMenuItemSelect}
             renderLink={renderLink}
+            renderNavUserMenuLink={renderNavUserMenuLink}
             user={user}
           />
         ) : null)}

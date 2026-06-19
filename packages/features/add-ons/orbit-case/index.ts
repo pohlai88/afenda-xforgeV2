@@ -86,6 +86,9 @@ export {
   toOrbitCaseCommentDto,
   toOrbitCaseDto,
   toOrbitCaseTimelineDto,
+  toOrbitBudgetRequestDto,
+  toOrbitApprovalRequestDto,
+  toOrbitPurchaseRequestDto,
   toOrbitObjectLinkDto,
   toOrbitObjectLinkProjectionDto,
 } from "./contract/serialize";
@@ -107,6 +110,64 @@ export {
   resolveMorphSliceByDestinationId,
   resolveMorphSliceByTargetType,
 } from "./contract/morph-target-types";
+export {
+  listBudgetRequestsFilterSchema,
+  listApprovalRequestsFilterSchema,
+  listPurchaseRequestsFilterSchema,
+  listMorphLifecycleRequestsFilterSchema,
+  updateApprovalRequestSchema,
+  updateBudgetRequestSchema,
+  updateMorphLifecycleRequestSchema,
+  updateMorphPilotRequestSchema,
+  updatePurchaseRequestSchema,
+} from "./contract/morph-lifecycle-update.schema";
+export type {
+  ListApprovalRequestsFilter,
+  ListBudgetRequestsFilter,
+  ListMorphLifecycleRequestsFilter,
+  ListPurchaseRequestsFilter,
+  UpdateApprovalRequestInput,
+  UpdateBudgetRequestInput,
+  UpdateMorphLifecycleRequestInput,
+  UpdateMorphPilotRequestInput,
+  UpdatePurchaseRequestInput,
+} from "./contract/morph-lifecycle-update.schema";
+export {
+  listMorphLifecycleFilterSchema,
+  morphLifecyclePatchSchema,
+} from "./contract/morph-lifecycle.schema";
+export type {
+  ListMorphLifecycleFilter,
+  MorphLifecyclePatch,
+} from "./contract/morph-lifecycle.schema";
+export { toOrbitMorphLifecycleRequestDto } from "./contract/morph-lifecycle-serialize";
+export {
+  getMorphLifecycleFieldConfigs,
+  resolveMorphLifecycleSegmentConfig,
+} from "./contract/morph-lifecycle-ui";
+export type {
+  MorphLifecycleFieldConfig,
+  MorphLifecycleSegmentConfig,
+} from "./contract/morph-lifecycle-ui";
+export {
+  MORPH_LIFECYCLE_DETAIL_PARAM_KEYS,
+} from "./contract/morph-lifecycle.types";
+export type {
+  MorphLifecycleCoreRecord,
+  MorphLifecycleSegment,
+  OrbitMorphLifecycleRequestDto,
+} from "./contract/morph-lifecycle.types";
+export {
+  ORBIT_MORPH_STATUS_LABELS,
+  resolveMorphPilotSegmentConfig,
+} from "./contract/morph-pilot";
+export type { MorphPilotSegment, MorphPilotSegmentConfig } from "./contract/morph-pilot";
+export type { OrbitMorphStatus } from "./contract/morph-status";
+export {
+  ORBIT_MORPH_DEFAULT_STATUS,
+  ORBIT_MORPH_STATUSES,
+  orbitMorphStatusSchema,
+} from "./contract/morph-status";
 export type { OrbitCasePriority, OrbitCaseStatus } from "./contract/status";
 export {
   ORBIT_CASE_BOARD_COLUMNS,
@@ -117,13 +178,46 @@ export type { PushTemplateDefinition } from "./contract/template.schema";
 export {
   ORBIT_EVENT_CASE_CREATED,
   ORBIT_EVENT_CASE_PUSHED,
+  ORBIT_EVENT_CASE_ASSIGNED,
+  ORBIT_EVENT_MORPH_UPDATED,
   buildOrbitCaseCreatedEvent,
   buildOrbitCasePushedEvent,
+  buildOrbitCaseAssignedEvent,
+  buildOrbitMorphUpdatedEvent,
 } from "./contract/events";
 export type {
   OrbitCaseCreatedEvent,
   OrbitCasePushedEvent,
+  OrbitCaseAssignedEvent,
+  OrbitMorphUpdatedEvent,
 } from "./contract/events";
+export {
+  createOrbitInAppNotificationInputSchema,
+  listOrbitInAppNotificationsFilterSchema,
+  markOrbitInAppNotificationReadSchema,
+} from "./contract/in-app-notification.schema";
+export type {
+  CreateOrbitInAppNotificationInput,
+  ListOrbitInAppNotificationsFilter,
+  MarkOrbitInAppNotificationReadInput,
+  OrbitInAppNotificationDto,
+  OrbitInAppNotificationKind,
+  OrbitInAppNotificationRecord,
+} from "./contract/in-app-notification.schema";
+export {
+  syncMorphExternalStatusSchema,
+} from "./contract/morph-sync.schema";
+export type { SyncMorphExternalStatusInput } from "./contract/morph-sync.schema";
+export { toOrbitInAppNotificationDto } from "./contract/in-app-notification-serialize";
+export {
+  buildOrbitMorphTargetSummary,
+  orbitMorphTargetSummarySchema,
+} from "./contract/morph-target-summary";
+export type { OrbitMorphTargetSummary } from "./contract/morph-target-summary";
+export {
+  toOrbitMorphTargetSummaryFromDto,
+  toOrbitMorphTargetSummaryFromRecord,
+} from "./contract/morph-target-summary-mapper";
 export {
   deletePushDestinationSchema,
   deletePushTemplateSchema,

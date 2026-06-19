@@ -19,6 +19,12 @@ import type {
   OrbitCaseRecord,
   OrbitCaseTimelineDto,
   OrbitCaseTimelineResult,
+  OrbitBudgetRequestDto,
+  OrbitBudgetRequestRecord,
+  OrbitApprovalRequestDto,
+  OrbitApprovalRequestRecord,
+  OrbitPurchaseRequestDto,
+  OrbitPurchaseRequestRecord,
   OrbitObjectLinkDto,
   OrbitObjectLinkProjectionDto,
   OrbitObjectLinkRecord,
@@ -137,6 +143,62 @@ export const toOrbitCaseTimelineDto = (
     label: group.label,
     cases: group.cases.map(toOrbitCaseDto),
   })),
+});
+
+export const toOrbitBudgetRequestDto = (
+  record: OrbitBudgetRequestRecord
+): OrbitBudgetRequestDto => ({
+  id: record.id,
+  organizationId: record.organizationId,
+  originCaseId: record.originCaseId,
+  title: record.title,
+  amount: record.amount,
+  costCenter: record.costCenter,
+  currency: record.currency,
+  externalRefId: record.externalRefId,
+  justification: record.justification,
+  status: record.status,
+  assigneeId: record.assigneeId,
+  createdBy: record.createdBy,
+  createdAt: record.createdAt.toISOString(),
+  updatedAt: record.updatedAt.toISOString(),
+});
+
+export const toOrbitApprovalRequestDto = (
+  record: OrbitApprovalRequestRecord
+): OrbitApprovalRequestDto => ({
+  id: record.id,
+  organizationId: record.organizationId,
+  originCaseId: record.originCaseId,
+  title: record.title,
+  approver: record.approver,
+  amount: record.amount,
+  decisionNotes: record.decisionNotes,
+  dueDate: record.dueDate,
+  externalRefId: record.externalRefId,
+  status: record.status,
+  assigneeId: record.assigneeId,
+  createdBy: record.createdBy,
+  createdAt: record.createdAt.toISOString(),
+  updatedAt: record.updatedAt.toISOString(),
+});
+
+export const toOrbitPurchaseRequestDto = (
+  record: OrbitPurchaseRequestRecord
+): OrbitPurchaseRequestDto => ({
+  id: record.id,
+  organizationId: record.organizationId,
+  originCaseId: record.originCaseId,
+  title: record.title,
+  vendor: record.vendor,
+  amount: record.amount,
+  externalRefId: record.externalRefId,
+  poReference: record.poReference,
+  status: record.status,
+  assigneeId: record.assigneeId,
+  createdBy: record.createdBy,
+  createdAt: record.createdAt.toISOString(),
+  updatedAt: record.updatedAt.toISOString(),
 });
 
 const isPlainRecord = (value: unknown): value is Record<string, unknown> =>

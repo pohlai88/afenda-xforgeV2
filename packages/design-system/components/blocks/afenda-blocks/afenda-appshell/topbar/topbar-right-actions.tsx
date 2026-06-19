@@ -56,12 +56,14 @@ export function TopbarRightActions({
   previewUtilities = false,
   tenantId,
   userId,
+  utilityActionOverrides,
 }: TopbarRightActionsProps) {
   return (
     <TopbarUtilitiesProvider
       preview={previewUtilities}
       tenantId={tenantId}
       userId={userId}
+      utilityActionOverrides={utilityActionOverrides}
     >
       <div
         className={cn(blockRecipe("blockToolbar"), topbarRightClusterClass)}

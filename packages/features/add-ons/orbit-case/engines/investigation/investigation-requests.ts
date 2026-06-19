@@ -1,22 +1,15 @@
 import "server-only";
 
-import { database, orbitInvestigationRequest } from "@repo/database";
-import type { OrbitInvestigationRequestRecord } from "../../contract/orbit-case.types";
-import {
-  createTypedMorphReads,
-  defineTwoFieldMorphMapper,
-} from "../morph/create-typed-morph-reads";
+import { orbitInvestigationRequest } from "@repo/database";
+import { createTwoFieldMorphLifecycleEngine } from "../morph/create-two-field-morph-lifecycle-engine";
 
-const mapInvestigationRequestRow =
-  defineTwoFieldMorphMapper<OrbitInvestigationRequestRecord>(
-    "subject",
-    "priority"
-  );
+const engine = createTwoFieldMorphLifecycleEngine({
+  activitySegment: "investigation",
+  fieldAKey: "subject",
+  fieldBKey: "priority",
+  table: orbitInvestigationRequest,
+});
 
-const reads = createTypedMorphReads(
-  orbitInvestigationRequest,
-  mapInvestigationRequestRow
-);
-
-export const getInvestigationRequestById = reads.getById;
-export const listInvestigationRequestsForOrg = reads.listForOrg;
+export const getInvestigationRequestById = engine.getById;
+export const listInvestigationRequestsForOrg = engine.listForOrg;
+export const updateInvestigationRequestFields = engine.updateFields;

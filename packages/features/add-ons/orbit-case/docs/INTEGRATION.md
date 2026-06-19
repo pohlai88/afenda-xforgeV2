@@ -166,6 +166,78 @@ Use `revalidateTag` in Server Actions after successful mutations. Tag helpers li
 | Webhooks | `packages/webhooks/test/integration/orbit-case-events.integration.test.ts` |
 | E2E lifecycle | `apps/app/e2e/orbit-case.spec.ts` |
 | E2E push | `apps/app/e2e/orbit-case-push.spec.ts` |
+| E2E morph lifecycle | `apps/app/e2e/orbit-case-morph-lifecycle.spec.ts` |
+| E2E notifications | `apps/app/e2e/orbit-case-notifications.spec.ts` |
+
+---
+
+## Staged rollout (Phase 5C)
+
+Orbit Case can be gated without removing persisted data.
+
+| Control | Location |
+|---------|----------|
+| Feature flag | `@repo/feature-flags` → `orbitCaseEnabled` (default **on**) |
+| Env override | `ORBIT_CASE_ENABLED=true\|false` validated in `@repo/orbit-case/keys` |
+| Access resolver | `apps/app/lib/orbit-case-access.ts` → `resolveOrbitCaseEnabled()` |
+| Sidebar nav | `filterAuthenticatedAppSidebarNav()` omits Orbit Case when disabled |
+| Route guard | `apps/app/app/(authenticated)/orbit-case/layout.tsx` redirects to `/dashboard` |
+
+### Rollout runbook
+
+1. **Schema** — run `pnpm migrate` through **`0034_orbit_morph_lifecycle_remaining`** before enabling lifecycle UI in an environment.
+2. **Preview / pilot** — leave defaults (`ORBIT_CASE_ENABLED` unset, flag on) or set `ORBIT_CASE_ENABLED=true` explicitly on the preview project.
+3. **Production hold** — set `ORBIT_CASE_ENABLED=false` on the production Vercel project to hide nav and block routes; existing cases and morph rows remain in the database.
+4. **Production enable** — set `ORBIT_CASE_ENABLED=true` (or rely on PostHog `orbitCaseEnabled` when env is unset), redeploy `apps/app`, verify `/orbit-case` loads and sidebar entry appears.
+5. **Verify** — push a case to a morph destination, open detail, change status (see `orbit-case-morph-lifecycle.spec.ts`).
+
+Env override wins over PostHog when set to `true` or `false`. When unset, PostHog flag applies.
+
+---
+
+## In-app notifications (Phase 5B)
+
+| Layer | Path |
+|-------|------|
+| Schema | `orbit_in_app_notifications` (migration `0036_orbit_in_app_notifications.sql`) |
+| Engine | `engines/notifications/in-app-notifications.ts`, `notify-orbit-case.ts` |
+| Server Actions | `apps/app/app/actions/orbit-case/notifications/list.ts`, `mark-read.ts` |
+| UI | `apps/app/app/(authenticated)/_components/orbit-notifications-panel.tsx` wired via `AuthenticatedAppTopbar` |
+
+Kinds: `orbit.case.assigned`, `orbit.case.pushed`, `orbit.morph.assigned`. Watchers receive push notifications; assignees receive case/morph assignment notifications.
+
+---
+
+## ERP handoff (Phase 5E)
+
+Orbit Case emits JSON-safe morph summaries on `orbit.case.pushed` webhooks and org events. Downstream ERP/procurement packages should treat Orbit as the **origin + link** layer.
+
+### Outbound contract (`OrbitMorphTargetSummary`)
+
+| Field | Type | Notes |
+|-------|------|-------|
+| `segment` | string | Manifest segment (`budget`, `approval`, `purchase`, …) |
+| `targetType` | string | Push destination id (`budget-request`, …) |
+| `targetId` | string | Morph row id in Orbit database |
+| `title` | string | Morph title |
+| `status` | morph status | `submitted` … `cancelled` |
+| `values` | record | Domain fields (amount, approver, vendor, …) |
+| `externalRefId` | string \| null | Optional correlation id for downstream systems |
+
+Built in `apps/app/app/actions/orbit-case/push/execute.ts` via `toOrbitMorphTargetSummaryFromDto` after push completes.
+
+### Inbound sync stub
+
+`syncMorphExternalStatusAction` (`apps/app/app/actions/orbit-case/morph/sync-external.ts`) resolves pilot morph rows by `externalRefId` and applies idempotent status updates. Owner-only guard for Phase 5 — full ERP UI belongs in future `@repo/*` packages.
+
+```typescript
+// Example inbound payload
+{
+  segment: "budget",
+  externalRefId: "erp-budget-99",
+  status: "approved"
+}
+```
 
 ---
 

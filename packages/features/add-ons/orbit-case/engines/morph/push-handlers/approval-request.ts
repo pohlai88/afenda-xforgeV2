@@ -1,15 +1,19 @@
 import { database, orbitApprovalRequest } from "@repo/database";
-import { createTwoFieldMorphPushHandler } from "../create-two-field-morph-push-handler";
+import { createMorphFieldPushHandler } from "../create-morph-field-push-handler";
+import { morphLifecycleInsertDefaults } from "../morph-lifecycle-insert";
 
-export const executeApprovalRequestPush = createTwoFieldMorphPushHandler({
-  fieldKeys: ["approver", "amount"],
+export const executeApprovalRequestPush = createMorphFieldPushHandler({
+  fieldKeys: ["approver", "amount", "dueDate", "decisionNotes"],
   targetType: "approval-request",
   insertRow: async (row) => {
     await database.insert(orbitApprovalRequest).values({
-      amount: row.fieldB,
-      approver: row.fieldA,
+      ...morphLifecycleInsertDefaults(row.createdAt),
+      amount: row.fieldValues.amount,
+      approver: row.fieldValues.approver,
       createdAt: row.createdAt,
       createdBy: row.createdBy,
+      decisionNotes: row.fieldValues.decisionNotes,
+      dueDate: row.fieldValues.dueDate,
       id: row.id,
       organizationId: row.organizationId,
       originCaseId: row.originCaseId,

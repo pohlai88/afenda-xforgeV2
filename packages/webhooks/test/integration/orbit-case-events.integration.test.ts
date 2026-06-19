@@ -104,6 +104,17 @@ describe.skipIf(!hasDatabase)("orbit case webhook events integration", () => {
     const payload = buildOrbitCasePushedEvent({
       caseId,
       destinationId: "budget-request",
+      morphTarget: {
+        segment: "budget",
+        status: "submitted",
+        targetId,
+        targetType: "budget-request",
+        title: "Webhook budget morph",
+        values: {
+          amount: "5000",
+          currency: "USD",
+        },
+      },
       pushEventId,
       targetType: "budget-request",
       targetId,
@@ -124,5 +135,6 @@ describe.skipIf(!hasDatabase)("orbit case webhook events integration", () => {
     expect(capturedBodies).toHaveLength(1);
     expect(capturedBodies[0]).toContain(pushEventId);
     expect(capturedBodies[0]).toContain(ORBIT_EVENT_CASE_PUSHED);
+    expect(capturedBodies[0]).toContain('"amount":"5000"');
   });
 });

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   resolveEffectiveSidebarOpen,
   resolveInitialSidebarOpen,
+  resolveSidebarBehaviorMode,
 } from "../components/afenda-ui/sidebar-behavior";
 
 describe("resolveInitialSidebarOpen", () => {
@@ -13,6 +14,18 @@ describe("resolveInitialSidebarOpen", () => {
   it("collapses the rail for icon and hover modes", () => {
     expect(resolveInitialSidebarOpen("icon", true)).toBe(false);
     expect(resolveInitialSidebarOpen("hover", true)).toBe(false);
+  });
+});
+
+describe("resolveSidebarBehaviorMode", () => {
+  it("returns expanded for missing or invalid cookie values", () => {
+    expect(resolveSidebarBehaviorMode(undefined)).toBe("expanded");
+    expect(resolveSidebarBehaviorMode("invalid")).toBe("expanded");
+  });
+
+  it("returns persisted behavior modes", () => {
+    expect(resolveSidebarBehaviorMode("icon")).toBe("icon");
+    expect(resolveSidebarBehaviorMode("hover")).toBe("hover");
   });
 });
 

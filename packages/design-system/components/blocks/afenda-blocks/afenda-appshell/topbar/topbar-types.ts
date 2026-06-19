@@ -1,4 +1,5 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { TopbarUtilityId } from "./topbar-utilities-catalog";
 
 export type TopbarContextScope =
   | "department"
@@ -35,6 +36,9 @@ export interface AfendaAppTopbarProps
   readonly sidebarTrigger?: ReactNode;
   readonly tenantId?: string;
   readonly userId?: string;
+  readonly utilityActionOverrides?: Partial<
+    Record<TopbarUtilityId, () => void>
+  >;
 }
 
 export interface TopbarBrandDiskProps {
@@ -73,4 +77,7 @@ export interface TopbarRightActionsProps {
   readonly previewUtilities?: boolean;
   readonly tenantId?: string;
   readonly userId?: string;
+  readonly utilityActionOverrides?: Partial<
+    Record<TopbarUtilityId, () => void>
+  >;
 }

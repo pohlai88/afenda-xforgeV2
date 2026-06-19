@@ -77,9 +77,12 @@ function AfendaAppShellInner({
   );
 }
 
-export function AfendaAppShell(props: AfendaAppShellProps) {
+export function AfendaAppShell({
+  defaultSidebarBehaviorMode,
+  ...props
+}: AfendaAppShellProps) {
   return (
-    <AppShellSidebarProvider>
+    <AppShellSidebarProvider defaultBehaviorMode={defaultSidebarBehaviorMode}>
       <AfendaAppShellInner {...props} />
     </AppShellSidebarProvider>
   );

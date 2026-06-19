@@ -1,16 +1,10 @@
 import type { OrbitMorphListPageProps } from "@/lib/orbit-morph-page-types";
-import type { Metadata } from "next";
-import { OrbitMorphListRoutePage } from "../_components/orbit-morph-route-page";
-import { generateMorphListMetadata } from "../_components/orbit-morph-list-view";
+import { createOrbitMorphPilotListPage } from "../_components/orbit-morph-pilot-list-page";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generateMorphListMetadata("risk");
-}
+const { Page, generateMetadata } = createOrbitMorphPilotListPage("risk");
 
-export default function OrbitRiskListPage({
-  searchParams,
-}: OrbitMorphListPageProps) {
-  return (
-    <OrbitMorphListRoutePage searchParams={searchParams} segment="risk" />
-  );
+export { generateMetadata };
+
+export default function OrbitRiskListPage(props: OrbitMorphListPageProps) {
+  return <Page {...props} />;
 }

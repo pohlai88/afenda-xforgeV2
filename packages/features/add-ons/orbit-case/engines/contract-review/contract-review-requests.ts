@@ -1,22 +1,15 @@
 import "server-only";
 
-import { database, orbitContractReviewRequest } from "@repo/database";
-import type { OrbitContractReviewRequestRecord } from "../../contract/orbit-case.types";
-import {
-  createTypedMorphReads,
-  defineTwoFieldMorphMapper,
-} from "../morph/create-typed-morph-reads";
+import { orbitContractReviewRequest } from "@repo/database";
+import { createTwoFieldMorphLifecycleEngine } from "../morph/create-two-field-morph-lifecycle-engine";
 
-const mapContractReviewRequestRow =
-  defineTwoFieldMorphMapper<OrbitContractReviewRequestRecord>(
-    "counterparty",
-    "expiryDate"
-  );
+const engine = createTwoFieldMorphLifecycleEngine({
+  activitySegment: "contract-review",
+  fieldAKey: "counterparty",
+  fieldBKey: "expiryDate",
+  table: orbitContractReviewRequest,
+});
 
-const reads = createTypedMorphReads(
-  orbitContractReviewRequest,
-  mapContractReviewRequestRow
-);
-
-export const getContractReviewRequestById = reads.getById;
-export const listContractReviewRequestsForOrg = reads.listForOrg;
+export const getContractReviewRequestById = engine.getById;
+export const listContractReviewRequestsForOrg = engine.listForOrg;
+export const updateContractReviewRequestFields = engine.updateFields;

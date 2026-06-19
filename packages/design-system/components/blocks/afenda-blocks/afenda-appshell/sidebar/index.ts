@@ -30,3 +30,10 @@ export type {
   AppSidebarNavItem,
   AppSidebarNavProductItem,
 } from "./sidebar-nav-types";
+export type {
+  SidebarNavUserActionMenuItem,
+  SidebarNavUserLinkMenuItem,
+  SidebarNavUserMenuGroup,
+  SidebarNavUserMenuItem,
+} from "./sidebar-nav-user-menu.types";
+export type { SidebarNavUserProps } from "./sidebar-nav-user";

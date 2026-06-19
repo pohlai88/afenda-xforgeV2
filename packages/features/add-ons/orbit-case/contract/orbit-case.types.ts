@@ -1,4 +1,5 @@
 import type { OrbitCaseBlobAccess } from "./blob-access";
+import type { OrbitMorphStatus } from "./morph-status";
 import type { OrbitCasePriority, OrbitCaseStatus } from "./status";
 
 /** Server-side row mapped from Drizzle (non-serializable Date fields). */
@@ -112,19 +113,31 @@ export interface OrbitObjectLinkProjectionDto {
 
 export interface OrbitBudgetRequestRecord {
   amount: string | null;
+  assigneeId: string | null;
+  costCenter: string | null;
   createdAt: Date;
   createdBy: string;
+  currency: string | null;
+  externalRefId: string | null;
   id: string;
+  justification: string | null;
   organizationId: string;
   originCaseId: string;
+  status: OrbitMorphStatus;
   title: string;
+  updatedAt: Date;
 }
 
-export type OrbitBudgetRequestDto = Omit<OrbitBudgetRequestRecord, "createdAt"> & {
+export type OrbitBudgetRequestDto = Omit<
+  OrbitBudgetRequestRecord,
+  "createdAt" | "updatedAt"
+> & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitMeetingRequestRecord {
+  assigneeId: string | null;
   createdAt: Date;
   createdBy: string;
   id: string;
@@ -132,53 +145,70 @@ export interface OrbitMeetingRequestRecord {
   organizationId: string;
   originCaseId: string;
   scheduledAt: string | null;
+  status: OrbitMorphStatus;
   title: string;
+  updatedAt: Date;
 }
 
 export type OrbitMeetingRequestDto = Omit<
   OrbitMeetingRequestRecord,
-  "createdAt"
+  "createdAt" | "updatedAt"
 > & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitApprovalRequestRecord {
   amount: string | null;
   approver: string | null;
+  assigneeId: string | null;
   createdAt: Date;
   createdBy: string;
+  decisionNotes: string | null;
+  dueDate: string | null;
+  externalRefId: string | null;
   id: string;
   organizationId: string;
   originCaseId: string;
+  status: OrbitMorphStatus;
   title: string;
+  updatedAt: Date;
 }
 
 export type OrbitApprovalRequestDto = Omit<
   OrbitApprovalRequestRecord,
-  "createdAt"
+  "createdAt" | "updatedAt"
 > & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitPurchaseRequestRecord {
   amount: string | null;
+  assigneeId: string | null;
   createdAt: Date;
   createdBy: string;
+  externalRefId: string | null;
   id: string;
   organizationId: string;
   originCaseId: string;
+  poReference: string | null;
+  status: OrbitMorphStatus;
   title: string;
+  updatedAt: Date;
   vendor: string | null;
 }
 
 export type OrbitPurchaseRequestDto = Omit<
   OrbitPurchaseRequestRecord,
-  "createdAt"
+  "createdAt" | "updatedAt"
 > & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitLeadRequestRecord {
+  assigneeId: string | null;
   company: string | null;
   contact: string | null;
   createdAt: Date;
@@ -186,14 +216,21 @@ export interface OrbitLeadRequestRecord {
   id: string;
   organizationId: string;
   originCaseId: string;
+  status: OrbitMorphStatus;
   title: string;
+  updatedAt: Date;
 }
 
-export type OrbitLeadRequestDto = Omit<OrbitLeadRequestRecord, "createdAt"> & {
+export type OrbitLeadRequestDto = Omit<
+  OrbitLeadRequestRecord,
+  "createdAt" | "updatedAt"
+> & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitComplaintRequestRecord {
+  assigneeId: string | null;
   category: string | null;
   createdAt: Date;
   createdBy: string;
@@ -201,17 +238,21 @@ export interface OrbitComplaintRequestRecord {
   organizationId: string;
   originCaseId: string;
   severity: string | null;
+  status: OrbitMorphStatus;
   title: string;
+  updatedAt: Date;
 }
 
 export type OrbitComplaintRequestDto = Omit<
   OrbitComplaintRequestRecord,
-  "createdAt"
+  "createdAt" | "updatedAt"
 > & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitRiskRequestRecord {
+  assigneeId: string | null;
   createdAt: Date;
   createdBy: string;
   id: string;
@@ -219,14 +260,21 @@ export interface OrbitRiskRequestRecord {
   originCaseId: string;
   owner: string | null;
   riskLevel: string | null;
+  status: OrbitMorphStatus;
   title: string;
+  updatedAt: Date;
 }
 
-export type OrbitRiskRequestDto = Omit<OrbitRiskRequestRecord, "createdAt"> & {
+export type OrbitRiskRequestDto = Omit<
+  OrbitRiskRequestRecord,
+  "createdAt" | "updatedAt"
+> & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitProjectRequestRecord {
+  assigneeId: string | null;
   budget: string | null;
   createdAt: Date;
   createdBy: string;
@@ -234,35 +282,43 @@ export interface OrbitProjectRequestRecord {
   organizationId: string;
   originCaseId: string;
   startDate: string | null;
+  status: OrbitMorphStatus;
   title: string;
+  updatedAt: Date;
 }
 
 export type OrbitProjectRequestDto = Omit<
   OrbitProjectRequestRecord,
-  "createdAt"
+  "createdAt" | "updatedAt"
 > & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitInvestigationRequestRecord {
+  assigneeId: string | null;
   createdAt: Date;
   createdBy: string;
   id: string;
   organizationId: string;
   originCaseId: string;
   priority: string | null;
+  status: OrbitMorphStatus;
   subject: string | null;
   title: string;
+  updatedAt: Date;
 }
 
 export type OrbitInvestigationRequestDto = Omit<
   OrbitInvestigationRequestRecord,
-  "createdAt"
+  "createdAt" | "updatedAt"
 > & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitCapaRequestRecord {
+  assigneeId: string | null;
   createdAt: Date;
   createdBy: string;
   dueDate: string | null;
@@ -270,14 +326,21 @@ export interface OrbitCapaRequestRecord {
   organizationId: string;
   originCaseId: string;
   rootCause: string | null;
+  status: OrbitMorphStatus;
   title: string;
+  updatedAt: Date;
 }
 
-export type OrbitCapaRequestDto = Omit<OrbitCapaRequestRecord, "createdAt"> & {
+export type OrbitCapaRequestDto = Omit<
+  OrbitCapaRequestRecord,
+  "createdAt" | "updatedAt"
+> & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitContractReviewRequestRecord {
+  assigneeId: string | null;
   counterparty: string | null;
   createdAt: Date;
   createdBy: string;
@@ -285,14 +348,17 @@ export interface OrbitContractReviewRequestRecord {
   id: string;
   organizationId: string;
   originCaseId: string;
+  status: OrbitMorphStatus;
   title: string;
+  updatedAt: Date;
 }
 
 export type OrbitContractReviewRequestDto = Omit<
   OrbitContractReviewRequestRecord,
-  "createdAt"
+  "createdAt" | "updatedAt"
 > & {
   createdAt: string;
+  updatedAt: string;
 };
 
 export interface OrbitCaseBoardColumn {

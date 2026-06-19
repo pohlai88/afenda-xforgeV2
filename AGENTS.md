@@ -94,6 +94,8 @@ Training data for Next.js App Router and Cache Components is stale. **Docs befor
 
 Key servers: `next-devtools`, `shadcn`, `fetch`, `supabase`, `github`, `context7`, `playwright`, `storybook`.
 
+`shadcn/studio` currently publishes IDE support for Cursor, VS Code, Windsurf, Cline, and Claude Code; it does **not** currently publish Codex support. In this repo, keep `shadcn-studio.config.json` / toolbar scripts for browser-side visual editing, and treat the existing `shadcn` MCP entry in `.cursor/mcp.json` as the supported in-repo shadcn MCP integration unless upstream adds a Codex-specific setup.
+
 Requires Next.js 16+ and a running dev server (`/_next/mcp` on port **3000**) for runtime tools. Playwright MCP targets `http://localhost:3000` via `apps/app/e2e/playwright-mcp.config.json` — run `pnpm mcp:configure:playwright` after edits.
 
 1. MCP `init` with `project_path` → absolute path of **`apps/app`** (not repo root)

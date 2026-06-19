@@ -22,6 +22,13 @@ const titleField = {
   required: true,
 };
 
+const requiredText = (key: string, label: string) => ({
+  key,
+  label,
+  type: "text" as const,
+  required: true,
+});
+
 const optionalText = (key: string, label: string) => ({
   key,
   label,
@@ -38,7 +45,13 @@ export const ORBIT_MORPH_DESTINATION_MANIFEST = [
     registerSystemDefaults: true,
     segment: "budget",
     targetType: "budget-request",
-    templateFields: [titleField, optionalText("amount", "Amount")],
+    templateFields: [
+      titleField,
+      requiredText("amount", "Amount"),
+      optionalText("currency", "Currency"),
+      optionalText("costCenter", "Cost center"),
+      optionalText("justification", "Justification"),
+    ],
     visibleToRoles: ["owner", "editor"],
   },
   {
@@ -66,8 +79,10 @@ export const ORBIT_MORPH_DESTINATION_MANIFEST = [
     targetType: "approval-request",
     templateFields: [
       titleField,
-      optionalText("approver", "Approver"),
+      requiredText("approver", "Approver"),
       optionalText("amount", "Amount"),
+      optionalText("dueDate", "Due date"),
+      optionalText("decisionNotes", "Decision notes"),
     ],
     visibleToRoles: ["owner", "editor"],
   },
@@ -83,6 +98,7 @@ export const ORBIT_MORPH_DESTINATION_MANIFEST = [
       titleField,
       optionalText("vendor", "Vendor"),
       optionalText("amount", "Amount"),
+      optionalText("poReference", "PO reference"),
     ],
     visibleToRoles: ["owner", "editor"],
   },

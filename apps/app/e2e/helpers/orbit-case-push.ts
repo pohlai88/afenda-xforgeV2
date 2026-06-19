@@ -16,7 +16,8 @@ export async function createCaseForMorphPush(
 
 export async function pushCaseToDestination(
   page: Page,
-  destinationLabel: string
+  destinationLabel: string,
+  fieldValues: Record<string, string> = {}
 ): Promise<void> {
   await expect(page.getByRole("heading", { name: "Push to module" })).toBeVisible(
     {
@@ -25,6 +26,11 @@ export async function pushCaseToDestination(
   );
   await page.getByLabel("Destination").click();
   await page.getByRole("option", { name: destinationLabel }).click();
+
+  for (const [label, value] of Object.entries(fieldValues)) {
+    await page.getByLabel(label, { exact: true }).fill(value);
+  }
+
   await page.getByRole("button", { name: "Push" }).click();
   await expect(page.getByRole("heading", { name: "Links" })).toBeVisible({
     timeout: 15_000,

@@ -2,29 +2,40 @@
 
 import {
   AfendaAppContentHeader,
+  AfendaAppFooter,
   AfendaAppShell,
   AfendaAppSidebar,
+  type SidebarNavUserMenuItem,
 } from "@repo/design-system";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { renderAuthenticatedSidebarLink } from "@/lib/app-shell/sidebar-link";
-import { authenticatedAppSidebarNavDescriptor } from "@/lib/app-shell/sidebar-nav.descriptor";
-import { authenticatedAppSidebarNavIconRegistry } from "@/lib/app-shell/sidebar-nav.registry";
+import { useCallback, useMemo, type ReactNode } from "react";
+import {
+  type AuthenticatedAppShellChrome,
+  AUTHENTICATED_SIDEBAR_SIGN_OUT_MENU_ITEM_ID,
+  authenticatedAppSidebarNavDescriptor,
+  authenticatedAppSidebarNavIconRegistry,
+  authenticatedSidebarNavUserMenuGroups,
+  filterAuthenticatedAppSidebarNav,
+  parseOrbitCaseRoute,
+  renderAuthenticatedSidebarLink,
+  resolveOrbitCaseBreadcrumbs,
+  useAuthenticatedSignOut,
+} from "@/lib/app-shell";
 import { OrbitCaseLeftRail } from "../orbit-case/_components/orbit-case-left-rail";
+import { AuthenticatedAppTopbar } from "./authenticated-app-topbar";
 import { EvidenceDrawer } from "./evidence-drawer";
 import { LynxAiRightRail } from "./lynx-ai-right-rail";
-import {
-  parseOrbitCaseRoute,
-  resolveOrbitCaseBreadcrumbs,
-} from "@/lib/app-shell/orbit-case-route-context";
 
-interface AuthenticatedShellProperties {
+interface AuthenticatedShellProperties extends AuthenticatedAppShellChrome {
   readonly children: ReactNode;
+  readonly showOrbitCaseNav: boolean;
 }
 
-function useAppShellModuleChrome(pathname: string) {
+function useAppShellModuleChrome(pathname: string, showOrbitCaseNav: boolean) {
   return useMemo(() => {
-    const orbitContext = parseOrbitCaseRoute(pathname);
+    const orbitContext = showOrbitCaseNav
+      ? parseOrbitCaseRoute(pathname)
+      : null;
 
     if (!orbitContext) {
       return {
@@ -39,25 +50,52 @@ function useAppShellModuleChrome(pathname: string) {
       contentLeftRail: <OrbitCaseLeftRail context={orbitContext} />,
       defaultContentLeftRailOpen: true,
     };
-  }, [pathname]);
+  }, [pathname, showOrbitCaseNav]);
 }
 
-export function AuthenticatedShell({ children }: AuthenticatedShellProperties) {
+export function AuthenticatedShell({
+  activeOrganizationId,
+  children,
+  defaultSidebarBehaviorMode,
+  footerCopyrightHolder,
+  footerLinks,
+  organizations,
+  showOrbitCaseNav,
+  tenantId,
+  user,
+  userId,
+}: AuthenticatedShellProperties) {
   const pathname = usePathname();
-  const [isMounted, setIsMounted] = useState(false);
+  const { isSigningOut, signOut } = useAuthenticatedSignOut();
+  const navDescriptor = useMemo(
+    () =>
+      showOrbitCaseNav
+        ? authenticatedAppSidebarNavDescriptor
+        : filterAuthenticatedAppSidebarNav(authenticatedAppSidebarNavDescriptor, [
+            "orbit-case",
+          ]),
+    [showOrbitCaseNav]
+  );
   const { breadcrumbs, contentLeftRail, defaultContentLeftRailOpen } =
-    useAppShellModuleChrome(pathname);
+    useAppShellModuleChrome(pathname, showOrbitCaseNav);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const handleNavUserMenuItemSelect = useCallback(
+    (item: SidebarNavUserMenuItem) => {
+      if (item.href || item.id !== AUTHENTICATED_SIDEBAR_SIGN_OUT_MENU_ITEM_ID) {
+        return;
+      }
+
+      if (isSigningOut) {
+        return;
+      }
+
+      signOut();
+    },
+    [isSigningOut, signOut]
+  );
 
   if (pathname.startsWith("/mfa-challenge")) {
     return <>{children}</>;
-  }
-
-  if (!isMounted) {
-    return <div className="min-h-svh bg-background" />;
   }
 
   return (
@@ -72,12 +110,32 @@ export function AuthenticatedShell({ children }: AuthenticatedShellProperties) {
       contentRightRail={<LynxAiRightRail />}
       defaultContentLeftRailOpen={defaultContentLeftRailOpen}
       defaultContentRightRailOpen
+      defaultSidebarBehaviorMode={defaultSidebarBehaviorMode}
+      footer={
+        <AfendaAppFooter
+          copyrightHolder={footerCopyrightHolder}
+          links={footerLinks}
+        />
+      }
       sidebar={
         <AfendaAppSidebar
-          navDescriptor={authenticatedAppSidebarNavDescriptor}
+          navDescriptor={navDescriptor}
           navIconRegistry={authenticatedAppSidebarNavIconRegistry}
+          navUserMenuGroups={authenticatedSidebarNavUserMenuGroups}
+          onNavUserMenuItemSelect={handleNavUserMenuItemSelect}
           pathname={pathname}
           renderLink={renderAuthenticatedSidebarLink}
+          renderNavUserMenuLink={renderAuthenticatedSidebarLink}
+          user={user}
+        />
+      }
+      topbar={
+        <AuthenticatedAppTopbar
+          activeOrganizationId={activeOrganizationId}
+          organizations={organizations}
+          showOrbitNotifications={showOrbitCaseNav}
+          tenantId={tenantId ?? undefined}
+          userId={userId}
         />
       }
     >

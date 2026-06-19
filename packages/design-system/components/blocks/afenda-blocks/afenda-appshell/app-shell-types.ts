@@ -1,10 +1,15 @@
 import type { ComponentPropsWithoutRef, ReactNode } from "react";
+import type { SidebarBehaviorMode } from "../../../afenda-ui/sidebar-behavior";
 import type { SidebarLinkRenderer } from "../shadcn-dashboard-01/sidebar-link";
 import type { AfendaAppSidebarNavLayout } from "./sidebar/sidebar-nav-types";
 import type {
   AfendaAppSidebarNavIconRegistry,
   AfendaAppSidebarNavLayoutDescriptor,
 } from "./sidebar/sidebar-nav-descriptors";
+import type {
+  SidebarNavUserMenuGroup,
+  SidebarNavUserMenuItem,
+} from "./sidebar/sidebar-nav-user-menu.types";
 
 export type { AfendaAppContentLayoutState } from "./content/app-content-layout-context";
 export type { AfendaAppShellSidebarState } from "./app-shell-sidebar-context";
@@ -33,6 +38,12 @@ export type {
   AppSidebarNavProductItem,
 } from "./sidebar/sidebar-nav-types";
 export type { SidebarNavUserProps } from "./sidebar/sidebar-nav-user";
+export type {
+  SidebarNavUserActionMenuItem,
+  SidebarNavUserLinkMenuItem,
+  SidebarNavUserMenuGroup,
+  SidebarNavUserMenuItem,
+} from "./sidebar/sidebar-nav-user-menu.types";
 export type { TopbarUtilityId } from "./topbar/topbar-utilities-catalog";
 export type { AfendaTopbarUtilitiesController } from "./topbar/topbar-utilities-context";
 export type {
@@ -68,6 +79,8 @@ export interface AfendaAppShellFooterLink {
 export interface AfendaAppShellProps
   extends Omit<ComponentPropsWithoutRef<"div">, "children"> {
   readonly children?: ReactNode;
+  /** Initial sidebar behavior before client cookie hydration (match server `cookies()` read). */
+  readonly defaultSidebarBehaviorMode?: SidebarBehaviorMode;
   readonly contentBottomDrawer?: ReactNode;
   readonly contentHeader?: ReactNode;
   readonly contentLeftRail?: ReactNode;
@@ -80,17 +93,48 @@ export interface AfendaAppShellProps
   readonly topbar?: ReactNode;
 }
 
-export interface AfendaAppSidebarProps
+interface AfendaAppSidebarPropsBase
   extends Omit<ComponentPropsWithoutRef<"aside">, "children"> {
   readonly activeItemIds?: ReadonlySet<string>;
   readonly children?: ReactNode;
-  readonly nav?: AfendaAppSidebarNavLayout;
-  readonly navDescriptor?: AfendaAppSidebarNavLayoutDescriptor;
-  readonly navIconRegistry?: AfendaAppSidebarNavIconRegistry;
+  readonly navUserMenuGroups?: readonly SidebarNavUserMenuGroup[];
+  readonly onNavUserMenuItemSelect?: (item: SidebarNavUserMenuItem) => void;
   readonly pathname?: string;
   readonly renderLink?: SidebarLinkRenderer;
+  readonly renderNavUserMenuLink?: SidebarLinkRenderer;
   readonly user?: AfendaAppShellUserSummary;
 }
+
+/** Resolved nav tree supplied by the host (client-only icons). */
+type AfendaAppSidebarResolvedNavProps = {
+  readonly nav: AfendaAppSidebarNavLayout;
+  readonly navDescriptor?: never;
+  readonly navIconRegistry?: never;
+};
+
+/** Serializable nav descriptor + client icon registry (official app boundary). */
+type AfendaAppSidebarDescriptorNavProps<
+  IconKey extends string = string,
+> = {
+  readonly nav?: never;
+  readonly navDescriptor: AfendaAppSidebarNavLayoutDescriptor<IconKey>;
+  readonly navIconRegistry: AfendaAppSidebarNavIconRegistry<IconKey>;
+};
+
+/** Custom sidebar slot — host supplies `children` only. */
+type AfendaAppSidebarCustomNavProps = {
+  readonly nav?: never;
+  readonly navDescriptor?: never;
+  readonly navIconRegistry?: never;
+};
+
+export type AfendaAppSidebarProps<IconKey extends string = string> =
+  AfendaAppSidebarPropsBase &
+    (
+      | AfendaAppSidebarResolvedNavProps
+      | AfendaAppSidebarDescriptorNavProps<IconKey>
+      | AfendaAppSidebarCustomNavProps
+    );
 
 export interface AfendaAppFooterProps
   extends Omit<ComponentPropsWithoutRef<"footer">, "children"> {

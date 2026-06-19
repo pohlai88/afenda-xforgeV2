@@ -53,7 +53,28 @@ export const formatOrbitCaseActivitySummary = (
       return `Removed ${formatValue(payload.fileName ?? "attachment")}`;
     case "case.pushed":
       return `Pushed to ${formatValue(payload.destinationLabel ?? payload.destinationId)}`;
-    default:
+    default: {
+      if (action.startsWith("morph.") && action.endsWith(".updated")) {
+        const segment = action.slice("morph.".length, -".updated".length);
+        const label = segment
+          .split("-")
+          .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+          .join(" ");
+
+        if (payload.status) {
+          return `${label} request status changed to ${formatValue(payload.status)}`;
+        }
+
+        if (payload.assigneeId !== undefined) {
+          return payload.assigneeId
+            ? `${label} request assignee updated`
+            : `${label} request assignee cleared`;
+        }
+
+        return `${label} request updated`;
+      }
+
       return action.replaceAll(".", " ");
+    }
   }
 };

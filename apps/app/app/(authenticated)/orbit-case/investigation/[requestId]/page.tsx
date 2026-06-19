@@ -1,20 +1,18 @@
 import type { OrbitMorphRequestDetailPageProps } from "@/lib/orbit-morph-page-types";
 import type { Metadata } from "next";
-import { generateMorphDetailMetadata } from "../../_components/orbit-morph-detail-view";
-import { OrbitMorphDetailRoutePage } from "../../_components/orbit-morph-route-page";
+import {
+  OrbitMorphPilotDetailRoutePage,
+  generateMorphPilotDetailMetadata,
+} from "../../_components/orbit-morph-pilot-detail-route-page";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return generateMorphDetailMetadata("investigation");
+  return generateMorphPilotDetailMetadata("investigation");
 }
 
 export default function OrbitInvestigationDetailPage({
   params,
 }: OrbitMorphRequestDetailPageProps) {
   return (
-    <OrbitMorphDetailRoutePage
-      paramKey="requestId"
-      params={params}
-      segment="investigation"
-    />
+    <OrbitMorphPilotDetailRoutePage params={params} segment="investigation" />
   );
 }

@@ -1,18 +1,15 @@
 import "server-only";
 
-import { database, orbitProjectRequest } from "@repo/database";
-import type { OrbitProjectRequestRecord } from "../../contract/orbit-case.types";
-import {
-  createTypedMorphReads,
-  defineTwoFieldMorphMapper,
-} from "../morph/create-typed-morph-reads";
+import { orbitProjectRequest } from "@repo/database";
+import { createTwoFieldMorphLifecycleEngine } from "../morph/create-two-field-morph-lifecycle-engine";
 
-const mapProjectRequestRow = defineTwoFieldMorphMapper<OrbitProjectRequestRecord>(
-  "startDate",
-  "budget"
-);
+const engine = createTwoFieldMorphLifecycleEngine({
+  activitySegment: "project",
+  fieldAKey: "startDate",
+  fieldBKey: "budget",
+  table: orbitProjectRequest,
+});
 
-const reads = createTypedMorphReads(orbitProjectRequest, mapProjectRequestRow);
-
-export const getProjectRequestById = reads.getById;
-export const listProjectRequestsForOrg = reads.listForOrg;
+export const getProjectRequestById = engine.getById;
+export const listProjectRequestsForOrg = engine.listForOrg;
+export const updateProjectRequestFields = engine.updateFields;

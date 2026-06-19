@@ -22,6 +22,7 @@ export function AfendaAppTopbar({
   sidebarTrigger,
   tenantId,
   userId,
+  utilityActionOverrides,
   ...properties
 }: AfendaAppTopbarProps) {
   if (children) {
@@ -60,6 +61,7 @@ export function AfendaAppTopbar({
               previewUtilities={previewUtilities}
               tenantId={tenantId}
               userId={userId}
+              utilityActionOverrides={utilityActionOverrides}
             />
           ))
         : null}

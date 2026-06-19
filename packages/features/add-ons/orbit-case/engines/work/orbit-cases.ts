@@ -365,6 +365,23 @@ export const setOrbitCaseWatcher = async (
     );
 };
 
+export const listCaseWatcherUserIds = async (
+  organizationId: string,
+  caseId: string
+): Promise<string[]> => {
+  const rows = await database
+    .select({ userId: orbitCaseWatcher.userId })
+    .from(orbitCaseWatcher)
+    .where(
+      and(
+        eq(orbitCaseWatcher.caseId, caseId),
+        eq(orbitCaseWatcher.organizationId, organizationId)
+      )
+    );
+
+  return rows.map((row) => row.userId);
+};
+
 export const isOrbitCaseWatcher = async (
   organizationId: string,
   caseId: string,

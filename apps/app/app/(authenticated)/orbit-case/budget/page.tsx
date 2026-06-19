@@ -1,16 +1,48 @@
-import type { OrbitMorphListPageProps } from "@/lib/orbit-morph-page-types";
+import type { OrbitBudgetListPageProps } from "@/lib/orbit-morph-page-types";
+import { orbitMorphStatusSchema } from "@repo/orbit-case";
 import type { Metadata } from "next";
-import { OrbitMorphListRoutePage } from "../_components/orbit-morph-route-page";
-import { generateMorphListMetadata } from "../_components/orbit-morph-list-view";
+import { Suspense } from "react";
+import {
+  OrbitMorphPilotListView,
+  generateMorphPilotListMetadata,
+} from "../_components/orbit-morph-pilot-list-view";
+import { Skeleton } from "@repo/design-system";
+
+const OrbitBudgetListFallback = () => (
+  <div className="flex flex-col gap-4 p-[var(--xforge-space-8)]">
+    <Skeleton className="h-10 w-64" />
+    <Skeleton className="h-24 w-full" />
+  </div>
+);
 
 export async function generateMetadata(): Promise<Metadata> {
-  return generateMorphListMetadata("budget");
+  return generateMorphPilotListMetadata("budget");
 }
 
 export default function OrbitBudgetListPage({
   searchParams,
-}: OrbitMorphListPageProps) {
+}: OrbitBudgetListPageProps) {
   return (
-    <OrbitMorphListRoutePage searchParams={searchParams} segment="budget" />
+    <Suspense fallback={<OrbitBudgetListFallback />}>
+      <OrbitBudgetListPageContent searchParams={searchParams} />
+    </Suspense>
   );
 }
+
+const OrbitBudgetListPageContent = async ({
+  searchParams,
+}: OrbitBudgetListPageProps) => {
+  const resolved = await searchParams;
+  const statusResult = resolved.status
+    ? orbitMorphStatusSchema.safeParse(resolved.status)
+    : null;
+
+  return (
+    <OrbitMorphPilotListView
+      assigneeId={resolved.assigneeId}
+      caseId={resolved.caseId}
+      segment="budget"
+      status={statusResult?.success ? statusResult.data : undefined}
+    />
+  );
+};

@@ -354,7 +354,12 @@ export type {
 export { afendaRecipe, recipe } from "./components/afenda-ui/recipes";
 export type { SidebarMenuTooltipProps } from "./components/afenda-ui/sidebar";
 export type { SidebarBehaviorMode } from "./components/afenda-ui/sidebar-behavior";
-export { SIDEBAR_BEHAVIOR_OPTIONS } from "./components/afenda-ui/sidebar-behavior";
+export {
+  isSidebarBehaviorMode,
+  resolveSidebarBehaviorMode,
+  SIDEBAR_BEHAVIOR_COOKIE_NAME,
+  SIDEBAR_BEHAVIOR_OPTIONS,
+} from "./components/afenda-ui/sidebar-behavior";
 export type {
   AfendaAppContentBottomDrawerProps,
   AfendaAppContentBreadcrumbItem,
@@ -383,6 +388,11 @@ export type {
   AfendaAppSidebarProps,
   AfendaAppTopbarProps,
   AfendaTopbarUtilitiesController,
+  SidebarNavUserMenuGroup,
+  SidebarNavUserMenuItem,
+  SidebarNavUserActionMenuItem,
+  SidebarNavUserLinkMenuItem,
+  SidebarNavUserProps,
   TopbarBrandDiskProps,
   TopbarContextOption,
   TopbarContextScope,

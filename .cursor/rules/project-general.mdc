@@ -67,6 +67,7 @@ Everything else stays in rules (answer-first, server actions, UI patterns) — n
 | App UI (`apps/app`) | `frontend-app.mdc` |
 | Storybook | `frontend-storybook.mdc` |
 | Design system | `frontend-design-system.mdc` |
+| shadcn/studio MCP workflow | `shadcn-studio.instructions.mdc` · skill: `.cursor/skills/shadcn-studio/` |
 | Client performance | `react-performance.mdc` |
 | Web UI interactions | `web-interface-interactions.mdc` |
 | Web UI a11y & content | `web-interface-accessibility.mdc` |

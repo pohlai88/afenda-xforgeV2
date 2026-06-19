@@ -17,6 +17,11 @@ import {
 import { blockRecipe } from "../../../block-recipes";
 import { cn } from "../../../../../lib/utils";
 import {
+  resolveSidebarLinkRenderer,
+  type SidebarLinkRenderer,
+} from "../../shadcn-dashboard-01/sidebar-link";
+import type { AfendaAppShellUserSummary } from "../app-shell-types";
+import {
   appSidebarFooterUserAvatarClass,
   appSidebarFooterUserAvatarFallbackClass,
   appSidebarFooterUserEmailClass,
@@ -33,17 +38,19 @@ import {
   appSidebarIconRailUserAvatarClass,
   appSidebarIconRailUserTriggerClass,
 } from "./sidebar-icon-rail-recipes";
-import {
-  BellIcon,
-  CircleUserIcon,
-  EllipsisVerticalIcon,
-  LogOutIcon,
-} from "lucide-react";
+import { EllipsisVerticalIcon } from "lucide-react";
+import type {
+  SidebarNavUserMenuGroup,
+  SidebarNavUserMenuItem,
+} from "./sidebar-nav-user-menu.types";
 
-import type { AfendaAppShellUserSummary } from "../app-shell-types";
+export type { SidebarNavUserMenuGroup, SidebarNavUserMenuItem };
 
 export interface SidebarNavUserProps {
   readonly isIconRail?: boolean;
+  readonly menuGroups?: readonly SidebarNavUserMenuGroup[];
+  readonly onMenuItemSelect?: (item: SidebarNavUserMenuItem) => void;
+  readonly renderMenuLink?: SidebarLinkRenderer;
   readonly user: AfendaAppShellUserSummary;
 }
 
@@ -61,8 +68,64 @@ function resolveInitials(name: string): string {
   return `${parts[0]?.[0] ?? ""}${parts[1]?.[0] ?? ""}`.toUpperCase();
 }
 
+function SidebarNavUserMenu({
+  menuGroups,
+  onMenuItemSelect,
+  renderMenuLink,
+}: {
+  readonly menuGroups: readonly SidebarNavUserMenuGroup[];
+  readonly onMenuItemSelect?: (item: SidebarNavUserMenuItem) => void;
+  readonly renderMenuLink?: SidebarLinkRenderer;
+}) {
+  const linkRenderer = resolveSidebarLinkRenderer(renderMenuLink);
+  const visibleGroups = menuGroups.filter((group) => group.items.length > 0);
+
+  if (visibleGroups.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <DropdownMenuSeparator />
+      {visibleGroups.map((group, groupIndex) => (
+        <DropdownMenuGroup key={group.key}>
+          {groupIndex > 0 ? <DropdownMenuSeparator /> : null}
+          {group.items.map((item) => {
+            if (item.href) {
+              return (
+                <DropdownMenuItem asChild key={item.id}>
+                  {linkRenderer({
+                    className: "w-full cursor-pointer",
+                    href: item.href,
+                    children: item.label,
+                  })}
+                </DropdownMenuItem>
+              );
+            }
+
+            return (
+              <DropdownMenuItem
+                key={item.id}
+                onSelect={() => {
+                  onMenuItemSelect?.(item);
+                }}
+                variant={item.destructive ? "critical" : "default"}
+              >
+                {item.label}
+              </DropdownMenuItem>
+            );
+          })}
+        </DropdownMenuGroup>
+      ))}
+    </>
+  );
+}
+
 export function SidebarNavUser({
   isIconRail = false,
+  menuGroups = [],
+  onMenuItemSelect,
+  renderMenuLink,
   user,
 }: SidebarNavUserProps) {
   const initials = resolveInitials(user.name);
@@ -136,22 +199,11 @@ export function SidebarNavUser({
               </div>
             </div>
           </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <CircleUserIcon />
-              Account
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <BellIcon />
-              Notifications
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <LogOutIcon />
-            Log out
-          </DropdownMenuItem>
+          <SidebarNavUserMenu
+            menuGroups={menuGroups}
+            onMenuItemSelect={onMenuItemSelect}
+            renderMenuLink={renderMenuLink}
+          />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

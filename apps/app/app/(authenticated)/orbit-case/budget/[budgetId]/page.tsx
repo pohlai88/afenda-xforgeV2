@@ -1,20 +1,16 @@
 import type { OrbitBudgetDetailPageProps } from "@/lib/orbit-morph-page-types";
 import type { Metadata } from "next";
-import { generateMorphDetailMetadata } from "../../_components/orbit-morph-detail-view";
-import { OrbitMorphDetailRoutePage } from "../../_components/orbit-morph-route-page";
+import {
+  OrbitMorphPilotDetailRoutePage,
+  generateMorphPilotDetailMetadata,
+} from "../../_components/orbit-morph-pilot-detail-route-page";
 
 export async function generateMetadata(): Promise<Metadata> {
-  return generateMorphDetailMetadata("budget");
+  return generateMorphPilotDetailMetadata("budget");
 }
 
 export default function OrbitBudgetDetailPage({
   params,
 }: OrbitBudgetDetailPageProps) {
-  return (
-    <OrbitMorphDetailRoutePage
-      paramKey="budgetId"
-      params={params}
-      segment="budget"
-    />
-  );
+  return <OrbitMorphPilotDetailRoutePage params={params} segment="budget" />;
 }

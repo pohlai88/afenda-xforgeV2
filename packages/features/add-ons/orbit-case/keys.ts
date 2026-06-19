@@ -5,9 +5,12 @@ export const keys = () =>
   createEnv({
     server: {
       ORBIT_CASE_STORAGE_PREFIX: z.string().min(1).default("orbit-case"),
+      /** When set, overrides PostHog `orbitCaseEnabled` for staged rollout. */
+      ORBIT_CASE_ENABLED: z.enum(["true", "false"]).optional(),
     },
     runtimeEnv: {
       ORBIT_CASE_STORAGE_PREFIX: process.env.ORBIT_CASE_STORAGE_PREFIX,
+      ORBIT_CASE_ENABLED: process.env.ORBIT_CASE_ENABLED,
     },
     skipValidation:
       process.env.SKIP_ENV_VALIDATION === "true" ||

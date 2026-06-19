@@ -1,21 +1,15 @@
 import "server-only";
 
-import { database, orbitComplaintRequest } from "@repo/database";
-import type { OrbitComplaintRequestRecord } from "../../contract/orbit-case.types";
-import {
-  createTypedMorphReads,
-  defineTwoFieldMorphMapper,
-} from "../morph/create-typed-morph-reads";
+import { orbitComplaintRequest } from "@repo/database";
+import { createTwoFieldMorphLifecycleEngine } from "../morph/create-two-field-morph-lifecycle-engine";
 
-const mapComplaintRequestRow = defineTwoFieldMorphMapper<OrbitComplaintRequestRecord>(
-  "category",
-  "severity"
-);
+const engine = createTwoFieldMorphLifecycleEngine({
+  activitySegment: "complaint",
+  fieldAKey: "category",
+  fieldBKey: "severity",
+  table: orbitComplaintRequest,
+});
 
-const reads = createTypedMorphReads(
-  orbitComplaintRequest,
-  mapComplaintRequestRow
-);
-
-export const getComplaintRequestById = reads.getById;
-export const listComplaintRequestsForOrg = reads.listForOrg;
+export const getComplaintRequestById = engine.getById;
+export const listComplaintRequestsForOrg = engine.listForOrg;
+export const updateComplaintRequestFields = engine.updateFields;

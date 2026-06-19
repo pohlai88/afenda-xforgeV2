@@ -68,16 +68,21 @@ export function TopbarUtilitiesProvider({
   preview = false,
   tenantId = DEFAULT_TOPBAR_UTILITIES_SCOPE.tenantId,
   userId = DEFAULT_TOPBAR_UTILITIES_SCOPE.userId,
+  utilityActionOverrides,
 }: {
   readonly children: ReactNode;
   readonly preview?: boolean;
   readonly tenantId?: string;
   readonly userId?: string;
+  readonly utilityActionOverrides?: Partial<
+    Record<TopbarUtilityId, () => void>
+  >;
 }): ReactElement {
   const controller = useTopbarUtilitiesControllerValue({
     preview,
     tenantId,
     userId,
+    utilityActionOverrides,
   });
 
   return (
@@ -96,10 +101,14 @@ function useTopbarUtilitiesControllerValue({
   preview = false,
   tenantId = DEFAULT_TOPBAR_UTILITIES_SCOPE.tenantId,
   userId = DEFAULT_TOPBAR_UTILITIES_SCOPE.userId,
+  utilityActionOverrides,
 }: {
   readonly preview?: boolean;
   readonly tenantId?: string;
   readonly userId?: string;
+  readonly utilityActionOverrides?: Partial<
+    Record<TopbarUtilityId, () => void>
+  >;
 }): TopbarUtilitiesController {
   const [feedbackMenuOpen, setFeedbackMenuOpen] = useState(false);
   const scope = useMemo<TopbarUtilitiesScope>(
@@ -137,6 +146,13 @@ function useTopbarUtilitiesControllerValue({
   );
 
   const handleUtilityAction = useCallback((utilityId: TopbarUtilityId): void => {
+    const override = utilityActionOverrides?.[utilityId];
+
+    if (override) {
+      override();
+      return;
+    }
+
     const definition = getTopbarUtilityDefinition(utilityId);
 
     switch (definition.action) {
@@ -166,7 +182,7 @@ function useTopbarUtilitiesControllerValue({
         throw new Error(`Unhandled topbar utility action: ${exhaustiveAction}`);
       }
     }
-  }, []);
+  }, [utilityActionOverrides]);
 
   return useMemo(
     () => ({

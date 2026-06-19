@@ -1,16 +1,10 @@
 import type { OrbitMorphListPageProps } from "@/lib/orbit-morph-page-types";
-import type { Metadata } from "next";
-import { OrbitMorphListRoutePage } from "../_components/orbit-morph-route-page";
-import { generateMorphListMetadata } from "../_components/orbit-morph-list-view";
+import { createOrbitMorphPilotListPage } from "../_components/orbit-morph-pilot-list-page";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return generateMorphListMetadata("capa");
-}
+const { Page, generateMetadata } = createOrbitMorphPilotListPage("capa");
 
-export default function OrbitCapaListPage({
-  searchParams,
-}: OrbitMorphListPageProps) {
-  return (
-    <OrbitMorphListRoutePage searchParams={searchParams} segment="capa" />
-  );
+export { generateMetadata };
+
+export default function OrbitCapaListPage(props: OrbitMorphListPageProps) {
+  return <Page {...props} />;
 }

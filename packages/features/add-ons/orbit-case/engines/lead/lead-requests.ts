@@ -1,16 +1,15 @@
 import "server-only";
 
-import { database, orbitLeadRequest } from "@repo/database";
-import type { OrbitLeadRequestRecord } from "../../contract/orbit-case.types";
-import {
-  createTypedMorphReads,
-  defineTwoFieldMorphMapper,
-} from "../morph/create-typed-morph-reads";
+import { orbitLeadRequest } from "@repo/database";
+import { createTwoFieldMorphLifecycleEngine } from "../morph/create-two-field-morph-lifecycle-engine";
 
-const mapLeadRequestRow =
-  defineTwoFieldMorphMapper<OrbitLeadRequestRecord>("contact", "company");
+const engine = createTwoFieldMorphLifecycleEngine({
+  activitySegment: "lead",
+  fieldAKey: "contact",
+  fieldBKey: "company",
+  table: orbitLeadRequest,
+});
 
-const reads = createTypedMorphReads(orbitLeadRequest, mapLeadRequestRow);
-
-export const getLeadRequestById = reads.getById;
-export const listLeadRequestsForOrg = reads.listForOrg;
+export const getLeadRequestById = engine.getById;
+export const listLeadRequestsForOrg = engine.listForOrg;
+export const updateLeadRequestFields = engine.updateFields;

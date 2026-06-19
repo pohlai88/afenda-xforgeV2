@@ -1,6 +1,7 @@
 import type {
   AfendaAppShellFooterLink,
   AfendaAppSidebarNavLayoutDescriptor,
+  SidebarNavUserMenuGroup,
 } from "@repo/design-system";
 import type { StoryAppShellSidebarNavIconKey } from "./afenda-appshell.registry";
 
@@ -53,6 +54,24 @@ export const storyAppShellFooterLinks: readonly AfendaAppShellFooterLink[] = [
   { href: "/docs", id: "footer-docs", label: "Docs" },
   { href: "/support", id: "footer-support", label: "Support" },
 ];
+
+export const storyAppShellUserMenuGroups = [
+  {
+    key: "account",
+    items: [
+      {
+        id: "account-organization",
+        label: "Account",
+        href: "/account/organization",
+      },
+      {
+        id: "account-security",
+        label: "Security",
+        href: "/account/security",
+      },
+    ],
+  },
+] as const satisfies readonly SidebarNavUserMenuGroup[];
 
 export const storyAppShellUser = {
   name: "Storybook Operator",

@@ -11,6 +11,7 @@ import {
   storyAppShellFooterLinks,
   storyAppShellSidebarNavDescriptor,
   storyAppShellUser,
+  storyAppShellUserMenuGroups,
 } from "./afenda-appshell.fixtures";
 import { storyAppShellSidebarNavIconRegistry } from "./afenda-appshell.registry";
 
@@ -54,6 +55,7 @@ function StoryAppShell({
         <AfendaAppSidebar
           navDescriptor={storyAppShellSidebarNavDescriptor}
           navIconRegistry={storyAppShellSidebarNavIconRegistry}
+          navUserMenuGroups={storyAppShellUserMenuGroups}
           pathname={pathname}
           user={storyAppShellUser}
         />

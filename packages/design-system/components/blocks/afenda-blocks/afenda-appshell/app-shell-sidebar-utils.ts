@@ -1,18 +1,17 @@
-import type { SidebarBehaviorMode } from "../../../afenda-ui/sidebar-behavior";
+import {
+  resolveEffectiveSidebarOpen,
+  type SidebarBehaviorMode,
+} from "../../../afenda-ui/sidebar-behavior";
 
 function resolveAppShellSidebarExpanded(
   behaviorMode: SidebarBehaviorMode,
   hoverPeek: boolean
 ): boolean {
-  if (behaviorMode === "expanded") {
-    return true;
-  }
-
-  if (behaviorMode === "hover") {
-    return hoverPeek;
-  }
-
-  return false;
+  return resolveEffectiveSidebarOpen({
+    behaviorMode,
+    hoverPeek,
+    open: false,
+  });
 }
 
 function resolveAppShellSidebarActiveWidth(

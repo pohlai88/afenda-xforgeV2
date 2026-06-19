@@ -1,15 +1,20 @@
 import { database, orbitBudgetRequest } from "@repo/database";
-import { createTwoFieldMorphPushHandler } from "../create-two-field-morph-push-handler";
+import { createMorphFieldPushHandler } from "../create-morph-field-push-handler";
+import { morphLifecycleInsertDefaults } from "../morph-lifecycle-insert";
 
-export const executeBudgetRequestPush = createTwoFieldMorphPushHandler({
-  fieldKeys: ["amount"],
+export const executeBudgetRequestPush = createMorphFieldPushHandler({
+  fieldKeys: ["amount", "currency", "costCenter", "justification"],
   targetType: "budget-request",
   insertRow: async (row) => {
     await database.insert(orbitBudgetRequest).values({
-      amount: row.fieldA,
+      ...morphLifecycleInsertDefaults(row.createdAt),
+      amount: row.fieldValues.amount,
+      costCenter: row.fieldValues.costCenter,
       createdAt: row.createdAt,
       createdBy: row.createdBy,
+      currency: row.fieldValues.currency,
       id: row.id,
+      justification: row.fieldValues.justification,
       organizationId: row.organizationId,
       originCaseId: row.originCaseId,
       title: row.title,

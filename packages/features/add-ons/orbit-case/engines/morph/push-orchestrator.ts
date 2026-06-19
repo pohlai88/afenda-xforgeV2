@@ -15,6 +15,10 @@ import {
 import { ensureSystemPushDefaults } from "../../lib/registry/system-defaults";
 import { recordOrbitCaseActivity } from "../activity/record-activity";
 import { createObjectLink } from "../link/object-links";
+import {
+  notifyCaseWatchersOnPush,
+  resolveMorphDetailHref,
+} from "../notifications/notify-orbit-case";
 import { getOrbitCaseById } from "../work/orbit-cases";
 import { canPushToDestination } from "../work/permissions";
 import { resolvePushDestinationHandler } from "./push-handlers";
@@ -191,6 +195,16 @@ export const executePush = async (
       targetId,
       pushEventId: claimedEventId,
     },
+  });
+
+  await notifyCaseWatchersOnPush({
+    actorId: context.actorId,
+    caseId: input.caseId,
+    caseTitle: orbitCase.title,
+    destinationLabel: destination.label,
+    morphHref: resolveMorphDetailHref(targetType, targetId),
+    organizationId: context.organizationId,
+    targetType,
   });
 
   log.info("orbit.case.pushed", {

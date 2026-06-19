@@ -63,7 +63,12 @@ export default defineConfig({
     },
     {
       name: "authenticated",
-      testMatch: ["orbit-case.spec.ts", "orbit-case-push.spec.ts"],
+      testMatch: [
+        "orbit-case.spec.ts",
+        "orbit-case-push.spec.ts",
+        "orbit-case-morph-lifecycle.spec.ts",
+        "orbit-case-notifications.spec.ts",
+      ],
       dependencies: ["setup"],
       fullyParallel: true,
       use: {

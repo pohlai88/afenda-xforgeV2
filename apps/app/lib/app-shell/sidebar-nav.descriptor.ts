@@ -4,8 +4,7 @@ import type { AuthenticatedAppSidebarNavIconKey } from "./sidebar-nav.registry";
 const APP_SIDEBAR_PRIMARY_ICON_BASE = "/primary";
 
 /** Server-safe sidebar nav config (no Lucide imports). */
-export const authenticatedAppSidebarNavDescriptor: AfendaAppSidebarNavLayoutDescriptor<AuthenticatedAppSidebarNavIconKey> =
-  {
+export const authenticatedAppSidebarNavDescriptor = {
     main: {
       groupSlot: "app-sidebar-main-nav",
       label: "Main Navigation",
@@ -159,4 +158,26 @@ export const authenticatedAppSidebarNavDescriptor: AfendaAppSidebarNavLayoutDesc
         },
       ],
     },
+} as const satisfies AfendaAppSidebarNavLayoutDescriptor<AuthenticatedAppSidebarNavIconKey>;
+
+export type AuthenticatedAppSidebarNavDescriptor =
+  typeof authenticatedAppSidebarNavDescriptor;
+
+export const filterAuthenticatedAppSidebarNav = (
+  descriptor: AuthenticatedAppSidebarNavDescriptor,
+  hiddenItemIds: readonly string[]
+): AfendaAppSidebarNavLayoutDescriptor<AuthenticatedAppSidebarNavIconKey> => {
+  const main = descriptor.main;
+
+  if (!main) {
+    return descriptor;
+  }
+
+  return {
+    ...descriptor,
+    main: {
+      ...main,
+      items: main.items.filter((item) => !hiddenItemIds.includes(item.id)),
+    },
   };
+};

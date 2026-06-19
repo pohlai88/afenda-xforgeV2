@@ -2,9 +2,17 @@ import type { OrbitMorphSegment } from "@repo/orbit-case";
 
 export type { OrbitMorphSegment };
 
-export type OrbitMorphListPageSearchParams = Promise<{ caseId?: string }>;
+export type OrbitMorphListPageSearchParams = Promise<{
+  assigneeId?: string;
+  caseId?: string;
+  status?: string;
+}>;
 
 export type OrbitMorphListPageProps = {
+  searchParams: OrbitMorphListPageSearchParams;
+};
+
+export type OrbitBudgetListPageProps = {
   searchParams: OrbitMorphListPageSearchParams;
 };
 

@@ -481,8 +481,17 @@ export const orbitBudgetRequest = nextForge.table("orbit_budget_requests", {
     .references(() => orbitCase.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   amount: text("amount"),
+  currency: text("currency"),
+  costCenter: text("costCenter"),
+  justification: text("justification"),
+  externalRefId: text("externalRefId"),
+  status: text("status").notNull().default("submitted"),
+  assigneeId: text("assigneeId"),
   createdBy: text("createdBy").notNull(),
   createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { precision: 3, mode: "date" })
     .defaultNow()
     .notNull(),
 });
@@ -498,8 +507,13 @@ export const orbitMeetingRequest = nextForge.table("orbit_meeting_requests", {
   title: text("title").notNull(),
   scheduledAt: text("scheduledAt"),
   location: text("location"),
+  status: text("status").notNull().default("submitted"),
+  assigneeId: text("assigneeId"),
   createdBy: text("createdBy").notNull(),
   createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { precision: 3, mode: "date" })
     .defaultNow()
     .notNull(),
 });
@@ -515,8 +529,16 @@ export const orbitApprovalRequest = nextForge.table("orbit_approval_requests", {
   title: text("title").notNull(),
   approver: text("approver"),
   amount: text("amount"),
+  dueDate: text("dueDate"),
+  decisionNotes: text("decisionNotes"),
+  externalRefId: text("externalRefId"),
+  status: text("status").notNull().default("submitted"),
+  assigneeId: text("assigneeId"),
   createdBy: text("createdBy").notNull(),
   createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { precision: 3, mode: "date" })
     .defaultNow()
     .notNull(),
 });
@@ -537,17 +559,40 @@ const morphTwoFieldTable = (
     title: text("title").notNull(),
     [fieldA]: text(fieldA),
     [fieldB]: text(fieldB),
+    status: text("status").notNull().default("submitted"),
+    assigneeId: text("assigneeId"),
     createdBy: text("createdBy").notNull(),
     createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
       .defaultNow()
       .notNull(),
+    updatedAt: timestamp("updatedAt", { precision: 3, mode: "date" })
+      .defaultNow()
+      .notNull(),
   });
 
-export const orbitPurchaseRequest = morphTwoFieldTable(
-  "orbit_purchase_requests",
-  "vendor",
-  "amount"
-);
+export const orbitPurchaseRequest = nextForge.table("orbit_purchase_requests", {
+  id: text("id").primaryKey(),
+  organizationId: text("organizationId")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  originCaseId: text("originCaseId")
+    .notNull()
+    .references(() => orbitCase.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  vendor: text("vendor"),
+  amount: text("amount"),
+  poReference: text("poReference"),
+  externalRefId: text("externalRefId"),
+  status: text("status").notNull().default("submitted"),
+  assigneeId: text("assigneeId"),
+  createdBy: text("createdBy").notNull(),
+  createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updatedAt", { precision: 3, mode: "date" })
+    .defaultNow()
+    .notNull(),
+});
 export const orbitLeadRequest = morphTwoFieldTable(
   "orbit_lead_requests",
   "contact",
@@ -582,4 +627,24 @@ export const orbitContractReviewRequest = morphTwoFieldTable(
   "orbit_contract_review_requests",
   "counterparty",
   "expiryDate"
+);
+
+export const orbitInAppNotification = nextForge.table(
+  "orbit_in_app_notifications",
+  {
+    id: text("id").primaryKey(),
+    organizationId: text("organizationId")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    userId: text("userId").notNull(),
+    kind: text("kind").notNull(),
+    title: text("title").notNull(),
+    body: text("body"),
+    href: text("href").notNull(),
+    readAt: timestamp("readAt", { precision: 3, mode: "date" }),
+    payload: jsonb("payload").notNull().default({}),
+    createdAt: timestamp("createdAt", { precision: 3, mode: "date" })
+      .defaultNow()
+      .notNull(),
+  }
 );

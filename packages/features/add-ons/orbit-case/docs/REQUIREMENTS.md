@@ -1,7 +1,7 @@
 # Orbit Case — Requirements & Definition of Done
 
 **Package:** `@repo/orbit-case`  
-**Last updated:** 2026-06-18
+**Last updated:** 2026-06-19
 
 ---
 
@@ -211,9 +211,176 @@ pnpm test:e2e:preflight
 pnpm test:e2e:orbit-case
 ```
 
-### Deferred (post-v1 product)
+Phase 4 completes v1. Product depth begins in **Phase 5** below.
 
-See [`ARCHITECTURE.md`](./ARCHITECTURE.md) non-goals: BPMN, AI auto-routing, per-tenant custom status workflows, full ERP modules inside `@repo/orbit-case`. Richer morph detail UX, notifications, and real ERP handoff are Phase 4+ product work.
+---
+
+## Phase 5 — Product depth & operational maturity
+
+Phases 1–4 ship the universal work item, push engine, eleven morph stubs, and release gates. Phase 5 makes pushed targets **operational** — editable, triageable, and visible to the people who must act — without turning `@repo/orbit-case` into a full ERP.
+
+### North-star acceptance narrative
+
+A finance lead opens `/orbit-case/budget`, filters **In review**, updates amount and status, and marks **Approved** — all without returning to the origin case. A watcher assigned to the parent case sees an in-app notification that the budget push completed.
+
+---
+
+### 5A — Morph request lifecycle
+
+Apply to all eleven destinations incrementally. **Pilot:** Budget, Approval, Purchase — then roll the pattern to the remaining eight via [`MORPH-DESTINATION-SLICE.md`](./MORPH-DESTINATION-SLICE.md).
+
+| ID | Requirement |
+|----|-------------|
+| P5-A1 | Morph targets have a fixed v1 status set: `submitted` · `in_review` · `approved` · `rejected` · `cancelled` |
+| P5-A2 | Edit governed template fields post-push (owner/editor; audit each change) |
+| P5-A3 | Assignee on morph targets (org member picker; activity on reassign) |
+| P5-A4 | Append-only activity log on morph create/update/status/assign |
+| P5-A5 | Server Actions under `apps/app/app/actions/orbit-case/morph/` + cache revalidate per segment |
+| P5-A6 | List views filter by status and assignee |
+| P5-A7 | Detail view: editable form (not read-only `<dl>`) for pilot destinations |
+
+#### Per-destination DoD (pilot — Budget Request)
+
+- [x] Drizzle columns: `status`, `assigneeId`, `updatedAt` (+ migration `0032_orbit_budget_lifecycle`)
+- [x] `engines/budget/budget-requests.ts` — `updateBudgetRequestFields`, `listForOrg` filters
+- [x] Server Actions + app UI edit/status controls on `/orbit-case/budget/[budgetId]`
+- [x] Activity entries on morph mutations (`morph.budget.updated` on origin case)
+- [x] Unit tests (`test/morph-budget.test.ts`)
+- [x] E2E status transition in `orbit-case-morph-lifecycle.spec.ts`
+
+Repeat checklist for **Approval** and **Purchase**, then batch the remaining eight two-field destinations.
+
+#### Per-destination DoD (remaining eight destinations)
+
+- [x] Drizzle columns: `status`, `assigneeId`, `updatedAt` (+ migration `0034_orbit_morph_lifecycle_remaining`)
+- [x] Shared two-field lifecycle engine factory + `morph-lifecycle-registry` for all eleven segments
+- [x] Unified `updateMorphLifecycleRequestSchema` + `updateMorphPilotRequest` server action
+- [x] Shared pilot list/detail UI on `/orbit-case/{segment}` for Meeting, Lead, Complaint, Risk, Project, Investigation, CAPA, Contract Review
+- [x] Push handlers set lifecycle defaults (`submitted`, `assigneeId: null`, `updatedAt`)
+- [x] Activity entries (`morph.{segment}.updated`) via generic formatter
+- [x] E2E status transition in `orbit-case-morph-lifecycle.spec.ts`
+
+#### Per-destination DoD (pilot — Approval Request)
+
+- [x] Drizzle columns: `status`, `assigneeId`, `updatedAt` (+ migration `0033_orbit_approval_purchase_lifecycle`)
+- [x] `engines/approval/approval-requests.ts` — lifecycle update + list filters
+- [x] Shared pilot UI + `updateMorphPilotRequest` action
+- [x] Activity entries (`morph.approval.updated`)
+
+#### Per-destination DoD (pilot — Purchase Request)
+
+- [x] Drizzle columns on `orbit_purchase_requests` (via migration `0033`)
+- [x] `engines/purchase/purchase-requests.ts` — lifecycle update + list filters
+- [x] Shared pilot UI + `updateMorphPilotRequest` action
+- [x] Activity entries (`morph.purchase.updated`)
+
+---
+
+### 5C — Staged rollout
+
+| ID | Requirement |
+|----|-------------|
+| P5-C1 | Gate `/orbit-case` nav entry and routes with `@repo/feature-flags` |
+| P5-C2 | Org-level or environment-level enable documented in `INTEGRATION.md` |
+| P5-C3 | Preview deployments can enable for pilot tenants without production blast radius |
+
+#### Phase 5C DoD
+
+- [x] Flag registered in `@repo/feature-flags` (`orbitCaseEnabled`, default on)
+- [x] App shell hides Orbit Case when disabled; `/orbit-case` layout redirects
+- [x] Env override `ORBIT_CASE_ENABLED=true|false` in `@repo/orbit-case/keys`
+- [x] Rollout runbook in add-on docs (`INTEGRATION.md` — Staged rollout)
+
+---
+
+### 5B — In-app notifications
+
+Webhook events (`orbit.case.created`, `orbit.case.pushed`) exist from Phase 2. Phase 5 adds **in-app** signal for people doing the work.
+
+| ID | Requirement |
+|----|-------------|
+| P5-B1 | Extend `contract/events.ts` with assign, comment, status-change, morph-update payloads |
+| P5-B2 | Persist org-scoped notification rows (Drizzle + RLS) or delegate to a shared `@repo/notifications` package if one exists |
+| P5-B3 | Notify case watchers on relevant case mutations |
+| P5-B4 | Notify morph assignee on push completion and morph status change |
+| P5-B5 | In-app feed UI (authenticated shell bell / panel) with deep links to case or morph detail |
+| P5-B6 | Optional email delivery via existing `@repo/email` — feature-flagged |
+
+#### Phase 5B DoD
+
+- [x] Event schemas + emit calls from work/morph engines
+- [x] Notification persistence + list/mark-read API
+- [x] App UI wired; integration test: assign case → assignee notification row persisted
+- [x] E2E: notifications panel opens from topbar bell (`orbit-case-notifications.spec.ts`)
+
+---
+
+### 5D — Pilot destination depth
+
+Deepen **Budget**, **Approval**, and **Purchase** before generic two-field stubs. Expand template fields, validation, and list columns per domain — still owned under `engines/{segment}/`, not new ERP packages.
+
+| Destination | Extra fields (indicative) |
+|-------------|---------------------------|
+| Budget | amount (required), currency, cost center, justification |
+| Approval | approver (required), amount, due date, decision notes |
+| Purchase | vendor, amount, line items or PO reference |
+
+| ID | Requirement |
+|----|-------------|
+| P5-D1 | Template fields in manifest + registry match persisted columns |
+| P5-D2 | Push form validates required pilot fields |
+| P5-D3 | List view shows domain columns (not title-only) |
+
+#### Phase 5D DoD
+
+- [x] Budget, Approval, Purchase migrations + schema alignment (`0035_orbit_pilot_depth_erp.sql`)
+- [x] Push handlers persist extended fields
+- [x] E2E push fills required pilot fields and asserts on detail page (`orbit-case-morph-lifecycle.spec.ts`)
+
+---
+
+### 5E — ERP handoff (integration boundary)
+
+Orbit Case remains the **origin and link** layer — not a replacement for finance, procurement, or CRM systems.
+
+| ID | Requirement |
+|----|-------------|
+| P5-E1 | Webhook / org-event payloads include morph target summary (type, id, status, key fields) |
+| P5-E2 | Optional `externalRefId` on morph tables for downstream system correlation |
+| P5-E3 | Document outbound contract in [`INTEGRATION.md`](./INTEGRATION.md) for future `@repo/*` ERP packages |
+| P5-E4 | Idempotent inbound sync hook stub (accept external status update by `externalRefId`) — no full ERP UI in Phase 5 |
+
+#### Phase 5E DoD
+
+- [x] Extended event payloads + webhook integration test
+- [x] `externalRefId` column on pilot morph tables
+- [x] Integration doc section for ERP consumers
+- [x] Idempotent inbound sync stub (`syncMorphExternalStatus`)
+
+---
+
+### Phase 5 summary DoD
+
+| Slice | Scope | Status |
+|-------|--------|--------|
+| 5A | Morph lifecycle (all 11 destinations) | Done |
+| 5B | In-app notifications | Done |
+| 5C | Feature-flag rollout | Done |
+| 5D | Pilot field depth (Budget, Approval, Purchase) | Done |
+| 5E | ERP handoff boundary | Done |
+
+Recommended build order: **5C** (safe rollout) → **5A + 5D** (pilot morphs) → **5B** (notify people acting on morphs) → **5E** (external sync).
+
+---
+
+### Still deferred (Phase 6+)
+
+See [`ARCHITECTURE.md`](./ARCHITECTURE.md) non-goals:
+
+- BPMN / workflow designer
+- AI auto-routing
+- Per-tenant **case** status workflows (morph status in 5A is a separate, fixed set)
+- Full ERP modules inside `@repo/orbit-case`
 
 ---
 

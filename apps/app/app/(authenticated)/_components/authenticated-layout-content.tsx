@@ -12,7 +12,13 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { env } from "@/env";
+import {
+  resolveAuthenticatedAppShellChrome,
+  resolveAuthenticatedSidebarBehaviorMode,
+} from "@/lib/app-shell";
+import { resolveOrbitCaseEnabled } from "@/lib/orbit-case-access";
 import { MfaChallengeShell } from "./mfa-challenge-shell";
+import { AuthenticatedShell } from "./authenticated-shell";
 
 interface AuthenticatedLayoutContentProperties {
   readonly children: ReactNode;
@@ -27,6 +33,9 @@ export const AuthenticatedLayoutContent = async ({
 
   const user = await currentUser();
   const betaFeature = await showBetaFeature();
+  const showOrbitCaseNav = await resolveOrbitCaseEnabled();
+  const defaultSidebarBehaviorMode =
+    await resolveAuthenticatedSidebarBehaviorMode();
 
   if (!user) {
     redirect("/sign-in");
@@ -49,19 +58,31 @@ export const AuthenticatedLayoutContent = async ({
   let { orgId } = await auth();
 
   if (!orgId) {
-    const organizations = await getOrganizations(user.id);
+    const bootstrapOrganizations = await getOrganizations(user.id);
 
     if (
-      organizations.length === 0 &&
+      bootstrapOrganizations.length === 0 &&
       !hasPendingOrganizationInvite(user.user_metadata)
     ) {
       const organization = await createOrganization("My Organization", user.id);
       orgId = organization.id;
-    } else if (organizations.length > 0) {
-      await switchOrganization(organizations[0].id);
-      orgId = organizations[0].id;
+    } else if (bootstrapOrganizations.length > 0) {
+      await switchOrganization(bootstrapOrganizations[0].id);
+      orgId = bootstrapOrganizations[0].id;
     }
   }
+
+  const organizations = await getOrganizations(user.id);
+
+  const appShellChrome = resolveAuthenticatedAppShellChrome({
+    activeOrganizationId: orgId ?? null,
+    defaultSidebarBehaviorMode,
+    email: user.email,
+    organizations,
+    orgId: orgId ?? null,
+    userId: user.id,
+    userMetadata: user.user_metadata,
+  });
 
   return (
     <>
@@ -70,7 +91,9 @@ export const AuthenticatedLayoutContent = async ({
           Beta feature now available
         </div>
       ) : null}
-      {children}
+      <AuthenticatedShell showOrbitCaseNav={showOrbitCaseNav} {...appShellChrome}>
+        {children}
+      </AuthenticatedShell>
     </>
   );
 };

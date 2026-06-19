@@ -32,6 +32,13 @@ export function isSidebarBehaviorMode(
   return value === "expanded" || value === "icon" || value === "hover";
 }
 
+/** Resolve persisted sidebar behavior from a raw cookie value (server or client). */
+export function resolveSidebarBehaviorMode(
+  cookieValue: string | undefined
+): SidebarBehaviorMode {
+  return isSidebarBehaviorMode(cookieValue) ? cookieValue : "expanded";
+}
+
 export function readSidebarBehaviorCookie(): SidebarBehaviorMode | null {
   if (typeof document === "undefined") {
     return null;

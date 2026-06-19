@@ -7,9 +7,13 @@ import {
   buildOrbitCasePushedEvent,
   executePushSchema,
   resolveMorphSliceByTargetType,
+  toOrbitMorphTargetSummaryFromDto,
   type PushResultDto,
 } from "@repo/orbit-case";
-import { executePush } from "@repo/orbit-case/server";
+import {
+  executePush,
+  resolveMorphLifecycleLoader,
+} from "@repo/orbit-case/server";
 import { getOrbitPushCapabilitiesForSession } from "@/lib/orbit-case-session";
 import {
   revalidateOrbitCaseMorphMutation,
@@ -58,12 +62,28 @@ export const executeCasePush = async (
         );
       }
 
+      const morphDto = slice
+        ? await resolveMorphLifecycleLoader(slice.segment).getById(
+            orgId,
+            result.targetId
+          )
+        : null;
+
+      const morphTarget = morphDto
+        ? toOrbitMorphTargetSummaryFromDto(
+            slice?.segment ?? result.targetType,
+            result.targetType,
+            morphDto
+          )
+        : undefined;
+
       await emitOrgEvent(
         orgId,
         "orbit.case.pushed",
         buildOrbitCasePushedEvent({
           caseId: parsed.caseId,
           destinationId: parsed.destinationId,
+          morphTarget,
           pushEventId: result.pushEventId,
           targetType: result.targetType,
           targetId: result.targetId,
